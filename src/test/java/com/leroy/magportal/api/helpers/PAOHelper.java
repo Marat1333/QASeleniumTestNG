@@ -7,11 +7,15 @@ import static org.hamcrest.Matchers.hasSize;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.data.CatalogSearchFilter;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.customer_accounts.clients.CustomerClient;
 import com.leroy.common_mashups.customer_accounts.data.CustomerData;
 import com.leroy.common_mashups.customer_accounts.data.CustomerListData;
+import com.leroy.common_mashups.customer_accounts.data.CustomerResponseBodyData;
 import com.leroy.common_mashups.customer_accounts.data.CustomerSearchFilters;
 import com.leroy.common_mashups.customer_accounts.data.PhoneData;
+import com.leroy.common_mashups.helpers.CustomerHelper;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.api.StatusCodes;
 import com.leroy.constants.customer.CustomerConst;
@@ -22,8 +26,6 @@ import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.EstimateClient;
 import com.leroy.magmobile.api.clients.SalesDocSearchClient;
-import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
@@ -52,22 +54,24 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 public class PAOHelper extends BaseHelper {
 
     @Inject
-    SearchProductHelper searchProductHelper;
+    private SearchProductHelper searchProductHelper;
     @Inject
-    CustomerClient customerClient;
+    private CustomerClient customerClient;
     @Inject
-    CartClient cartClient;
+    private CartClient cartClient;
     @Inject
-    EstimateClient estimateClient;
+    private EstimateClient estimateClient;
     @Inject
-    OrderClient orderClient;
+    private OrderClient orderClient;
     @Inject
-    SalesDocSearchClient salesDocSearchClient;
+    private SalesDocSearchClient salesDocSearchClient;
+    @Inject
+    private CustomerHelper customerHelper;
 
     @Step("Создает Список CartProductOrderData для СОЗДАНИЯ коозины")
     public List<CartProductOrderData> makeCartProducts(int necessaryCount) {
         List<CartProductOrderData> cartsProducts = new ArrayList<>();
-        for (ProductItemData productData : searchProductHelper.getProducts(necessaryCount)) {
+        for (ProductData productData : searchProductHelper.getProducts(necessaryCount)) {
             CartProductOrderData productCard = new CartProductOrderData(productData);
             cartsProducts.add(convertItemToCartProduct(productCard.getLmCode()));
         }
@@ -92,13 +96,13 @@ public class PAOHelper extends BaseHelper {
         filtersData.setAvs(false);
         filtersData.setTopEM(false);
         filtersData.setHasAvailableStock(true);
-        List<ProductItemData> productItemDataList = searchProductHelper.getProducts(2, filtersData);
+        List<ProductData> productIDataList = searchProductHelper.getProducts(2, filtersData);
         CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
-                productItemDataList.get(0));
+                productIDataList.get(0));
         productWithNegativeBalance
-                .setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
+                .setQuantity(productIDataList.get(0).getAvailableStock() + 10.0);
         CartProductOrderData productWithPositiveBalance = new CartProductOrderData(
-                productItemDataList.get(1));
+                productIDataList.get(1));
         productWithPositiveBalance.setQuantity(1.0);
 
         return Arrays.asList(productWithNegativeBalance, productWithPositiveBalance);
@@ -284,23 +288,6 @@ public class PAOHelper extends BaseHelper {
         return createConfirmedEstimateAndGetId(Collections.singletonList(product), customerData);
     }
 
-    /*protected void cancelOrder(String orderId, String expectedStatusBefore) throws Exception {
-        OrderClient orderClient = apiClientProvider.getOrderClient();
-        orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderId,
-                expectedStatusBefore);
-        Response<JsonNode> r = orderClient.cancelOrder(orderId);
-        anAssert().isTrue(r.isSuccessful(),
-                "Не смогли удалить заказ №" + orderId + ". Ошибка: " + r.toString());
-        orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderId,
-                SalesDocumentsConst.States.CANCELLED.getApiVal());
-    }
-
-    protected void cancelOrder(String orderId) throws Exception {
-        cancelOrder(orderId, SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
-    }
-
-     */
-
     public String getValidPinCode(boolean isDelivery) {
         int tryCount = 10;
         for (int i = 0; i < tryCount; i++) {
@@ -319,5 +306,74 @@ public class PAOHelper extends BaseHelper {
         }
         throw new RuntimeException("Couldn't find valid pin code for " + tryCount + " trying");
     }
+
+    @Step("Создаем черновик Сметы через API")
+    private String createDraftEstimateAndGetCartId(
+            CustomerData newCustomerData, List<String> lmCodes, int productCount) {
+        if (lmCodes == null) {
+            lmCodes = searchProductHelper.getProductLmCodes(productCount);
+        }
+        CustomerData customerData;
+        if (newCustomerData == null) {
+            customerData = customerHelper.getAnyCustomer();
+        } else {
+            Response<CustomerResponseBodyData> respCustomer = customerClient
+                    .createCustomer(newCustomerData);
+            assertThat(respCustomer, successful());
+            customerData = respCustomer.asJson().getEntity();
+        }
+        List<EstimateProductOrderData> productOrderDataList = new ArrayList<>();
+        for (int i = 1; i <= lmCodes.size(); i++) {
+            EstimateProductOrderData productOrderData = new EstimateProductOrderData();
+            productOrderData.setLmCode(lmCodes.get(i - 1));
+            productOrderData.setQuantity((double) i);
+            productOrderDataList.add(productOrderData);
+        }
+        EstimateCustomerData estimateCustomerData = new EstimateCustomerData();
+        estimateCustomerData.setCustomerNumber(customerData.getCustomerNumber());
+        estimateCustomerData.setFirstName(customerData.getFirstName());
+        estimateCustomerData.setLastName(customerData.getLastName());
+        estimateCustomerData.setType("PERSON");
+        estimateCustomerData.setRoles(Collections.singletonList("PAYER"));
+        Response<EstimateData> estimateDataResponse = estimateClient.sendRequestCreate(
+                Collections.singletonList(estimateCustomerData), productOrderDataList);
+        assertThat(estimateDataResponse, successful());
+        return estimateDataResponse.asJson().getEstimateId();
+    }
+
+    public String createDraftEstimateAndGetCartId(CustomerData customerData, int productCount) {
+        return createDraftEstimateAndGetCartId(customerData, null, productCount);
+    }
+
+    public String createDraftEstimateAndGetCartId(List<String> lmCodes) {
+        return createDraftEstimateAndGetCartId(null, lmCodes, 1);
+    }
+
+    public String createDraftEstimateAndGetCartId(int productCount) {
+        return createDraftEstimateAndGetCartId(null, null, productCount);
+    }
+
+    public String createDraftEstimateAndGetCartId() {
+        return createDraftEstimateAndGetCartId(1);
+    }
+
+    @Step("Создаем подтвержденную Смету через API")
+    public String createConfirmedEstimateAndGetCartId(CustomerData customerData,
+            List<String> lmCodes) {
+        String cartId = createDraftEstimateAndGetCartId(customerData, lmCodes, 1);
+        Response<JsonNode> resp = estimateClient.confirm(cartId);
+        estimateClient.assertThatResponseChangeStatusIsOk(resp);
+        return cartId;
+    }
+
+    @Step("Создаем подтвержденную Смету через API")
+    public String createConfirmedEstimateAndGetCartId(List<String> lmCodes) {
+        return createConfirmedEstimateAndGetCartId(null, lmCodes);
+    }
+
+    public String createConfirmedEstimateAndGetCartId() {
+        return createConfirmedEstimateAndGetCartId(searchProductHelper.getProductLmCodes(1));
+    }
+
 
 }

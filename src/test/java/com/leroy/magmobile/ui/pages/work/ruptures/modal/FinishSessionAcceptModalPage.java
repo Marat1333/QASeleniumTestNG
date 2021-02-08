@@ -4,8 +4,6 @@ import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
-import com.leroy.magmobile.ui.pages.work.ruptures.FinishedSessionPage;
-import com.leroy.magmobile.ui.pages.work.ruptures.ActiveSessionPage;
 import io.qameta.allure.Step;
 
 public class FinishSessionAcceptModalPage extends CommonMagMobilePage {
@@ -25,15 +23,13 @@ public class FinishSessionAcceptModalPage extends CommonMagMobilePage {
     }
 
     @Step("Отменить завершение")
-    public ActiveSessionPage cancel(){
+    public void cancel(){
         cancelBtn.click();
-        return new ActiveSessionPage();
     }
 
     @Step("Подтвердить завершение")
-    public FinishedSessionPage finish(){
+    public void finish(){
         finishBtn.click();
-        return new FinishedSessionPage();
     }
 
     public FinishSessionAcceptModalPage verifyRequiredElements(){

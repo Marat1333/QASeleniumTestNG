@@ -2,6 +2,9 @@ package com.leroy.magportal.ui.models.customers;
 
 import com.leroy.core.ContextProvider;
 import com.leroy.core.asserts.SoftAssertWrapper;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +16,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SimpleCustomerData {
+
     private String id;
     private String name;
     private String firstName;
@@ -44,6 +48,14 @@ public class SimpleCustomerData {
 
     public void setName(String val) {
         this.name = val;
+        fillFirstLastNames();
+    }
+
+    public void fillFirstLastNames() {
+        List<String> names = Arrays.stream(this.name.split(" ")).collect(Collectors.toList());
+        this.firstName = names.get(0);
+        this.lastName = names.stream().filter(x -> !x.equals(this.firstName)).findFirst()
+                .orElse(null);
     }
 
     public void setName(String firstName, String lastName) {
@@ -62,18 +74,22 @@ public class SimpleCustomerData {
 
     public void assertEqualsNotNullExpectedFields(SimpleCustomerData expectedData) {
         SoftAssertWrapper softAssert = ContextProvider.getContext().getSoftAssert();
-        if (expectedData.getName() != null)
+        if (expectedData.getName() != null) {
             softAssert.isEquals(this.getName(), expectedData.getName(),
                     "Неверное имя клиента");
-        if (expectedData.getEmail() != null)
+        }
+        if (expectedData.getEmail() != null) {
             softAssert.isEquals(this.getEmail(), expectedData.getEmail(),
                     "Неверный email клиента");
-        if (expectedData.getCardNumber() != null)
+        }
+        if (expectedData.getCardNumber() != null) {
             softAssert.isEquals(this.getCardNumber(), expectedData.getCardNumber(),
                     "Неверный номер карточки клиента");
-        if (expectedData.getPhoneNumber() != null)
+        }
+        if (expectedData.getPhoneNumber() != null) {
             softAssert.isEquals(this.getPhoneNumber(), expectedData.getPhoneNumber(),
                     "Неверный номер телефона клиента");
+        }
         softAssert.verifyAll();
     }
 }

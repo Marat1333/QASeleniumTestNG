@@ -7,8 +7,9 @@
         <suite-file path="areas/DeliveryOnlineOrdersSuite.xml"/>
         <suite-file path="areas/OfflineOrdersSuite.xml"/>
         <suite-file path="areas/PickupOnlineOrdersSuite.xml"/>
-        <suite-file path="areas/Picking.xml"/>
-        <suite-file path="areas/Other.xml"/>
+        <suite-file path="areas/PickingSuite.xml"/>
+        <suite-file path="areas/ProductSearchSuite.xml"/>
+        <suite-file path="areas/OtherSuite.xml"/>
     </suite-files>
 
 </suite>

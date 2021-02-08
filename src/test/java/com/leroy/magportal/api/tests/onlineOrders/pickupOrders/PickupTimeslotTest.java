@@ -2,10 +2,10 @@ package com.leroy.magportal.api.tests.onlineOrders.pickupOrders;
 
 import static com.leroy.core.matchers.IsSuccessful.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
-//import static org.hamcrest.Matchers.emptyOrNullString;
-//import static org.hamcrest.Matchers.equalTo;
-//import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.not;
 
 import com.google.inject.Inject;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
@@ -15,7 +15,7 @@ import com.leroy.magportal.api.constants.OnlineOrderTypeConst;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
 import com.leroy.magportal.api.data.timeslot.TimeslotData;
 import com.leroy.magportal.api.data.timeslot.TimeslotResponseData;
-import com.leroy.magportal.api.helpers.BitrixHelper;
+import com.leroy.magportal.api.helpers.OnlineOrderHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
 import io.qameta.allure.Step;
 import java.util.List;
@@ -26,7 +26,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 public class PickupTimeslotTest extends BaseMagPortalApiTest {
 
     @Inject
-    private BitrixHelper bitrixHelper;
+    private OnlineOrderHelper onlineOrderHelper;
     @Inject
     private OrderClient orderClient;
 
@@ -38,7 +38,7 @@ public class PickupTimeslotTest extends BaseMagPortalApiTest {
     @BeforeClass
     private void setUp() {
         currentOrderType = OnlineOrderTypeConst.PICKUP_POSTPAYMENT;
-        currentOrderId = bitrixHelper.createOnlineOrder(currentOrderType).getSolutionId();
+        currentOrderId = onlineOrderHelper.createOnlineOrder(currentOrderType).getSolutionId();
     }
 
     @Test(description = "C23425906 Get Timeslot for Several Products", priority = 1)
@@ -88,7 +88,7 @@ public class PickupTimeslotTest extends BaseMagPortalApiTest {
 
     private void makeDimensionalOrder() {
         currentOrderType = OnlineOrderTypeConst.PICKUP_PREPAYMENT;
-        currentOrderId = bitrixHelper.createDimensionalOnlineOrder(currentOrderType)
+        currentOrderId = onlineOrderHelper.createDimensionalOnlineOrder(currentOrderType)
                 .getSolutionId();
     }
 

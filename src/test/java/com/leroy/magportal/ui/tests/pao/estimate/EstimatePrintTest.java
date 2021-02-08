@@ -1,12 +1,11 @@
 package com.leroy.magportal.ui.tests.pao.estimate;
 
+import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.core.ContextProvider;
 import com.leroy.core.configuration.DriverFactory;
-import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.EstimateClient;
-import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magportal.ui.constants.TestDataConstants;
@@ -17,19 +16,20 @@ import com.leroy.magportal.ui.pages.cart_estimate.PrintEstimatePage;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedEstimateModal;
 import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
 import com.leroy.magportal.ui.tests.BasePAOTest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 public class EstimatePrintTest extends BasePAOTest {
+
+    @Inject
+    private SearchProductHelper searchProductHelper;
+    @Inject
+    private EstimateClient estimateClient;
 
     @AfterMethod
     public void quiteDriver() {
@@ -37,16 +37,9 @@ public class EstimatePrintTest extends BasePAOTest {
     }
 
     private String createEstimateWith50Products() {
-        EstimateClient estimateClient = apiClientProvider.getEstimateClient();
         // Prepare request data
-        CatalogSearchFilter catalogSearchFilter = new CatalogSearchFilter();
-        CatalogSearchClient catalogSearchClient = apiClientProvider.getCatalogSearchClient();
         // Search for products request #1
-        Response<ProductItemDataList> searchResp = catalogSearchClient.searchProductsBy(
-                catalogSearchFilter, 1, 50);
-        assertThat(searchResp, successful());
-        List<ProductItemData> productItems = searchResp.asJson().getItems();
-
+        List<ProductData> products = searchProductHelper.getProducts(50);
         // Search for products request #2
         /*searchResp = catalogSearchClient.searchProductsBy(
                 catalogSearchFilter, 2, 50);
@@ -54,8 +47,9 @@ public class EstimatePrintTest extends BasePAOTest {
         productItems.addAll(searchResp.asJson().getItems());*/
 
         List<EstimateProductOrderData> estimateProducts = new ArrayList<>();
-        for (ProductItemData productItemData : productItems) {
-            EstimateProductOrderData productOrderData = new EstimateProductOrderData(productItemData);
+        for (ProductData productIData : products) {
+            EstimateProductOrderData productOrderData = new EstimateProductOrderData(
+                    productIData);
             productOrderData.setQuantity((double) new Random().nextInt(6) + 1);
             estimateProducts.add(productOrderData);
         }
@@ -70,7 +64,7 @@ public class EstimatePrintTest extends BasePAOTest {
     @Test(description = "C23393377 Печать сметы с одним товаром", groups = NEED_PRODUCTS_GROUP)
     public void testPrintEstimateWithOneProduct() throws Exception {
         // Test Data
-        ProductItemData testProduct1 = productList.get(0);
+        ProductData testProduct1 = productList.get(0);
         SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
         step("Выполнение предусловий");
         EstimatePage estimatePage;
@@ -152,7 +146,7 @@ public class EstimatePrintTest extends BasePAOTest {
     @Test(description = "C3302226 Печать сметы в статусе Создан", groups = NEED_PRODUCTS_GROUP)
     public void testPrintEstimateWhenConfirmed() throws Exception {
         // Test Data
-        ProductItemData testProduct1 = productList.get(0);
+        ProductData testProduct1 = productList.get(0);
         SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
         step("Выполнение предусловий");
         EstimatePage estimatePage;
@@ -184,10 +178,11 @@ public class EstimatePrintTest extends BasePAOTest {
         printEstimatePage.closeCurrentWindowAndSwitchToSpecified(estimatePage, true);
     }
 
-    @Test(description = "C23398086 Печать сметы физ. лицо", groups = {NEED_PRODUCTS_GROUP, NEED_ACCESS_TOKEN_GROUP})
+    @Test(description = "C23398086 Печать сметы физ. лицо", groups = {NEED_PRODUCTS_GROUP,
+            NEED_ACCESS_TOKEN_GROUP})
     public void testPrintEstimateWithIndividualPerson() throws Exception {
         // Test Data
-        ProductItemData testProduct1 = productList.get(0);
+        ProductData testProduct1 = productList.get(0);
         SimpleCustomerData customer1 = createCustomerByApi();
         step("Выполнение предусловий");
         EstimatePage estimatePage;
@@ -314,7 +309,7 @@ public class EstimatePrintTest extends BasePAOTest {
     public void testPrintEstimateWithDelivery() throws Exception {
         // Test Data
         Double deliveryPrice = 1000.0;
-        ProductItemData testProduct1 = productList.get(0);
+        ProductData testProduct1 = productList.get(0);
         SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
         step("Выполнение предусловий");
         EstimatePage estimatePage;

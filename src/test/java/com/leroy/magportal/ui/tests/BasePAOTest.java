@@ -1,26 +1,23 @@
 package com.leroy.magportal.ui.tests;
 
 import com.google.inject.Inject;
-import com.leroy.common_mashups.customer_accounts.clients.CustomerClient;
+import com.leroy.common_mashups.catalogs.data.CatalogSearchFilter;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.customer_accounts.data.CustomerData;
-import com.leroy.common_mashups.customer_accounts.data.CustomerResponseBodyData;
+import com.leroy.common_mashups.helpers.CustomerHelper;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.core.UserSessionData;
-import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import io.qameta.allure.Step;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
 
 public abstract class BasePAOTest extends WebBaseSteps {
 
@@ -29,9 +26,11 @@ public abstract class BasePAOTest extends WebBaseSteps {
     protected final static String NEED_PRODUCTS_GROUP = "need_products";
 
     @Inject
-    SearchProductHelper searchProductHelper;
+    private SearchProductHelper searchProductHelper;
+    @Inject
+    private CustomerHelper customerHelper;
 
-    protected List<ProductItemData> productList;
+    protected List<ProductData> productList;
 
     protected String customerPhone = "1111111111";
 
@@ -42,7 +41,7 @@ public abstract class BasePAOTest extends WebBaseSteps {
 
     @BeforeGroups(groups = NEED_PRODUCTS_GROUP)
     protected void findProducts() {
-        productList = apiClientProvider.getProducts(3);
+        productList = searchProductHelper.getProducts(3);
     }
 
     @BeforeMethod
@@ -56,11 +55,7 @@ public abstract class BasePAOTest extends WebBaseSteps {
 
     @Step("Создаем клиента через API")
     protected SimpleCustomerData createCustomerByApi() {
-        CustomerClient customerClient = apiClientProvider.getCustomerClient();
-        CustomerData customerData = new CustomerData();
-        customerData.generateRandomValidRequiredData(true, true);
-        Response<CustomerResponseBodyData> resp = customerClient.createCustomer(customerData);
-        customerData = customerClient.assertThatIsCreatedAndGetData(resp, customerData);
+        CustomerData customerData = customerHelper.createCustomer();
 
         SimpleCustomerData uiCustomerData = new SimpleCustomerData();
         uiCustomerData.setName(customerData.getFirstName(), customerData.getLastName());
@@ -89,7 +84,7 @@ public abstract class BasePAOTest extends WebBaseSteps {
         filtersData.setAvs(false);
         filtersData.setHasAvailableStock(hasAvailableStock);
         getUserSessionData().setUserDepartmentId("15");
-        return apiClientProvider.getProducts(1, filtersData).get(0).getLmCode();
+        return searchProductHelper.getProducts(1, filtersData).get(0).getLmCode();
     }
 
     protected String getAnyLmCodeProductWithTopEM() {

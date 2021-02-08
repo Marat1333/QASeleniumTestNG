@@ -1,13 +1,18 @@
 package com.leroy.magportal.ui.tests.pao.order;
 
+import static com.leroy.constants.DefectConst.INVISIBLE_AUTHOR_ORDER_DRAFT;
+import static com.leroy.constants.DefectConst.PRODUCT_COUNT_WHEN_TWO_ORDERS_IN_CART;
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.data.CatalogSearchFilter;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
+import com.leroy.common_mashups.customer_accounts.data.CustomerData;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.common_mashups.customer_accounts.data.CustomerData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magportal.api.clients.OrderClient;
@@ -30,33 +35,27 @@ import com.leroy.magportal.ui.pages.orders.modal.SubmittedOrderModal;
 import com.leroy.magportal.ui.pages.products.form.AddProductForm;
 import com.leroy.magportal.ui.tests.BasePAOTest;
 import com.leroy.utils.RandomUtil;
-import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import static com.leroy.constants.DefectConst.*;
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
+import org.testng.annotations.Test;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class OrderTest extends BasePAOTest {
 
     @Inject
-    PAOHelper paoHelper;
+    private PAOHelper paoHelper;
     @Inject
-    SearchProductHelper searchProductHelper;
+    private SearchProductHelper searchProductHelper;
     @Inject
-    OrderClient orderClient;
+    private OrderClient orderClient;
 
     private void cancelConfirmedOrder() throws Exception {
         if (orderData != null && orderData.getNumber() != null && orderData.getStatus() != null &&
                 !orderData.getStatus().equals(SalesDocumentsConst.States.DRAFT.getUiVal()) &&
                 !orderData.getStatus().equals(SalesDocumentsConst.States.CANCELLED.getUiVal())) {
-            OrderClient orderClient = apiClientProvider.getOrderClient();
             orderClient.waitUntilOrderCanBeCancelled(orderData.getNumber());
             Response<JsonNode> resp = orderClient.cancelOrder(orderData.getNumber());
             assertThat(resp, successful());
@@ -118,7 +117,7 @@ public class OrderTest extends BasePAOTest {
     public void testCreateOrderWithAuthorAssembly() throws Exception {
         // Prepare data
         SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_2;
-        ProductItemData topEmProduct = searchProductHelper.getProducts(
+        ProductData topEmProduct = searchProductHelper.getProducts(
                 1, new CatalogSearchFilter().setTopEM(true)).get(0);
         CartProductOrderData cartProductOrderData = new CartProductOrderData(topEmProduct);
         cartProductOrderData.setQuantity(topEmProduct.getAvailableStock() + 1);
@@ -344,11 +343,11 @@ public class OrderTest extends BasePAOTest {
     // ================== EDIT ORDERS =========================//
 
     private void preconditionForEditOrderConfirmedTests(
-            List<ProductItemData> productItemDataList, double selectedQuantity) throws Exception {
+            List<ProductData> productIDataList, double selectedQuantity) throws Exception {
         // Prepare data
         List<CartProductOrderData> cardProducts = new ArrayList<>();
-        for (ProductItemData productItemData : productItemDataList) {
-            CartProductOrderData cartProductOrderData = new CartProductOrderData(productItemData);
+        for (ProductData productIData : productIDataList) {
+            CartProductOrderData cartProductOrderData = new CartProductOrderData(productIData);
             cartProductOrderData.setQuantity(selectedQuantity);
             cardProducts.add(cartProductOrderData);
         }
@@ -371,12 +370,12 @@ public class OrderTest extends BasePAOTest {
     }
 
     private void preconditionForEditOrderDraftTests(
-            List<ProductItemData> productItemDataList, boolean isNeedToGoToContentTab, boolean isExceedsAvailableStock) throws Exception {
+            List<ProductData> productIDataList, boolean isNeedToGoToContentTab, boolean isExceedsAvailableStock) throws Exception {
         // Prepare data
         List<CartProductOrderData> cardProducts = new ArrayList<>();
-        for (ProductItemData productItemData : productItemDataList) {
-            CartProductOrderData cartProductOrderData = new CartProductOrderData(productItemData);
-            cartProductOrderData.setQuantity(isExceedsAvailableStock ? productItemData.getAvailableStock() + 100 : 1.0);
+        for (ProductData productIData : productIDataList) {
+            CartProductOrderData cartProductOrderData = new CartProductOrderData(productIData);
+            cartProductOrderData.setQuantity(isExceedsAvailableStock ? productIData.getAvailableStock() + 100 : 1.0);
             cardProducts.add(cartProductOrderData);
         }
 
@@ -395,13 +394,13 @@ public class OrderTest extends BasePAOTest {
     }
 
     private void preconditionForEditOrderDraftTests(
-            List<ProductItemData> productItemDataList, boolean isNeedToGoToContentTab) throws Exception {
-        preconditionForEditOrderDraftTests(productItemDataList, isNeedToGoToContentTab, false);
+            List<ProductData> productIDataList, boolean isNeedToGoToContentTab) throws Exception {
+        preconditionForEditOrderDraftTests(productIDataList, isNeedToGoToContentTab, false);
     }
 
     private void preconditionForEditOrderDraftTestsExceedsAvailableStock(
-            List<ProductItemData> productItemDataList, boolean isNeedToGoToContentTab) throws Exception {
-        preconditionForEditOrderDraftTests(productItemDataList, isNeedToGoToContentTab, true);
+            List<ProductData> productIDataList, boolean isNeedToGoToContentTab) throws Exception {
+        preconditionForEditOrderDraftTests(productIDataList, isNeedToGoToContentTab, true);
     }
 
     private void preconditionForEditOrderDraftTests() throws Exception {
@@ -413,7 +412,7 @@ public class OrderTest extends BasePAOTest {
     @Test(description = "C23410901 Добавить товар в неподтвержденный заказ (количества товара достаточно)",
             groups = NEED_PRODUCTS_GROUP)
     public void testAddProductInDraftOrderWithSufficientProductQuantity() throws Exception {
-        ProductItemData newProduct = productList.get(1);
+        ProductData newProduct = productList.get(1);
         preconditionForEditOrderDraftTests();
 
         // Step 1
@@ -426,12 +425,12 @@ public class OrderTest extends BasePAOTest {
     @Test(description = "C23410902 Добавить товар в неподтвержденный заказ (количества товара недостаточно)",
             groups = NEED_PRODUCTS_GROUP)
     public void testAddProductInDraftOrderWithInsufficientProductQuantity() throws Exception {
-        ProductItemData productItemData = productList.get(0);
+        ProductData productIData = productList.get(0);
         preconditionForEditOrderDraftTests();
 
         // Step 1
         step("Измените кол-во товара таким образом, чтоб его было заказно, больше чем доступно");
-        int newQuantity = (int) Math.round(productItemData.getAvailableStock() + 100);
+        int newQuantity = (int) Math.round(productIData.getAvailableStock() + 100);
         OrderWebData oneOrderData = orderData.getOrders().get(0);
         oneOrderData.changeProductQuantity(0, newQuantity, true);
         oneOrderData.setTotalWeight(null);
@@ -445,7 +444,7 @@ public class OrderTest extends BasePAOTest {
     @Test(description = "C23410904 Добавить Топ ЕМ или AVS товар в неподтвержденный заказ",
             groups = NEED_PRODUCTS_GROUP)
     public void testAddTopEmOrAvsInDraftOrder() throws Exception {
-        ProductItemData newProduct = searchProductHelper.getProducts(
+        ProductData newProduct = searchProductHelper.getProducts(
                 1, new CatalogSearchFilter().setTopEM(true)).get(0);
         preconditionForEditOrderDraftTests();
 
@@ -526,7 +525,7 @@ public class OrderTest extends BasePAOTest {
 
     @Test(description = "C23410907 Добавить товар в подтвержденный закакз", groups = NEED_PRODUCTS_GROUP)
     public void testAddProductInConfirmedOrder() throws Exception {
-        ProductItemData newProductItem = productList.get(1);
+        ProductData newProductItem = productList.get(1);
         List<String> expectedProductLmCodes = Arrays.asList(productList.get(0).getLmCode(),
                 newProductItem.getLmCode());
         preconditionForEditOrderConfirmedTests();

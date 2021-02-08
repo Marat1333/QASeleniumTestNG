@@ -28,7 +28,7 @@ public class WebBaseSteps extends MagPortalBaseTest {
         else if (pageClass == EstimatePage.class)
             path = "orders/estimates";
         else if (pageClass == PickingPage.class || pageClass == PickingDocListMobilePage.class)
-            path = "orders/pickingtask";
+            path = "orders/picking";
         else
             path = "orders/orders_v2";
         return EnvConstants.URL_MAG_PORTAL + "/" + path;

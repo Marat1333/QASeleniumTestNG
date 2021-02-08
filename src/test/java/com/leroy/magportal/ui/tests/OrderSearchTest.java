@@ -2,17 +2,12 @@ package com.leroy.magportal.ui.tests;
 
 import static com.leroy.magportal.ui.constants.OrderConst.DeliveryType.DELIVERY_TK;
 import static com.leroy.magportal.ui.constants.OrderConst.DeliveryType.PICKUP;
-import static com.leroy.magportal.ui.constants.OrderConst.Status.ASSEMBLY;
-import static com.leroy.magportal.ui.constants.OrderConst.Status.ASSEMBLY_PAUSE;
-import static com.leroy.magportal.ui.constants.OrderConst.Status.CANCELLED;
 import static com.leroy.magportal.ui.constants.OrderConst.Status.CREATED;
-import static com.leroy.magportal.ui.constants.OrderConst.Status.ISSUED;
-import static com.leroy.magportal.ui.constants.OrderConst.Status.ISSUED_PARTIALLY;
-import static com.leroy.magportal.ui.constants.OrderConst.Status.PICKED;
-import static com.leroy.magportal.ui.constants.OrderConst.Status.PICKED_PARTIALLY;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
 import com.leroy.common_mashups.customer_accounts.data.PhoneData;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.api.StatusCodes;
 import com.leroy.constants.customer.CustomerConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
@@ -27,6 +22,7 @@ import com.leroy.magmobile.api.data.sales.orders.OrderCustomerData;
 import com.leroy.magmobile.api.data.sales.orders.OrderData;
 import com.leroy.magmobile.api.data.sales.orders.ReqOrderData;
 import com.leroy.magmobile.api.data.sales.orders.ReqOrderProductData;
+import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import com.leroy.magportal.ui.models.salesdoc.OrderDetailData;
@@ -43,12 +39,20 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class OrderSearchTest extends WebBaseSteps {
+
+    @Inject
+    private SearchProductHelper searchProductHelper;
+    @Inject
+    private OrderClient orderClient;
+    @Inject
+    private CartClient cartClient;
+    @Inject
+    private PAOHelper paoHelper;
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -59,15 +63,13 @@ public class OrderSearchTest extends WebBaseSteps {
     private String createOrderByApi(OrderDetailData orderDetailData,
             boolean waitUntilIsConfirmed) throws Exception {
         UserSessionData userSessionData = getUserSessionData();
-        CartClient cartClient = apiClientProvider.getCartClient();
-        OrderClient orderClient = apiClientProvider.getOrderClient();
 
         List<CartProductOrderData> productOrderDataList = new ArrayList<>();
 
         if (orderDetailData.getProducts() == null) {
             // Prepare request data
             CartProductOrderData productOrderData = new CartProductOrderData(
-                    apiClientProvider.getProducts(1).get(0));
+                    searchProductHelper.getProducts(1).get(0));
             productOrderData.setQuantity(1.0);
             productOrderDataList.add(productOrderData);
         }
@@ -96,11 +98,11 @@ public class OrderSearchTest extends WebBaseSteps {
         OrderData orderData = orderResp.asJson();
 
         // Set pin-code
-        String validPinCode = apiClientProvider.getValidPinCode();
+        String validPinCode = paoHelper.getValidPinCode(false);
         Response<JsonNode> responseSetPinCode = orderClient
                 .setPinCode(orderData.getOrderId(), validPinCode);
         if (responseSetPinCode.getStatusCode() == StatusCodes.ST_400_BAD_REQ) {
-            validPinCode = apiClientProvider.getValidPinCode();
+            validPinCode = paoHelper.getValidPinCode(false);
             responseSetPinCode = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
         }
         orderClient.assertThatPinCodeIsSet(responseSetPinCode);
@@ -352,7 +354,6 @@ public class OrderSearchTest extends WebBaseSteps {
             ordersPage.softAssertDocumentIsPresent(orderId_1, 16);
         } finally {
             softAssert().verifyAll();
-            OrderClient orderClient = apiClientProvider.getOrderClient();
             orderClient.cancelOrder(orderId_1);
             orderClient.cancelOrder(orderId_2);
         }

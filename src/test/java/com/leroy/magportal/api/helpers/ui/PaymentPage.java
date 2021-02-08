@@ -39,7 +39,7 @@ public class PaymentPage extends BaseWebPage {
     @WebFindBy(xpath = "//*[@name='password']")
     EditBox password;
 
-    @WebFindBy(xpath = "//input[@type='submit']")
+    @WebFindBy(xpath = "//input[@id='submit_id']")
     Element submitBtn;
 
     @Override
@@ -73,7 +73,7 @@ public class PaymentPage extends BaseWebPage {
         header.waitForVisibility();
         WebElement basket = getShadowRootElement(driver, header.getWebElement())
                 .findElement(By.cssSelector("uc-container"))
-                .findElement(By.cssSelector("uc-header-basket-old"));
+                .findElement(By.cssSelector("header-basket"));
 
         boolean isBasketDisplayed = basket.isDisplayed();
         assertThat("Payment FAILED because Basket is absent.", isBasketDisplayed);

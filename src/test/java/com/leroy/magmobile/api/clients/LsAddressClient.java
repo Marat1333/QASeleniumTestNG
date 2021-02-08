@@ -1,11 +1,15 @@
 package com.leroy.magmobile.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.address.*;
 import com.leroy.magmobile.api.data.address.cellproducts.*;
+import com.leroy.magmobile.api.helpers.LsAddressHelper;
 import com.leroy.magmobile.api.requests.address.*;
 import io.qameta.allure.Step;
+import org.assertj.core.internal.Integers;
+import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.List;
@@ -14,6 +18,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class LsAddressClient extends BaseMashupClient {
+
+    @Inject
+    private LsAddressHelper lsAddressHelper;
 
     // REQUESTS //
 
@@ -33,6 +40,26 @@ public class LsAddressClient extends BaseMashupClient {
         req.setDepartmentId(getUserSessionData().getUserDepartmentId());
         req.setShopId(getUserSessionData().getUserShopId());
         return execute(req, AlleyDataItems.class);
+    }
+
+
+    @Step("Rename Alley")
+    public Response<AlleyData> renameAlley(AlleyData alleyData) {
+        LsAddressAlleysPutRequest req = new LsAddressAlleysPutRequest();
+        req.setAlleyId(alleyData.getId());
+        req.setShopId(alleyData.getStoreId());
+        req.setDepartmentId(alleyData.getDepartmentId());
+        req.setCode(alleyData.getCode());
+        return execute(req, AlleyData.class);
+    }
+
+    @Step("Delete Alley")
+    public Response<AlleyData> deleteAlley(AlleyData alleyData) {
+        LsAddressAlleysDeleteRequest req = new LsAddressAlleysDeleteRequest();
+        req.setAlleyId(alleyData.getId());
+        req.setCode(alleyData.getCode());
+        return execute(req, AlleyData.class);
+
     }
 
     // Stands
@@ -173,17 +200,59 @@ public class LsAddressClient extends BaseMashupClient {
     // Alley
 
     @Step("Check that alley is created and response matches postData")
-    public AlleyData assertThatAlleyIsCreatedAndGetData(Response<AlleyData> resp, AlleyData postData) {
+    public void assertThatAlleyIsCreated(Response<AlleyData> resp, AlleyData expectedData) {
         assertThatResponseIsOk(resp);
         AlleyData actualData = resp.asJson();
-        assertThat("id", actualData.getId(), greaterThan(0));
+        softAssert().isTrue(actualData.getId() > 0, "Alley id doesn't match expected value");
+        softAssert().isTrue(actualData.getCount() == 0, "Count doesn't match expected value");
+        softAssert().isEquals(actualData.getType(), expectedData.getType(), "Alley type doesn't match expected value");
+        softAssert().isEquals(actualData.getStoreId(),
+                Integer.parseInt(getUserSessionData().getUserShopId()), "StoreId doesn't match expected value");
+        softAssert().isEquals(actualData.getDepartmentId(),
+                Integer.parseInt(getUserSessionData().getUserDepartmentId()), "DepartmentId doesn't match expected value");
+        softAssert().isTrue(Strings.isNotNullAndNotEmpty(actualData.getCode()), "Alley name doesn't match expected value");
+        softAssert().verifyAll();
+    }
+
+    public void assertThatGetAlleyList(Response<AlleyDataItems> resp) {
+        assertThatResponseIsOk(resp);
+        List<AlleyData> items = resp.asJson().getItems();
+        assertThat("items count", items, hasSize(greaterThan(0)));
+        for (AlleyData alleyData : items) {
+            String desc = "AlleyID(" + alleyData.getId() + ")";
+            softAssert().isTrue(alleyData.getId() >= 0, desc + ": id doesn't match");
+            softAssert().isTrue(alleyData.getCount() >= 0, desc + ": count doesn't match");
+            softAssert().isTrue(alleyData.getType() >= 0, desc + ": type doesn't match");
+            softAssert().isEquals(alleyData.getStoreId(),
+                    Integer.parseInt(getUserSessionData().getUserShopId()), desc + ": storeId doesn't match");
+            softAssert().isEquals(alleyData.getDepartmentId(),
+                    Integer.parseInt(getUserSessionData().getUserDepartmentId()), desc + ": departmentId doesn't match");
+            softAssert().isTrue(Strings.isNotNullAndNotEmpty(alleyData.getCode()), desc + ": alley name is null or empty");
+        }
+        softAssert().verifyAll();
+    }
+
+    @Step("Check that alley is renamed")
+    public void assertThatAlleyIsRenamed(Response<AlleyData> resp, AlleyData expectedData) {
+        assertThatResponseIsOk(resp);
+        AlleyData actualData = lsAddressHelper.searchAlleyById(expectedData.getId());
+        assertThat("id", actualData.getId(), is(expectedData.getId()));
         assertThat("count", actualData.getCount(), is(0));
-        assertThat("type", actualData.getType(), is(postData.getType()));
         assertThat("storeId", actualData.getStoreId(), is(Integer.valueOf(getUserSessionData().getUserShopId())));
         assertThat("departmentId", actualData.getDepartmentId(),
                 is(Integer.valueOf(getUserSessionData().getUserDepartmentId())));
-        assertThat("code", actualData.getCode(), is(postData.getCode()));
-        return actualData;
+        assertThat("code", actualData.getCode(), is(expectedData.getCode()));
+    }
+
+    @Step("Check that alley is deleted")
+    public void assertThatAlleyIsDeleted(Response<AlleyData> resp, int alleyId) {
+        assertThatResponseIsOk(resp);
+        AlleyData actualData = lsAddressHelper.searchAlleyById(alleyId, true);
+        assertThat("id", actualData.getId(), nullValue());
+        assertThat("count", actualData.getCount(), nullValue());
+        assertThat("storeId", actualData.getStoreId(), nullValue());
+        assertThat("departmentId", actualData.getDepartmentId(), nullValue());
+        assertThat("code", actualData.getCode(), nullValue());
     }
 
     // Stand

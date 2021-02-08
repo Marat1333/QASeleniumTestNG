@@ -5,15 +5,12 @@ import com.leroy.constants.EnvConstants;
 import com.leroy.core.UserSessionData;
 import com.leroy.core.api.Module;
 import com.leroy.core.configuration.BaseUiTest;
-import com.leroy.magportal.api.ApiClientProvider;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import org.testng.annotations.Guice;
 
 @Guice(modules = {Module.class})
 public class MagPortalBaseTest extends BaseUiTest {
 
-    @Inject
-    protected ApiClientProvider apiClientProvider;
     @Inject
     private AuthClient authClient;
 

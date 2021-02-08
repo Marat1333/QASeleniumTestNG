@@ -1,19 +1,25 @@
 package com.leroy.magmobile.api.tests.salesdoc;
 
+import static com.leroy.constants.sales.DiscountConst.TYPE_NEW_PRICE;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.data.CatalogSearchFilter;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.CartClient;
-import com.leroy.magmobile.api.clients.CatalogSearchClient;
-import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountReasonData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -21,26 +27,16 @@ import org.testng.annotations.Test;
 import org.testng.internal.TestResult;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
-import static com.leroy.constants.sales.DiscountConst.TYPE_NEW_PRICE;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-
 public class CartTest extends BaseProjectApiTest {
 
+    @Inject
     private CartClient cartClient;
-
-    private CatalogSearchClient searchClient;
+    @Inject
+    private SearchProductHelper searchProductHelper;
 
     private CartData cartData;
 
-    private List<ProductItemData> products;
-
-    @Inject
-    SearchProductHelper searchProductHelper;
+    private List<ProductData> products;
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -49,8 +45,6 @@ public class CartTest extends BaseProjectApiTest {
 
     @BeforeClass
     private void setUp() {
-        cartClient = apiClientProvider.getCartClient();
-        searchClient = apiClientProvider.getCatalogSearchClient();
         products = searchProductHelper.getProducts(3);
     }
 
@@ -94,7 +88,7 @@ public class CartTest extends BaseProjectApiTest {
     public void testCartConfirmQuantity() {
         CatalogSearchFilter filter = new CatalogSearchFilter();
         filter.setHasAvailableStock(false);
-        ProductItemData product = searchProductHelper.getProducts(1, filter).get(0);
+        ProductData product = searchProductHelper.getProducts(1, filter).get(0);
         CartProductOrderData cartProductOrderData = new CartProductOrderData(product);
         cartProductOrderData.setQuantity(product.getAvailableStock() + 1.0);
         step("Create Cart with product quantity greater than Available stock");
@@ -137,12 +131,12 @@ public class CartTest extends BaseProjectApiTest {
         filtersData.setAvs(false);
         filtersData.setTopEM(false);
         filtersData.setHasAvailableStock(true);
-        List<ProductItemData> productItemDataList = searchProductHelper.getProducts(2, filtersData);
+        List<ProductData> productIDataList = searchProductHelper.getProducts(2, filtersData);
         CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
-                productItemDataList.get(0));
-        productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
+                productIDataList.get(0));
+        productWithNegativeBalance.setQuantity(productIDataList.get(0).getAvailableStock() + 10.0);
         CartProductOrderData productWithPositiveBalance = new CartProductOrderData(
-                productItemDataList.get(1));
+                productIDataList.get(1));
         productWithPositiveBalance.setQuantity(1.0);
 
         step("Create Cart");

@@ -16,6 +16,7 @@ import com.leroy.magportal.api.helpers.ui.PaymentPage;
 import com.leroy.umbrella_extension.tpnet.TpNetClient;
 import io.qameta.allure.Step;
 import java.util.List;
+import lombok.SneakyThrows;
 import org.openqa.selenium.WebDriver;
 import ru.leroymerlin.qa.core.clients.base.Response;
 import ru.leroymerlin.qa.core.clients.payment.PaymentClient;
@@ -28,9 +29,9 @@ public class PaymentHelper extends BaseHelper {
     @Inject
     private PaymentClient paymentClient;
     @Inject
-    OrderClient orderClient;
+    private OrderClient orderClient;
     @Inject
-    TpNetClient tpNetClient;
+    private TpNetClient tpNetClient;
 
     private String getPaymentTaskId(String orderId) {
         Response<OnlineOrderData> resp = orderClient.getOnlineOrder(orderId);
@@ -97,8 +98,9 @@ public class PaymentHelper extends BaseHelper {
         updatePayment(orderId, PaymentStatusEnum.HOLD);
     }
 
+    @SneakyThrows
     private void makePaymentCard(String orderId) {
-
+        WebDriver oldDriver = ContextProvider.getDriver();
         try {
             WebDriver driver = DriverFactory.createDriver();
             ContextProvider.setDriver(driver);
@@ -112,6 +114,7 @@ public class PaymentHelper extends BaseHelper {
             e.printStackTrace();
         } finally {
             ContextProvider.quitDriver();
+            ContextProvider.setDriver(oldDriver);
         }
     }
 

@@ -1,16 +1,24 @@
 package com.leroy.magmobile.ui.tests.work;
 
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.clients.CatalogProductClient;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
+import com.leroy.common_mashups.catalogs.data.ProductDataList;
+import com.leroy.common_mashups.catalogs.requests.GetCatalogProductSearchRequest;
 import com.leroy.constants.DefectConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.Smoke;
-import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.TransferClient;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
-import com.leroy.magmobile.api.data.sales.transfer.*;
+import com.leroy.magmobile.api.data.sales.transfer.TransferDataList;
+import com.leroy.magmobile.api.data.sales.transfer.TransferProductOrderData;
+import com.leroy.magmobile.api.data.sales.transfer.TransferSalesDocData;
+import com.leroy.magmobile.api.data.sales.transfer.TransferSearchFilters;
+import com.leroy.magmobile.api.data.sales.transfer.TransferSearchProductData;
+import com.leroy.magmobile.api.data.sales.transfer.TransferSearchProductDataList;
 import com.leroy.magmobile.api.helpers.TransferHelper;
-import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.constants.TestDataConstants;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
@@ -26,21 +34,22 @@ import com.leroy.magmobile.ui.pages.sales.product_card.modal.ActionWithProduct35
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.work.WorkPage;
-import com.leroy.magmobile.ui.pages.work.transfer.*;
+import com.leroy.magmobile.ui.pages.work.transfer.FilterTransferTaskPage;
+import com.leroy.magmobile.ui.pages.work.transfer.TransferConfirmedTaskToClientPage;
+import com.leroy.magmobile.ui.pages.work.transfer.TransferConfirmedTaskToShopRoomPage;
+import com.leroy.magmobile.ui.pages.work.transfer.TransferOrderStep1Page;
+import com.leroy.magmobile.ui.pages.work.transfer.TransferOrderToClientStep2Page;
+import com.leroy.magmobile.ui.pages.work.transfer.TransferRequestsPage;
+import com.leroy.magmobile.ui.pages.work.transfer.TransferSearchPage;
+import com.leroy.magmobile.ui.pages.work.transfer.TransferShopRoomStep2Page;
+import com.leroy.magmobile.ui.pages.work.transfer.TransferToClientSuccessPage;
+import com.leroy.magmobile.ui.pages.work.transfer.TransferToShopRoomSuccessPage;
 import com.leroy.magmobile.ui.pages.work.transfer.data.DetailedTransferTaskData;
 import com.leroy.magmobile.ui.pages.work.transfer.data.ShortTransferTaskData;
 import com.leroy.magmobile.ui.pages.work.transfer.data.TransferProductData;
 import com.leroy.magmobile.ui.pages.work.transfer.enums.TransferTaskTypes;
 import com.leroy.magmobile.ui.pages.work.transfer.modal.TransferActionWithProductCardModal;
 import com.leroy.magmobile.ui.pages.work.transfer.modal.TransferExitWarningModal;
-import com.leroy.magportal.api.helpers.PAOHelper;
-import lombok.Data;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -48,9 +57,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
+import lombok.Data;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class TransferTest extends AppBaseSteps {
 
@@ -65,29 +77,29 @@ public class TransferTest extends AppBaseSteps {
     }
 
     @Inject
-    TransferHelper transferHelper;
+    private TransferHelper transferHelper;
     @Inject
-    PAOHelper paoHelper;
+    private TransferClient transferClient;
+    @Inject
+    private CatalogProductClient catalogSearchClient;
 
     List<CustomTransferProduct> products = new ArrayList<>();
 
     @BeforeClass
     private void findProducts() {
-        TransferClient transferClient = apiClientProvider.getTransferClient();
-        CatalogSearchClient catalogSearchClient = apiClientProvider.getCatalogSearchClient();
         Response<TransferSearchProductDataList> resp = transferClient
                 .searchForTransferProducts(SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR);
         assertThat(resp, successful());
         List<TransferSearchProductData> transferProducts = resp.asJson().getItems();
         for (TransferSearchProductData transferProduct : transferProducts) {
-            Response<ProductItemDataList> respProduct = catalogSearchClient
-                    .searchProductsBy(new GetCatalogSearch().setByLmCode(transferProduct.getLmCode()));
+            Response<ProductDataList> respProduct = catalogSearchClient
+                    .searchProductsBy(new GetCatalogProductSearchRequest().setByLmCode(transferProduct.getLmCode()));
             assertThat(respProduct, successful());
-            ProductItemData productItemData = respProduct.asJson().getItems().get(0);
+            ProductData productIData = respProduct.asJson().getItems().get(0);
             CustomTransferProduct customProduct = new CustomTransferProduct();
-            customProduct.setLmCode(productItemData.getLmCode());
-            customProduct.setBarCode(productItemData.getBarCode());
-            customProduct.setTitle(productItemData.getTitle());
+            customProduct.setLmCode(productIData.getLmCode());
+            customProduct.setBarCode(productIData.getBarCode());
+            customProduct.setTitle(productIData.getTitle());
             TransferSearchProductData.Source source = transferProduct.getSource().get(0);
             if (source.getMonoPallets() != null) {
                 customProduct.setMonoPalletCapacity(transferProduct.getSource().get(0)
@@ -103,7 +115,6 @@ public class TransferTest extends AppBaseSteps {
 
     @AfterClass
     public void cancelTransferTasks() {
-        TransferClient transferClient = apiClientProvider.getTransferClient();
         TransferSearchFilters filters = new TransferSearchFilters();
         filters.setStatus(SalesDocumentsConst.States.CONFIRMED.getApiVal());
         filters.setCreatedBy(getUserSessionData().getUserLdap());
@@ -347,7 +358,6 @@ public class TransferTest extends AppBaseSteps {
     public void testCreateTransferTaskFromProductCard() throws Exception {
         // Pre-condition
         step("Выполнение предусловий теста");
-        TransferClient transferClient = apiClientProvider.getTransferClient();
         Response<TransferSearchProductDataList> response = transferClient.searchForTransferProducts(
                 SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR);
         assertThat(response, successful());
@@ -929,8 +939,6 @@ public class TransferTest extends AppBaseSteps {
         step("Нажмите на кнопку удаления заявки в правом верхнем углу экрана и подтвердите удаление");
         transferOrderStep1Page.removeTransferTask()
                 .verifyRequiredElements();
-
-        TransferClient transferClient = apiClientProvider.getTransferClient();
         Response<TransferSalesDocData> resp = transferClient.sendRequestGet(taskId);
         transferClient.assertThatDocumentIsNotExist(resp);
     }

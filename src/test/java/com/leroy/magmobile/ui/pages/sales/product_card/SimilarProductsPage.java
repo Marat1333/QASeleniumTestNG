@@ -1,15 +1,13 @@
 package com.leroy.magmobile.ui.pages.sales.product_card;
 
+import com.leroy.common_mashups.catalogs.data.CatalogSimilarProductsDataV2;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.core.web_elements.android.AndroidScrollView;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
-import com.leroy.magmobile.api.data.catalog.product.CatalogSimilarProducts;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductAllGammaCardWidget;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductCardWidget;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,8 +32,9 @@ public class SimilarProductsPage extends ProductCardPage {
     }
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog product")
-    public SimilarProductsPage shouldCatalogResponseEqualsContent(CatalogSimilarProducts responseData, SearchProductPage.CardType type, Integer entityCount) throws Exception {
-        List<CatalogProductData> productDataListFromResponse = responseData.getItems();
+    public SimilarProductsPage shouldCatalogResponseEqualsContent(
+            CatalogSimilarProductsDataV2 responseData, SearchProductPage.CardType type, Integer entityCount) throws Exception {
+        List<ProductData> productDataListFromResponse = responseData.getItems();
         List<ProductCardData> productCardDataListFromPage;
         switch (type) {
             case COMMON:
@@ -51,7 +50,7 @@ public class SimilarProductsPage extends ProductCardPage {
                 "Кол-во записей на странице не соответсвует");
 
         //На фронте реализована сортировка карточек по availableStock, как сортировать товары у которых остаток 0?
-        List<String> dataLmCodes = productDataListFromResponse.stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
+        List<String> dataLmCodes = productDataListFromResponse.stream().map(ProductData::getLmCode).collect(Collectors.toList());
         List<String> frontLmCodes = productCardDataListFromPage.stream().map(ProductCardData::getLmCode).collect(Collectors.toList());
 
         anAssert.isTrue(dataLmCodes.containsAll(frontLmCodes), "lmCodes mismatch");

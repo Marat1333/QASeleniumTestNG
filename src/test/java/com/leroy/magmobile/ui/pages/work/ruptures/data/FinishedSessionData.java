@@ -8,6 +8,6 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @Data
 public class FinishedSessionData extends SessionData {
-    private int finishedTaskQuantity;
-    private int createdTaskQuantity;
+    private Integer finishedRuptureQuantity;
+    private String finishDate;
 }

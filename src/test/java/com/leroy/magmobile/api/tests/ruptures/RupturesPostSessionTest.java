@@ -1,24 +1,20 @@
 package com.leroy.magmobile.api.tests.ruptures;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.leroy.magmobile.api.clients.RupturesClient;
-import com.leroy.magmobile.api.data.ruptures.*;
+import com.leroy.magmobile.api.data.ruptures.ActionData;
+import com.leroy.magmobile.api.data.ruptures.ReqRuptureSessionData;
+import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
+import com.leroy.magmobile.api.data.ruptures.RuptureProductDataList;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
 
 public class RupturesPostSessionTest extends BaseRuptureTest {
 
-    @Test(description = "C3233579 POST rupture session product")
+    @Test(description = "C3233579 Create  standard session")
     public void testCreateRuptureSessionProduct() {
-        RupturesClient rupturesClient = rupturesClient();
         ActionData action1 = new ActionData();
         action1.setAction(0);
         action1.setState(false);
@@ -50,12 +46,7 @@ public class RupturesPostSessionTest extends BaseRuptureTest {
         ruptureProductDataListBody.setItems(Collections.singletonList(productData));
 
         step("GET /ruptures/sessions - Проверяем, что сессия была создана");
-        Response<ResRuptureSessionDataList> getResp = rupturesClient.getSessions(50);
-        isResponseOk(getResp);
-        ResRuptureSessionDataList respBody = getResp.asJson();
-        List<ResRuptureSessionData> items = respBody.getItems().stream().filter(
-                a -> a.getSessionId().equals(sessionId)).collect(Collectors.toList());
-        assertThat("Session " + sessionId + " wasn't found", items, hasSize(1));
+        rupturesClient.assertThatCreatedSessionPresentsInSessionsList(sessionId, "Standard");
 
         step("GET /ruptures/session/products - Проверяем, что товар был добавлен в сессию");
         Response<RuptureProductDataList> respGetProducts = rupturesClient.getProducts(sessionId);

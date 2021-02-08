@@ -10,10 +10,10 @@ import static org.hamcrest.Matchers.lessThanOrEqualTo;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.configuration.Log;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.BaseProductOrderData;
 import com.leroy.magmobile.api.data.sales.orders.OrderProductData;
 import com.leroy.magmobile.api.data.sales.orders.ResOrderCheckQuantityData;
@@ -82,17 +82,20 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         return this.getOnlineOrder(orderId, true);
     }
 
+    @SneakyThrows
     @Step("Get order with id = {orderId}")
     public Response<OnlineOrderData> getOnlineOrder(String orderId, boolean isVerify) {
         OrderGetRequest req = new OrderGetRequest();
         req.setOrderId(orderId);
-//        req.setExtend(Extend.PRODUCT_DETAILS);
-        Response<OnlineOrderData> response = execute(req, OnlineOrderData.class);
-        if (isVerify) {
-            assertThat("Get Order FAILED", response.isSuccessful());
+        long currentTimeMillis = System.currentTimeMillis();
+        while (System.currentTimeMillis() - currentTimeMillis < waitTimeoutInSeconds * 1000) {
+            Response<OnlineOrderData> response = execute(req, OnlineOrderData.class);
+            if (!isVerify || response.isSuccessful() && response.asJson().getOrderId() != null) {
+                return response;
+            }
+            Thread.sleep(3000);
         }
-
-        return response;
+        return null;
     }
 
     @Override
@@ -467,9 +470,9 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         payload.setPaymentVersion(orderData.getPaymentVersion());
         payload.setSolutionVersion(orderData.getSolutionVersion());
 
-        List<ProductItemData> newProducts = searchProductHelper
+        List<ProductData> newProducts = searchProductHelper
                 .getProductsForShop(newProductsCount, orderData.getShopId());
-        for (ProductItemData productData : newProducts) {
+        for (ProductData productData : newProducts) {
             OrderProductDataPayload orderProductDataPayload = new OrderProductDataPayload();
             orderProductDataPayload.setLmCode(productData.getLmCode());
             orderProductDataPayload.setPrice(productData.getPrice());
@@ -500,7 +503,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         List<OrderProductDataPayload> orderProducts = new ArrayList<>();
         OrderRearrangePayload payload = this.makeRearrangePayload(orderId, 0, null);
 
-        ProductItemData product = searchProductHelper.getProductByLmCode(lmCode);
+        ProductData product = searchProductHelper.searchProductByLmCode(lmCode);
 
         OrderProductDataPayload orderProductDataPayload = new OrderProductDataPayload();
         orderProductDataPayload.setLmCode(product.getLmCode());
@@ -710,7 +713,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
             softAssert.assertEquals(orderData.getPaymentType(),
                     PaymentTypeEnum.getMashNameByName(currentOrderType.paymentType),
                     "Payment Type is invalid.");
-            if (!currentOrderType.getDeliveryServiceType()
+            if (!currentOrderType.getDeliveryType().getService()
                     .equals(DeliveryServiceTypeEnum.PICKUP.getService())) {
                 softAssert.assertTrue(orderData.getDelivery(), "Delivery is invalid.");
                 softAssert.assertNotNull(orderData.getDeliveryData(), "Delivery Data is empty.");

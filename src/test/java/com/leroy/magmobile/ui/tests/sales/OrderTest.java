@@ -1,16 +1,26 @@
 package com.leroy.magmobile.ui.tests.sales;
 
+import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.data.CatalogSearchFilter;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.Smoke;
-import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.ui.constants.TestDataConstants;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
 import com.leroy.magmobile.ui.models.customer.MagLegalCustomerData;
-import com.leroy.magmobile.ui.models.sales.*;
+import com.leroy.magmobile.ui.models.sales.OrderAppData;
+import com.leroy.magmobile.ui.models.sales.OrderDetailsData;
+import com.leroy.magmobile.ui.models.sales.ProductOrderCardAppData;
+import com.leroy.magmobile.ui.models.sales.SalesDocumentData;
+import com.leroy.magmobile.ui.models.sales.ShortSalesDocumentData;
 import com.leroy.magmobile.ui.pages.customers.SearchCustomerPage;
-import com.leroy.magmobile.ui.pages.sales.*;
+import com.leroy.magmobile.ui.pages.sales.AddProduct35Page;
+import com.leroy.magmobile.ui.pages.sales.EditProduct35Page;
+import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
+import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
+import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocument35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.estimate.EstimatePage;
 import com.leroy.magmobile.ui.pages.sales.orders.order.CartProcessOrder35Page;
@@ -20,20 +30,25 @@ import com.leroy.magmobile.ui.pages.sales.orders.order.ProcessOrder35Page;
 import com.leroy.magmobile.ui.pages.sales.orders.order.modal.ConfirmExitOrderModal;
 import com.leroy.magmobile.ui.pages.sales.orders.order.modal.ConfirmRemoveOrderModal;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
+import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.utils.ParserUtil;
 import com.leroy.utils.RandomUtil;
 import io.qameta.allure.Issue;
 import io.qameta.allure.Step;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
 
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
-
 public class OrderTest extends SalesBaseTest {
+
+    @Inject
+    private PAOHelper paoHelper;
+    @Inject
+    private SearchProductHelper searchProductHelper;
 
     private final static String NEED_PRODUCTS_GROUP = "need_products";
 
@@ -405,10 +420,10 @@ public class OrderTest extends SalesBaseTest {
         // Test Data
         MagLegalCustomerData legalCustomerData = TestDataConstants.LEGAL_ENTITY_1;
 
-        List<ProductItemData> productItemDataList = searchProductHelper.getProducts(1);
+        List<ProductData> productIDataList = searchProductHelper.getProducts(1);
         CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
-                productItemDataList.get(0));
-        productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
+                productIDataList.get(0));
+        productWithNegativeBalance.setQuantity(productIDataList.get(0).getAvailableStock() + 10.0);
 
         // Pre-conditions
         startFromScreenWithOrderDraft(null,
@@ -445,10 +460,10 @@ public class OrderTest extends SalesBaseTest {
         // Test Data
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
 
-        List<ProductItemData> productItemDataList = searchProductHelper.getProducts(1);
+        List<ProductData> productIDataList = searchProductHelper.getProducts(1);
         CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
-                productItemDataList.get(0));
-        productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
+                productIDataList.get(0));
+        productWithNegativeBalance.setQuantity(productIDataList.get(0).getAvailableStock() + 10.0);
 
         // Pre-conditions
         startFromScreenWithOrderDraft(null,
@@ -620,7 +635,7 @@ public class OrderTest extends SalesBaseTest {
     @Test(description = "C22797122 Создание заказа из корзины, преобразованной из сметы", groups = NEED_PRODUCTS_GROUP)
     public void testCreateOrderFromTransformedCart() throws Exception {
         step("Pre-condition: Создаем смету, преобразуем в корзину");
-        String estimateId = apiClientProvider.createConfirmedEstimateAndGetCartId(lmCodes.subList(0, 1));
+        String estimateId = paoHelper.createConfirmedEstimateAndGetCartId(lmCodes.subList(0, 1));
         MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
                 MainSalesDocumentsPage.class);
         SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
@@ -687,9 +702,9 @@ public class OrderTest extends SalesBaseTest {
         // Pre-conditions
         CatalogSearchFilter filter = new CatalogSearchFilter();
         filter.setHasAvailableStock(true);
-        ProductItemData product1 = searchProductHelper.getProducts(1, filter).get(0);
+        ProductData product1 = searchProductHelper.getProducts(1, filter).get(0);
         filter.setHasAvailableStock(false);
-        ProductItemData product2 = searchProductHelper.getProducts(1, filter).get(0);
+        ProductData product2 = searchProductHelper.getProducts(1, filter).get(0);
 
         CartProductOrderData cartProductOrderData = new CartProductOrderData(product1);
         cartProductOrderData.setQuantity(1.0);

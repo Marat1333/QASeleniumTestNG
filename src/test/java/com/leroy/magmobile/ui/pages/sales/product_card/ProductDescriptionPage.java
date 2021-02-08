@@ -1,17 +1,14 @@
 package com.leroy.magmobile.ui.pages.sales.product_card;
 
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
+import com.leroy.common_mashups.catalogs.data.product.reviews.CatalogReviewsOfProductList;
 import com.leroy.constants.DefectConst;
-import com.leroy.core.ContextProvider;
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.android.AndroidScrollView;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.catalog.product.CatalogProductData;
-import com.leroy.magmobile.api.data.catalog.product.reviews.CatalogReviewsOfProductList;
 import com.leroy.magmobile.ui.elements.MagMobButton;
 import com.leroy.magmobile.ui.models.search.ProductCardData;
-import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
 import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.ProductPricesQuantitySupplyPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.StocksPage;
 import com.leroy.magmobile.ui.pages.sales.widget.SearchProductAllGammaCardWidget;
@@ -20,9 +17,6 @@ import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -155,7 +149,7 @@ public class ProductDescriptionPage extends ProductCardPage {
     }
 
     @Step("Проверить, что комплементарные товары корректно отображены")
-    public ProductDescriptionPage shouldComplementaryProductsAreCorrect(List<CatalogProductData> apiDataList,
+    public ProductDescriptionPage shouldComplementaryProductsAreCorrect(List<ProductData> apiDataList,
                                                                         SearchProductPage.CardType type) throws Exception {
         if (apiDataList.size() == 0) {
             mainScrollView.scrollToEnd();
@@ -178,7 +172,7 @@ public class ProductDescriptionPage extends ProductCardPage {
         if (!DefectConst.LFRONT_3675) {
             for (int i = 0; i < apiDataList.size(); i++) {
                 ProductCardData uiData = productCardDataListFromPage.get(i);
-                ProductItemData apiData = apiDataList.get(i);
+                ProductData apiData = apiDataList.get(i);
                 softAssert.isEquals(uiData.getLmCode(), apiData.getLmCode(), "lmCode");
                 if (type.equals(SearchProductPage.CardType.COMMON)) {
                     softAssert.isEquals(uiData.getAvailableQuantity(), apiData.getAvailableStock(), "available quantity");
@@ -187,7 +181,7 @@ public class ProductDescriptionPage extends ProductCardPage {
         } else {
             //null available stock back-end issue
             List<String> uiLmCodes = productCardDataListFromPage.stream().map(ProductCardData::getLmCode).collect(Collectors.toList());
-            List<String> apiLmCodes = apiDataList.stream().map(CatalogProductData::getLmCode).collect(Collectors.toList());
+            List<String> apiLmCodes = apiDataList.stream().map(ProductData::getLmCode).collect(Collectors.toList());
             softAssert.isTrue(apiLmCodes.containsAll(uiLmCodes), "products mismatch");
         }
         softAssert.verifyAll();
@@ -219,7 +213,7 @@ public class ProductDescriptionPage extends ProductCardPage {
     }
 
     @Step("Проверить отображенные данные")
-    public ProductDescriptionPage shouldDataIsCorrect(CatalogProductData data) {
+    public ProductDescriptionPage shouldDataIsCorrect(ProductData data) {
         String uiDateFormat = "d.MM.yy";
         String apiDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
         String ps = getPageSource();

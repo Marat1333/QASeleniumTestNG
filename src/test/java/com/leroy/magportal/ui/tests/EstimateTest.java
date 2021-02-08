@@ -1,10 +1,11 @@
 package com.leroy.magportal.ui.tests;
 
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
+import com.leroy.common_mashups.customer_accounts.data.CustomerData;
+import com.leroy.common_mashups.helpers.CustomerHelper;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.common_mashups.customer_accounts.data.CustomerData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.ui.constants.TestDataConstants;
@@ -23,22 +24,23 @@ import com.leroy.magportal.ui.pages.cart_estimate.modal.SubmittedSendEstimateMod
 import com.leroy.magportal.ui.pages.common.MenuPage;
 import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
 import com.leroy.utils.RandomUtil;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.testng.annotations.Test;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.testng.annotations.Test;
 
 public class EstimateTest extends BasePAOTest {
 
     @Inject
-    PAOHelper helper;
+    private PAOHelper paoHelper;
+    @Inject
+    private CustomerHelper customerHelper;
 
-    private String VALIDATION_EMAIL_ERROR_TEXT = "Введи email в формате username@example.ru";
+    private final String VALIDATION_EMAIL_ERROR_TEXT = "Введи email в формате username@example.ru";
 
     @Test(description = "C3302188 Create estimate", groups = NEED_PRODUCTS_GROUP)
     public void testCreateEstimate() throws Exception {
@@ -88,7 +90,7 @@ public class EstimateTest extends BasePAOTest {
 
     @Test(description = "C3302208 Search product by lm code", groups = NEED_PRODUCTS_GROUP)
     public void testSearchProductByLmCodeInEstimate() throws Exception {
-        ProductItemData testProduct = productList.get(0);
+        ProductData testProduct = productList.get(0);
         EstimatePage estimatePage = loginAndGoTo(EstimatePage.class);
 
         // Step #1
@@ -123,7 +125,7 @@ public class EstimateTest extends BasePAOTest {
 
     @Test(description = "C3302209 Search product by barcode", groups = NEED_PRODUCTS_GROUP)
     public void testSearchProductByBarcodeInEstimate() throws Exception {
-        ProductItemData testProduct = productList.get(0);
+        ProductData testProduct = productList.get(0);
         EstimatePage estimatePage = isStartFromScratch() ? loginAndGoTo(EstimatePage.class) :
                 new EstimatePage();
 
@@ -160,8 +162,8 @@ public class EstimateTest extends BasePAOTest {
     @Test(description = "C3302211 Add new product to estimate", groups = NEED_PRODUCTS_GROUP)
     public void testAddNewProductToEstimate() throws Exception {
         // Pre-condition
-        ProductItemData testProduct1 = productList.get(0);
-        ProductItemData testProduct2 = productList.get(1);
+        ProductData testProduct1 = productList.get(0);
+        ProductData testProduct2 = productList.get(1);
         EstimatePage estimatePage;
         step("Выполнение предусловий:");
         if (isStartFromScratch()) {
@@ -196,8 +198,8 @@ public class EstimateTest extends BasePAOTest {
     @Test(description = "C3302212 Copy existing product to estimate", groups = NEED_PRODUCTS_GROUP)
     public void testCopyExistingProductToEstimate() throws Exception {
         // Pre-condition
-        ProductItemData testProduct1 = productList.get(0);
-        ProductItemData testProduct2 = productList.get(1);
+        ProductData testProduct1 = productList.get(0);
+        ProductData testProduct2 = productList.get(1);
         EstimatePage estimatePage;
         step("Выполнение предусловий:");
         if (isStartFromScratch()) {
@@ -222,8 +224,8 @@ public class EstimateTest extends BasePAOTest {
     public void testChangeQuantityOfProductInEstimate() throws Exception {
         // Pre-condition
         int newQuantity = 5;
-        ProductItemData testProduct1 = productList.get(0);
-        ProductItemData testProduct2 = productList.get(1);
+        ProductData testProduct1 = productList.get(0);
+        ProductData testProduct2 = productList.get(1);
         EstimatePage estimatePage;
         step("Выполнение предусловий:");
         if (isStartFromScratch()) {
@@ -269,7 +271,7 @@ public class EstimateTest extends BasePAOTest {
     @Test(description = "C3302216 Ordered quantity of product more than existing", groups = NEED_PRODUCTS_GROUP)
     public void testOrderedQuantityOfProductMoreThanExisting() throws Exception {
         // Pre-condition
-        ProductItemData testProduct1 = productList.get(0);
+        ProductData testProduct1 = productList.get(0);
         EstimatePage estimatePage;
         step("Выполнение предусловий:");
         if (isStartFromScratch()) {
@@ -294,8 +296,8 @@ public class EstimateTest extends BasePAOTest {
     @Test(description = "C3302214 Remove product from estimate", groups = NEED_PRODUCTS_GROUP)
     public void testRemoveProductFromEstimate() throws Exception {
         // Pre-condition
-        ProductItemData testProduct1 = productList.get(0);
-        ProductItemData testProduct2 = productList.get(1);
+        ProductData testProduct1 = productList.get(0);
+        ProductData testProduct2 = productList.get(1);
         EstimatePage estimatePage;
         step("Выполнение предусловий:");
         if (isStartFromScratch()) {
@@ -317,7 +319,7 @@ public class EstimateTest extends BasePAOTest {
     @Test(description = "C3302215 Remove last product from estimate", groups = NEED_PRODUCTS_GROUP)
     public void testRemoveLastProductFromEstimate() throws Exception {
         // Pre-condition
-        ProductItemData testProduct1 = productList.get(0);
+        ProductData testProduct1 = productList.get(0);
         EstimatePage estimatePage;
         step("Выполнение предусловий:");
         if (isStartFromScratch()) {
@@ -460,7 +462,7 @@ public class EstimateTest extends BasePAOTest {
 
     @Test(description = "C3302194 Add new client to estimate")
     public void testAddNewClientToEstimate() throws Exception {
-        String unusedPhoneNumber = apiClientProvider.findUnusedPhoneNumber();
+        String unusedPhoneNumber = customerHelper.findUnusedPhoneNumber();
 
         step("Выполнение предусловий: авторизуемся, заходим на страницу сметы");
         EstimatePage estimatePage = loginAndGoTo(EstimatePage.class)
@@ -590,13 +592,13 @@ public class EstimateTest extends BasePAOTest {
 
     @Test(description = "C23389036 Удаление сметы в статусе Черновик", groups = NEED_ACCESS_TOKEN_GROUP)
     public void testRemoveDraftEstimate() throws Exception {
-        String estimateId = apiClientProvider.createDraftEstimateAndGetCartId();
+        String estimateId = paoHelper.createDraftEstimateAndGetCartId();
         testRemoveEstimate(estimateId);
     }
 
     @Test(description = "C23398452 Удаление сметы в статусе Создан", groups = NEED_ACCESS_TOKEN_GROUP)
     public void testRemoveConfirmedEstimate() throws Exception {
-        String estimateId = apiClientProvider.createConfirmedEstimateAndGetCartId();
+        String estimateId = paoHelper.createConfirmedEstimateAndGetCartId();
         testRemoveEstimate(estimateId);
     }
 
@@ -605,10 +607,11 @@ public class EstimateTest extends BasePAOTest {
         String estimateId;
         EstimatePage estimatePage;
         if (isStartFromScratch()) {
-            CustomerData customerData = helper.searchForCustomer(TestDataConstants.SIMPLE_CUSTOMER_DATA_1);
+            CustomerData customerData = paoHelper.searchForCustomer(TestDataConstants.SIMPLE_CUSTOMER_DATA_1);
             EstimateProductOrderData estimateProductOrderData = new EstimateProductOrderData(productList.get(0));
             estimateProductOrderData.setQuantity(1.0);
-            estimateId = helper.createConfirmedEstimateAndGetId(estimateProductOrderData, customerData);
+            estimateId = paoHelper
+                    .createConfirmedEstimateAndGetId(estimateProductOrderData, customerData);
             estimatePage = loginAndGoTo(EstimatePage.class);
             estimatePage.openPageWithEstimate(estimateId);
         } else {
@@ -657,7 +660,7 @@ public class EstimateTest extends BasePAOTest {
     @Test(description = "C3302186 Search of documents", groups = NEED_ACCESS_TOKEN_GROUP)
     public void testSearchDocumentEstimate() throws Exception {
         step("Выполнение предусловий");
-        String estimateId = apiClientProvider.createDraftEstimateAndGetCartId();
+        String estimateId = paoHelper.createDraftEstimateAndGetCartId();
         EstimatePage estimatePage = loginAndGoTo(EstimatePage.class);
 
         // Step 1, 2
@@ -687,7 +690,7 @@ public class EstimateTest extends BasePAOTest {
     @Test(description = "C3302200 Auto filling email address from client profile", groups = NEED_PRODUCTS_GROUP)
     public void testAutoFillingEmailFromClientProfile() throws Exception {
         // Test Data
-        ProductItemData testProduct1 = productList.get(0);
+        ProductData testProduct1 = productList.get(0);
         SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
         step("Выполнение предусловий");
         EstimatePage estimatePage;
@@ -723,7 +726,7 @@ public class EstimateTest extends BasePAOTest {
     @Test(description = "C3302201 Send email to several email addresses", groups = NEED_PRODUCTS_GROUP)
     public void testSendEmailToSeveralEmailAddresses() throws Exception {
         // Test Data
-        ProductItemData testProduct1 = productList.get(0);
+        ProductData testProduct1 = productList.get(0);
         SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
         step("Выполнение предусловий");
         EstimatePage estimatePage;
@@ -799,7 +802,7 @@ public class EstimateTest extends BasePAOTest {
     @Test(description = "C3302204 Send email from final screen", groups = NEED_PRODUCTS_GROUP)
     public void testSendEmailFromFinalScreen() throws Exception {
         // Test Data
-        ProductItemData testProduct1 = productList.get(0);
+        ProductData testProduct1 = productList.get(0);
         SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
         step("Выполнение предусловий");
         EstimatePage estimatePage;
@@ -843,7 +846,7 @@ public class EstimateTest extends BasePAOTest {
     @Test(description = "C3302206 Validate email format", groups = NEED_PRODUCTS_GROUP)
     public void testValidateEmailFormat() throws Exception {
         // Test Data
-        ProductItemData testProduct1 = productList.get(0);
+        ProductData testProduct1 = productList.get(0);
         SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
         step("Выполнение предусловий");
         SendEstimateToEmailModal sendEstimateToEmailModal;
@@ -884,7 +887,7 @@ public class EstimateTest extends BasePAOTest {
     @Test(description = "C3302207 Validation: Send email without email address", groups = NEED_PRODUCTS_GROUP)
     public void testValidationSendEmailWithEmptyEmail() throws Exception {
         // Test Data
-        ProductItemData testProduct1 = productList.get(0);
+        ProductData testProduct1 = productList.get(0);
         SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
         step("Выполнение предусловий");
         EstimatePage estimatePage;
