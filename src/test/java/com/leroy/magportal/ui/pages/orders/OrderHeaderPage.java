@@ -52,7 +52,7 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
             metaName = "Раскрывающийся список типа поиска")
     PuzComboBox searchTypeComboBox;
 
-    @WebFindBy(xpath = "//input[@name='orderId']", metaName = "Поле поиска по номеру заказа")
+    @WebFindBy(xpath = "//input[@placeholder='Введи номер заказа']", metaName = "Поле поиска по номеру заказа")
     EditBox searchByOrderNumberFld;
 
     @WebFindBy(xpath = "//input[@name='customerPhone']", metaName = "Поле поиска по номеру телефона")
@@ -82,7 +82,7 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
     @WebFindBy(xpath = "//div[contains(@class, 'OrderFilterClearBtn')]//button", metaName = "Кнопка метла (Очистить)")
     Button clearFiltersBtn;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'OrderFilterSearchBtn')]//button", metaName = "Кнопка 'Показать заказы'")
+    @WebFindBy(xpath = "//button[contains(@class, 'searchButton')]", metaName = "Кнопка поиска")
     Button applyFiltersBtn;
 
     // Actions
