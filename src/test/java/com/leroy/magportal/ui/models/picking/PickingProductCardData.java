@@ -16,9 +16,9 @@ public class PickingProductCardData {
     private Double weight;
 
     private String reasonOfLack;
-    private int stockQuantity;
-    private int orderedQuantity;
-    private int collectedQuantity;
+    private Double  stockQuantity;
+    private Double  orderedQuantity;
+    private Double  collectedQuantity;
 
     public PickingProductCardData clone() {
         PickingProductCardData pickingProductCardData = new PickingProductCardData();
@@ -36,11 +36,11 @@ public class PickingProductCardData {
         return pickingProductCardData;
     }
 
-    public void increaseOrderedQuantity(int val) {
+    public void increaseOrderedQuantity(double val) {
         this.orderedQuantity += val;
     }
 
-    public void decreaseOrderedQuantity(int val) {
+    public void decreaseOrderedQuantity(double val) {
         this.orderedQuantity -= val;
     }
 
