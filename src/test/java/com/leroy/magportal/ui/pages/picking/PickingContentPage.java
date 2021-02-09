@@ -81,13 +81,7 @@ public class PickingContentPage extends PickingPage {
     @Step("Нажать кнопку 'Начать сборку'")
     public PickingContentPage clickStartAssemblyButton() {
         startAssemblyBtn.click();
-        waitForSpinnerAppearAndDisappear();
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        anAssert.isTrue(finishAssemblyBtn.isVisible(), "Кнопка Завершить не отображается");
+        anAssert.isTrue(finishAssemblyBtn.waitForVisibility(3), "Кнопка Завершить не отображается");
         anAssert.isFalse(finishAssemblyBtn.isEnabled(), "Кнопка Завершить активна");
         return this;
     }
