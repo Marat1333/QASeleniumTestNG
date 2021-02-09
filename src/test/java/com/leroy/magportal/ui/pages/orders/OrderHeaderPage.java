@@ -54,7 +54,7 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
 
     @WebFindBy(xpath = "//div[contains(@class, 'lmui-ScreenHeader-MainContent')]//input", metaName = "Поле поиска заказа")
     EditBox searchByOrderNumberFld;
-    // To do: устранить дублирование с элементом orderSearchFld в PickingPage
+    // TODO: устранить дублирование с элементом orderSearchFld в PickingPage
 
     @WebFindBy(xpath = "//input[@name='customerPhone']", metaName = "Поле поиска по номеру телефона")
     EditBox searchByPhoneFld;
