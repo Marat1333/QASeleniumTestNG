@@ -263,7 +263,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 1:
         step("Открыть страницу с Заказами");
-        OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
+        OrderHeaderPage orderPage = loginAndGoTo(OrderHeaderPage.class);
 
         // Step 2:
         step("Найти созданный заказ с статусе 'Готов к Сборке' с номером "+ orderId);
