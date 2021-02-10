@@ -10,7 +10,10 @@ timestamps {
                         [$class: 'BooleanParameterValue', name: 'RUN_CASE_WITH_ISSUE', value: true],
                         [$class: 'StringParameterValue', name: 'TELEGRAM_CHAT', value: env.TELEGRAM_CHAT],
                         [$class: 'StringParameterValue', name: 'RETRY_COUNT', value: '1'],
-                        [$class: 'StringParameterValue', name: 'TEST_CONFIG', value: 'chrome_grid']
+                        [$class: 'StringParameterValue', name: 'TEST_CONFIG', value: 'chrome_grid'],
+                        [$class: 'StringParameterValue', name: 'AUTOTESTS_BRANCH', value: env.AUTOTESTS_BRANCH],
+                        [$class: 'StringParameterValue', name: 'TELEGRAM_REPORTS_CHAT', value: '-508824844'],
+                        [$class: 'StringParameterValue', name: 'SEND_TO_REPORTS_CHAT', value: 'true']
                 ]
             }
         } finally {
@@ -24,7 +27,10 @@ timestamps {
                             [$class: 'BooleanParameterValue', name: 'RUN_CASE_WITH_ISSUE', value: true],
                             [$class: 'StringParameterValue', name: 'TELEGRAM_CHAT', value: env.TELEGRAM_CHAT],
                             [$class: 'StringParameterValue', name: 'RETRY_COUNT', value: '1'],
-                            [$class: 'StringParameterValue', name: 'TEST_CONFIG', value: 'android_web_grid']
+                            [$class: 'StringParameterValue', name: 'TEST_CONFIG', value: 'android_web_grid'],
+                            [$class: 'StringParameterValue', name: 'AUTOTESTS_BRANCH', value: env.AUTOTESTS_BRANCH],
+                            [$class: 'StringParameterValue', name: 'TELEGRAM_REPORTS_CHAT', value: '-508824844'],
+                            [$class: 'StringParameterValue', name: 'SEND_TO_REPORTS_CHAT', value: 'true']
                     ]
                 }
             } finally {
@@ -37,7 +43,10 @@ timestamps {
                             [$class: 'BooleanParameterValue', name: 'RUN_CASE_WITH_ISSUE', value : true],
                             [$class: 'StringParameterValue', name: 'TELEGRAM_CHAT', value: env.TELEGRAM_CHAT],
                             [$class: 'StringParameterValue', name: 'RETRY_COUNT', value: '1'],
-                            [$class: 'StringParameterValue', name: 'TEST_CONFIG', value: 'chrome_grid']
+                            [$class: 'StringParameterValue', name: 'TEST_CONFIG', value: 'chrome_grid'],
+                            [$class: 'StringParameterValue', name: 'AUTOTESTS_BRANCH', value: env.AUTOTESTS_BRANCH],
+                            [$class: 'StringParameterValue', name: 'TELEGRAM_REPORTS_CHAT', value: '-508824844'],
+                            [$class: 'StringParameterValue', name: 'SEND_TO_REPORTS_CHAT', value: 'true']
                     ]
                 }
             }
