@@ -284,8 +284,7 @@ public class OrderSearchTest extends WebBaseSteps {
                 .softAssertDocumentCountIs(ordersCountBefore, 3);
 
             // Step 4
-            step("В фильтре поиска выставить последние 4 цифры заказа из предусловия, нажать кнопку"
-                +
+            step("В фильтре поиска выставить последние 4 цифры заказа из предусловия, нажать кнопку" +
                 " 'Показать заказы'");
             String partOrder = orderId_1.substring(orderId_1.length() - 4);
             ordersPage.enterSearchTextAndSubmit(partOrder);
