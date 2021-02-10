@@ -52,8 +52,9 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
             metaName = "Раскрывающийся список типа поиска")
     PuzComboBox searchTypeComboBox;
 
-    @WebFindBy(xpath = "//input[@name='orderId']", metaName = "Поле поиска по номеру заказа")
+    @WebFindBy(xpath = "//div[contains(@class, 'lmui-ScreenHeader-MainContent')]//input", metaName = "Поле поиска заказа")
     EditBox searchByOrderNumberFld;
+    // TODO: устранить дублирование с элементом orderSearchFld в PickingPage
 
     @WebFindBy(xpath = "//input[@name='customerPhone']", metaName = "Поле поиска по номеру телефона")
     EditBox searchByPhoneFld;
@@ -93,7 +94,6 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
 
     @WebFindBy(xpath = "//button[contains(@class, 'searchButton')]", metaName = "Кнопка поиска")
     Button applySearchBtn;
-
 
     // Actions
 
