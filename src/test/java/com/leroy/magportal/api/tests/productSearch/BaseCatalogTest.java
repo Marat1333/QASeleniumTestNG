@@ -9,7 +9,7 @@ import com.leroy.common_mashups.catalogs.clients.CatalogProductClient;
 import com.leroy.common_mashups.catalogs.data.CatalogSimilarProductsDataV1;
 import com.leroy.common_mashups.catalogs.data.CatalogSimilarProductsDataV2;
 import com.leroy.common_mashups.catalogs.data.NearestShopsData;
-import com.leroy.common_mashups.catalogs.data.NearestShopsV2Data;
+import com.leroy.common_mashups.catalogs.data.NearestShopsDataV2;
 import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.magportal.api.helpers.ShopsHelper;
@@ -46,11 +46,11 @@ public class BaseCatalogTest extends BaseMagPortalApiTest {
         softAssert().verifyAll();
     }
 
-    protected void isNearestShopsDataV2Valid(Response<NearestShopsV2Data> response) {
+    protected void isNearestShopsDataV2Valid(Response<NearestShopsDataV2> response) {
         isResponseOk(response);
-        List<NearestShopsV2Data> shopsData = response.asJsonList(NearestShopsV2Data.class);
+        List<NearestShopsDataV2> shopsData = response.asJsonList(NearestShopsDataV2.class);
         assertThat("Shops data does NOT contain any data", shopsData, hasSize(greaterThan(0)));
-        for (NearestShopsV2Data nearestShop : shopsData) {
+        for (NearestShopsDataV2 nearestShop : shopsData) {
             String data = "ShopId: " + nearestShop.getShopId() + ". LmCode: " + lmCode + ". ";
             softAssert().isTrue(nearestShop.getShopId() > 0, data + "No Shop Id provided");
 //            softAssert().isTrue(nearestShop.getDistance() >= 0, data + "No Distance provided");//TODO field is absent in DEV

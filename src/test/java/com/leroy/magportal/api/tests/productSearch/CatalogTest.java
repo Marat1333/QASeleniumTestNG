@@ -7,7 +7,7 @@ import com.leroy.common_mashups.catalogs.clients.CatalogProductClient;
 import com.leroy.common_mashups.catalogs.data.CatalogSimilarProductsDataV1;
 import com.leroy.common_mashups.catalogs.data.CatalogSimilarProductsDataV2;
 import com.leroy.common_mashups.catalogs.data.NearestShopsData;
-import com.leroy.common_mashups.catalogs.data.NearestShopsV2Data;
+import com.leroy.common_mashups.catalogs.data.NearestShopsDataV2;
 import com.leroy.common_mashups.catalogs.data.NomenclatureData;
 import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
 import com.leroy.constants.sales.SalesDocumentsConst;
@@ -38,13 +38,13 @@ public class CatalogTest extends BaseCatalogTest {
 
     @Test(description = "C23718700 GET Nearest Shops V2")
     public void testNearestShopsV2() {
-        Response<NearestShopsV2Data> response = catalogProductClient.getNearestShopsInfoV2(lmCode);
+        Response<NearestShopsDataV2> response = catalogProductClient.getNearestShopsInfoV2(lmCode);
         isNearestShopsDataV2Valid(response);
     }
 
     @Test(description = "C23718701 GET Nearest Shops V2 for Random shop")
     public void testNearestShopsForRandomShopV2() {
-        Response<NearestShopsV2Data> response = catalogProductClient
+        Response<NearestShopsDataV2> response = catalogProductClient
                 .getNearestShopsInfoV2(lmCode, shopsHelper.getRandomShopId());
         isNearestShopsDataV2Valid(response);
     }

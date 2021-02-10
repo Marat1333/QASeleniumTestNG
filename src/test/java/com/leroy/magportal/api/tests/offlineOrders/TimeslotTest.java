@@ -69,7 +69,7 @@ public class TimeslotTest extends BaseMagPortalApiTest {
         timeslotData = response.asJson().getData().get(0);
     }
 
-    private void makeDimensionalOrder() throws Exception {
+    private void makeDimensionalOrder() {
         OrderData orderData = paoHelper.createConfirmedOrder(
                 paoHelper.makeCartProductByLmCode(LmCodeTypeEnum.DIMENSIONAL.getValue()), true);
         currentOrderId = orderData.getOrderId();

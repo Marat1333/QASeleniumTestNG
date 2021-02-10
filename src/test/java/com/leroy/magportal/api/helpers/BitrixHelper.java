@@ -30,6 +30,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.Assert;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -94,7 +95,7 @@ public class BitrixHelper extends BaseHelper {
             myThread.sendRequest(client -> client.createSolutionFromBitrix(bitrixPayload));
             threads.add(myThread);
         }
-
+        List<String> errors = new ArrayList<>();
         threads.forEach(t -> {
             try {
                 BitrixSolutionResponse response = t.getData();
@@ -111,10 +112,15 @@ public class BitrixHelper extends BaseHelper {
                 }
             } catch (Exception e) {
                 Log.error(e.getMessage());
+                try {
+                    errors.add(t.getData().toString());
+                } catch (Exception ignore) {
+                }
             }
         });
 
-        Assert.assertTrue("No orders were created!", result.size() > 0);
+        Assert.assertTrue("No orders were created due to: " + Arrays.toString(errors.toArray()),
+                result.size() > 0);
         return result;
     }
 
@@ -274,10 +280,12 @@ public class BitrixHelper extends BaseHelper {
 //        payload.setPvzData(orderData.pvzData);
 
         payload.setAddress(makeAddressPayload());
-        if (orderData.getDeliveryType().getType().equals(DeliveryServiceTypeEnum.PICKUP.getType())) {
+        if (orderData.getDeliveryType().getType()
+                .equals(DeliveryServiceTypeEnum.PICKUP.getType())) {
             payload.setPickupShop(makePickupShopPayload(shop));
         }
-        if (orderData.getDeliveryType().getType().equals(DeliveryServiceTypeEnum.DELIVERY_PVZ.getType())) {
+        if (orderData.getDeliveryType().getType()
+                .equals(DeliveryServiceTypeEnum.DELIVERY_PVZ.getType())) {
             payload.setPvzData(makePvzPayload());
         }
 
