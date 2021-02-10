@@ -83,13 +83,17 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
     Button clearFiltersBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'ScreenHeader-MainContent')]//button[contains(@class, 'AdditonalFilterOpenBtn')]", metaName = "Кнопка открытия фильтров")
-    public Button filterOpenBtn;
+    Button filterOpenBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'additionalFilter-content')]/div[2]/div/div/div/div[2]/div[1]/button", metaName = "Кнопка 'Показать результаты фильтрации'") //TODO Переделать потом на айди
-    public Button applyFiltersBtn;
+    Button confirmFiltersBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'additionalFilter-content')]//button[contains(@class, 'closeButton')]", metaName = "Кнопка закрытия фильтров")
-    public Button filterCloseBtn;
+    Button filterCloseBtn;
+
+    @WebFindBy(xpath = "//button[contains(@class, 'searchButton')]", metaName = "Кнопка поиска")
+    Button applySearchBtn;
+
 
     // Actions
 
@@ -118,7 +122,7 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
             searchByPhoneFld.clear(true);
             searchByPhoneFld.fill(value);
         }
-        applyFiltersBtn.click();
+        applySearchBtn.click();
         waitForSpinnerAppearAndDisappear();
     }
 
@@ -166,7 +170,7 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
 
     @Step("Нажать кнопку 'Показать заказы'")
     public OrderHeaderPage clickApplyFilters() {
-        applyFiltersBtn.click();
+        confirmFiltersBtn.click();
         waitForSpinnerAppearAndDisappear();
         return this;
     }
