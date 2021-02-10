@@ -8,7 +8,6 @@ import com.leroy.magmobile.api.data.address.cellproducts.*;
 import com.leroy.magmobile.api.helpers.LsAddressHelper;
 import com.leroy.magmobile.api.requests.address.*;
 import io.qameta.allure.Step;
-import org.assertj.core.internal.Integers;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -286,15 +285,25 @@ public class LsAddressClient extends BaseMashupClient {
         for (int i = 0; i < actualData.getItems().size(); i++) {
             StandData actualItem = actualData.getItems().get(i);
             StandData expectedItem = expectedData.getItems().get(i);
-            assertThat("id", actualItem.getId(), is(expectedItem.getId()));
-            assertThat("code", actualItem.getCode(), is(expectedItem.getCode()));
-            assertThat("side", actualItem.getSide(), is(expectedItem.getSide()));
-            assertThat("size", actualItem.getSize(), is(expectedItem.getSize()));
-            assertThat("position", actualItem.getPosition(), is(expectedItem.getPosition()));
-            assertThat("cellsCount", actualItem.getCellsCount(), is(expectedItem.getCellsCount()));
-            assertThat("productsCount", actualItem.getProductsCount(), is(expectedItem.getProductsCount()));
-            assertThat("equipmentId", actualItem.getEquipmentId(), is(expectedItem.getEquipmentId()));
+            String desc = "StandID(" + actualItem.getId() + ")";
+            softAssert().isEquals(actualItem.getId(), expectedItem.getId(),
+                    desc + "id doesn't match the expected");
+            softAssert().isEquals(actualItem.getCode(), expectedItem.getCode(),
+                    desc + "code doesn't match the expected");
+            softAssert().isEquals(actualItem.getSide(), expectedItem.getSide(),
+                    desc + "side doesn't match the expected");
+            softAssert().isEquals(actualItem.getSize(), expectedItem.getSize(),
+                    desc + "size doesn't match the expected");
+            softAssert().isEquals(actualItem.getPosition(), expectedItem.getPosition(),
+                    desc + "position doesn't match the expected");
+            softAssert().isEquals(actualItem.getCellsCount(), expectedItem.getCellsCount(),
+                    desc + "Cells count doesn't match the expected");
+            softAssert().isEquals(actualItem.getProductsCount(), expectedItem.getProductsCount(),
+                    desc + "Products count doesn't match the expected");
+            softAssert().isEquals(actualItem.getEquipmentId(), expectedItem.getEquipmentId(),
+                    desc + "Equipment id doesn't match the expected");
         }
+        softAssert().verifyAll();
     }
 
     // Scheme
