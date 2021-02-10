@@ -80,11 +80,20 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
             metaName = "Фильтр способ доставки")
     PuzMultiSelectComboBox deliveryTypeFilter;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'OrderFilterClearBtn')]//button", metaName = "Кнопка метла (Очистить)")
+    @WebFindBy(xpath = "//div[contains(@class, 'additionalFilter-content')]/div[2]/div/div/div/div[2]/div[2]/button", metaName = "Кнопка метла (Очистить)") //TODO Переделать потом на айди
     Button clearFiltersBtn;
 
+    @WebFindBy(xpath = "//div[contains(@class, 'ScreenHeader-MainContent')]//button[contains(@class, 'AdditonalFilterOpenBtn')]", metaName = "Кнопка открытия фильтров")
+    Button filterOpenBtn;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'additionalFilter-content')]/div[2]/div/div/div/div[2]/div[1]/button", metaName = "Кнопка 'Показать результаты фильтрации'") //TODO Переделать потом на айди
+    Button confirmFiltersBtn;
+
+    @WebFindBy(xpath = "//div[contains(@class, 'additionalFilter-content')]//button[contains(@class, 'closeButton')]", metaName = "Кнопка закрытия фильтров")
+    Button filterCloseBtn;
+
     @WebFindBy(xpath = "//button[contains(@class, 'searchButton')]", metaName = "Кнопка поиска")
-    Button applyFiltersBtn;
+    Button applySearchBtn;
 
     // Actions
 
@@ -113,17 +122,23 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
             searchByPhoneFld.clear(true);
             searchByPhoneFld.fill(value);
         }
-        applyFiltersBtn.click();
+        applySearchBtn.click();
         waitForSpinnerAppearAndDisappear();
     }
 
-    @Step("Выбрать в соотетствующем фильтре статусы: {values}")
+    @Step("Открыть виджет с фильтрами")
+    public OrderHeaderPage openFilterWidget(){
+        filterOpenBtn.click();
+        return this;
+    }
+
+    @Step("Выбрать в соответствующем фильтре статусы: {values}")
     public OrderHeaderPage selectStatusFilters(String... values) throws Exception {
         statusFilter.selectOptions(values);
         return this;
     }
 
-    @Step("Отключить в соотетствующем фильтре статусы: {values}")
+    @Step("Отключить в соответствующем фильтре статусы: {values}")
     public OrderHeaderPage deselectStatusFilters(String... values) throws Exception {
         statusFilter.deselectOptions(values);
         return this;
@@ -141,13 +156,13 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
         return this;
     }
 
-    @Step("Выбрать в соотетствующем фильтре способ доставки: {values}")
+    @Step("Выбрать в соответствующем фильтре способ доставки: {values}")
     public OrderHeaderPage selectDeliveryTypeFilters(String... values) throws Exception {
         deliveryTypeFilter.selectOptions(values);
         return this;
     }
 
-    @Step("Отключить в соотетствующем фильтре способ доставки: {values}")
+    @Step("Отключить в соответствующем фильтре способ доставки: {values}")
     public OrderHeaderPage deselectDeliveryTypeFilters(String... values) throws Exception {
         deliveryTypeFilter.deselectOptions(values);
         return this;
@@ -155,7 +170,7 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
 
     @Step("Нажать кнопку 'Показать заказы'")
     public OrderHeaderPage clickApplyFilters() {
-        applyFiltersBtn.click();
+        confirmFiltersBtn.click();
         waitForSpinnerAppearAndDisappear();
         return this;
     }
@@ -163,22 +178,31 @@ public class OrderHeaderPage extends LeftDocumentListPage<ShortOrderDocumentCard
     @Step("Очистить фильтры")
     public OrderHeaderPage clearFilters() {
         clearFiltersBtn.click();
-        anAssert.isTrue(statusFilter.getSelectedOptionText().isEmpty(),
+        filterOpenBtn.click();
+        softAssert.isTrue(statusFilter.getSelectedOptionText().isEmpty(),
                 "Фильтр 'Статус заказа' не был очищен");
-        anAssert.isTrue(deliveryTypeFilter.getSelectedOptionText().isEmpty(),
+        softAssert.isTrue(deliveryTypeFilter.getSelectedOptionText().isEmpty(),
                 "Фильтр 'Способ доставки' не был очищен");
-        anAssert.isNull(dateCreationFilter.getSelectedFromDate(), "В поле 'С' присутствует дата",
+        softAssert.isNull(dateCreationFilter.getSelectedFromDate(), "В поле 'С' присутствует дата",
                 "Поле 'С' пустое");
-        anAssert.isNull(dateCreationFilter.getSelectedToDate(), "В поле 'По' присутствует дата",
+        softAssert.isNull(dateCreationFilter.getSelectedToDate(), "В поле 'По' присутствует дата",
                 "Поле 'По' пустое");
+        softAssert.verifyAll();
         // todo все фильтры тут должны быть
+        return this;
+    }
+
+    @Step("Закрыть виджет с фильтрами")
+    public OrderHeaderPage closeFilters(){
+        filterCloseBtn.click();
+        waitForSpinnerAppearAndDisappear();
         return this;
     }
 
     @Step("Очистить фильтры и подтвердить")
     public OrderHeaderPage clearFiltersAndSubmit() {
         return clearFilters()
-                .clickApplyFilters();
+                .closeFilters();
     }
 
     // Verifications
