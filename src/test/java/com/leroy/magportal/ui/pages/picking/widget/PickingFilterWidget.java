@@ -1,8 +1,9 @@
-package com.leroy.magportal.ui.pages.orders.widget;
+package com.leroy.magportal.ui.pages.picking.widget;
 
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Button;
+import com.leroy.magportal.ui.constants.picking.PickingConst;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import io.qameta.allure.Step;
 import java.util.Arrays;
@@ -13,67 +14,19 @@ import org.openqa.selenium.By;
 
 public class PickingFilterWidget extends MagPortalBasePage {
 
-    public enum PickingType {
-        SHOPPING_ROOM,
-        WAREHOUSE,
-        SS;
-    }
-
-    public enum PickingStatus {
-        READY_TO_PICKING,
-        PICKING,
-        PICKING_PAUSE,
-        PARTIALLY_PICKED,
-        PICKED;
-    }
-
-    public enum OrderType {
-        ONLINE,
-        OFFLINE;
-    }
-
-    public enum ClientType {
-        ENTITY,
-        CLIENT,
-        PROFI;
-    }
-
-    public enum SaleScheme {
-        LT,
-        LTD,
-        SLT,
-        SLTD,
-        SLTX;
-    }
-
-    public enum ReceivingMethod {
-        PICKUP,
-        DELIVERY_TK,
-        DELIVERY_PVZ,
-        DELIVERY_KK;
-    }
-
-    public enum Tag {
-        DEBT,
-        RISK_OF_NOT_COLLECT,
-        RISK_NOT_TO_SHIP,
-        PICKING_TODAY,
-        FOR_FUTURE_DATES;
-    }
-
     private final String BASE_FILTER_XPATH = "//div[contains(@class, 'additionalFilter-content')]";
 
     @WebFindBy(xpath = "//div[contains(@class, 'ScreenHeader-MainContent')]//button[contains(@class, 'AdditonalFilterOpenBtn')]", metaName = "Кнопка открытия фильтров")
-    public Button filterOpenBtn;
+    Button filterOpenBtn;
 
     @WebFindBy(xpath = BASE_FILTER_XPATH + "//button[contains(@class, 'closeButton')]", metaName = "Кнопка закрытия фильтров")
-    public Button filterCloseBtn;
+    Button filterCloseBtn;
 
     @WebFindBy(xpath = BASE_FILTER_XPATH + "/div[2]/div/div/div/div[2]/div[1]/button", metaName = "Кнопка 'Показать фильтры'") //TODO Переделать потом на айди
-    public Button showResultsBtn;
+    Button showResultsBtn;
 
     @WebFindBy(xpath = BASE_FILTER_XPATH + "/div[2]/div/div/div/div[2]/div[2]/button", metaName = "Кнопка очистки фильтров") //TODO Переделать потом на айди
-    private Button clearFiltersBtn;
+    Button clearFiltersBtn;
 
     public PickingFilterWidget(){
         if(filterOpenBtn.isVisible()){
@@ -97,19 +50,19 @@ public class PickingFilterWidget extends MagPortalBasePage {
     }
 
     @SneakyThrows
-    public Button getPickingTypeButton(@NotNull PickingType type) {
+    public Button getAssemblyTypeButton(@NotNull PickingConst.AssemblyType type) {
         String xpath = BASE_FILTER_XPATH + "/div[2]/div/div/div/div[1]/div[2]"; //TODO Переделать потом на айди
 
         switch (type) {
             case SHOPPING_ROOM: return new Button(driver, new CustomLocator(By.xpath(xpath + "/button[1]")));
-            case WAREHOUSE: return new Button(driver, new CustomLocator(By.xpath(xpath + "/button[2]")));
+            case STOCK: return new Button(driver, new CustomLocator(By.xpath(xpath + "/button[2]")));
             case SS: return new Button(driver, new CustomLocator(By.xpath(xpath + "/button[3]")));
         }
         throw new Exception("Не передан тип сборки для фильтров, передан " + type);
     }
 
     @SneakyThrows
-    public Button getPickingStatusButton(@NotNull PickingStatus status) {
+    public Button getPickingStatusButton(@NotNull PickingConst.PickingStatus status) {
         String xpath = BASE_FILTER_XPATH + "/div[2]/div/div/div/div[1]/div[3]"; //TODO Переделать потом на айди
 
         switch (status) {
@@ -129,7 +82,7 @@ public class PickingFilterWidget extends MagPortalBasePage {
     }
 
     @SneakyThrows
-    public Button getOrderTypeButton(@NotNull OrderType type) {
+    public Button getOrderTypeButton(@NotNull PickingConst.OrderType type) {
         String xpath = BASE_FILTER_XPATH + "/div[2]/div/div/div/div[1]/div[5]"; //TODO Переделать потом на айди
 
         switch (type) {
@@ -140,7 +93,7 @@ public class PickingFilterWidget extends MagPortalBasePage {
     }
 
     @SneakyThrows
-    public Button getClientTypeButton(@NotNull ClientType type) {
+    public Button getClientTypeButton(@NotNull PickingConst.ClientType type) {
         String xpath = BASE_FILTER_XPATH + "/div[2]/div/div/div/div[1]/div[6]"; //TODO Переделать потом на айди
 
         switch (type) {
@@ -152,20 +105,20 @@ public class PickingFilterWidget extends MagPortalBasePage {
     }
 
     @SneakyThrows
-    public Button getReceivingMethodButton(@NotNull ReceivingMethod receivingMethod) {
+    public Button getDeliveryTypeButton(@NotNull PickingConst.DeliveryType deliveryType) {
         String xpath = BASE_FILTER_XPATH + "/div[2]/div/div/div/div[1]/div[7]"; //TODO Переделать потом на айди
 
-        switch (receivingMethod) {
+        switch (deliveryType) {
             case PICKUP: return new Button(driver, new CustomLocator(By.xpath(xpath + "//button[1]")));
             case DELIVERY_TK: return new Button(driver, new CustomLocator(By.xpath(xpath + "//button[2]")));
             case DELIVERY_PVZ: return new Button(driver, new CustomLocator(By.xpath(xpath + "//button[3]")));
             case DELIVERY_KK: return new Button(driver, new CustomLocator(By.xpath(xpath + "//button[4]")));
         }
-        throw new Exception("Не передан способ получения для фильтров, передан " + receivingMethod);
+        throw new Exception("Не передан способ получения для фильтров, передан " + deliveryType);
     }
 
     @SneakyThrows
-    public Button getTagButton(@NotNull Tag tag) {
+    public Button getTagButton(@NotNull PickingConst.Tag tag) {
         String xpath = BASE_FILTER_XPATH + "/div[2]/div/div/div/div[1]/div[8]"; //TODO Переделать потом на айди
 
         switch (tag) {
@@ -179,7 +132,7 @@ public class PickingFilterWidget extends MagPortalBasePage {
     }
 
     @SneakyThrows
-    public Button getSaleSchemeButton(@NotNull SaleScheme scheme) {
+    public Button getSaleSchemeButton(@NotNull PickingConst.SaleScheme scheme) {
         String xpath = BASE_FILTER_XPATH + "/div[2]/div/div/div/div[1]/div[9]"; //TODO Переделать потом на айди
 
         switch (scheme) {
@@ -192,14 +145,14 @@ public class PickingFilterWidget extends MagPortalBasePage {
         throw new Exception("Не передана схема продажи для фильтров, передано " + scheme);
     }
 
-    @Step("Выбор типа сборки в фильтре: {pickingTypes}")
-    public PickingFilterWidget clickPickingTypeFilters(PickingType... pickingTypes) {
-        Arrays.stream(pickingTypes).forEach((p) -> getPickingTypeButton(p).click());
+    @Step("Выбор типа сборки в фильтре: {assemblyTypes}")
+    public PickingFilterWidget clickPickingTypeFilters(PickingConst.AssemblyType... assemblyTypes) {
+        Arrays.stream(assemblyTypes).forEach((p) -> getAssemblyTypeButton(p).click());
         return this;
     }
 
     @Step("Выбор статуса сборки в фильтре: {pickingStatuses}")
-    public PickingFilterWidget clickPickingStatusFilters(PickingStatus... pickingStatuses) {
+    public PickingFilterWidget clickPickingStatusFilters(PickingConst.PickingStatus... pickingStatuses) {
         Arrays.stream(pickingStatuses).forEach((p) -> getPickingStatusButton(p).click());
         return this;
     }
@@ -211,31 +164,31 @@ public class PickingFilterWidget extends MagPortalBasePage {
     }
 
     @Step("Выбор типа заказа в фильтре: {orderTypes}")
-    public PickingFilterWidget clickOrderTypesFilters(OrderType... orderTypes) {
+    public PickingFilterWidget clickOrderTypesFilters(PickingConst.OrderType... orderTypes) {
         Arrays.stream(orderTypes).forEach((p) -> getOrderTypeButton(p).click());
         return this;
     }
 
     @Step("Выбор типа клиента в фильтре: {clientTypes}")
-    public PickingFilterWidget clickClientTypeFilters(ClientType... clientTypes) {
+    public PickingFilterWidget clickClientTypeFilters(PickingConst.ClientType... clientTypes) {
         Arrays.stream(clientTypes).forEach((p) -> getClientTypeButton(p).click());
         return this;
     }
 
     @Step("Выбор схемы продажи в фильтре: {saleSchemes}")
-    public PickingFilterWidget clickSaleSchemeFilters(SaleScheme... saleSchemes) {
+    public PickingFilterWidget clickSaleSchemeFilters(PickingConst.SaleScheme... saleSchemes) {
         Arrays.stream(saleSchemes).forEach((p) -> getSaleSchemeButton(p).click());
         return this;
     }
 
-    @Step("Выбор способов получения в фильтре: {receivingMethods}")
-    public PickingFilterWidget clickReceivingMethodFilters(ReceivingMethod... receivingMethods) {
-        Arrays.stream(receivingMethods).forEach((p) -> getReceivingMethodButton(p).click());
+    @Step("Выбор способов получения в фильтре: {deliveryTypes}")
+    public PickingFilterWidget clickReceivingMethodFilters(PickingConst.DeliveryType... deliveryTypes) {
+        Arrays.stream(deliveryTypes).forEach((p) -> getDeliveryTypeButton(p).click());
         return this;
     }
 
     @Step("Выбор тэгов в фильтре: {tags}")
-    public PickingFilterWidget clickTagFilters(Tag... tags) {
+    public PickingFilterWidget clickTagFilters(PickingConst.Tag... tags) {
         Arrays.stream(tags).forEach((p) -> getTagButton(p).click());
         return this;
     }
