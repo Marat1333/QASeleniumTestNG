@@ -14,11 +14,6 @@ public class PickingConst {
         PICKED;
     }
 
-    public enum OrderType {
-        ONLINE,
-        OFFLINE;
-    }
-
     public enum ClientType {
         ENTITY,
         CLIENT,

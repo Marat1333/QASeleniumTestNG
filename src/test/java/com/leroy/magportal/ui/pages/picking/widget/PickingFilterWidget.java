@@ -3,6 +3,7 @@ package com.leroy.magportal.ui.pages.picking.widget;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.fieldfactory.CustomLocator;
 import com.leroy.core.web_elements.general.Button;
+import com.leroy.magportal.api.constants.OrderChannelEnum;
 import com.leroy.magportal.ui.constants.picking.PickingConst;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import io.qameta.allure.Step;
@@ -82,14 +83,14 @@ public class PickingFilterWidget extends MagPortalBasePage {
     }
 
     @SneakyThrows
-    public Button getOrderTypeButton(@NotNull PickingConst.OrderType type) {
+    public Button getOrderChannelButton(@NotNull OrderChannelEnum channel) {
         String xpath = BASE_FILTER_XPATH + "/div[2]/div/div/div/div[1]/div[5]"; //TODO Переделать потом на айди
 
-        switch (type) {
+        switch (channel) {
             case ONLINE: return new Button(driver, new CustomLocator(By.xpath(xpath + "/button[1]")));
             case OFFLINE: return new Button(driver, new CustomLocator(By.xpath(xpath + "/button[2]")));
         }
-        throw new Exception("Не передан тип заказа для фильтров, передан " + type);
+        throw new Exception("Не передан тип заказа для фильтров, передан " + channel);
     }
 
     @SneakyThrows
@@ -163,9 +164,9 @@ public class PickingFilterWidget extends MagPortalBasePage {
         return this;
     }
 
-    @Step("Выбор типа заказа в фильтре: {orderTypes}")
-    public PickingFilterWidget clickOrderTypesFilters(PickingConst.OrderType... orderTypes) {
-        Arrays.stream(orderTypes).forEach((p) -> getOrderTypeButton(p).click());
+    @Step("Выбор типа заказа в фильтре: {orderChannel}")
+    public PickingFilterWidget clickOrderChannelFilters(OrderChannelEnum... orderChannel) {
+        Arrays.stream(orderChannel).forEach((p) -> getOrderChannelButton(p).click());
         return this;
     }
 
