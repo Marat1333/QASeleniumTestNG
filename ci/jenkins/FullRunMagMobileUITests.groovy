@@ -19,7 +19,7 @@ timestamps {
                         [$class: 'StringParameterValue', name: 'PUSH_VERSION_TAG', value: 'false'],
                         [$class: 'StringParameterValue', name: 'SNIFFING_TRAFFIC_AVAILABLE', value: 'true'],
                         [$class: 'StringParameterValue', name: 'AUTOTESTS_BRANCH', value: 'master'],
-                        [$class: 'StringParameterValue', name: 'TELEGRAM_REPORTS_CHAT', value: '-508824844'],
+                        [$class: 'StringParameterValue', name: 'TELEGRAM_REPORTS_CHAT', value: '-1001343153150'],
                         [$class: 'StringParameterValue', name: 'SEND_TO_REPORTS_CHAT', value: 'true']
                 ]
             }
@@ -42,7 +42,7 @@ timestamps {
                         [$class: 'StringParameterValue', name: 'PUSH_VERSION_TAG', value: 'false'],
                         [$class: 'StringParameterValue', name: 'SNIFFING_TRAFFIC_AVAILABLE', value: 'true'],
                         [$class: 'StringParameterValue', name: 'AUTOTESTS_BRANCH', value: 'master'],
-                        [$class: 'StringParameterValue', name: 'TELEGRAM_REPORTS_CHAT', value: '-508824844'],
+                        [$class: 'StringParameterValue', name: 'TELEGRAM_REPORTS_CHAT', value: '-1001343153150'],
                         [$class: 'StringParameterValue', name: 'SEND_TO_REPORTS_CHAT', value: 'true']
                 ]
             }
