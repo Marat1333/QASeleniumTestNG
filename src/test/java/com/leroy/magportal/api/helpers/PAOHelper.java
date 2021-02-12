@@ -26,6 +26,7 @@ import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.EstimateClient;
 import com.leroy.magmobile.api.clients.SalesDocSearchClient;
+import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
@@ -133,7 +134,7 @@ public class PAOHelper extends BaseHelper {
 
     @Step("API: Создаем корзину")
     public CartData createCart(List<CartProductOrderData> products) {
-        Response<CartData> cartDataResponse = cartClient.sendRequestCreate(products);
+        Response<CartData> cartDataResponse = cartClient.createCartRequest(products);
         assertThat(cartDataResponse, successful());
         return cartDataResponse.asJson();
     }
@@ -375,5 +376,11 @@ public class PAOHelper extends BaseHelper {
         return createConfirmedEstimateAndGetCartId(searchProductHelper.getProductLmCodes(1));
     }
 
-
+    public int getDiscountReasonId() {
+        Response<SalesDocDiscountData> req = cartClient.getDiscountReasons();
+        assertThatResponseIsOk(req);
+        SalesDocDiscountData salesDocDiscountData = req.asJson();
+        assertThat("There ara NO reasons available", salesDocDiscountData.getReasons().size(), greaterThan(0));
+        return salesDocDiscountData.getReasons().stream().findFirst().get().getId();
+    }
 }

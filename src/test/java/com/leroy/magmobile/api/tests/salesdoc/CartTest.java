@@ -63,7 +63,7 @@ public class CartTest extends BaseProjectApiTest {
     }
 
     private void initPreConditionCartData() {
-        Response<CartData> resp = cartClient.sendRequestCreate(
+        Response<CartData> resp = cartClient.createCartRequest(
                 getTestProductData());
         isResponseOk(resp);
         cartData = resp.asJson();
@@ -75,7 +75,7 @@ public class CartTest extends BaseProjectApiTest {
         List<CartProductOrderData> cartProductDataList = getTestProductData();
 
         // Create
-        Response<CartData> response = cartClient.sendRequestCreate(
+        Response<CartData> response = cartClient.createCartRequest(
                 cartProductDataList);
         // Check Create
         cartData = cartClient.assertThatIsCreatedAndGetData(response);
@@ -92,7 +92,7 @@ public class CartTest extends BaseProjectApiTest {
         CartProductOrderData cartProductOrderData = new CartProductOrderData(product);
         cartProductOrderData.setQuantity(product.getAvailableStock() + 1.0);
         step("Create Cart with product quantity greater than Available stock");
-        Response<CartData> resp = cartClient.sendRequestCreate(cartProductOrderData);
+        Response<CartData> resp = cartClient.createCartRequest(cartProductOrderData);
         isResponseOk(resp);
         cartData = resp.asJson();
         assertThat("Product counts when Cart created", cartData.getProducts(), hasSize(1));
@@ -140,7 +140,7 @@ public class CartTest extends BaseProjectApiTest {
         productWithPositiveBalance.setQuantity(1.0);
 
         step("Create Cart");
-        Response<CartData> response = cartClient.sendRequestCreate(
+        Response<CartData> response = cartClient.createCartRequest(
                 Arrays.asList(productWithNegativeBalance, productWithPositiveBalance));
         // Check Create
         cartData = cartClient.assertThatIsCreatedAndGetData(response);
@@ -151,7 +151,7 @@ public class CartTest extends BaseProjectApiTest {
         cartClient.assertThatResponseResultIsOk(consolidateResp);
 
         step("Send get request and check data");
-        Response<CartData> getResp = cartClient.sendRequestGet(cartData.getCartId());
+        Response<CartData> getResp = cartClient.getCartRequest(cartData.getCartId());
         cartClient.assertThatResponseMatches(getResp, cartData);
         assertThat("Group count", getResp.asJson().getGroups(), hasSize(1));
     }
@@ -186,7 +186,7 @@ public class CartTest extends BaseProjectApiTest {
     public void testGetCart() {
         if (cartData == null)
             initPreConditionCartData();
-        Response<CartData> getResp = cartClient.sendRequestGet(cartData.getCartId());
+        Response<CartData> getResp = cartClient.getCartRequest(cartData.getCartId());
         cartClient.assertThatResponseMatches(getResp, cartData);
     }
 
@@ -198,7 +198,7 @@ public class CartTest extends BaseProjectApiTest {
                 cartData.getDocumentVersion());
         cartClient.assertThatResponseResultIsOk(response);
 
-        Response<CartData> getResponse = cartClient.sendRequestGet(cartData.getCartId());
+        Response<CartData> getResponse = cartClient.getCartRequest(cartData.getCartId());
         cartData.setSalesDocStatus(SalesDocumentsConst.States.DELETED.getApiVal());
         cartData.setStatus(SalesDocumentsConst.States.DELETED.getApiVal());
         cartData.increaseDocumentVersion();

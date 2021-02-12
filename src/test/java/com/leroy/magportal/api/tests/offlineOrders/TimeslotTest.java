@@ -62,7 +62,7 @@ public class TimeslotTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23426855 Get Timeslot for One Product", priority = 4)
-    public void testGetTimeslotOneProduct() throws Exception {
+    public void testGetTimeslotOneProduct() {
         makeDimensionalOrder();
         Response<TimeslotResponseData> response = orderClient.getTimeslots(currentOrderId);
         assertTimeslotResult(response);

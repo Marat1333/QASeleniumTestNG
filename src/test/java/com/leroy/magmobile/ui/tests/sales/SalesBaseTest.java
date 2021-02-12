@@ -99,9 +99,9 @@ public class SalesBaseTest extends AppBaseSteps {
     @Step("Pre-condition: Создание корзины")
     protected void startFromScreenWithCreatedCart(List<CartProductOrderData> productDataList) throws Exception {
         if (!Cart35Page.isThisPage()) {
-            Response<CartData> response = cartClient.sendRequestCreate(productDataList);
+            Response<CartData> response = cartClient.createCartRequest(productDataList);
             if (!response.isSuccessful())
-                response = cartClient.sendRequestCreate(productDataList);
+                response = cartClient.createCartRequest(productDataList);
             CartData cartData = cartClient.assertThatIsCreatedAndGetData(response, true);
             String cartDocNumber = cartData.getCartId();
             SalesDocumentsPage salesDocumentsPage;
@@ -228,10 +228,10 @@ public class SalesBaseTest extends AppBaseSteps {
             productOrderData.setQuantity(1.0);
             productOrderDataList.add(productOrderData);
         }
-        Response<CartData> cartDataResponse = cartClient.sendRequestCreate(productOrderDataList);
+        Response<CartData> cartDataResponse = cartClient.createCartRequest(productOrderDataList);
         if (!cartDataResponse.isSuccessful()) {
             getUserSessionData().setAccessToken(getAccessToken());
-            cartDataResponse = cartClient.sendRequestCreate(productOrderDataList);
+            cartDataResponse = cartClient.createCartRequest(productOrderDataList);
         }
         assertThat(cartDataResponse, successful());
         CartData cartData = cartDataResponse.asJson();

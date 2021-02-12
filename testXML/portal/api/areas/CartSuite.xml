@@ -8,7 +8,7 @@
 
     <test name="Cart: Create, Update, Delete">
         <classes>
-            <class name="com.leroy.magportal.api.tests.cart.CartTest">
+            <class name="com.leroy.magportal.api.tests.offlineOrders.CartTest">
                 <methods>
                     <include name="testCreateCart"/>
                     <include name="testCartDiscount"/>
