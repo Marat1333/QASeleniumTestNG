@@ -1,24 +1,37 @@
 package com.leroy.common_mashups.customer_accounts.clients;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+
 import com.fasterxml.jackson.databind.JsonNode;
+import com.leroy.common_mashups.customer_accounts.data.Communication;
+import com.leroy.common_mashups.customer_accounts.data.CustomerData;
+import com.leroy.common_mashups.customer_accounts.data.CustomerListData;
+import com.leroy.common_mashups.customer_accounts.data.CustomerResponseBodyData;
+import com.leroy.common_mashups.customer_accounts.data.CustomerSearchFilters;
+import com.leroy.common_mashups.customer_accounts.requests.CustomerAccountBalanceRequest;
+import com.leroy.common_mashups.customer_accounts.requests.CustomerAccountCreateRequest;
+import com.leroy.common_mashups.customer_accounts.requests.CustomerAccountGetRequest;
+import com.leroy.common_mashups.customer_accounts.requests.CustomerAccountUpdateRequest;
+import com.leroy.common_mashups.customer_accounts.requests.CustomerAccountsSearchRequest;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.api.StatusCodes;
 import com.leroy.core.api.BaseMashupClient;
-import com.leroy.common_mashups.customer_accounts.data.*;
-import com.leroy.common_mashups.customer_accounts.requests.*;
 import io.qameta.allure.Step;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class CustomerClient extends BaseMashupClient {
 
     @Override
     protected void init() {
         gatewayUrl = EnvConstants.CLIENT_API_HOST;
+        jaegerHost = EnvConstants.CLIENTS_JAEGER_HOST;
+        jaegerService = EnvConstants.CLIENTS_JAEGER_SERVICE;
     }
 
     /**

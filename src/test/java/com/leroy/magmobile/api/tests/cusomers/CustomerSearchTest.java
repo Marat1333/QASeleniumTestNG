@@ -1,5 +1,12 @@
 package com.leroy.magmobile.api.tests.cusomers;
 
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalToIgnoringCase;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
+
+import com.google.inject.Inject;
 import com.leroy.common_mashups.customer_accounts.clients.CustomerClient;
 import com.leroy.common_mashups.customer_accounts.data.Communication;
 import com.leroy.common_mashups.customer_accounts.data.CustomerData;
@@ -9,15 +16,10 @@ import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-
 public class CustomerSearchTest extends BaseProjectApiTest {
 
-    private CustomerClient customerClient() {
-        return apiClientProvider.getCustomerClient();
-    }
+    @Inject
+    private CustomerClient customerClient;
 
     @Test(description = "C23194969 Simple Search Customers by Phone")
     public void testSimpleSearchCustomers() {
@@ -25,7 +27,7 @@ public class CustomerSearchTest extends BaseProjectApiTest {
         customerSearchFilters.setCustomerType(CustomerSearchFilters.CustomerType.NATURAL);
         customerSearchFilters.setDiscriminantType(CustomerSearchFilters.DiscriminantType.PHONENUMBER);
         customerSearchFilters.setDiscriminantValue("+71111111111");
-        Response<CustomerListData> resp = customerClient()
+        Response<CustomerListData> resp = customerClient
                 .searchForCustomers(customerSearchFilters);
         assertThat(resp, successful());
         CustomerListData data = resp.asJson();

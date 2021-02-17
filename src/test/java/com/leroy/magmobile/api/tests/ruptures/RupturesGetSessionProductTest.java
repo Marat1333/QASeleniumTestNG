@@ -1,6 +1,7 @@
 package com.leroy.magmobile.api.tests.ruptures;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
 import com.leroy.constants.api.ErrorTextConst;
 import com.leroy.constants.api.StatusCodes;
 import com.leroy.magmobile.api.clients.RupturesClient;
@@ -23,6 +24,8 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class RupturesGetSessionProductTest extends BaseRuptureTest {
 
+    @Inject
+    private RupturesClient rupturesClient;
     @Override
     protected boolean isDeleteSessionAfterEveryMethod() {
         return false;
@@ -30,8 +33,6 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
 
     @BeforeClass
     public void setUp() {
-        RupturesClient rupturesClient = rupturesClient();
-
         // Generate test data
         ActionData actionTrue0 = ActionData.returnRandomData();
         actionTrue0.setAction(0);
@@ -94,7 +95,6 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
 
     @Test(description = "C3233583 GET ruptures products")
     public void testSearchForRuptureSessionProducts() {
-        RupturesClient rupturesClient = rupturesClient();
         Response<RuptureProductDataList> resp = rupturesClient.getProducts(sessionId);
         rupturesClient.assertThatDataMatches(resp, ruptureProductDataListBody);
     }
@@ -102,7 +102,6 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
     @Test(description = "C3298405 GET ruptures session products productState=0")
     public void testSearchForRuptureSessionProductsWithProductState0() {
         int productState = 0;
-        RupturesClient rupturesClient = rupturesClient();
         Response<RuptureProductDataList> resp = rupturesClient.getProductsWithProductState(sessionId, productState);
         List<RuptureProductData> expectedItems = new ArrayList<>();
         RuptureProductDataList expectedResponse = new RuptureProductDataList();
@@ -120,7 +119,6 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
     @Test(description = "C3298406 GET ruptures session products productState=1")
     public void testSearchForRuptureSessionProductsWithProductStateTrue() {
         int productState = 1;
-        RupturesClient rupturesClient = rupturesClient();
         Response<RuptureProductDataList> resp = rupturesClient.getProductsWithProductState(sessionId, productState);
         List<RuptureProductData> expectedItems = new ArrayList<>();
         RuptureProductDataList expectedResponse = new RuptureProductDataList();
@@ -146,7 +144,6 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
     @Test(description = "C3298407 GET ruptures session products productState=2")
     public void testSearchForRuptureSessionProductsWithProductState2() {
         int productState = 2;
-        RupturesClient rupturesClient = rupturesClient();
         Response<RuptureProductDataList> resp = rupturesClient.getProductsWithProductState(sessionId, productState);
         List<RuptureProductData> expectedItems = new ArrayList<>();
         RuptureProductDataList expectedResponse = new RuptureProductDataList();
@@ -164,7 +161,6 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
     @Test(description = "C3298408 GET ruptures session products productState=0,1")
     public void testSearchForRuptureSessionProductsWithProductState0and1() {
         Integer[] productStates = {0, 1};
-        RupturesClient rupturesClient = rupturesClient();
         Response<RuptureProductDataList> resp = rupturesClient.getProductsWithProductState(sessionId, productStates);
         List<RuptureProductData> expectedItems = new ArrayList<>();
         RuptureProductDataList expectedResponse = new RuptureProductDataList();
@@ -181,7 +177,6 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
     @Test(description = "C3298409 GET ruptures session products productState=1,2")
     public void testSearchForRuptureSessionProductsWithProductState1and2() {
         Integer[] productStates = {1, 2};
-        RupturesClient rupturesClient = rupturesClient();
         Response<RuptureProductDataList> resp = rupturesClient.getProductsWithProductState(sessionId, productStates);
         List<RuptureProductData> expectedItems = new ArrayList<>();
         RuptureProductDataList expectedResponse = new RuptureProductDataList();
@@ -197,7 +192,6 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
     @Test(description = "C23409753 GET ruptures products pagination 1-st page")
     public void testGetRupturesProductsPaginationFirstPage() {
         int pageSize = 4;
-        RupturesClient rupturesClient = rupturesClient();
         Response<RuptureProductDataList> resp = rupturesClient.getProductsWithPagination(sessionId, null, pageSize);
         RuptureProductDataList expectedResponse = new RuptureProductDataList();
         expectedResponse.setTotalCount(12);
@@ -210,7 +204,6 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
     public void testGetRupturesProductsPaginationSecondPage() {
         int pageSize = 4;
         int startFrom = 5;
-        RupturesClient rupturesClient = rupturesClient();
         Response<RuptureProductDataList> resp = rupturesClient.getProductsWithPagination(sessionId, startFrom, pageSize);
         RuptureProductDataList expectedResponse = new RuptureProductDataList();
         expectedResponse.setTotalCount(12);
@@ -219,9 +212,17 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
         rupturesClient.assertThatDataMatches(resp, expectedResponse);
     }
 
+    @Test(description = "C23409755 GET ruptures products pagination default is absent")
+    public void testGetRupturesProductsDefaultPaginationIsAbsent() {
+        Response<RuptureProductDataList> resp = rupturesClient.getProducts(sessionId);
+        RuptureProductDataList expectedResponse = new RuptureProductDataList();
+        expectedResponse.setTotalCount(12);
+        expectedResponse.setItems(new ArrayList<>(ruptureProductDataListBody.getItems()));
+        rupturesClient.assertThatDataMatches(resp, expectedResponse);
+    }
+
     @Test(description = "C23409756 GET ruptures products mashup validation")
     public void testGetRupturesProductsMashupValidation() {
-        RupturesClient rupturesClient = rupturesClient();
         Response<?> resp = rupturesClient.getProducts("");
         assertThat("Response Code", resp.getStatusCode(), equalTo(StatusCodes.ST_400_BAD_REQ));
         CommonErrorResponseData errorResp = resp.asJson(CommonErrorResponseData.class);
@@ -233,14 +234,12 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
 
     @Test(description = "C23409757 GET ruptures products action + action state (only action state do not work)")
     public void testGetRupturesProductsActionPlusOnlyActionState() {
-        RupturesClient rupturesClient = rupturesClient();
         Response<RuptureProductDataList> resp = rupturesClient.getProductsWithAction(sessionId, true, null);
         rupturesClient.assertThatDataMatches(resp, ruptureProductDataListBody);
     }
 
     @Test(description = "C23409758 GET ruptures products action + action (only action do not work)")
     public void testGetRupturesProductsActionPlusOnlyAction() {
-        RupturesClient rupturesClient = rupturesClient();
         Response<RuptureProductDataList> resp = rupturesClient.getProductsWithAction(sessionId, null, 7);
         rupturesClient.assertThatDataMatches(resp, ruptureProductDataListBody);
     }
@@ -249,7 +248,6 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
     public void testGetRupturesProductsActionPlusActionStateTrue() {
         int action = 0;
         boolean actionState = true;
-        RupturesClient rupturesClient = rupturesClient();
         Response<RuptureProductDataList> resp = rupturesClient.getProductsWithAction(sessionId, actionState, action);
         List<RuptureProductData> expectedItems = new ArrayList<>();
         RuptureProductDataList expectedResponse = new RuptureProductDataList();
@@ -267,7 +265,6 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
     public void testGetRupturesProductsActionPlusActionStateFalse() {
         int action = 1;
         boolean actionState = false;
-        RupturesClient rupturesClient = rupturesClient();
         Response<RuptureProductDataList> resp = rupturesClient.getProductsWithAction(sessionId, actionState, action);
         List<RuptureProductData> expectedItems = new ArrayList<>();
         RuptureProductDataList expectedResponse = new RuptureProductDataList();
@@ -287,7 +284,6 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
         boolean actionState = true; // TODO check?
         Integer[] productState = {2};
         int pageSize = 1;
-        RupturesClient rupturesClient = rupturesClient();
         Response<RuptureProductDataList> resp = rupturesClient.getProducts(
                 sessionId, actionState, action, productState, null, pageSize);
 

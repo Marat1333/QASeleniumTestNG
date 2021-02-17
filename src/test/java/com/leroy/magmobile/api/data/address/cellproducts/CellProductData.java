@@ -1,19 +1,18 @@
 package com.leroy.magmobile.api.data.address.cellproducts;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.magmobile.api.data.address.CellData;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class CellProductData extends ProductItemData {
+public class CellProductData extends ProductData {
 
     private Integer quantity;
     private List<ProductCellData> lsAddressCells;

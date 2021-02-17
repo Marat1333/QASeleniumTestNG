@@ -82,7 +82,7 @@ public class PickingContentPage extends PickingPage {
     public PickingContentPage clickStartAssemblyButton() {
         startAssemblyBtn.click();
         waitForSpinnerAppearAndDisappear();
-        anAssert.isTrue(finishAssemblyBtn.isVisible(), "Кнопка Завершить не отображается");
+        anAssert.isTrue(finishAssemblyBtn.waitForVisibility(3), "Кнопка Завершить не отображается");
         anAssert.isFalse(finishAssemblyBtn.isEnabled(), "Кнопка Завершить активна");
         return this;
     }

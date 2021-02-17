@@ -1,50 +1,66 @@
 package com.leroy.magmobile.ui.tests;
 
+import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.clients.CatalogProductClient;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
+import com.leroy.common_mashups.catalogs.data.ProductDataList;
+import com.leroy.common_mashups.catalogs.data.CatalogComplementaryProductsDataV2;
+import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
+import com.leroy.common_mashups.catalogs.data.CatalogShopsData;
+import com.leroy.common_mashups.catalogs.data.CatalogSimilarProductsDataV2;
+import com.leroy.common_mashups.catalogs.data.product.SalesHistoryData;
+import com.leroy.common_mashups.catalogs.data.product.reviews.CatalogReviewsOfProductList;
+import com.leroy.common_mashups.catalogs.data.supply.CatalogSupplierDataOld;
+import com.leroy.common_mashups.catalogs.requests.GetCatalogProductSearchRequest;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.UserSessionData;
-import com.leroy.magmobile.api.clients.CatalogProductClient;
-import com.leroy.magmobile.api.clients.CatalogSearchClient;
 import com.leroy.magmobile.api.clients.ShopKladrClient;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
-import com.leroy.magmobile.api.data.catalog.ProductItemDataList;
-import com.leroy.magmobile.api.data.catalog.product.*;
-import com.leroy.magmobile.api.data.catalog.product.reviews.CatalogReviewsOfProductList;
-import com.leroy.magmobile.api.data.catalog.supply.CatalogSupplierData;
 import com.leroy.magmobile.api.data.shops.PriceAndStockData;
 import com.leroy.magmobile.api.data.shops.ShopData;
 import com.leroy.magmobile.api.enums.ReviewOptions;
-import com.leroy.magmobile.api.requests.catalog_search.GetCatalogSearch;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.more.SearchShopPage;
 import com.leroy.magmobile.ui.pages.sales.MainProductAndServicesPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.*;
+import com.leroy.magmobile.ui.pages.sales.product_card.FirstLeaveReviewPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.ProductCardPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.ReviewsPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.SalesHistoryPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.SecondLeaveReviewPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.SimilarProductsPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.SpecificationsPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.SuccessReviewSendingPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.PeriodOfUsageModalPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SalesHistoryUnitsModalPage;
-import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.*;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.PricesPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.ProductPricesQuantitySupplyPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.ShopPricesPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.ShopsStocksPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.StocksPage;
+import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.SuppliesPage;
 import com.leroy.magmobile.ui.pages.search.FilterPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
-import org.mapsforge.core.model.LatLong;
-import org.mapsforge.core.util.LatLongUtils;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.util.LatLongUtils;
+import org.testng.annotations.Test;
 
 public class ProductCardTest extends AppBaseSteps {
 
-    private CatalogSearchClient catalogSearchClient;
+    @Inject
+    private CatalogProductClient catalogSearchClient;
+    @Inject
     private CatalogProductClient catalogProductClient;
-
-    @BeforeClass
-    private void initClients() {
-        catalogProductClient = apiClientProvider.getCatalogProductClient();
-        catalogSearchClient = apiClientProvider.getCatalogSearchClient();
-    }
+    @Inject
+    private SearchProductHelper searchProductHelper;
+    @Inject
+    private ShopKladrClient shopKladrClient;
 
     @Override
     public UserSessionData initTestClassUserSessionDataTemplate() {
@@ -55,10 +71,10 @@ public class ProductCardTest extends AppBaseSteps {
 
     private String getRandomLmCode() {
 
-        ProductItemDataList productItemDataList = catalogSearchClient.searchProductsBy(new GetCatalogSearch().setPageSize(24)).asJson();
-        List<ProductItemData> productItemData = productItemDataList.getItems();
-        anAssert().isTrue(productItemData.size() > 0, "size must be more than 0");
-        return productItemData.get((int) (Math.random() * productItemData.size())).getLmCode();
+        ProductDataList productDataList = catalogSearchClient.searchProductsBy(new GetCatalogProductSearchRequest().setPageSize(24)).asJson();
+        List<ProductData> productIData = productDataList.getItems();
+        anAssert().isTrue(productIData.size() > 0, "size must be more than 0");
+        return productIData.get((int) (Math.random() * productIData.size())).getLmCode();
     }
 
     private List<ShopData> sortShopsByDistance(List<ShopData> shopDataList) {
@@ -133,7 +149,7 @@ public class ProductCardTest extends AppBaseSteps {
     @Test(description = "C3201007 Проверить вкладку Характеристики")
     public void testCharacteristics() throws Exception {
         String lmCode = getRandomLmCode();
-        CatalogProductData data = catalogProductClient.getProduct(lmCode).asJson();
+        ProductData data = catalogProductClient.getProduct(lmCode).asJson();
 
         // Pre-conditions
         openProductCard(lmCode);
@@ -173,7 +189,7 @@ public class ProductCardTest extends AppBaseSteps {
         String lmCode = "10009965";
         CatalogProductClient.Extend extendParam = CatalogProductClient.Extend.builder()
                 .rating(true).logistic(true).inventory(true).build();
-        CatalogSimilarProducts data = catalogProductClient.getSimilarProducts(lmCode, extendParam).asJson();
+        CatalogSimilarProductsDataV2 data = catalogProductClient.getSimilarProductsV2(lmCode, extendParam).asJson();
 
         // Pre-conditions
         openProductCard(lmCode);
@@ -245,7 +261,7 @@ public class ProductCardTest extends AppBaseSteps {
     @Test(description = "C23409157 Проверить навигацию и информацию во вкладке \"Поставки\"")
     public void testSupply() throws Exception {
         String lmCode = "10009340";
-        CatalogSupplierData data = catalogProductClient.getSupplyInfo(lmCode).asJson();
+        CatalogSupplierDataOld data = catalogProductClient.getSupplyInfo(lmCode).asJson();
 
         // Pre-conditions
         openProductCard(lmCode);
@@ -274,7 +290,7 @@ public class ProductCardTest extends AppBaseSteps {
         String lmCode = getRandomLmCode();
         CatalogProductClient.Extend extendOptions = CatalogProductClient.Extend.builder()
                 .inventory(true).logistic(true).rating(true).build();
-        CatalogProductData data = catalogProductClient.getProduct(lmCode, SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR,
+       ProductData data = catalogProductClient.getProduct(lmCode, SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR,
                 extendOptions).asJson();
 
         // Pre-conditions
@@ -292,7 +308,7 @@ public class ProductCardTest extends AppBaseSteps {
         CatalogProductClient.Extend extendOptions = CatalogProductClient.Extend.builder()
                 .inventory(true).logistic(true).rating(true).build();
 
-        CatalogProductData data = catalogProductClient.getProduct("35", lmCode, SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR,
+        ProductData data = catalogProductClient.getProduct("35", lmCode, SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR,
                 extendOptions).asJson();
 
         // Pre-conditions
@@ -329,7 +345,6 @@ public class ProductCardTest extends AppBaseSteps {
         String searchName = "Спб П";
 
         //get all shop id
-        ShopKladrClient shopKladrClient = apiClientProvider.getShopKladrClient();
         List<ShopData> shopDataList = shopKladrClient.getShops().asJsonList(ShopData.class);
         List<String> shopIdList = shopDataList.stream().map(ShopData::getId).collect(Collectors.toList());
         String[] shopIdArray = new String[shopIdList.size()];
@@ -390,13 +405,11 @@ public class ProductCardTest extends AppBaseSteps {
 
     @Test(description = "C23409226 Проверить комплементарные товары")
     public void testComplementaryProducts() throws Exception {
-        List<ProductItemData> productList = catalogSearchClient.getProductsList();
-
-        CatalogComplementaryProducts lmWithComplementaryData = catalogProductClient.getNotEmptyComplementaryProductData(productList);
-        CatalogComplementaryProducts lmWithoutComplementaryData = catalogProductClient.getEmptyComplementaryProductData(productList);
+        CatalogComplementaryProductsDataV2 lmWithComplementaryData = searchProductHelper.getComplementaryProductData(false);
+        CatalogComplementaryProductsDataV2 lmWithoutComplementaryData = searchProductHelper.getComplementaryProductData(true);
         String lmWithComplementary = lmWithComplementaryData.getParentLmCode();
         String lmWithoutComplementary = lmWithoutComplementaryData.getParentLmCode();
-        List<CatalogProductData> sortedProductData = lmWithComplementaryData.getItems();
+        List<ProductData> sortedProductData = lmWithComplementaryData.getItems();
 
         //preconditions
         openProductCard(lmWithComplementary);

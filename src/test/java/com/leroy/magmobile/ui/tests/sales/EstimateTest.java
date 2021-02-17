@@ -1,6 +1,8 @@
 package com.leroy.magmobile.ui.tests.sales;
 
+import com.google.inject.Inject;
 import com.leroy.common_mashups.customer_accounts.data.CustomerData;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.annotations.Smoke;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
@@ -19,6 +21,7 @@ import com.leroy.magmobile.ui.pages.sales.orders.estimate.*;
 import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
+import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -29,6 +32,11 @@ import java.util.List;
 import java.util.Random;
 
 public class EstimateTest extends SalesBaseTest {
+
+    @Inject
+    private PAOHelper paoHelper;
+    @Inject
+    private SearchProductHelper searchProductHelper;
 
     private String firstCustomerPhone = "1111111111";
     private String secondCustomerPhone = "2222222222";
@@ -46,8 +54,8 @@ public class EstimateTest extends SalesBaseTest {
         boolean byApi = true; // should be true; (false - if only backend has problems)
         if (isStartFromScratch()) {
             if (byApi) {
-                String estimateId = isConfirmed ? apiClientProvider.createConfirmedEstimateAndGetCartId(lmCodes) :
-                        apiClientProvider.createDraftEstimateAndGetCartId(lmCodes);
+                String estimateId = isConfirmed ? paoHelper.createConfirmedEstimateAndGetCartId(lmCodes) :
+                        paoHelper.createDraftEstimateAndGetCartId(lmCodes);
                 MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
                         MainSalesDocumentsPage.class);
                 SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
@@ -391,7 +399,7 @@ public class EstimateTest extends SalesBaseTest {
         step("Pre-condition: Создаем смету");
         CustomerData customerData = new CustomerData();
         customerData.generateRandomValidRequiredData(true);
-        String estimateId = apiClientProvider.createDraftEstimateAndGetCartId(customerData, 1);
+        String estimateId = paoHelper.createDraftEstimateAndGetCartId(customerData, 1);
         MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
                 MainSalesDocumentsPage.class);
         SalesDocumentsPage salesDocumentsPage = mainSalesDocumentsPage.goToMySales();
@@ -471,7 +479,7 @@ public class EstimateTest extends SalesBaseTest {
     @Test(description = "C22797077 Отправить смету на почту (с экрана успеха или из сметы в статусе Создан)",
             groups = NEED_ACCESS_TOKEN_GROUP)
     public void testSendEstimateByEmail() throws Exception {
-        String estimateDraftId = apiClientProvider.createDraftEstimateAndGetCartId(productLmCodes.subList(0, 1));
+        String estimateDraftId = paoHelper.createDraftEstimateAndGetCartId(productLmCodes.subList(0, 1));
         startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 1), true);
 
         // Step 1
@@ -575,7 +583,7 @@ public class EstimateTest extends SalesBaseTest {
         step("Pre-condition: Создаем смету в статусе создан");
         CustomerData customerData = new CustomerData();
         customerData.generateRandomValidRequiredData(true);
-        String estimateId = apiClientProvider.createConfirmedEstimateAndGetCartId(customerData,
+        String estimateId = paoHelper.createConfirmedEstimateAndGetCartId(customerData,
                 productLmCodes.subList(0, 1));
         MainSalesDocumentsPage mainSalesDocumentsPage = loginSelectShopAndGoTo(
                 MainSalesDocumentsPage.class);

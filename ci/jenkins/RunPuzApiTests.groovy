@@ -1,22 +1,22 @@
 TELEGRAM_BOT_URL = 'https://api.telegram.org/bot596012234:AAGAaYCfc2nDS3BAr2J7l0PRTgzOoBqGqy4'
+TELEGRAM_REPORTS_CHAT = '-1001343153150'
 
-TEST_CHAT=-1001283842704
-QA_LEGO_FRONT=-388033055
-
-def getSelectedChatId() {
-    if (env.TELEGRAM_CHAT == 'Test')
-        return TEST_CHAT;
-    if (env.TELEGRAM_CHAT == 'QA_Lego_Front')
-        return QA_LEGO_FRONT;
-    return 0;
-}
+env.TELEGRAM_CHAT = env.TELEGRAM_CHAT.replaceFirst(/^(.*?)\(.*\)/, '$1')
 
 def telegramMessage(message) {
     if (env.TELEGRAM_CHAT) {
         sh """
            curl -X POST ${TELEGRAM_BOT_URL}/sendMessage \
                 -d parse_mode=Markdown \
-                -d chat_id=${getSelectedChatId()} \
+                -d chat_id=${env.TELEGRAM_CHAT} \
+                -d text="${message}"
+        """
+    }
+    if (env.SEND_TO_REPORTS_CHAT == 'true') {
+        sh """
+           curl -X POST ${TELEGRAM_BOT_URL}/sendMessage \
+                -d parse_mode=Markdown \
+                -d chat_id=${TELEGRAM_REPORTS_CHAT} \
                 -d text="${message}"
         """
     }
@@ -40,7 +40,7 @@ timestamps {
 
             checkout(
                     [$class                           : 'GitSCM',
-                     branches                         : [[name: 'master']],
+                     branches                         : [[name: env.AUTOTESTS_BRANCH ? env.AUTOTESTS_BRANCH : 'master']],
                      doGenerateSubmoduleConfigurations: false,
                      extensions                       : [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'auto-tests']],
                      submoduleCfg                     : [],
@@ -69,7 +69,7 @@ timestamps {
 
         stage('Send notification') {
             telegramMessage("Маг Портал API Тесты завершены. Test run: ${env.RUN} \n " +
-                    "[Allure report](https://jenkins.lmru.adeo.com/job/lego-front/job/Puz2-API-autotests/"+ env.BUILD_NUMBER +"/allure)")
+                    "[Allure report](" + env.BUILD_URL + "allure)")
         }
     }
 }

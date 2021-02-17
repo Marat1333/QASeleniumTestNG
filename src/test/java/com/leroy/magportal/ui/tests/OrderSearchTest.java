@@ -2,17 +2,12 @@ package com.leroy.magportal.ui.tests;
 
 import static com.leroy.magportal.ui.constants.OrderConst.DeliveryType.DELIVERY_TK;
 import static com.leroy.magportal.ui.constants.OrderConst.DeliveryType.PICKUP;
-import static com.leroy.magportal.ui.constants.OrderConst.Status.ASSEMBLY;
-import static com.leroy.magportal.ui.constants.OrderConst.Status.ASSEMBLY_PAUSE;
-import static com.leroy.magportal.ui.constants.OrderConst.Status.CANCELLED;
 import static com.leroy.magportal.ui.constants.OrderConst.Status.CREATED;
-import static com.leroy.magportal.ui.constants.OrderConst.Status.ISSUED;
-import static com.leroy.magportal.ui.constants.OrderConst.Status.ISSUED_PARTIALLY;
-import static com.leroy.magportal.ui.constants.OrderConst.Status.PICKED;
-import static com.leroy.magportal.ui.constants.OrderConst.Status.PICKED_PARTIALLY;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
 import com.leroy.common_mashups.customer_accounts.data.PhoneData;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.api.StatusCodes;
 import com.leroy.constants.customer.CustomerConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
@@ -27,6 +22,7 @@ import com.leroy.magmobile.api.data.sales.orders.OrderCustomerData;
 import com.leroy.magmobile.api.data.sales.orders.OrderData;
 import com.leroy.magmobile.api.data.sales.orders.ReqOrderData;
 import com.leroy.magmobile.api.data.sales.orders.ReqOrderProductData;
+import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import com.leroy.magportal.ui.models.salesdoc.OrderDetailData;
@@ -43,12 +39,21 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.RandomStringUtils;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class OrderSearchTest extends WebBaseSteps {
+
+    @Inject
+    private SearchProductHelper searchProductHelper;
+    @Inject
+    private OrderClient orderClient;
+    @Inject
+    private CartClient cartClient;
+    @Inject
+    private PAOHelper paoHelper;
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -57,17 +62,15 @@ public class OrderSearchTest extends WebBaseSteps {
 
     @Step("Pre-condition: Создание заказа через API")
     private String createOrderByApi(OrderDetailData orderDetailData,
-            boolean waitUntilIsConfirmed) throws Exception {
+                                    boolean waitUntilIsConfirmed) throws Exception {
         UserSessionData userSessionData = getUserSessionData();
-        CartClient cartClient = apiClientProvider.getCartClient();
-        OrderClient orderClient = apiClientProvider.getOrderClient();
 
         List<CartProductOrderData> productOrderDataList = new ArrayList<>();
 
         if (orderDetailData.getProducts() == null) {
             // Prepare request data
             CartProductOrderData productOrderData = new CartProductOrderData(
-                    apiClientProvider.getProducts(1).get(0));
+                searchProductHelper.getProducts(1).get(0));
             productOrderData.setQuantity(1.0);
             productOrderDataList.add(productOrderData);
         }
@@ -96,18 +99,18 @@ public class OrderSearchTest extends WebBaseSteps {
         OrderData orderData = orderResp.asJson();
 
         // Set pin-code
-        String validPinCode = apiClientProvider.getValidPinCode();
+        String validPinCode = paoHelper.getValidPinCode(false);
         Response<JsonNode> responseSetPinCode = orderClient
-                .setPinCode(orderData.getOrderId(), validPinCode);
+            .setPinCode(orderData.getOrderId(), validPinCode);
         if (responseSetPinCode.getStatusCode() == StatusCodes.ST_400_BAD_REQ) {
-            validPinCode = apiClientProvider.getValidPinCode();
+            validPinCode = paoHelper.getValidPinCode(false);
             responseSetPinCode = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
         }
         orderClient.assertThatPinCodeIsSet(responseSetPinCode);
 
         // Confirm order
         String customerFirstName = ParserUtil
-                .parseFirstName(orderDetailData.getCustomer().getName());
+            .parseFirstName(orderDetailData.getCustomer().getName());
         String customerLastName = ParserUtil.parseLastName(orderDetailData.getCustomer().getName());
         OrderCustomerData orderCustomerData = new OrderCustomerData();
         orderCustomerData.setFirstName(customerFirstName);
@@ -118,9 +121,9 @@ public class OrderSearchTest extends WebBaseSteps {
         orderCustomerData.setEmail(orderDetailData.getCustomer().getEmail());
 
         String recipientFirstName = ParserUtil
-                .parseFirstName(orderDetailData.getRecipient().getName());
+            .parseFirstName(orderDetailData.getRecipient().getName());
         String recipientLastName = ParserUtil
-                .parseLastName(orderDetailData.getRecipient().getName());
+            .parseLastName(orderDetailData.getRecipient().getName());
         OrderCustomerData orderRecipientData = new OrderCustomerData();
         orderRecipientData.setFirstName(recipientFirstName);
         orderRecipientData.setLastName(recipientLastName);
@@ -148,16 +151,17 @@ public class OrderSearchTest extends WebBaseSteps {
         confirmOrderData.setGiveAway(giveAwayData);
 
         Response<OrderData> respConfirm = orderClient
-                .confirmOrder(orderData.getOrderId(), confirmOrderData);
+            .confirmOrder(orderData.getOrderId(), confirmOrderData);
         orderClient.assertThatIsConfirmed(respConfirm, orderData);
         if (waitUntilIsConfirmed) {
             orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderData.getOrderId(),
-                    SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
+                SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
         }
         return orderData.getOrderId();
     }
 
     @Test(description = "C22829624 Ордерс. Фильтрация по статусу заказа")
+    @Ignore("Надо обновить шаги тест кейса и переделать его")
     public void testOrderFilterByStatus() throws Exception {
         // Step 1
         step("Открыть страницу с Заказами");
@@ -166,15 +170,17 @@ public class OrderSearchTest extends WebBaseSteps {
 
         // Step 2
         step("В фильтре Статус заказа выставить значение = Создан, нажать кнопку 'Показать заказы'");
-        ordersPage.selectStatusFilters(CREATED)
-                .clickApplyFilters()
-                .shouldDocumentListContainsOnlyWithStatuses(CREATED);
+        ordersPage.openFilterWidget()
+            .selectStatusFilters(CREATED)
+            .clickApplyFilters()
+            .shouldDocumentListContainsOnlyWithStatuses(CREATED);
 
         // Step 3
         step("Деактивировать фильтр Создан, убрав чекбокс, нажать кнопку 'Показать заказы'");
-        ordersPage.deselectStatusFilters(CREATED)
-                .clickApplyFilters()
-                .shouldDocumentListIs(documentListFirst);
+        ordersPage.openFilterWidget()
+            .deselectStatusFilters(CREATED)
+            .clickApplyFilters()
+            .shouldDocumentListIs(documentListFirst);
 
         /* TODO Надо обновить шаги тест кейса и переделать его
         // Step 4
@@ -195,7 +201,7 @@ public class OrderSearchTest extends WebBaseSteps {
         // Step 6
         step("Нажать на кнопку 'Очистить фильтры' (изображена метла), нажать 'Показать заказы'");
         ordersPage.clearFiltersAndSubmit()
-                .shouldDocumentListNumbersEqual(documentListFirst.stream().map(ShortOrderDocWebData::getNumber).collect(Collectors.toList()));
+            .shouldDocumentListNumbersEqual(documentListFirst.stream().map(ShortOrderDocWebData::getNumber).collect(Collectors.toList()));
     }
 
     @Test(description = "C22893768 Ордерс. Фильтрация по Способу получения")
@@ -207,21 +213,25 @@ public class OrderSearchTest extends WebBaseSteps {
 
         // Step 2
         step("В фильтре Способ получения выставить значение = Самовывоз, нажать кнопку 'Показать заказы'");
-        ordersPage.selectDeliveryTypeFilters(PICKUP)
-                .clickApplyFilters()
-                .shouldDocumentListContainsOnlyWithDeliveryTypes(PICKUP);
+        ordersPage.openFilterWidget()
+            .selectDeliveryTypeFilters(PICKUP)
+            .clickApplyFilters()
+            .shouldDocumentListContainsOnlyWithDeliveryTypes(PICKUP);
 
         // Step 3
         step("В фильтре Способ получения выставить значение = Доставка, нажать кнопку 'Показать заказы'");
-        ordersPage.clearFiltersAndSubmit()
-                .selectDeliveryTypeFilters(DELIVERY_TK)
-                .clickApplyFilters()
-                .shouldDocumentListContainsOnlyWithDeliveryTypes(DELIVERY_TK);
+        ordersPage.openFilterWidget()
+            .clearFiltersAndSubmit()
+            .openFilterWidget()
+            .selectDeliveryTypeFilters(DELIVERY_TK)
+            .clickApplyFilters()
+            .shouldDocumentListContainsOnlyWithDeliveryTypes(DELIVERY_TK);
 
         // Step 4
         step("Нажать на кнопку 'Очистить фильтры' (изображена метла), нажать 'Показать заказы'");
-        ordersPage.clearFiltersAndSubmit()
-                .shouldDocumentListNumbersEqual(documentListFirst.stream().map(ShortOrderDocWebData::getNumber).collect(Collectors.toList()));
+        ordersPage.openFilterWidget()
+            .clearFiltersAndSubmit()
+            .shouldDocumentListNumbersEqual(documentListFirst.stream().map(ShortOrderDocWebData::getNumber).collect(Collectors.toList()));
     }
 
     @Issue("PUZ2-2092")
@@ -231,17 +241,17 @@ public class OrderSearchTest extends WebBaseSteps {
         SimpleCustomerData customerData = new SimpleCustomerData();
         customerData.generateRandomData();
         customerData.setName(RandomStringUtils.randomAlphabetic(6),
-                RandomStringUtils.randomAlphabetic(6));
+            RandomStringUtils.randomAlphabetic(6));
 
         SimpleCustomerData recipientData = new SimpleCustomerData();
         recipientData.generateRandomData();
         recipientData.setName(RandomStringUtils.randomAlphabetic(6),
-                RandomStringUtils.randomAlphabetic(6));
+            RandomStringUtils.randomAlphabetic(6));
 
         SimpleCustomerData customerRecipientData = new SimpleCustomerData();
         customerRecipientData.generateRandomData();
         customerRecipientData.setName(RandomStringUtils.randomAlphabetic(6),
-                RandomStringUtils.randomAlphabetic(6));
+            RandomStringUtils.randomAlphabetic(6));
 
         OrderDetailData orderData1 = new OrderDetailData();
         orderData1.setCustomer(customerData);
@@ -262,20 +272,20 @@ public class OrderSearchTest extends WebBaseSteps {
 
             // Step 2
             step("В фильтре поиска выставить 'Номер заказа', вбить номер из предусловия, нажать " +
-                    "кнопку 'Показать заказы'");
+                "кнопку 'Показать заказы'");
             ordersPage.selectSearchType(OrderHeaderPage.SearchTypes.ORDER_NUMBER);
             ordersPage.enterSearchTextAndSubmit(orderId_1);
             ordersPage.shouldDocumentListNumbersEqual(Collections.singletonList(orderId_1));
 
             // Step 3
             step("Нажать на кнопку 'Очистить фильтры'(изображена метла), нажать 'Показать заказы'");
-            ordersPage.clearFiltersAndSubmit();
-            ordersPage.softAssertDocumentCountIs(ordersCountBefore, 3);
+            ordersPage.openFilterWidget()
+                .clearFiltersAndSubmit()
+                .softAssertDocumentCountIs(ordersCountBefore, 3);
 
             // Step 4
-            step("В фильтре поиска выставить последние 4 цифры заказа из предусловия, нажать кнопку"
-                    +
-                    " 'Показать заказы'");
+            step("В фильтре поиска выставить последние 4 цифры заказа из предусловия, нажать кнопку" +
+                " 'Показать заказы'");
             String partOrder = orderId_1.substring(orderId_1.length() - 4);
             ordersPage.enterSearchTextAndSubmit(partOrder);
             ordersPage.shouldDocumentListFilteredByNumber(partOrder);
@@ -287,7 +297,7 @@ public class OrderSearchTest extends WebBaseSteps {
 
             // Step 6
             step("В фильтре поиска выставить 'Номер телефона' , вбить в маске только 3 цифры, " +
-                    "например '937', нажать кнопку 'Показать заказы'");
+                "например '937', нажать кнопку 'Показать заказы'");
             ordersPage.selectSearchType(OrderHeaderPage.SearchTypes.PHONE_NUMBER);
             ordersPage.enterSearchTextAndSubmit("937");
             ordersPage.softAssertDocumentListIsEmpty(6);
@@ -300,8 +310,9 @@ public class OrderSearchTest extends WebBaseSteps {
 
             // Step 8
             step("Нажать на кнопку 'Очистить фильтры'(изображена метла), нажать 'Показать заказы'");
-            ordersPage.clearFiltersAndSubmit();
-            ordersPage.softAssertDocumentCountIs(ordersCountBefore, 8);
+            ordersPage.openFilterWidget()
+                .clearFiltersAndSubmit()
+                .softAssertDocumentCountIs(ordersCountBefore, 8);
 
             // Step 9
             step("Вбить номер телефона получателя из предусловия п.1");
@@ -311,7 +322,7 @@ public class OrderSearchTest extends WebBaseSteps {
 
             // Step 10
             step("Вбить номер телефона клиента или получателя " +
-                    "(должны совпадать) из предусловия п.2, нажать 'Показать заказы'");
+                "(должны совпадать) из предусловия п.2, нажать 'Показать заказы'");
             ordersPage.enterSearchTextAndSubmit(customerRecipientData.getPhoneNumber());
             ordersPage.softAssertDocumentIsPresent(orderId_2, 10);
 
@@ -352,7 +363,6 @@ public class OrderSearchTest extends WebBaseSteps {
             ordersPage.softAssertDocumentIsPresent(orderId_1, 16);
         } finally {
             softAssert().verifyAll();
-            OrderClient orderClient = apiClientProvider.getOrderClient();
             orderClient.cancelOrder(orderId_1);
             orderClient.cancelOrder(orderId_2);
         }
@@ -368,24 +378,27 @@ public class OrderSearchTest extends WebBaseSteps {
 
         // Step 2
         step("В фильтре 'Дата' выставить дату = От - сегодня, До - сегодня, " +
-                "нажать кнопку 'Показать заказы'");
+            "нажать кнопку 'Показать заказы'");
         LocalDate fromDate = LocalDate.now();
         LocalDate toDate = LocalDate.now();
-        ordersPage.selectDateCreationsFilters(fromDate, toDate)
-                .clickApplyFilters();
+        ordersPage.openFilterWidget()
+            .selectDateCreationsFilters(fromDate, toDate)
+            .clickApplyFilters();
         ordersPage.shouldDocumentListFilteredByDates(fromDate, toDate);
 
         // Step 3
         step("Нажать на кнопку 'Очистить фильтры'(изображена метла), нажать 'Показать заказы'");
-        ordersPage.clearFiltersAndSubmit();
-        ordersPage.shouldDocumentCountIs(ordersCountBefore);
+        ordersPage.openFilterWidget()
+            .clearFiltersAndSubmit()
+            .shouldDocumentCountIs(ordersCountBefore);
 
         // Step 4
         step("В фильтре 'Дата' выставить дату = От - завтра, До - завтра, нажать кнопку 'Показать заказы'");
         fromDate = LocalDate.now().plusDays(1);
         toDate = LocalDate.now().plusDays(1);
-        ordersPage.selectDateCreationsFilters(fromDate, toDate)
-                .clickApplyFilters();
+        ordersPage.openFilterWidget()
+            .selectDateCreationsFilters(fromDate, toDate)
+            .clickApplyFilters();
         ordersPage.shouldDocumentListIsEmpty();
 
         // Step 5
@@ -407,7 +420,7 @@ public class OrderSearchTest extends WebBaseSteps {
         fromDate = LocalDate.now().minusDays(3);
         toDate = LocalDate.now().plusDays(4);
         ordersPage.selectDateCreationsFilters(fromDate, toDate)
-                .clickApplyFilters();
+            .clickApplyFilters();
         ordersPage.shouldDocumentListFilteredByDates(fromDate, toDate);
 
         // Step 8

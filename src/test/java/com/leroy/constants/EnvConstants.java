@@ -56,12 +56,21 @@ public class EnvConstants {
     public static final String RUPTURES_API_HOST = getProperty("url.api.ruptures_host");
     public static final String PICK_API_HOST = getProperty("url.api.pick_host");
     public static final String RABBIT_API_HOST = getProperty("url.api.rabbit.host");
+    public static final String BACKEND_API_HOST = getProperty("url.api.backend.host");
 
     // Jaeger
     public static final String JAEGER_HOST = getProperty("url.jaeger.host");
     public static final String JAEGER_SERVICE = getProperty("url.jaeger.service");
     public static final String RUPTURES_JAEGER_HOST = getProperty("url.jaeger.ruptures_host");
     public static final String RUPTURES_JAEGER_SERVICE = getProperty("url.jaeger.ruptures_service");
+    public static final String PRODUCTSEARCH_JAEGER_HOST = getProperty("url.jaeger.productsearch_host");
+    public static final String PRODUCTSEARCH_JAEGER_SERVICE = getProperty("url.jaeger.productsearch_service");
+    public static final String PICK_JAEGER_HOST = getProperty("url.jaeger.pick_host");
+    public static final String PICK_JAEGER_SERVICE = getProperty("url.jaeger.pick_service");
+    public static final String PAO_JAEGER_HOST = getProperty("url.jaeger.pao_host");
+    public static final String PAO_JAEGER_SERVICE = getProperty("url.jaeger.pao_service");
+    public static final String CLIENTS_JAEGER_HOST = getProperty("url.jaeger.clients_host");
+    public static final String CLIENTS_JAEGER_SERVICE = getProperty("url.jaeger.clients_service");
 
     /**
      * Get the value of a property key

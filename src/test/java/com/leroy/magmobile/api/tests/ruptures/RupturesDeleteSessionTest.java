@@ -1,9 +1,12 @@
 package com.leroy.magmobile.api.tests.ruptures;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.api.ErrorTextConst;
 import com.leroy.constants.api.StatusCodes;
-import com.leroy.magmobile.api.clients.RupturesClient;
 import com.leroy.magmobile.api.data.CommonErrorResponseData;
 import com.leroy.magmobile.api.data.ruptures.ReqRuptureSessionData;
 import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionData;
@@ -11,10 +14,6 @@ import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionDataList;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.not;
 
 public class RupturesDeleteSessionTest extends BaseRuptureTest {
 
@@ -24,8 +23,6 @@ public class RupturesDeleteSessionTest extends BaseRuptureTest {
     }
 
     private void setUp(boolean finishSession) {
-        RupturesClient rupturesClient = rupturesClient();
-
         RuptureProductData productData = new RuptureProductData();
         productData.generateRandomData();
 
@@ -49,7 +46,6 @@ public class RupturesDeleteSessionTest extends BaseRuptureTest {
         setUp(false);
 
         step("Удаляем сессию");
-        RupturesClient rupturesClient = rupturesClient();
         Response<JsonNode> resp = rupturesClient.deleteSession(sessionId);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
 
@@ -64,7 +60,6 @@ public class RupturesDeleteSessionTest extends BaseRuptureTest {
 
     @Test(description = "C3285341 DELETE a previously deleted rupture session")
     public void testDeletePreviouslyDeletedRuptureSession() {
-        RupturesClient rupturesClient = rupturesClient();
         if (sessionId == null) {
             setUp(false);
             step("Удаляем сессию");
@@ -82,7 +77,6 @@ public class RupturesDeleteSessionTest extends BaseRuptureTest {
         setUp(true);
 
         step("Удаляем сессию");
-        RupturesClient rupturesClient = rupturesClient();
         Response<JsonNode> resp = rupturesClient.deleteSession(sessionId);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
 
@@ -97,7 +91,6 @@ public class RupturesDeleteSessionTest extends BaseRuptureTest {
 
     @Test(description = "C3285342 DELETE a not existing session")
     public void testDeleteNotExistingSession() {
-        RupturesClient rupturesClient = rupturesClient();
 
         step("Пробуем удалить несуществующую сессию");
         Response<JsonNode> resp = rupturesClient.deleteSession(Integer.MAX_VALUE);
@@ -106,8 +99,6 @@ public class RupturesDeleteSessionTest extends BaseRuptureTest {
 
     @Test(description = "C23409769 DELETE rupture session mashup validation")
     public void testDeleteSessionMashupValidation() {
-        RupturesClient rupturesClient = rupturesClient();
-
         Response<JsonNode> resp = rupturesClient.deleteSession("");
         assertThat("Response code", resp.getStatusCode(), equalTo(StatusCodes.ST_400_BAD_REQ));
         CommonErrorResponseData errorResp = resp.asJson(CommonErrorResponseData.class);

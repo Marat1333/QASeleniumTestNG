@@ -61,7 +61,7 @@ timestamps {
 
         stage('Send notification') {
             telegramMessage("Ruptures API Тесты завершены. \nTest run: ${env.RUN} \n" +
-                    "[Allure report](https://jenkins.lmru.adeo.com/job/stock-availability/job/Autotests/job/API/"+ env.BUILD_NUMBER +"/allure)")
+                    "[Allure report](" + env.BUILD_URL + "allure)")
         }
     }
 }

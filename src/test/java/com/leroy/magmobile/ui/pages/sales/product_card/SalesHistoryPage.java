@@ -2,7 +2,7 @@ package com.leroy.magmobile.ui.pages.sales.product_card;
 
 import com.leroy.core.annotations.AppFindBy;
 import com.leroy.core.web_elements.general.Element;
-import com.leroy.magmobile.api.data.catalog.product.SalesHistoryData;
+import com.leroy.common_mashups.catalogs.data.product.SalesHistoryData;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import com.leroy.magmobile.ui.pages.more.SearchShopPage;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SalesHistoryUnitsModalPage;

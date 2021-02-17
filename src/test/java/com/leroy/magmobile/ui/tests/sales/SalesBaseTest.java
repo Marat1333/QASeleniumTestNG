@@ -1,7 +1,13 @@
 package com.leroy.magmobile.ui.tests.sales;
 
+import static com.leroy.constants.sales.DiscountConst.TYPE_NEW_PRICE;
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.data.CatalogSearchFilter;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.DiscountConst;
@@ -10,8 +16,7 @@ import com.leroy.core.annotations.Smoke;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.OrderClient;
-import com.leroy.magmobile.api.data.catalog.CatalogSearchFilter;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
+import com.leroy.magmobile.api.clients.SalesDocSearchClient;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
@@ -24,31 +29,35 @@ import com.leroy.magmobile.ui.pages.sales.AddProductPage;
 import com.leroy.magmobile.ui.pages.sales.MainSalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SalesDocumentsPage;
 import com.leroy.magmobile.ui.pages.sales.SubmittedSalesDocumentPage;
-import com.leroy.magmobile.ui.pages.sales.orders.cart.*;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.Cart35Page;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.CartPage;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.CartStep1Page;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.CartStep2Page;
+import com.leroy.magmobile.ui.pages.sales.orders.cart.CartStep3Page;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.utils.RandomUtil;
 import io.qameta.allure.Step;
-import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.leroy.constants.sales.DiscountConst.TYPE_NEW_PRICE;
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
+import org.testng.annotations.Test;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class SalesBaseTest extends AppBaseSteps {
 
     @Inject
-    PAOHelper paoHelper;
-
+    private PAOHelper paoHelper;
     @Inject
-    protected SearchProductHelper searchProductHelper;
+    private SearchProductHelper searchProductHelper;
+    @Inject
+    private SalesDocSearchClient salesDocSearchClient;
+    @Inject
+    private CartClient cartClient;
+    @Inject
+    private OrderClient orderClient;
 
     // СТАРТ ТЕСТА С ЭКРАНА КОРЗИНЫ:
     @Step("Pre-condition: Начать тест с экрана пустой корзины")
@@ -90,7 +99,6 @@ public class SalesBaseTest extends AppBaseSteps {
     @Step("Pre-condition: Создание корзины")
     protected void startFromScreenWithCreatedCart(List<CartProductOrderData> productDataList) throws Exception {
         if (!Cart35Page.isThisPage()) {
-            CartClient cartClient = apiClientProvider.getCartClient();
             Response<CartData> response = cartClient.sendRequestCreate(productDataList);
             if (!response.isSuccessful())
                 response = cartClient.sendRequestCreate(productDataList);
@@ -121,7 +129,7 @@ public class SalesBaseTest extends AppBaseSteps {
     protected List<String> getAnyLmCodesProductWithoutSpecificOptions(
             int necessaryCount) {
         return searchProductHelper.getProducts(necessaryCount, false, false)
-                .stream().map(ProductItemData::getLmCode).collect(Collectors.toList());
+                .stream().map(ProductData::getLmCode).collect(Collectors.toList());
     }
 
     protected String getAnyLmCodeProductWithoutSpecificOptions() {
@@ -166,12 +174,12 @@ public class SalesBaseTest extends AppBaseSteps {
         filtersData.setAvs(false);
         filtersData.setTopEM(false);
         filtersData.setHasAvailableStock(true);
-        List<ProductItemData> productItemDataList = searchProductHelper.getProducts(2, filtersData);
+        List<ProductData> productIDataList = searchProductHelper.getProducts(2, filtersData);
         CartProductOrderData productWithNegativeBalance = new CartProductOrderData(
-                productItemDataList.get(0));
-        productWithNegativeBalance.setQuantity(productItemDataList.get(0).getAvailableStock() + 10.0);
+                productIDataList.get(0));
+        productWithNegativeBalance.setQuantity(productIDataList.get(0).getAvailableStock() + 10.0);
         CartProductOrderData productWithPositiveBalance = new CartProductOrderData(
-                productItemDataList.get(1));
+                productIDataList.get(1));
         productWithPositiveBalance.setQuantity(1.0);
 
         return Arrays.asList(productWithNegativeBalance, productWithPositiveBalance);
@@ -181,7 +189,7 @@ public class SalesBaseTest extends AppBaseSteps {
         int tryCount = 10;
         for (int i = 0; i < tryCount; i++) {
             String generatedPinCode = RandomUtil.randomPinCode(isPickup);
-            SalesDocumentListResponse salesDocumentsResponse = apiClientProvider.getSalesDocSearchClient()
+            SalesDocumentListResponse salesDocumentsResponse = salesDocSearchClient
                     .getSalesDocumentsByPinCodeOrDocId(generatedPinCode)
                     .asJson();
             if (salesDocumentsResponse.getTotalCount() == 0) {
@@ -211,7 +219,6 @@ public class SalesBaseTest extends AppBaseSteps {
     }
 
     private String createDraftCart(List<String> lmCodes, int productCount, boolean hasDiscount) {
-        CartClient cartClient = apiClientProvider.getCartClient();
         if (lmCodes == null)
             lmCodes = getAnyLmCodesProductWithoutSpecificOptions(productCount);
         List<CartProductOrderData> productOrderDataList = new ArrayList<>();
@@ -261,7 +268,6 @@ public class SalesBaseTest extends AppBaseSteps {
     }
 
     protected void cancelOrder(String orderId, String expectedStatusBefore) throws Exception {
-        OrderClient orderClient = apiClientProvider.getOrderClient();
         orderClient.waitUntilOrderCanBeCancelled(orderId);
         Response<JsonNode> r = orderClient.cancelOrder(orderId);
         anAssert().isTrue(r.isSuccessful(),

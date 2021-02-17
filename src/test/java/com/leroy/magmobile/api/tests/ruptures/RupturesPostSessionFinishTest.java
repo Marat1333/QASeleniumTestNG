@@ -3,7 +3,6 @@ package com.leroy.magmobile.api.tests.ruptures;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.api.ErrorTextConst;
 import com.leroy.constants.api.StatusCodes;
-import com.leroy.magmobile.api.clients.RupturesClient;
 import com.leroy.magmobile.api.data.CommonErrorResponseData;
 import com.leroy.magmobile.api.data.ruptures.ReqRuptureSessionData;
 import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionData;
@@ -16,15 +15,12 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.leroy.magmobile.api.enums.RupturesSessionStatuses.FINISHED;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
 public class RupturesPostSessionFinishTest extends BaseRuptureTest {
-
-    // Test constants
-    private static final String ACTIVE_STATUS = "active";
-    private static final String FINISHED_STATUS = "finished";
 
     @Override
     protected boolean isDeleteSessionAfterEveryMethod() {
@@ -33,8 +29,6 @@ public class RupturesPostSessionFinishTest extends BaseRuptureTest {
 
     @Step("Pre-condition: Создаем сессию")
     private void setUp() {
-        RupturesClient rupturesClient = rupturesClient();
-
         RuptureProductData productData = new RuptureProductData();
         productData.generateRandomData();
 
@@ -52,24 +46,23 @@ public class RupturesPostSessionFinishTest extends BaseRuptureTest {
     @Test(description = "C3233585 PUT ruptures session finish")
     public void testFinishRuptureSession() {
         setUp();
-        RupturesClient rupturesClient = rupturesClient();
         step("Завершаем сессию");
         Response<JsonNode> resp = rupturesClient.finishSession(sessionId);
         rupturesClient.assertThatIsUpdatedOrDeleted(resp);
 
         step("Ищем созданные сессии и проверяем, что нужная нам в статсе 'finished'");
-        Response<ResRuptureSessionDataList> getResp = rupturesClient.getSessions(FINISHED_STATUS, 50);
+        Response<ResRuptureSessionDataList> getResp = rupturesClient.getSessions(FINISHED, 50);
         isResponseOk(getResp);
         ResRuptureSessionDataList respBody = getResp.asJson();
         List<ResRuptureSessionData> items = respBody.getItems().stream().filter(
                 a -> a.getSessionId().equals(sessionId)).collect(Collectors.toList());
         assertThat("Session " + sessionId + " wasn't found", items, hasSize(1));
-        assertThat("Session " + sessionId + " should be finished", items.get(0).getStatus(), equalTo(FINISHED_STATUS));
+        assertThat("Session " + sessionId + " should be finished", items.get(0).getStatus(),
+                equalTo(FINISHED.getName()));
     }
 
     @Test(description = "C3285352 PUT ruptures session finish for finished session")
     public void testFinishFinishedRuptureSession() {
-        RupturesClient rupturesClient = rupturesClient();
         if (sessionId == null) {
             setUp();
             step("Завершаем сессию");
@@ -84,7 +77,6 @@ public class RupturesPostSessionFinishTest extends BaseRuptureTest {
 
     @Test(description = "C3285353 PUT ruptures session finish for deleted session")
     public void testFinishDeletedRuptureSession() {
-        RupturesClient rupturesClient = rupturesClient();
         if (sessionId == null) {
             setUp();
         }
@@ -100,7 +92,6 @@ public class RupturesPostSessionFinishTest extends BaseRuptureTest {
     @Test(description = "C3285354 PUT ruptures session finish for a not existing session")
     public void testPutRupturesSessionFinishForNotExistingSession() {
         int notExistingSession = Integer.MAX_VALUE;
-        RupturesClient rupturesClient = rupturesClient();
 
         step("Пытаемся завершить несуществующую сессию");
         Response<JsonNode> resp = rupturesClient.finishSession(notExistingSession);
@@ -109,8 +100,6 @@ public class RupturesPostSessionFinishTest extends BaseRuptureTest {
 
     @Test(description = "C23409768 PUT ruptures session finish mashup validation")
     public void testPutRupturesSessionFinishMashupValidation() {
-        RupturesClient rupturesClient = rupturesClient();
-
         Response<JsonNode> resp = rupturesClient.finishSession("");
         assertThat("Response code", resp.getStatusCode(), equalTo(StatusCodes.ST_400_BAD_REQ));
         CommonErrorResponseData errorResp = resp.asJson(CommonErrorResponseData.class);

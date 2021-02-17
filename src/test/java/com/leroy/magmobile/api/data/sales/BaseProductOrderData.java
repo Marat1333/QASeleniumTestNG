@@ -1,6 +1,6 @@
 package com.leroy.magmobile.api.data.sales;
 
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import lombok.Data;
 
 @Data
@@ -15,8 +15,8 @@ public class BaseProductOrderData {
     public BaseProductOrderData() {
     }
 
-    public BaseProductOrderData(ProductItemData productItemResponse) {
-        this.setLmCode(productItemResponse.getLmCode());
-        this.setPrice(productItemResponse.getPrice());
+    public BaseProductOrderData(ProductData productDataResponse) {
+        this.setLmCode(productDataResponse.getLmCode());
+        this.setPrice(productDataResponse.getPrice());
     }
 }

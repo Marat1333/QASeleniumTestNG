@@ -107,7 +107,7 @@ public class OrdersFlowTest extends BasePAOTest {
         pickingTaskId = respPickingTasks.asJson().getItems().get(0).getTaskId();
     }
 
-    @AfterClass(enabled = false)
+    @AfterClass(enabled = true)
     private void cancelConfirmedOrder() {
         if (orderId != null) {
             Response<JsonNode> resp = orderClient.cancelOrder(orderId);
@@ -123,11 +123,10 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 1:
         step("Открыть страницу с Заказами");
-        OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
-        initFindPickingTask();
+        OrderHeaderPage orderPage = loginAndGoTo(OrderHeaderPage.class);
 
         // Step 2:
-        step("Ввести номер заказа из корзины и нажать кнопку 'Показать заказы'. Заказ: " + orderId);
+        step("Ввести номер заказа из корзины и нажать кнопку Поиска. Заказ: " + orderId);
         orderPage.enterSearchTextAndSubmit(orderId);
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(
@@ -197,7 +196,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 1:
         step("Открыть страницу с Заказами");
-        OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
+        OrderHeaderPage orderPage = loginAndGoTo(OrderHeaderPage.class);
 
         // Step 2:
         step("Найти созданный заказ с статусе 'Готов к Сборке' с номером: " + orderId);

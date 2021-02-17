@@ -4,11 +4,11 @@ import static com.leroy.constants.sales.DiscountConst.TYPE_NEW_PRICE;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.CartClient;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountReasonData;
@@ -29,7 +29,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 public class CartTest extends BaseMagPortalApiTest {
 
     private CartData cartData;
-    private List<ProductItemData> products;
+    private List<ProductData> products;
 
     @Inject
     private CartClient cartClient;

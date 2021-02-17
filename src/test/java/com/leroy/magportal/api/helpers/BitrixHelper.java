@@ -6,6 +6,7 @@ import static com.leroy.magportal.api.constants.PaymentMethodEnum.TPNET;
 import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
 
 import com.google.inject.Inject;
+import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.customer_accounts.clients.CustomerClient;
 import com.leroy.common_mashups.customer_accounts.data.CustomerListData;
 import com.leroy.common_mashups.customer_accounts.data.CustomerSearchFilters;
@@ -15,9 +16,7 @@ import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.api.ThreadApiClient;
 import com.leroy.core.configuration.Log;
-import com.leroy.magmobile.api.data.catalog.ProductItemData;
 import com.leroy.magportal.api.clients.OrderClient;
-import com.leroy.magportal.api.clients.ShopsClient;
 import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
 import com.leroy.magportal.api.constants.LmCodeTypeEnum;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
@@ -32,6 +31,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.Assert;
 import ru.leroymerlin.qa.core.clients.base.Response;
 import ru.leroymerlin.qa.core.clients.tunnel.TunnelClient;
 import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionPayload;
@@ -44,7 +44,7 @@ public class BitrixHelper extends BaseHelper {
     @Inject
     private PaymentHelper paymentHelper;
     @Inject
-    private ShopsClient shopsClient;
+    private ShopsHelper shopsHelper;
     @Inject
     private SearchProductHelper searchProductHelper;
     @Inject
@@ -114,6 +114,7 @@ public class BitrixHelper extends BaseHelper {
             }
         });
 
+        Assert.assertTrue("No orders were created!", result.size() > 0);
         return result;
     }
 
@@ -135,24 +136,29 @@ public class BitrixHelper extends BaseHelper {
         ArrayList<BitrixSolutionPayload.Basket> result = new ArrayList<>();
 
         if (orderData.getLmCode() != null) {
-            ProductItemData product = searchProductHelper.getProductByLmCode(orderData.getLmCode());
-            result.add(productItemDataToPayload(product));
+            ProductData product = searchProductHelper.searchProductByLmCode(orderData.getLmCode());
+            result.add(productDataToPayload(product));
         } else {
-            List<ProductItemData> products = searchProductHelper
+            List<ProductData> products = searchProductHelper
                     .getProductsForShop(productsCount, shopId);
-            for (ProductItemData productData : products) {
-                result.add(productItemDataToPayload(productData));
+            for (ProductData productData : products) {
+                result.add(productDataToPayload(productData));
             }
         }
         return result;
     }
 
-    private BitrixSolutionPayload.Basket productItemDataToPayload(ProductItemData product) {
+    private BitrixSolutionPayload.Basket productDataToPayload(ProductData product) {
         BitrixSolutionPayload.Basket basket = new BitrixSolutionPayload.Basket();
         String price = "99.99";
+        double quantity = 10.00;
         double weight = 0.01;
         if (product.getPrice() != null) {
             price = product.getPrice().toString();
+        }
+
+        if (product.getLmCode().equals(LmCodeTypeEnum.DIMENSIONAL.getValue())) {
+            quantity = 9.99;
         }
 
         basket.setId("128510514");
@@ -160,7 +166,7 @@ public class BitrixHelper extends BaseHelper {
         basket.setName(product.getTitle());
         basket.setPrice(price);
         basket.setTax(18);
-        basket.setQuantity("10");//TODO: it's make sense to parametrise
+        basket.setQuantity(Double.toString(quantity));//TODO: it's make sense to parametrise
         basket.setWeight(weight);
         //TODO: ADD LT Products
         return basket;
@@ -176,7 +182,7 @@ public class BitrixHelper extends BaseHelper {
         payload.setCanceled("N");
         payload.setStatusId("N");
         payload.setDateStatus(dateTime.toString());
-        payload.setPriceDelivery(orderData.priceDelivery);
+        payload.setPriceDelivery(orderData.deliveryPrice);
         payload.setAllowDelivery("Y");
         payload.setPrice("10156.00");
         payload.setCurrency("RUB");
@@ -250,7 +256,7 @@ public class BitrixHelper extends BaseHelper {
                 dateTime.plusDays(1).toLocalDate()
                         .format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
         payload.setTime("08:00 - 13:00");
-        payload.setType(orderData.getDeliveryType());
+        payload.setType(orderData.getDeliveryType().getType());
         payload.setSameDay(orderData.sameDay);
         payload.setAddressNotFound(false);
         payload.setCoordinates(convertCoordinates(shop));
@@ -258,20 +264,20 @@ public class BitrixHelper extends BaseHelper {
         payload.setLift(orderData.lift);
         payload.setExtraBig(0);
         payload.setComment(comment);
-        payload.setDeliveryPrice(orderData.deliveryPrice);
+        payload.setDeliveryPrice(orderData.deliveryFullPrice);
         payload.setLiftPrice(orderData.liftPrice);
         payload.setExtraBig2(0);
-        payload.setDeliveryServices(orderData.deliveryServiceType);
+        payload.setDeliveryServices(orderData.getDeliveryType().getService());
         payload.setLongTail(0);
         payload.setCarryPrice("");
         payload.setCarryLength("");
 //        payload.setPvzData(orderData.pvzData);
 
         payload.setAddress(makeAddressPayload());
-        if (orderData.getDeliveryType().equals(DeliveryServiceTypeEnum.PICKUP.getType())) {
+        if (orderData.getDeliveryType().getType().equals(DeliveryServiceTypeEnum.PICKUP.getType())) {
             payload.setPickupShop(makePickupShopPayload(shop));
         }
-        if (orderData.getDeliveryType().equals(DeliveryServiceTypeEnum.DELIVERY_PVZ.getType())) {
+        if (orderData.getDeliveryType().getType().equals(DeliveryServiceTypeEnum.DELIVERY_PVZ.getType())) {
             payload.setPvzData(makePvzPayload());
         }
 
@@ -332,7 +338,7 @@ public class BitrixHelper extends BaseHelper {
             shopId = userSessionData().getUserShopId();
         }
 
-        return shopsClient.getShopById(shopId);
+        return shopsHelper.getShopById(shopId);
     }
 
     private String convertShopId(Integer shopId) {

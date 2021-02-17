@@ -1,6 +1,7 @@
 package com.leroy.magmobile.api.tests.ruptures;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
 import com.leroy.magmobile.api.clients.RupturesClient;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductDataList;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
@@ -10,9 +11,8 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 public abstract class BaseRuptureTest extends BaseProjectApiTest {
 
-    protected RupturesClient rupturesClient() {
-        return apiClientProvider.getRupturesClient();
-    }
+    @Inject
+    protected RupturesClient rupturesClient;
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -24,7 +24,6 @@ public abstract class BaseRuptureTest extends BaseProjectApiTest {
 
     private void deleteSessionAfter() {
         if (sessionId != null) {
-            RupturesClient rupturesClient = rupturesClient();
             Response<JsonNode> r = rupturesClient.deleteSession(sessionId);
             rupturesClient.assertThatIsUpdatedOrDeleted(r);
         }
