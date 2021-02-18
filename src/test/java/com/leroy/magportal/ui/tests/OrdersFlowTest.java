@@ -50,14 +50,14 @@ public class OrdersFlowTest extends BasePAOTest {
         List<CartProductOrderData> productOrderDataList = makeCartProductsList(productCount, 2.0);
         switch (orderStatus) {
             case ALLOWED_FOR_PICKING:
-                orderId = helper.createConfirmedOrder(productOrderDataList, true).getOrderId();
+                orderId = helper.createConfirmedPickupOrder(productOrderDataList, true).getOrderId();
                 break;
             case PICKED:
-                orderId = helper.createConfirmedOrder(productOrderDataList, true).getOrderId();
+                orderId = helper.createConfirmedPickupOrder(productOrderDataList, true).getOrderId();
                 orderClient.moveNewOrderToStatus(orderId, orderStatus);
                 break;
             default:
-                orderId = helper.createConfirmedOrder(productOrderDataList, false).getOrderId();
+                orderId = helper.createConfirmedPickupOrder(productOrderDataList, false).getOrderId();
                 break;
         }
 

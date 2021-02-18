@@ -1,5 +1,6 @@
 package com.leroy.magportal.api.data.onlineOrders;
 
+import com.leroy.magmobile.api.data.sales.orders.GiveAwayData;
 import java.util.List;
 import lombok.Data;
 
@@ -12,12 +13,5 @@ public class OrderRearrangePayload {
     private Integer paymentVersion;
     private Integer solutionVersion;
     private List<OrderProductDataPayload> products;
-    private GiveAway giveAway;
-
-    @Data
-    private class GiveAway {
-
-        private String date;
-        private String point;
-    }
+    private GiveAwayData giveAway;
 }

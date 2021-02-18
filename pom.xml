@@ -196,7 +196,7 @@
             <dependency>
                 <groupId>ru.leroymerlin.qa.core</groupId>
                 <artifactId>bom</artifactId>
-                <version>0.39-SNAPSHOT</version>
+                <version>0.39</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>

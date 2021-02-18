@@ -16,7 +16,11 @@ import com.leroy.magportal.api.data.timeslot.TimeslotData;
 import com.leroy.magportal.api.data.timeslot.TimeslotResponseData;
 import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
+import io.qameta.allure.Issue;
 import io.qameta.allure.Step;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -35,7 +39,8 @@ public class TimeslotTest extends BaseMagPortalApiTest {
 
     @BeforeClass
     private void setUp() {
-        OrderData orderData = paoHelper.createConfirmedOrder(paoHelper.makeCartProducts(3), true);
+        OrderData orderData = paoHelper
+                .createConfirmedPickupOrder(paoHelper.makeCartProducts(3), true);
         currentOrderId = orderData.getOrderId();
     }
 
@@ -43,7 +48,7 @@ public class TimeslotTest extends BaseMagPortalApiTest {
     public void testGetTimeslotSeveralProducts() {
         Response<TimeslotResponseData> response = orderClient.getTimeslots(currentOrderId);
         assertTimeslotResult(response);
-        timeslotData = response.asJson().getData().get(0);
+        timeslotData = paoHelper.getLatestTimeslot(response);
     }
 
     @Test(description = "C23426856 Update Timeslot", dependsOnMethods = {
@@ -53,6 +58,7 @@ public class TimeslotTest extends BaseMagPortalApiTest {
         assertTimeslotUpdateResult(response);
     }
 
+    @Issue("PUZ2-2705")
     @Test(description = "C23426857 Update Timeslot for PAID", dependsOnMethods = {
             "testGetTimeslotSeveralProducts"}, priority = 3)
     public void testUpdateTimeslotPaid() {
@@ -66,12 +72,13 @@ public class TimeslotTest extends BaseMagPortalApiTest {
         makeDimensionalOrder();
         Response<TimeslotResponseData> response = orderClient.getTimeslots(currentOrderId);
         assertTimeslotResult(response);
-        timeslotData = response.asJson().getData().get(0);
+        timeslotData = paoHelper.getLatestTimeslot(response);
     }
 
     private void makeDimensionalOrder() {
-        OrderData orderData = paoHelper.createConfirmedOrder(
-                paoHelper.makeCartProductByLmCode(LmCodeTypeEnum.DIMENSIONAL.getValue()), true);
+        OrderData orderData = paoHelper.createConfirmedPickupOrder(
+                paoHelper.makeDimensionalCartProductByLmCode(LmCodeTypeEnum.DIMENSIONAL.getValue()),
+                true);
         currentOrderId = orderData.getOrderId();
     }
 
@@ -84,7 +91,7 @@ public class TimeslotTest extends BaseMagPortalApiTest {
                 greaterThanOrEqualTo(1));
         for (TimeslotData timeslotData : responseData) {
             assertThat("There are NO available date",
-                    timeslotData.getAvailableDate(), not(emptyOrNullString()));
+                    timeslotData.getDate(), not(emptyOrNullString()));
         }
     }
 
@@ -93,8 +100,19 @@ public class TimeslotTest extends BaseMagPortalApiTest {
         assertThat("Request to Timeslot Update has Failed.", response, successful());
         OrderData orderData = orderClient.getOnlineOrder(currentOrderId).asJson();
         assertThat("Pickup Date was NOT updated",
-                orderData.getGiveAway().getDate(), equalTo(timeslotData.getAvailableDate()));
-        assertThat("Pickup Shop was NOT updated", orderData.getGiveAway().getShopId().toString(),
-                equalTo(timeslotData.getStoreId()));
+                getDateAsLocalDateTime(orderData.getGiveAway().getDate()),
+                equalTo(getDateAsLocalDateTime(timeslotData.getDate())));
+    }
+
+    private Instant getDateAsLocalDateTime(String date) {
+        Instant instant;
+        try {
+            instant = ZonedDateTime
+                    .parse(date, DateTimeFormatter.ISO_INSTANT).toInstant();
+        } catch (Exception ex) {
+            instant = ZonedDateTime.parse(date, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                    .toInstant();
+        }
+        return instant;
     }
 }

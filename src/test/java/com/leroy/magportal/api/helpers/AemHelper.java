@@ -328,7 +328,7 @@ public class AemHelper extends BaseHelper {
         ArrayList<Product> result = new ArrayList<>();
 
         if (orderData.getLmCode() != null) {
-            ProductData product = searchProductHelper.searchProductByLmCode(orderData.getLmCode());
+            ProductData product = searchProductHelper.getProductByLmCode(orderData.getLmCode());
             result.add(productItemDataToPayload(product));
         } else {
             List<ProductData> products = searchProductHelper

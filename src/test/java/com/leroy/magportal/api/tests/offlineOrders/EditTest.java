@@ -40,17 +40,17 @@ public class EditTest extends BaseMagPortalApiTest {
         currentStatus = States.ALLOWED_FOR_PICKING;
         cartProducts = paoHelper.makeCartProducts(currentProductsCount);
 
-        OrderData orderData = paoHelper.createConfirmedOrder(cartProducts, true);
+        OrderData orderData = paoHelper.createConfirmedPickupOrder(cartProducts, true);
         currentOrderId = orderData.getOrderId();
     }
 
     @BeforeMethod
     private void prepareTest() {
         if (currentOrderId == null) {
-            OrderData orderData = paoHelper.createConfirmedOrder(cartProducts, true);
+            OrderData orderData = paoHelper.createConfirmedPickupOrder(cartProducts, true);
             currentOrderId = orderData.getOrderId();
 
-            orderClient.editOrder(currentOrderId, 0, currentCount);
+            orderClient.editOrder(currentOrderId, currentProductsCount - 3, currentCount);
             orderClient.moveNewOrderToStatus(currentOrderId, currentStatus);
         }
 
@@ -87,13 +87,6 @@ public class EditTest extends BaseMagPortalApiTest {
                 currentProductsCount);
     }
 
-    @Test(description = "C23425608 Offline: Edit Picked Paid Order", priority = 5)
-    public void testEditPickedPaid() {
-        currentCount = 7.0;
-        Response<?> response = orderClient.editOrder(currentOrderId, 0, currentCount);
-        orderClient.assertEditResult(response, currentOrderId, currentCount);
-    }
-
     @Test(description = "C23425609 Offline: Add Product to Paid Order (Negative)", priority = 4)
     public void testAddProductPickedPaid() {
         currentStatus = States.PICKED;
@@ -103,6 +96,13 @@ public class EditTest extends BaseMagPortalApiTest {
         response = orderClient.getOnlineOrder(currentOrderId);//just make it successful
         orderClient.assertRearrangeResult(response, currentOrderId, currentCount,
                 currentProductsCount);
+    }
+
+    @Test(description = "C23425608 Offline: Edit Picked Paid Order", priority = 5)
+    public void testEditPickedPaid() {
+        currentCount = 7.0;
+        Response<?> response = orderClient.editOrder(currentOrderId, 0, currentCount);
+        orderClient.assertEditResult(response, currentOrderId, currentCount);
     }
 
     @Test(description = "C23425610 Offline: Edit Add Product to Paid Order (Negative)", priority = 6)
@@ -150,7 +150,7 @@ public class EditTest extends BaseMagPortalApiTest {
         currentCount = 10.0;
         currentProductsCount = 1;
 
-        OrderData orderData = paoHelper.createConfirmedOrder(
+        OrderData orderData = paoHelper.createConfirmedPickupOrder(
                 paoHelper.makeCartProductByLmCode(LmCodeTypeEnum.DIMENSIONAL.getValue()), true);
         currentOrderId = orderData.getOrderId();
     }

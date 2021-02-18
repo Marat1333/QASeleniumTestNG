@@ -264,7 +264,7 @@ public class SalesBaseTest extends AppBaseSteps {
                 productOrderDataList.add(productOrderData);
             }
         }
-        return paoHelper.createConfirmedOrder(productOrderDataList, false).getOrderId();
+        return paoHelper.createConfirmedPickupOrder(productOrderDataList, false).getOrderId();
     }
 
     protected void cancelOrder(String orderId, String expectedStatusBefore) throws Exception {

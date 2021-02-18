@@ -40,6 +40,8 @@ import com.leroy.magmobile.api.data.sales.orders.OrderData;
 import com.leroy.magmobile.api.data.sales.orders.ReqOrderData;
 import com.leroy.magmobile.api.data.sales.orders.ReqOrderProductData;
 import com.leroy.magportal.api.clients.OrderClient;
+import com.leroy.magportal.api.data.timeslot.TimeslotData;
+import com.leroy.magportal.api.data.timeslot.TimeslotResponseData;
 import com.leroy.magportal.ui.constants.TestDataConstants;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import com.leroy.utils.ParserUtil;
@@ -71,22 +73,32 @@ public class PAOHelper extends BaseHelper {
 
     @Step("Создает Список CartProductOrderData для СОЗДАНИЯ коозины")
     public List<CartProductOrderData> makeCartProducts(int necessaryCount) {
+        return makeCartProducts(necessaryCount, 10.0);
+    }
+
+    @Step("Создает Список CartProductOrderData для СОЗДАНИЯ коозины")
+    public List<CartProductOrderData> makeCartProducts(int productsCount, double count) {
         List<CartProductOrderData> cartsProducts = new ArrayList<>();
-        for (ProductData productData : searchProductHelper.getProducts(necessaryCount)) {
+        for (ProductData productData : searchProductHelper.getProducts(productsCount)) {
             CartProductOrderData productCard = new CartProductOrderData(productData);
-            cartsProducts.add(convertItemToCartProduct(productCard.getLmCode()));
+            cartsProducts.add(convertItemToCartProduct(productCard.getLmCode(), count));
         }
         return cartsProducts;
     }
 
     @Step("Создает CartProductOrderData для СОЗДАНИЯ корзины из ЛМкода")
     public CartProductOrderData makeCartProductByLmCode(String lmCode) {
-        return convertItemToCartProduct(lmCode);
+        return convertItemToCartProduct(lmCode, 10.0);
     }
 
-    private CartProductOrderData convertItemToCartProduct(String lmCode) {
+    @Step("Создает CartProductOrderData для СОЗДАНИЯ корзины из ЛМкода с дробным количеством")
+    public CartProductOrderData makeDimensionalCartProductByLmCode(String lmCode) {
+        return convertItemToCartProduct(lmCode, 9.99);
+    }
+
+    private CartProductOrderData convertItemToCartProduct(String lmCode, Double count) {
         CartProductOrderData productCard = new CartProductOrderData();
-        productCard.setQuantity(10.0);
+        productCard.setQuantity(count);
         productCard.setLmCode(lmCode);
         return productCard;
     }
@@ -233,7 +245,7 @@ public class PAOHelper extends BaseHelper {
     }
 
     @Step("Создаем подтвержденный заказ на самовывоз")
-    public OrderData createConfirmedOrder(
+    public OrderData createConfirmedPickupOrder(
             List<CartProductOrderData> products, boolean isWaitForAllowedForPicking) {
         return createConfirmedOrder(products, GiveAwayPoints.PICKUP, isWaitForAllowedForPicking);
     }
@@ -244,9 +256,9 @@ public class PAOHelper extends BaseHelper {
         return createConfirmedOrder(products, GiveAwayPoints.DELIVERY, isWaitForAllowedForPicking);
     }
 
-    public OrderData createConfirmedOrder(CartProductOrderData product,
+    public OrderData createConfirmedPickupOrder(CartProductOrderData product,
             boolean isWaitForAllowedForPicking) {
-        return createConfirmedOrder(Collections.singletonList(product), isWaitForAllowedForPicking);
+        return createConfirmedPickupOrder(Collections.singletonList(product), isWaitForAllowedForPicking);
     }
 
     private GiveAwayData makeGiveAwayData(GiveAwayPoints giveAwayPoints) {
@@ -374,6 +386,12 @@ public class PAOHelper extends BaseHelper {
 
     public String createConfirmedEstimateAndGetCartId() {
         return createConfirmedEstimateAndGetCartId(searchProductHelper.getProductLmCodes(1));
+    }
+
+    public TimeslotData getLatestTimeslot(Response<TimeslotResponseData> response) {
+        assertThatResponseIsOk(response);
+        List<TimeslotData> responseData = response.asJson().getData();
+        return responseData.get(responseData.size() - 1);
     }
 
     public int getDiscountReasonId() {

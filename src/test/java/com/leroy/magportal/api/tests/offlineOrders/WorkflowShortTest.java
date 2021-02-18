@@ -32,7 +32,7 @@ public class WorkflowShortTest extends BaseMagPortalApiTest {
 
     @BeforeClass
     private void setUp() {
-        OrderData orderData = paoHelper.createConfirmedOrder(paoHelper.makeCartProducts(3), true);
+        OrderData orderData = paoHelper.createConfirmedPickupOrder(paoHelper.makeCartProducts(3), true);
         currentOrderId = orderData.getOrderId();
 
         currentTaskId = pickingTaskClient.searchForPickingTasks(currentOrderId).asJson().getItems()

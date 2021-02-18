@@ -5,6 +5,5 @@ import lombok.Data;
 @Data
 public class TimeslotData {
 
-    private String availableDate;
-    private String storeId;
+    private String date;
 }

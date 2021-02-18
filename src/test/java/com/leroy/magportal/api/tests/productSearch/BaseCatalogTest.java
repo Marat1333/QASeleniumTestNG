@@ -34,14 +34,14 @@ public class BaseCatalogTest extends BaseMagPortalApiTest {
         List<NearestShopsData> shopsData = response.asJsonList(NearestShopsData.class);
         assertThat("Shops data does NOT contain any data", shopsData, hasSize(greaterThan(0)));
         for (NearestShopsData nearestShop : shopsData) {
-            String data = "ShopId: " + nearestShop.getId() + ". LmCode: " + lmCode + ". ";
-            softAssert().isTrue(nearestShop.getId() > 0, data + "No Shop Id provided");
+            String data = String.format("LmCode: %s. ShopId: %s - ", lmCode, nearestShop.getId());
+            softAssert().isTrue(nearestShop.getId() > 0, data + "No Shop Id provided.");
             softAssert().isTrue(Strings.isNotNullAndNotEmpty(nearestShop.getName()),
-                    data + "No Shop Name provided");
-            softAssert().isTrue(nearestShop.getDistance() >= 0, data + "No Distance provided");
-            softAssert().isTrue(nearestShop.getPrice() > 0, data + "No Price provided");
-            softAssert().isTrue(nearestShop.getAvailableStock() >= 0,
-                    data + "No AvailableStock provided");
+                    data + "No Shop Name provided.");
+            softAssert().isTrue(nearestShop.getDistance() >= 0, data + "No Distance provided.");
+            softAssert().isTrue(nearestShop.getPrice() > 0, data + "No Price provided.");
+            softAssert().isTrue(nearestShop.getAvailableStock() != null,
+                    data + "No AvailableStock provided.");
         }
         softAssert().verifyAll();
     }
@@ -51,12 +51,12 @@ public class BaseCatalogTest extends BaseMagPortalApiTest {
         List<NearestShopsDataV2> shopsData = response.asJsonList(NearestShopsDataV2.class);
         assertThat("Shops data does NOT contain any data", shopsData, hasSize(greaterThan(0)));
         for (NearestShopsDataV2 nearestShop : shopsData) {
-            String data = "ShopId: " + nearestShop.getShopId() + ". LmCode: " + lmCode + ". ";
-            softAssert().isTrue(nearestShop.getShopId() > 0, data + "No Shop Id provided");
+            String data = String.format("LmCode: %s. ShopId: %s - ", lmCode, nearestShop.getShopId());
+            softAssert().isTrue(nearestShop.getShopId() > 0, data + "No Shop Id provided.");
 //            softAssert().isTrue(nearestShop.getDistance() >= 0, data + "No Distance provided");//TODO field is absent in DEV
-            softAssert().isTrue(nearestShop.getPrice() > 0, data + "No Price provided");
-            softAssert().isTrue(nearestShop.getAvailableStock() >= 0,
-                    data + "No AvailableStock provided");
+            softAssert().isTrue(nearestShop.getPrice() != null, data + "No Price provided.");
+            softAssert().isTrue(nearestShop.getAvailableStock() != null,
+                    data + "No AvailableStock provided.");
         }
         softAssert().verifyAll();
     }

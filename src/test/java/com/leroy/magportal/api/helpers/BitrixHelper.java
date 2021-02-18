@@ -142,7 +142,7 @@ public class BitrixHelper extends BaseHelper {
         ArrayList<BitrixSolutionPayload.Basket> result = new ArrayList<>();
 
         if (orderData.getLmCode() != null) {
-            ProductData product = searchProductHelper.searchProductByLmCode(orderData.getLmCode());
+            ProductData product = searchProductHelper.getProductByLmCode(orderData.getLmCode());
             result.add(productDataToPayload(product));
         } else {
             List<ProductData> products = searchProductHelper

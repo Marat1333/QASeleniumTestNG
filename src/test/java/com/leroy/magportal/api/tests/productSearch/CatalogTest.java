@@ -54,7 +54,7 @@ public class CatalogTest extends BaseCatalogTest {
         Response<?> response = catalogProductClient.getNomenclature();
         isResponseOk(response);
         List<NomenclatureData> nomenclatureData = response.asJsonList(NomenclatureData.class);
-        assertThat("count of departments", nomenclatureData.size(), equalTo(15)); //15 отделов
+        assertThat("count of departments", nomenclatureData.size(), equalTo(16)); //16 отделов
     }
 
     @Test(description = "C23718703 GET Catalog Product V2")

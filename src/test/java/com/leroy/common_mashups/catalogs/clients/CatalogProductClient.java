@@ -104,7 +104,7 @@ public class CatalogProductClient extends BaseMashupClient {
         GetCatalogProduct req = new GetCatalogProduct();
         req.setLmCode(lmCode);
         req.setShopId(getUserSessionData().getUserShopId());
-        return execute(req, ProductData.class, oldGatewayUrl);
+        return execute(req, ProductData.class);
     }
 
     @Step("Get Catalog Product for lmCode={lmCode}, pointOfGiveAway={pointOfGiveAway}, extend={extend}")
@@ -121,7 +121,7 @@ public class CatalogProductClient extends BaseMashupClient {
         req.setShopId(shopId);
         req.setPointOfGiveAway(pointOfGiveAway.getApiVal());
         req.setExtend(extend.toString());
-        return execute(req, ProductData.class, oldGatewayUrl);
+        return execute(req, ProductData.class);
     }
 
     @Step("Get Product Reviews for lmCode={lmCode}, pageNumber={pageNumber}, pageSize={pageSize}")

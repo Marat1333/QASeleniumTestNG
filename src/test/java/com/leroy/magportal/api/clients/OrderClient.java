@@ -15,6 +15,8 @@ import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.sales.BaseProductOrderData;
+import com.leroy.magmobile.api.data.sales.orders.GiveAwayData;
+import com.leroy.magmobile.api.data.sales.orders.OrderCustomerData;
 import com.leroy.magmobile.api.data.sales.orders.OrderProductData;
 import com.leroy.magmobile.api.data.sales.orders.ResOrderCheckQuantityData;
 import com.leroy.magmobile.api.requests.order.OrderRearrangeRequest;
@@ -75,7 +77,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     @Inject
     private PaymentHelper paymentHelper;
 
-    private final int waitTimeoutInSeconds = 300;
+    private final int waitTimeoutInSeconds = 360;
 
     @Step("Get order with id = {orderId} with response verification")
     public Response<OnlineOrderData> getOnlineOrder(String orderId) {
@@ -117,14 +119,12 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         return execute(req, JsonNode.class);
     }
 
-    @Step("Rearrange order: add specified product")
-    public Response<JsonNode> rearrange(String orderId, String lmCode) {
+    private Response<JsonNode> rearrange(String orderId, String date) {
         OrderRearrangeRequest req = new OrderRearrangeRequest();
         req.setShopId(getUserSessionData().getUserShopId());//TODO: move to default constructor
         req.setUserLdap(getUserSessionData().getUserLdap());
         req.setOrderId(orderId);
-        OrderRearrangePayload orderRearrangePayload = makeRearrangePayloadForProduct(orderId,
-                lmCode);
+        OrderRearrangePayload orderRearrangePayload = makeGiveAwayRearrangePayload(orderId, date);
         req.jsonBody(orderRearrangePayload);
 
         return execute(req, JsonNode.class);
@@ -193,7 +193,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
 
     @Step("GiveAway products for order with id = {orderId}")
     public Response<JsonNode> giveAway(String orderId, Boolean isFull) {
-        if(this.waitAndReturnProductsReadyToGiveaway(orderId) != null) {
+        if (this.waitAndReturnProductsReadyToGiveaway(orderId) != null) {
             return makeAction(orderId, OrderWorkflowEnum.GIVEAWAY.getValue(),
                     makeWorkflowPayload(orderId, isFull, false));
         } else {
@@ -216,15 +216,32 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         return execute(req, TimeslotResponseData.class);
     }
 
-    @Step("Updates Timeslots for order with id = {orderId}")
+    @Step("Updates Timeslots for pickup order with id = {orderId}")
     public Response<JsonNode> updateTimeslot(String orderId, TimeslotData timeslotData) {
         OnlineOrderData orderData = this.getOnlineOrder(orderId).asJson();
-        TimeslotPayload timeslotPayload = makeTimeslotPayload(orderData);
+        if (orderData.getChannel().equals(OrderChannelEnum.ONLINE.getValue())) {
+            return postChangeDate(orderData, timeslotData);
+        } else {
+            return rearrange(orderData.getOrderId(), timeslotData.getDate());
+        }
+    }
+
+    private Response<JsonNode> postChangeDate(OnlineOrderData orderData, TimeslotData timeslotData) {
+        List<String> stores = new ArrayList<>();
+        List<String> lmCodes = new ArrayList<>();
         TimeslotUpdatePayload payload = new TimeslotUpdatePayload();
+
+        stores.add(orderData.getShopId());
+        payload.setStores(stores);
+
         payload.setFulfillmentTaskId(orderData.getFulfillmentTaskId());
-        payload.setLmCodes(timeslotPayload.getLmCodes());
-        payload.setStores(timeslotPayload.getStores());
-        payload.setAvailableDate(timeslotData.getAvailableDate());
+
+        for (OrderProductData product : orderData.getProducts()) {
+            lmCodes.add(product.getLmCode());
+        }
+        payload.setLmCodes(lmCodes);
+
+        payload.setAvailableDate(timeslotData.getDate());
 
         ChangeDateRequest req = new ChangeDateRequest();
         req.setUserLdap(getUserSessionData().getUserLdap());
@@ -499,11 +516,11 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         return payload;
     }
 
-    private OrderRearrangePayload makeRearrangePayloadForProduct(String orderId, String lmCode) {
+    private OrderRearrangePayload makeProductRearrangePayload(String orderId, String lmCode) {
         List<OrderProductDataPayload> orderProducts = new ArrayList<>();
         OrderRearrangePayload payload = this.makeRearrangePayload(orderId, 0, null);
 
-        ProductData product = searchProductHelper.searchProductByLmCode(lmCode);
+        ProductData product = searchProductHelper.getProductByLmCode(lmCode);
 
         OrderProductDataPayload orderProductDataPayload = new OrderProductDataPayload();
         orderProductDataPayload.setLmCode(product.getLmCode());
@@ -514,6 +531,15 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         orderProducts.add(orderProductDataPayload);
 
         payload.setProducts(orderProducts);
+        return payload;
+    }
+
+    private OrderRearrangePayload makeGiveAwayRearrangePayload(String orderId, String date) {
+        GiveAwayData awayData = new GiveAwayData();
+        OrderRearrangePayload payload = this.makeRearrangePayload(orderId, 0, null);
+        awayData.setDate(date);
+        awayData.setPoint("PICKUP");
+        payload.setGiveAway(awayData);
         return payload;
     }
 
@@ -537,34 +563,46 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         return productsPayload;
     }
 
-    private AppointmentPayload makeTimeslotPayload(OnlineOrderData orderData) {
+    private TimeslotPayload makeTimeslotPayload(OnlineOrderData orderData) {
+        TimeslotPayload payload = new TimeslotPayload();
+        payload.setStores(Integer.parseInt(orderData.getShopId()));
+
+        OrderCustomerData defaultData = new OrderCustomerData();
+        defaultData.setType("PERSON");
+        OrderCustomerData customerData = orderData.getCustomers().stream()
+                .filter(x -> x.getType() != null).findFirst().orElse(defaultData);
+        payload.setCustomerType(customerData.getType());
+
+        return payload;
+    }
+
+    private AppointmentPayload makeAppointmentPayload(OnlineOrderData orderData) {
         List<String> lmCodes = new ArrayList<>();
         List<String> stores = new ArrayList<>();
         AppointmentPayload payload = new AppointmentPayload();
+
+        stores.add(orderData.getShopId());
+        payload.setStores(stores);
 
         if (orderData.getDeliveryData() != null) {
             DeliveryData deliveryData = orderData.getDeliveryData();
             payload.setDeliveryId(deliveryData.getId());
             payload.setReferenceStoreId(deliveryData.getReferenceStoreId());
             stores.add(deliveryData.getShipFromShopId());
-        } else {
-            stores.add(orderData.getShopId());
+
+            for (OrderProductData product : orderData.getProducts()) {
+                lmCodes.add(product.getLmCode());
+            }
+            payload.setLmCodes(lmCodes);
+            payload.setDate(ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT));
         }
 
-        for (OrderProductData product : orderData.getProducts()) {
-            lmCodes.add(product.getLmCode());
-        }
-
-        payload.setLmCodes(lmCodes);
-        payload.setDate(ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT));
-
-        payload.setStores(stores);
         return payload;
     }
 
     private DeliveryUpdatePayload makeDeliveryUpdatePayload(OnlineOrderData orderData,
             AppointmentData appointmentData, DeliveryData newDeliveryData) {
-        AppointmentPayload appointmentPayload = makeTimeslotPayload(orderData);
+        AppointmentPayload appointmentPayload = makeAppointmentPayload(orderData);
         appointmentPayload.setDeliveryId(null);
         DeliveryUpdatePayload payload = new DeliveryUpdatePayload();
 
