@@ -22,7 +22,7 @@ public class PickingPage extends LeftDocumentListPage<ShortPickingTaskCardWidget
     @WebFindBy(xpath = "//div[contains(@class, 'Picking-PickingQuickFilter__select')]", metaName = "Тип поиска")
     PuzComboBox searchTypeComboBox;
 
-    @WebFindBy(xpath = "//input[@name='orderId']", metaName = "Поле поиска заказа")
+    @WebFindBy(xpath = "//div[contains(@class, 'lmui-ScreenHeader-MainContent')]//input", metaName = "Поле поиска заказа")
     EditBox orderSearchFld;
 
     // ФИЛЬТРЫ:
