@@ -309,7 +309,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
     }
 
-    @Test(description = "C22829616 Заказы. Процесс обработки заказа. Онлайн. Самовывоз. Предоплата", groups = NEED_PRODUCTS_GROUP)
+    @Test(description = "C22829616 Заказы. Процесс обработки заказа. Онлайн. Доставка. Предоплата", groups = NEED_PRODUCTS_GROUP)
     public void testOrderFlowOnlinePrepaymentPickUp() throws Exception {
         orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.DELIVERY_TO_DOOR).getSolutionId();
         //initCreateOrder(1,SalesDocumentsConst.GiveAwayPoints.PICKUP, SalesDocumentsConst.States.ALLOWED_FOR_PICKING);
@@ -319,7 +319,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 1:
         step("Открыть страницу с Заказами");
-        OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
+        OrderHeaderPage orderPage = loginAndGoTo(OrderHeaderPage.class);
         //orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.DELIVERY_TO_DOOR).getSolutionId();
 
         // Step 2:
