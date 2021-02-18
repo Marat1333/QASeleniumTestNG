@@ -58,7 +58,7 @@ public class BitrixHelper extends BaseHelper {
     @Step("Creates Online order with Dimensional LmCode")
     public BitrixSolutionResponse createDimensionalOnlineOrder(OnlineOrderTypeData orderData) {
         orderData.setLmCode(LmCodeTypeEnum.DIMENSIONAL.getValue());
-        return this.createOnlineOrders(1, orderData, 1, API).stream().findFirst().get();
+        return this.createOnlineOrders(1, orderData, 1, CARD).stream().findFirst().get();
     }
 
     @Step("Creates Online order with 3 LmCodes")
