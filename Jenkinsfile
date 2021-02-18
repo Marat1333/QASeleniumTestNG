@@ -1,5 +1,8 @@
 def mvn_run_str = "mvn clean test -Dmaven.test.failure.ignore=true -DrunWithIssues=${env.RUN_CASE_WITH_ISSUE} -DxmlPath=testXML/mobile/api/${env.SUITE_XML} -DthreadCount=${env.THREAD_COUNT} -DmRun=${env.RUN} -DmSuite=29833 -DmProject=10 -Denv=${env.ENVIROMENT}"
 
+env.TELEGRAM_CHAT = env.TELEGRAM_CHAT.replaceFirst(/^(.*?)\(.*\)/, '$1')
+TELEGRAM_REPORTS_CHAT = '-1001343153150'
+
 pipeline {
     agent { label 'dockerhost' }
     stages {
@@ -18,10 +21,16 @@ pipeline {
         }
         stage("notification") {
 			steps {
-                telegramSend(
-                            chatId: env.TELEGRAM_CHAT,
-                            message: "Результаты тестов тут -> https://jenkins.lmru.adeo.com/job/lego-front/job/lego-front-android-Run-API-tests/"+ env.BUILD_NUMBER +"/allure"
-                        )
+			    script{
+                    telegramSend(chatId: env.TELEGRAM_CHAT,
+                            message: "Маг Мобайл API Тесты завершены. \n " +
+                            "[Allure report](" + env.BUILD_URL + "allure)")
+                    if (env.SEND_TO_REPORTS_CHAT == 'true') {
+                        telegramSend(chatId: TELEGRAM_REPORTS_CHAT,
+                                    message: "Маг Мобайл API Тесты завершены. \n " +
+                                    "[Allure report](" + env.BUILD_URL + "allure)")
+                    }
+			    }
 			}
         }
     }

@@ -17,7 +17,6 @@ public class AlleyData {
     private Integer departmentId;
     @JsonProperty(required = true)
     private String code;
-
     @JsonProperty(required = false)
     private Integer productsCount;
 }

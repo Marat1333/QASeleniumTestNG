@@ -2,7 +2,7 @@ timestamps {
     node("dockerhost") {
         try {
             stage('Run job #1') {
-                build job: 'lego-front-android-Run-UI_TESTS', parameters: [
+                build job: 'lego-front-android-Run-UI-tests', parameters: [
                         [$class: 'StringParameterValue', name: 'BRANCH', value: 'dev'],
                         [$class: 'StringParameterValue', name: 'TEST_RUN', value: 'true'],
                         [$class: 'StringParameterValue', name: 'TELEGRAM_CHAT', value: env.TELEGRAM_CHAT],
@@ -18,12 +18,14 @@ timestamps {
                         [$class: 'StringParameterValue', name: 'PUSH_CHANGES', value: 'false'],
                         [$class: 'StringParameterValue', name: 'PUSH_VERSION_TAG', value: 'false'],
                         [$class: 'StringParameterValue', name: 'SNIFFING_TRAFFIC_AVAILABLE', value: 'true'],
-                        [$class: 'StringParameterValue', name: 'AUTO_TEST_BRANCH', value: 'master']
+                        [$class: 'StringParameterValue', name: 'AUTOTESTS_BRANCH', value: 'master'],
+                        [$class: 'StringParameterValue', name: 'TELEGRAM_REPORTS_CHAT', value: '-1001343153150'],
+                        [$class: 'StringParameterValue', name: 'SEND_TO_REPORTS_CHAT', value: 'true']
                 ]
             }
         } finally {
             stage('Run job #2 (Mock)') {
-                build job: 'lego-front-android-Run-UI_TESTS', parameters: [
+                build job: 'lego-front-android-Run-UI-tests', parameters: [
                         [$class: 'StringParameterValue', name: 'BRANCH', value: 'dev'],
                         [$class: 'StringParameterValue', name: 'TEST_RUN', value: 'true'],
                         [$class: 'StringParameterValue', name: 'TELEGRAM_CHAT', value: env.TELEGRAM_CHAT],
@@ -39,7 +41,9 @@ timestamps {
                         [$class: 'StringParameterValue', name: 'PUSH_CHANGES', value: 'false'],
                         [$class: 'StringParameterValue', name: 'PUSH_VERSION_TAG', value: 'false'],
                         [$class: 'StringParameterValue', name: 'SNIFFING_TRAFFIC_AVAILABLE', value: 'true'],
-                        [$class: 'StringParameterValue', name: 'AUTO_TEST_BRANCH', value: 'master']
+                        [$class: 'StringParameterValue', name: 'AUTOTESTS_BRANCH', value: 'master'],
+                        [$class: 'StringParameterValue', name: 'TELEGRAM_REPORTS_CHAT', value: '-1001343153150'],
+                        [$class: 'StringParameterValue', name: 'SEND_TO_REPORTS_CHAT', value: 'true']
                 ]
             }
         }

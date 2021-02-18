@@ -1,38 +1,25 @@
 package com.leroy.magportal.ui.pages.common.modal;
 
 import com.leroy.core.annotations.WebFindBy;
-import com.leroy.core.web_elements.general.Button;
-import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
-import com.leroy.magportal.ui.webelements.commonelements.PuzSelectControl;
+import com.leroy.core.pages.BaseWebPage;
+import com.leroy.core.web_elements.general.EditBox;
+import com.leroy.core.web_elements.general.Element;
 import io.qameta.allure.Step;
 
-public class ShopSelectionModal extends MagPortalBasePage {
+public class ShopSelectionModal extends BaseWebPage {
 
-    @WebFindBy(id = "regions")
-    PuzSelectControl regionsComboBox;
+    private static final String MODAL_WINDOW_XPATH = "//div[@aria-labelledby='ShopsModal_label']";
 
-    @WebFindBy(id = "shops")
-    PuzSelectControl shopComboBox;
+    @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//input[@name='shopInput']", metaName = "Поле поиска магазина")
+    EditBox searchField;
 
-    @WebFindBy(xpath = "//button[descendant::span[text()='Сохранить']]", metaName = "Кнопка Сохранить")
-    Button saveBtn;
+    @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//div[contains(@class, 'ShopsList__item')]", metaName = "Первый магазин в списке")
+    Element firstShop;
 
-    @Step("Выбираем магазин {value} в выпадающем списке")
-    public ShopSelectionModal selectShop(String value) throws Exception {
-        shopComboBox.selectOption(value);
-        return this;
+    @Step("Поиск и выбор магазина {value}")
+    public void selectShop(String value){
+        searchField.clearAndFill(value);
+        firstShop.click();
     }
-
-    @Step("Выбираем регион {value} в выпадающем списке")
-    public ShopSelectionModal selectRegion(String value) throws Exception {
-        regionsComboBox.selectOption(value);
-        return this;
-    }
-
-    @Step("Нажимаем сохранить")
-    public void clickSaveButton() throws Exception {
-        saveBtn.click();
-    }
-
 
 }

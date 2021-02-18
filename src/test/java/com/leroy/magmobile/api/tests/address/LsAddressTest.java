@@ -1,14 +1,5 @@
 package com.leroy.magmobile.api.tests.address;
 
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.emptyOrNullString;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
@@ -20,17 +11,16 @@ import com.leroy.magmobile.api.data.address.cellproducts.*;
 import com.leroy.magmobile.api.helpers.LsAddressHelper;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import com.leroy.umbrella_extension.lsaddress.LsAddressBackClient;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
+
+import java.util.*;
+
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 
 public class LsAddressTest extends BaseProjectApiTest {
@@ -51,6 +41,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     @Inject
     private LsAddressHelper lsAddressHelper;
 
+    @Inject
     private StandDataList standDataList;
 
     private CellDataList cellDataList;
@@ -60,6 +51,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     private int schemeType;
 
     private int createdAlleyId;
+
 
     @Override
     protected UserSessionData initTestClassUserSessionDataTemplate() {
@@ -78,43 +70,27 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C3316285 lsAddress POST alleys")
     public void testCreateAlley() {
-        step("Create Alley");
-        AlleyData postAlleyData = new AlleyData();
-        postAlleyData.setType(0);
-        postAlleyData.setCode("Alley_C3316285");
-        Response<AlleyData> resp = lsAddressClient.createAlley(postAlleyData);
-        this.alleyData = lsAddressClient.assertThatAlleyIsCreatedAndGetData(resp, postAlleyData);
-
-        step("Delete Alley");
-        Response<JsonNode> deleteResp = lsAddressBackClient.deleteAlley(alleyData.getId());
-        isResponseOk(deleteResp);
+        step("Create new alley");
+        alleyData.setType(0);
+        alleyData.setCode(RandomStringUtils.randomNumeric(5));
+        Response<AlleyData> resp = lsAddressClient.createAlley(alleyData);
+        lsAddressClient.assertThatAlleyIsCreated(resp, alleyData);
+        alleyData = resp.asJson();
+        createdAlleyId = alleyData.getId();
     }
 
     @Test(description = "C3316284 lsAddress GET alleys")
     public void testGetAlleys() {
+        step("Get list of alleys");
         Response<AlleyDataItems> resp = lsAddressClient.searchForAlleys();
-        assertThat(resp, successful());
-        List<AlleyData> items = resp.asJson().getItems();
-        assertThat("items count", items, hasSize(greaterThan(0)));
-        for (AlleyData alleyData : items) {
-            assertThat("productsCount", alleyData.getProductsCount(), notNullValue());
-            assertThat("id", alleyData.getId(), greaterThan(0));
-            assertThat("count", alleyData.getCount(), notNullValue());
-            assertThat("type", alleyData.getType(), notNullValue());
-            assertThat("storeId", alleyData.getStoreId(), is(Integer.parseInt(getUserSessionData().getUserShopId())));
-            assertThat("departmentId", alleyData.getDepartmentId(),
-                    is(Integer.parseInt(getUserSessionData().getUserDepartmentId())));
-            assertThat("code", alleyData.getCode(), not(emptyOrNullString()));
-        }
+        lsAddressClient.assertThatGetAlleyList(resp);
+
     }
 
     @Test(description = "C23415877 lsAddress PUT alleys - rename alleys")
     public void testRenameAlleys() {
-        step("Create Alley");
-        alleyData.setType(0);
-        alleyData.setCode("Alley_C3316285");
-        Response<AlleyData> resp = lsAddressClient.createAlley(alleyData);
-        alleyData = lsAddressClient.assertThatAlleyIsCreatedAndGetData(resp, alleyData);
+        step("Create new alley");
+        alleyData = lsAddressHelper.createRandomAlley();
         createdAlleyId = alleyData.getId();
 
         step("Rename alley");
@@ -125,11 +101,8 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C23415876 lsAddress DELETE alleys - delete alley")
     public void testDeleteAlleys() {
-        step("Create Alley");
-        alleyData.setType(0);
-        alleyData.setCode("1a1a");
-        Response<AlleyData> resp = lsAddressClient.createAlley(alleyData);
-        alleyData = lsAddressClient.assertThatAlleyIsCreatedAndGetData(resp, alleyData);
+        step("Create new alley");
+        alleyData = lsAddressHelper.createRandomAlley();
         createdAlleyId = alleyData.getId();
 
         step("Delete alley");
@@ -156,17 +129,17 @@ public class LsAddressTest extends BaseProjectApiTest {
         postStandDataList.setAlleyType(alleyData.getType());
         postStandDataList.setEmail(RandomStringUtils.randomAlphanumeric(5) + "@mail.com");
         Response<StandDataList> resp = lsAddressClient.createStand(alleyData.getId(), postStandDataList);
-        this.standDataList = lsAddressClient.assertThatStandIsCreatedAndGetData(resp, postStandDataList);
+
+        standDataList = lsAddressClient.assertThatStandIsCreatedAndGetData(resp, postStandDataList);
     }
 
     @Test(description = "C3316290 lsAddress GET stand")
     public void testGetStand() {
-        step("Search for alley id");
-        Response<AlleyDataItems> searchResp = lsAddressClient.searchForAlleys();
-        assertThat(searchResp, successful());
-        List<AlleyData> items = searchResp.asJson().getItems();
-        assertThat("items count", items, hasSize(greaterThan(0)));
-        AlleyData alleyData = items.get(0);
+        step("Get first alley from list");
+        AlleyData alleyData = lsAddressHelper.getAlleyFromList(0);
+
+        step("Create new stands");
+        standDataList = lsAddressHelper.createDefaultStand(alleyData);
 
         step("Get Stand");
         Response<StandDataList> resp = lsAddressClient.searchForStand(alleyData.getId());
