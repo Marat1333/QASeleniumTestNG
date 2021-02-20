@@ -326,7 +326,8 @@ public class LsAddressClient extends BaseMashupClient {
             String desc = String.format("StandId(%s), CellId(%s): ", standId, actualItem.getId());
             softAssert().isTrue(Strings.isNotNullAndNotEmpty(actualItem.getId()), desc+"id is null or empty");
             softAssert().isTrue(Strings.isNotNullAndNotEmpty(actualItem.getCode()), desc+"code is null or empty");
-            softAssert().isTrue(Strings.isNotNullAndNotEmpty(actualItem.getShelf()), desc+"shelf is null or empty");
+            softAssert().isEquals(actualItem.getShelf(), expectedItem.getShelf(),
+                    desc+"shelf doesn't match the expected");
             softAssert().isEquals(actualItem.getPosition(), expectedItem.getPosition(),
                     desc+"side doesn't match the expected");
             softAssert().isEquals(actualItem.getType(), expectedItem.getType(),
