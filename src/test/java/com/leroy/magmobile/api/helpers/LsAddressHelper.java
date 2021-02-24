@@ -61,7 +61,7 @@ public class LsAddressHelper extends BaseHelper {
     }
 
     @Step("Create default stand")
-    public StandDataList createDefaultStands(AlleyData alleyData){
+    public StandDataList createDefaultStands(AlleyData alleyData) {
         StandDataList postStandDataList = new StandDataList();
         StandData item1 = new StandData(1, 2, 3);
         StandData item2 = new StandData(4, 3, 2);
@@ -70,12 +70,12 @@ public class LsAddressHelper extends BaseHelper {
         postStandDataList.setAlleyType(alleyData.getType());
         postStandDataList.setEmail(RandomStringUtils.randomAlphanumeric(5) + "@mail.com");
         Response<StandDataList> resp = lsAddressClient.createStand(alleyData.getId(), postStandDataList);
-        assertThat("Failed to create stand for AlleyId: "+alleyData.getId(), resp, successful());
+        assertThat("Failed to create stand for AlleyId: " + alleyData.getId(), resp, successful());
         return resp.asJson();
     }
 
     @Step("Get alley from list")
-    public AlleyData getAlleyFromList(int position){
+    public AlleyData getAlleyFromList(int position) {
         Response<AlleyDataItems> searchResp = lsAddressClient.searchForAlleys();
         assertThat(searchResp, successful());
         List<AlleyData> items = searchResp.asJson().getItems();
@@ -93,7 +93,6 @@ public class LsAddressHelper extends BaseHelper {
     }
 
 
-
     @Step("Create default cells")
     public CellDataList createDefaultCells(int standId) {
         CellDataList cellDataList = new CellDataList();
@@ -101,7 +100,7 @@ public class LsAddressHelper extends BaseHelper {
         CellData itemData2 = new CellData(3, 4, "B");
         cellDataList.setItems(Arrays.asList(itemData1, itemData2));
         Response<CellDataList> resp = lsAddressClient.createCell(standId, cellDataList);
-        assertThat("Failed to create cells for StandId: "+standId, resp, successful());
+        assertThat("Failed to create cells for StandId: " + standId, resp, successful());
         return resp.asJson();
     }
 }
