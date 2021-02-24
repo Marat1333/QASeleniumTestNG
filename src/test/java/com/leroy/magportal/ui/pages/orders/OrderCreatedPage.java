@@ -31,7 +31,7 @@ public abstract class OrderCreatedPage extends OrderHeaderPage {
             metaName = "Вкладка Сборок")
     Button pickingsTab;
 
-    @WebFindBy(id = "giveaway",
+    @WebFindBy(xpath = "//button[@id='giveaway']",
             metaName = "Вкладка Выдачи и возврата")
     Element shipRefundTab;
 
