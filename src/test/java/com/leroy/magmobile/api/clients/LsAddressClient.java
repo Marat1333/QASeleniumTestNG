@@ -338,7 +338,6 @@ public class LsAddressClient extends BaseMashupClient {
                     desc + "productsCount doesn't match the expected");
         }
         softAssert().verifyAll();
-
     }
 
     public void assertThatDataMatches(Response<CellDataList> resp, CellDataList expectedData) {

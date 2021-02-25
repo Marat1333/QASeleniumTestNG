@@ -201,7 +201,6 @@ public class LsAddressTest extends BaseProjectApiTest {
 
         step("Get first stand from list");
         StandData standData = lsAddressHelper.getStandFromList(0, alleyData.getId());
-        int standId = standData.getId();
 
         step("Create new cells");
         cellDataList = lsAddressHelper.createDefaultCells(standData.getId());
@@ -216,13 +215,13 @@ public class LsAddressTest extends BaseProjectApiTest {
         updateCellDataList.setItems(putCellItems);
 
         step("Update cells");
-        Response<CellDataList> resp = lsAddressClient.updateCells(standId, updateCellDataList);
+        Response<CellDataList> resp = lsAddressClient.updateCells(standData.getId(), updateCellDataList);
         cellDataList.addItem(cellData);
         lsAddressClient.assertThatDataMatches(resp, cellDataList, BaseMashupClient.ResponseType.PUT);
         cellDataList.updateLastItem(resp.asJson().getItems().get(2));
 
         step("Send Get request and check data");
-        Response<CellDataList> getResp = lsAddressClient.getCells(standId);
+        Response<CellDataList> getResp = lsAddressClient.getCells(standData.getId());
         lsAddressClient.assertThatDataMatches(getResp, cellDataList);
     }
 
