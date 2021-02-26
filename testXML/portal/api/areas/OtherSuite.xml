@@ -6,16 +6,23 @@
         <listener class-name="com.leroy.core.listeners.TestRailListener"/>
     </listeners>
 
-    <test name="GetAdditionalProductsInfoTest: Other methods for Online Orders Test">
+    <test name="GetAdditionalProductsInfoTest: Verifies stocks">
         <classes>
             <class name="com.leroy.magportal.api.tests.onlineOrders.other.GetAdditionalProductsInfoTest">
             </class>
         </classes>
     </test>
 
-    <test name="PostCheckQuantityTest: Other methods for Online Orders Test">
+    <test name="PostCheckQuantityTest: Verifies available stocks">
         <classes>
             <class name="com.leroy.magportal.api.tests.onlineOrders.other.PostCheckQuantityTest">
+            </class>
+        </classes>
+    </test>
+
+    <test name="PostRefundsTest: Verifies refunds">
+        <classes>
+            <class name="com.leroy.magportal.api.tests.onlineOrders.other.PostRefundsTest">
             </class>
         </classes>
     </test>

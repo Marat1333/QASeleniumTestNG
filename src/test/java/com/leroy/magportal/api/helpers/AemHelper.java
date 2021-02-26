@@ -73,7 +73,7 @@ public class AemHelper extends BaseHelper {
     @Step("Creates Online order with Dimensional LmCode")
     public AemPaymentResponseData createDimensionalOnlineOrder(OnlineOrderTypeData orderData) {
         orderData.setLmCode(LmCodeTypeEnum.DIMENSIONAL.getValue());
-        return this.createOnlineOrders(1, orderData, 1, API).stream().findFirst().orElse(null);
+        return this.createOnlineOrders(1, orderData, 1, CARD).stream().findFirst().orElse(null);
     }
 
     @Step("Creates Online order with 3 LmCodes")
