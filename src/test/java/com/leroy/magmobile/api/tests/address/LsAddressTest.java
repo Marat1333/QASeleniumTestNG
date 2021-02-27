@@ -227,16 +227,28 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C23194977 lsAddress DELETE cells")
     public void testDeleteCell() {
-        int itemIndexToRemove = 0;
-        int standId = cellDataList.getItems().get(0).getStandId();
-        String cellIdToRemove = cellDataList.getItems().get(itemIndexToRemove).getId();
+        step("Create a new alley");
+        AlleyData alleyData = lsAddressHelper.createRandomAlley();
+        createdAlleyId = alleyData.getId();
 
+        step("Create new stands");
+        standDataList = lsAddressHelper.createDefaultStands(alleyData);
+
+        step("Get first stand from list");
+        StandData standData = lsAddressHelper.getStandFromList(0, alleyData.getId());
+
+        step("Create new cells");
+        cellDataList = lsAddressHelper.createDefaultCells(standData.getId());
+
+        step("Delete cell");
+        int itemIndexToRemove = 0;
+        String cellIdToRemove = cellDataList.getItems().get(itemIndexToRemove).getId();
         Response<JsonNode> resp = lsAddressClient.deleteCell(cellIdToRemove);
         lsAddressClient.assertThatCellIsDeleted(resp, cellIdToRemove);
         cellDataList.getItems().remove(itemIndexToRemove);
 
         step("Send Get request and check data");
-        Response<CellDataList> getResp = lsAddressClient.getCells(standId);
+        Response<CellDataList> getResp = lsAddressClient.getCells(standData.getId());
         lsAddressClient.assertThatDataMatches(getResp, cellDataList);
     }
 
