@@ -135,7 +135,7 @@ public class OrderClient extends BaseMashupClient {
         putProductData.setPrice(productData.getPrice());
         putOrderData.setProducts(Collections.singletonList(putProductData));
         req.jsonBody(putOrderData);
-        return execute(req, JsonNode.class, paoUrl);
+        return execute(req, JsonNode.class);
     }
 
     @Step("Make status DELETED for order with id = {orderId}")
