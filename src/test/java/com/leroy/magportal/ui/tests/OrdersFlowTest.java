@@ -317,7 +317,6 @@ public class OrdersFlowTest extends BasePAOTest {
         // Step 1:
         step("Открыть страницу с Заказами");
         OrderHeaderPage orderPage = loginAndGoTo(OrderHeaderPage.class);
-        //orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.DELIVERY_TO_DOOR).getSolutionId();
 
         // Step 2:
         step("Найти созданный заказ в статусе 'Готов к Сборке' с номером" + " " + orderId);
@@ -326,17 +325,7 @@ public class OrdersFlowTest extends BasePAOTest {
         orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
         orderPage.shouldDocumentCountIs(1);
 
-        // Step 2:
-        //orderId = "210103322645";
-        step("Найти созданный заказ в статусе 'Готов к Сборке' с номером" + " " + orderId);
-        orderPage.enterSearchTextAndSubmit(orderId);
-        orderPage.shouldDocumentIsPresent(orderId);
-        orderPage.shouldDocumentListContainsOnlyWithStatuses(
-                SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
-        orderPage.shouldDocumentCountIs(1);
-
         // Step 3:
-
         step("Кликнуть на заказ: " + orderId);
         orderPage.clickDocumentInLeftMenu(orderId);
         OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
@@ -484,14 +473,18 @@ public class OrdersFlowTest extends BasePAOTest {
         orderPage.refreshDocumentList();
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(
-                SalesDocumentsConst.States.PICKED.getUiVal());
+                SalesDocumentsConst.States.PICKED_WAIT.getUiVal());
         orderPage.shouldDocumentCountIs(1);
 
         // Step 12:
+        step("Оплатить заказ через TPNET");
+        paymentHelper.makePayment(orderId, PaymentMethodEnum.TPNET);
+
+        // Step 13:
         step("Перейти на вкладку 'К выдаче и возврату'");
         GiveAwayShipOrderPage giveAwayShipOrderPage = createdContentPage.clickGoToShipRefund();
 
-        // Step 13:
+        // Step 14:
         step("Товар 1: Ввести в инпут 'К выдаче' количество равное,  указанному в Заказано");
         giveAwayShipOrderPage.editToShipQuantity(1, 10)
                 .shouldProductToShipQuantityIs(1, 10);
@@ -500,11 +493,11 @@ public class OrdersFlowTest extends BasePAOTest {
         giveAwayShipOrderPage.editToShipQuantity(3, 10)
                 .shouldProductToShipQuantityIs(3, 10);
 
-        // Step 14
+        // Step 15:
         step("Нажать на кнопку 'Выдать'");
         giveAwayShipOrderPage.clickGiveAwayButton();
 
-        // Step 15:
+        // Step 16:
         step("Обновить список документов и проверить статус выданного заказас номером:" + orderId);
         orderPage.refreshDocumentList();
         orderPage.shouldDocumentIsPresent(orderId);
