@@ -54,8 +54,8 @@ public class OrderClient extends BaseMashupClient {
     protected void init() {
         gatewayUrl = EnvConstants.MAIN_API_HOST;
         paoUrl = EnvConstants.PAO_API_HOST;
-        jaegerHost = EnvConstants.PICK_JAEGER_HOST;
-        jaegerService = EnvConstants.PICK_JAEGER_SERVICE;
+        jaegerHost = EnvConstants.PAO_JAEGER_HOST;
+        jaegerService = EnvConstants.PAO_JAEGER_SERVICE;
     }
 
     @Step("Get order with id = {orderId}")
@@ -135,7 +135,7 @@ public class OrderClient extends BaseMashupClient {
         putProductData.setPrice(productData.getPrice());
         putOrderData.setProducts(Collections.singletonList(putProductData));
         req.jsonBody(putOrderData);
-        return execute(req, JsonNode.class);
+        return execute(req, JsonNode.class, paoUrl);
     }
 
     @Step("Make status DELETED for order with id = {orderId}")
