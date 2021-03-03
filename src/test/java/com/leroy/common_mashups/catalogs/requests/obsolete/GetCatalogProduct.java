@@ -3,7 +3,7 @@ package com.leroy.common_mashups.catalogs.requests.obsolete;
 import com.leroy.magmobile.api.requests.CommonLegoRequest;
 import ru.leroymerlin.qa.core.clients.base.Method;
 
-@Method(value = "GET", path = "/v3/catalog/product")
+@Method(value = "GET", path = "/v3/product")
 public class GetCatalogProduct extends CommonLegoRequest<GetCatalogProduct> {
 
     public GetCatalogProduct setLmCode(String value) {

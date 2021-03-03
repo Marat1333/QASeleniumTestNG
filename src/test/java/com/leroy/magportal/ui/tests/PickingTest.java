@@ -57,14 +57,14 @@ public class PickingTest extends BasePAOTest {
 
         switch (orderStatus) {
             case ALLOWED_FOR_PICKING:
-                orderId = helper.createConfirmedOrder(productOrderDataList, true).getOrderId();
+                orderId = helper.createConfirmedPickupOrder(productOrderDataList, true).getOrderId();
                 break;
             case PICKED:
-                orderId = helper.createConfirmedOrder(productOrderDataList, true).getOrderId();
+                orderId = helper.createConfirmedPickupOrder(productOrderDataList, true).getOrderId();
                 orderHelper.moveNewOrderToStatus(orderId, orderStatus);
                 break;
             default:
-                orderId = helper.createConfirmedOrder(productOrderDataList, false).getOrderId();
+                orderId = helper.createConfirmedPickupOrder(productOrderDataList, false).getOrderId();
                 break;
         }
 

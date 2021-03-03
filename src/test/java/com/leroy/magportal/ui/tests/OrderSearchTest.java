@@ -76,7 +76,7 @@ public class OrderSearchTest extends WebBaseSteps {
         }
 
         // Create cart
-        Response<CartData> response = cartClient.sendRequestCreate(productOrderDataList);
+        Response<CartData> response = cartClient.createCartRequest(productOrderDataList);
         CartData cartData = cartClient.assertThatIsCreatedAndGetData(response, true);
 
         // Create Order

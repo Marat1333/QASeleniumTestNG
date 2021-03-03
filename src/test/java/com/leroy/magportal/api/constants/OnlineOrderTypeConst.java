@@ -2,6 +2,7 @@ package com.leroy.magportal.api.constants;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
+import ru.leroymerlin.qa.core.clients.tunnel.data.enums.TypeOfLift;
 
 public class OnlineOrderTypeConst {
 
@@ -21,7 +22,7 @@ public class OnlineOrderTypeConst {
         public int sameDay;
         public Boolean pickupShop = false;
         public Boolean pvzData = false;
-        public DeliveryLiftTypeEnum liftType = DeliveryLiftTypeEnum.SERVICE_LIFT;
+        public TypeOfLift liftType = TypeOfLift.STAIRS;
     }
 
     public static final OnlineOrderTypeData PICKUP_POSTPAYMENT = new OnlineOrderTypeData()
@@ -129,6 +130,24 @@ public class OnlineOrderTypeConst {
             .setDeliveryPrice("2000.45")
             .setPaymentType(PaymentTypeEnum.SBERBANK.getName())
             .setDeliveryType(DeliveryServiceTypeEnum.COURIER)
+            .setRise(0)
+            .setLift(0)
+            .setDeliveryFullPrice("2000.45")
+            .setLiftPrice("0.00");
+
+    public static final OnlineOrderTypeData DELIVERY_TO_LIFT = new OnlineOrderTypeData()
+            .setDeliveryPrice("2000.45")
+            .setPaymentType(PaymentTypeEnum.SBERBANK.getName())
+            .setDeliveryType(DeliveryServiceTypeEnum.DELIVERY_TO_LIFT)
+            .setRise(0)
+            .setLift(0)
+            .setDeliveryFullPrice("2000.45")
+            .setLiftPrice("0.00");
+
+    public static final OnlineOrderTypeData DELIVERY_NO_LANDING = new OnlineOrderTypeData()
+            .setDeliveryPrice("2000.45")
+            .setPaymentType(PaymentTypeEnum.SBERBANK.getName())
+            .setDeliveryType(DeliveryServiceTypeEnum.DELIVERY_TO_LIFT)
             .setRise(0)
             .setLift(0)
             .setDeliveryFullPrice("2000.45")

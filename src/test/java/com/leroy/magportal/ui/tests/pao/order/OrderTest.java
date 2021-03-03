@@ -352,7 +352,7 @@ public class OrderTest extends BasePAOTest {
             cardProducts.add(cartProductOrderData);
         }
 
-        String orderId = paoHelper.createConfirmedOrder(cardProducts, false).getOrderId();
+        String orderId = paoHelper.createConfirmedPickupOrder(cardProducts, false).getOrderId();
 
         OrderHeaderPage orderHeaderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
         orderClient.waitUntilOrderGetStatus(orderId,
