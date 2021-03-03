@@ -11,6 +11,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.oneOf;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.core.configuration.Log;
@@ -45,6 +46,17 @@ public class OrderClient extends BaseMashupClient {
      * ---------- Executable Requests -------------
      *
      * @return*/
+    private String paoUrl;
+
+
+
+    @Override
+    protected void init() {
+        gatewayUrl = EnvConstants.MAIN_API_HOST;
+        paoUrl = EnvConstants.PAO_API_HOST;
+        jaegerHost = EnvConstants.PAO_JAEGER_HOST;
+        jaegerService = EnvConstants.PAO_JAEGER_SERVICE;
+    }
 
     @Step("Get order with id = {orderId}")
     public Response<OrderData> getOrder(String orderId) {
@@ -60,7 +72,7 @@ public class OrderClient extends BaseMashupClient {
         orderPost.jsonBody(reqOrderData);
         orderPost.setShopId(getUserSessionData().getUserShopId());
         orderPost.setUserLdap(getUserSessionData().getUserLdap());
-        return execute(orderPost, OrderData.class);
+        return execute(orderPost, OrderData.class, paoUrl);
     }
 
     @Step("Confirm order with id = {orderId}")
@@ -70,7 +82,7 @@ public class OrderClient extends BaseMashupClient {
         req.setUserLdap(getUserSessionData().getUserLdap());
         req.setOrderId(orderId);
         req.jsonBody(putOrderData);
-        return execute(req, OrderData.class);
+        return execute(req, OrderData.class, paoUrl);
     }
 
     @Step("Check quantity")
@@ -88,7 +100,7 @@ public class OrderClient extends BaseMashupClient {
         Map<String, String> body = new HashMap<>();
         body.put("pinCode", pinCode);
         req.jsonBody(body);
-        return execute(req, JsonNode.class);
+        return execute(req, JsonNode.class, paoUrl);
     }
 
     @Step("Update Order")
@@ -97,7 +109,7 @@ public class OrderClient extends BaseMashupClient {
         req.setShopId(getUserSessionData().getUserShopId());
         req.setUserLdap(getUserSessionData().getUserLdap());
         req.jsonBody(orderData);
-        return execute(req, OrderData.class);
+        return execute(req, OrderData.class, paoUrl);
     }
 
     @Step("Rearrange order")
@@ -123,7 +135,7 @@ public class OrderClient extends BaseMashupClient {
         putProductData.setPrice(productData.getPrice());
         putOrderData.setProducts(Collections.singletonList(putProductData));
         req.jsonBody(putOrderData);
-        return execute(req, JsonNode.class);
+        return execute(req, JsonNode.class, paoUrl);
     }
 
     @Step("Make status DELETED for order with id = {orderId}")
@@ -134,7 +146,7 @@ public class OrderClient extends BaseMashupClient {
         Map<String, String> body = new HashMap<>();
         body.put("status", SalesDocumentsConst.States.DELETED.getApiVal());
         req.jsonBody(body);
-        return execute(req, JsonNode.class);
+        return execute(req, JsonNode.class, paoUrl);
     }
 
     @Step("Cancel order with id = {orderId}")

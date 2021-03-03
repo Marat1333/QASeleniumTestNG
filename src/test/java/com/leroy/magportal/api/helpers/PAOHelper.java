@@ -169,6 +169,7 @@ public class PAOHelper extends BaseHelper {
         reqOrderData.setCartId(cartData.getCartId());
         reqOrderData.setDateOfGiveAway(LocalDateTime.now().plusDays(1));
         reqOrderData.setDocumentVersion(1);
+        reqOrderData.setShopId(userSessionData().getUserShopId());
 
         List<ReqOrderProductData> orderProducts = new ArrayList<>();
         for (CartProductOrderData cartProduct : cartData.getProducts()) {
