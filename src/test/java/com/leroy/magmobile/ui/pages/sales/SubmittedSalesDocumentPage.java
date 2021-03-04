@@ -5,6 +5,7 @@ import com.leroy.core.web_elements.general.Element;
 import com.leroy.magmobile.ui.elements.MagMobGreenSubmitButton;
 import com.leroy.magmobile.ui.pages.common.CommonMagMobilePage;
 import io.qameta.allure.Step;
+import lombok.SneakyThrows;
 
 public class SubmittedSalesDocumentPage extends CommonMagMobilePage {
 
@@ -43,8 +44,9 @@ public class SubmittedSalesDocumentPage extends CommonMagMobilePage {
 
     /* ------------------------- ACTION STEPS -------------------------- */
 
+    @SneakyThrows
     @Step("Нажмите кнопку Перейти в список документов")
-    public SalesDocumentsPage clickSubmitButton() throws InterruptedException {
+    public SalesDocumentsPage clickSubmitButton() {
         wait(short_timeout);
         // Таймаут добавлен, т.к. смена статуса заявки происходит не мгновенно и и список оказывается неактуальным
         submitBtn.click();
