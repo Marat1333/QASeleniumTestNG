@@ -3,7 +3,6 @@ package com.leroy.magportal.api.tests.onlineOrders.pickupOrders;
 import static com.leroy.core.matchers.IsSuccessful.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.not;
 
@@ -16,8 +15,12 @@ import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeDat
 import com.leroy.magportal.api.data.timeslot.TimeslotData;
 import com.leroy.magportal.api.data.timeslot.TimeslotResponseData;
 import com.leroy.magportal.api.helpers.OnlineOrderHelper;
+import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
 import io.qameta.allure.Step;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -29,6 +32,8 @@ public class PickupTimeslotTest extends BaseMagPortalApiTest {
     private OnlineOrderHelper onlineOrderHelper;
     @Inject
     private OrderClient orderClient;
+    @Inject
+    private PAOHelper paoHelper;
 
     private String currentOrderId;
     private OnlineOrderTypeData currentOrderType;
@@ -45,7 +50,7 @@ public class PickupTimeslotTest extends BaseMagPortalApiTest {
     public void testGetTimeslotSeveralProducts() {
         Response<TimeslotResponseData> response = orderClient.getTimeslots(currentOrderId);
         assertTimeslotResult(response);
-        timeslotData = response.asJson().getData().get(0);
+        timeslotData = paoHelper.getLatestTimeslot(response);
     }
 
     @Test(description = "C23426763 Postpayment: Update Timeslot", dependsOnMethods = {
@@ -68,7 +73,7 @@ public class PickupTimeslotTest extends BaseMagPortalApiTest {
         makeDimensionalOrder();
         Response<TimeslotResponseData> response = orderClient.getTimeslots(currentOrderId);
         assertTimeslotResult(response);
-        timeslotData = response.asJson().getData().get(0);
+        timeslotData = paoHelper.getLatestTimeslot(response);
     }
 
     @Test(description = "C23426764 PrePayment: Update Timeslot", dependsOnMethods = {
@@ -101,7 +106,7 @@ public class PickupTimeslotTest extends BaseMagPortalApiTest {
                 greaterThanOrEqualTo(1));
         for (TimeslotData timeslotData : responseData) {
             assertThat("There are NO available date",
-                    timeslotData.getAvailableDate(), not(emptyOrNullString()));
+                    timeslotData.getDate(), not(emptyOrNullString()));
         }
     }
 
@@ -110,8 +115,19 @@ public class PickupTimeslotTest extends BaseMagPortalApiTest {
         assertThat("Request to Timeslot Update has Failed.", response, successful());
         OrderData orderData = orderClient.getOnlineOrder(currentOrderId).asJson();
         assertThat("Pickup Date was NOT updated",
-                orderData.getGiveAway().getDate().equals(timeslotData.getAvailableDate()));
-        assertThat("Pickup Shop was NOT updated", orderData.getGiveAway().getShopId().toString(),
-                equalTo(timeslotData.getStoreId()));
+                getDateAsLocalDateTime(orderData.getGiveAway().getDate())
+                        .equals(getDateAsLocalDateTime(timeslotData.getDate())));
+    }
+
+    private Instant getDateAsLocalDateTime(String date) {
+        Instant instant;
+        try {
+            instant = ZonedDateTime
+                    .parse(date, DateTimeFormatter.ISO_INSTANT).toInstant();
+        } catch (Exception ex) {
+            instant = ZonedDateTime.parse(date, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                    .toInstant();
+        }
+        return instant;
     }
 }

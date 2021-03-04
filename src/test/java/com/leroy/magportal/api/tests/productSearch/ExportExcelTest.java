@@ -19,7 +19,7 @@ import org.testng.annotations.Test;
 public class ExportExcelTest extends BaseCatalogTest {
 
     private String buildUri(String resource, Map<String, String> queryParamsMap) {
-        String result = EnvConstants.URL_MAG_PORTAL_OLD + "/api" + resource + "?";
+        String result = EnvConstants.SEARCH_API_HOST + resource + "?";
         StringBuilder queryParamBuilder = new StringBuilder();
         for (Map.Entry<String, String> entry : queryParamsMap.entrySet()) {
             queryParamBuilder.append(entry.getKey()).append(entry.getValue()).append("&");
@@ -98,12 +98,14 @@ public class ExportExcelTest extends BaseCatalogTest {
     @Test(description = "C23416271 Excel output")
     public void testExcelDownload() throws Exception {
         FileManager fileManager = new FileManager();
-        String resource = "/v4/catalog/search";
+        String resource = "/v1/products";
         UserSessionData userSessionData = getUserSessionData();
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put(CatalogSearchParams.shopId, userSessionData.getUserShopId());
+        queryParams.put(CatalogSearchParams.startFrom, "1");
         queryParams.put(CatalogSearchParams.pageSize, "90");
         queryParams.put(CatalogSearchParams.ldap, userSessionData.getUserLdap());
+        queryParams.put(CatalogSearchParams.hasAvailableStock, "true");
         queryParams.put(CatalogSearchParams.outputFormat, "xls");
 
         String uri = buildUri(resource, queryParams);

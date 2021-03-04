@@ -93,7 +93,7 @@ public class OrderTest extends BaseProjectApiTest {
 
         // Create
         step("Create Cart");
-        Response<CartData> response = cartClient.sendRequestCreate(productOrderData);
+        Response<CartData> response = cartClient.createCartRequest(productOrderData);
         CartData cartData = cartClient.assertThatIsCreatedAndGetData(response, true);
 
         step("Create Order");
@@ -250,7 +250,7 @@ public class OrderTest extends BaseProjectApiTest {
 
         // Create
         step("Create Cart");
-        Response<CartData> response = cartClient.sendRequestCreate(Arrays.asList(productOrderData1, productOrderData2));
+        Response<CartData> response = cartClient.createCartRequest(Arrays.asList(productOrderData1, productOrderData2));
         CartData cartData = cartClient.assertThatIsCreatedAndGetData(response, true);
 
         step("Create Order");

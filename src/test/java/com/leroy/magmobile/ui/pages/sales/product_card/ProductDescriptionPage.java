@@ -223,8 +223,6 @@ public class ProductDescriptionPage extends ProductCardPage {
         shouldProductLMCodeIs(data.getLmCode());
         shouldProductBarCodeIs(data.getBarCode());
         softAssert.isElementTextEqual(productName, data.getTitle(), ps);
-        mainScrollView.scrollToEnd();
-        ps = getPageSource();
         softAssert.isElementTextContains(priceLbl, ParserUtil.prettyDoubleFmt(data.getPrice()), ps);
         unitComparison(priceLbl, data.getPriceUnit());
         String priceChangeDate = dateOfPriceChangeLbl.getText(ps).replaceAll("c ", "");

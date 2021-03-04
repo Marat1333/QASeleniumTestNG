@@ -48,7 +48,7 @@ public class SetPinCodeTest extends BaseMagPortalApiTest {
         currentPinCode = "1test";
         Response<?> response = orderClient
                 .setPinCode(currentOrderData.getOrderId(), currentPinCode);
-        assertThat("Request to set PinCode has Failed.", !response.isSuccessful());
+        assertThat("It's possible to set invalid PinCode.", !response.isSuccessful());
     }
 
     @Test(description = "C23441740 First Set PinCode for Pickup Order", priority = 2)

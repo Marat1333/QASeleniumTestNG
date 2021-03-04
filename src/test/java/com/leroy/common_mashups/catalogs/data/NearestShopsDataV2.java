@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data
-public class NearestShopsV2Data {
+public class NearestShopsDataV2 {
 
     private int shopId;
     private Double price;

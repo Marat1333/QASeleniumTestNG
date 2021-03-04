@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="API Carts Suite" parallel="tests">
+<suite name="API PAO: Carts Suite" parallel="tests">
 
     <listeners>
         <listener class-name="com.leroy.core.listeners.TestRailListener"/>
@@ -8,7 +8,7 @@
 
     <test name="Cart: Create, Update, Delete">
         <classes>
-            <class name="com.leroy.magportal.api.tests.cart.CartTest">
+            <class name="com.leroy.magportal.api.tests.offlineOrders.CartTest">
                 <methods>
                     <include name="testCreateCart"/>
                     <include name="testCartDiscount"/>
