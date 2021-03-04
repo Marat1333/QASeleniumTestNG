@@ -44,7 +44,9 @@ public class SubmittedSalesDocumentPage extends CommonMagMobilePage {
     /* ------------------------- ACTION STEPS -------------------------- */
 
     @Step("Нажмите кнопку Перейти в список документов")
-    public SalesDocumentsPage clickSubmitButton() {
+    public SalesDocumentsPage clickSubmitButton() throws InterruptedException {
+        wait(short_timeout);
+        // Таймаут добавлен, т.к. смена статуса заявки происходит не мгновенно и и список оказывается неактуальным
         submitBtn.click();
         return new SalesDocumentsPage();
     }
