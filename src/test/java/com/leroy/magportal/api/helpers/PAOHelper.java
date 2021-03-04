@@ -185,7 +185,10 @@ public class PAOHelper extends BaseHelper {
         reqOrderData.setWithDelivery(isDelivery);
 
         Response<OrderData> orderResp = orderClient.createOrder(reqOrderData);
-        return orderClient.assertThatIsCreatedAndGetData(orderResp);
+//        return orderClient.assertThatIsCreatedAndGetData(orderResp); //TODO recover when issue with PAO Order_POST fixed
+        OrderData orderData = orderClient.assertThatIsCreatedAndGetData(orderResp);
+        orderData.setDelivery(isDelivery);
+        return orderData;
     }
 
     @Step("API: Создать подвтержденный заказ")
@@ -196,9 +199,7 @@ public class PAOHelper extends BaseHelper {
         OrderData orderData = createDraftOrder(products);
 
         // Установка ПИН кода
-        String validPinCode = getValidPinCode(
-                orderClient.getOnlineOrder(orderData.getOrderId()).asJson()
-                        .getDelivery());//TODO: due to issue with POST_Order
+        String validPinCode = getValidPinCode(orderData.getDelivery());
         Response<JsonNode> response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
         if (response.getStatusCode() == StatusCodes.ST_409_CONFLICT) {
             response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
