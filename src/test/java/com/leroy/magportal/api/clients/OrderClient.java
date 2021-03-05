@@ -40,6 +40,8 @@ import com.leroy.magportal.api.data.onlineOrders.OrderProductsToGivenAwayData.Fu
 import com.leroy.magportal.api.data.onlineOrders.OrderRearrangePayload;
 import com.leroy.magportal.api.data.onlineOrders.OrderWorkflowPayload;
 import com.leroy.magportal.api.data.onlineOrders.OrderWorkflowPayload.WorkflowPayload;
+import com.leroy.magportal.api.data.onlineOrders.RefundPayload;
+import com.leroy.magportal.api.data.onlineOrders.RefundPayload.Line;
 import com.leroy.magportal.api.data.onlineOrders.ShipToData;
 import com.leroy.magportal.api.data.timeslot.AppointmentData;
 import com.leroy.magportal.api.data.timeslot.AppointmentPayload;
@@ -56,6 +58,7 @@ import com.leroy.magportal.api.requests.order.OrderFulfilmentGivenAwayRequest;
 import com.leroy.magportal.api.requests.order.OrderGetAdditionalProductsInfo;
 import com.leroy.magportal.api.requests.order.OrderGetRequest;
 import com.leroy.magportal.api.requests.order.OrderWorkflowRequest;
+import com.leroy.magportal.api.requests.order.RefundRequest;
 import com.leroy.magportal.api.requests.timeslot.AppointmentsRequest;
 import com.leroy.magportal.api.requests.timeslot.ChangeDateRequest;
 import com.leroy.magportal.api.requests.timeslot.TimeslotRequest;
@@ -301,6 +304,15 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         return execute(req, Object.class);
     }
 
+    @Step("Post Refund for {orderId} with {lmCodes} and {newDeliveryPrice}")
+    public Response<?> postRefund(String orderId, List<String> lmCodes, Double refundCount,
+            Double newDeliveryPrice) {
+        RefundRequest req = new RefundRequest();
+        RefundPayload payload = makeRefundPayload(orderId, lmCodes, refundCount, newDeliveryPrice);
+        req.jsonBody(payload);
+        return execute(req, Object.class);
+    }
+
     @Step("Moves NEW order to specified status")
     public void moveNewOrderToStatus(String orderId, States status) {
         OnlineOrderData orderData = this.getOnlineOrder(orderId).asJson();
@@ -338,6 +350,22 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
                 paymentHelper.makePaid(orderId);
                 this.waitAndReturnProductsReadyToGiveaway(orderId);
                 this.giveAway(orderId, true);
+                break;
+            case PARTIALLY_DELIVERED:
+                pickingTaskClient.completeAllPickings(orderId, true);
+                this.waitUntilOrderGetStatus(orderId, pickedState, null);
+                paymentHelper.makePaid(orderId);
+                this.waitAndReturnProductsReadyToGiveaway(orderId);
+                this.giveAway(orderId, true);
+                this.deliver(orderId, false);
+                break;
+            case DELIVERED:
+                pickingTaskClient.completeAllPickings(orderId, true);
+                this.waitUntilOrderGetStatus(orderId, pickedState, null);
+                paymentHelper.makePaid(orderId);
+                this.waitAndReturnProductsReadyToGiveaway(orderId);
+                this.giveAway(orderId, true);
+                this.deliver(orderId, true);
                 break;
             default:
                 break;
@@ -659,6 +687,30 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         } else {
             return count;
         }
+    }
+
+    private RefundPayload makeRefundPayload(String orderId, List<String> lmCodes, Double refundCount,
+            Double newDeliveryPrice) {
+        RefundPayload payload = new RefundPayload();
+        payload.setUpdatedBy(getUserSessionData().getUserLdap());
+        payload.setOrderId(orderId);
+        payload.setNewDeliveryPrice(newDeliveryPrice);
+        payload.setLines(makeRefundLines(orderId, lmCodes, refundCount));
+        return payload;
+    }
+
+    private List<Line> makeRefundLines(String orderId, List<String> lmCodes, Double refundCount) {
+        List<Line> lines = new ArrayList<>();
+        OnlineOrderData orderData = this.getOnlineOrder(orderId).asJson();
+        List<OrderProductData> products = orderData.getProducts();
+        for (String lmCode : lmCodes) {
+            Line line = new Line();
+            OrderProductData product = products.stream().filter(x -> x.getLmCode().equals(lmCode)).findFirst().orElseGet(null);
+            line.setLineId(product == null ? null : product.getLineId());
+            line.setQuantityToRefund(refundCount);
+            lines.add(line);
+        }
+        return lines;
     }
 
     ////VERIFICATION
