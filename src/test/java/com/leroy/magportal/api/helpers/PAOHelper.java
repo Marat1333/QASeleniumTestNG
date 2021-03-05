@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class PAOHelper extends BaseHelper {
@@ -185,7 +186,10 @@ public class PAOHelper extends BaseHelper {
         reqOrderData.setWithDelivery(isDelivery);
 
         Response<OrderData> orderResp = orderClient.createOrder(reqOrderData);
-        return orderClient.assertThatIsCreatedAndGetData(orderResp);
+//        return orderClient.assertThatIsCreatedAndGetData(orderResp);//TODO recover when issue with PAO Order_POST fixed
+        OrderData orderData = orderClient.assertThatIsCreatedAndGetData(orderResp);
+        orderData.setDelivery(isDelivery);
+        return orderData;
     }
 
     @Step("API: Создать подвтержденный заказ")
@@ -196,9 +200,7 @@ public class PAOHelper extends BaseHelper {
         OrderData orderData = createDraftOrder(products);
 
         // Установка ПИН кода
-        String validPinCode = getValidPinCode(
-                orderClient.getOnlineOrder(orderData.getOrderId()).asJson()
-                        .getDelivery());//TODO: due to issue with POST_Order
+        String validPinCode = getValidPinCode(orderData.getDelivery());
         Response<JsonNode> response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
         if (response.getStatusCode() == StatusCodes.ST_409_CONFLICT) {
             response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
@@ -257,9 +259,17 @@ public class PAOHelper extends BaseHelper {
         return createConfirmedOrder(products, GiveAwayPoints.DELIVERY, isWaitForAllowedForPicking);
     }
 
+    @Step("Создаем подтвержденный заказ на самовывоз")
     public OrderData createConfirmedPickupOrder(CartProductOrderData product,
             boolean isWaitForAllowedForPicking) {
         return createConfirmedPickupOrder(Collections.singletonList(product), isWaitForAllowedForPicking);
+    }
+
+    @Step("Создаем подтвержденный заказ на самовывоз с 1 продуктом")
+    public OrderData createDefaultConfirmedPickupOrder() {
+        CartProductOrderData productOrderData = new CartProductOrderData(searchProductHelper.getRandomProduct());
+        productOrderData.setQuantity((double) new Random().nextInt(6) + 1);
+        return createConfirmedPickupOrder(productOrderData, true);
     }
 
     private GiveAwayData makeGiveAwayData(GiveAwayPoints giveAwayPoints) {

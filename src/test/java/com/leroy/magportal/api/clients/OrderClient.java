@@ -21,6 +21,7 @@ import com.leroy.magmobile.api.data.sales.orders.OrderProductData;
 import com.leroy.magmobile.api.data.sales.orders.ResOrderCheckQuantityData;
 import com.leroy.magmobile.api.requests.order.OrderRearrangeRequest;
 import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
+import com.leroy.magportal.api.constants.GiveAwayGroups;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
 import com.leroy.magportal.api.constants.OrderChannelEnum;
 import com.leroy.magportal.api.constants.OrderReasonEnum;
@@ -33,8 +34,9 @@ import com.leroy.magportal.api.data.onlineOrders.DeliveryData;
 import com.leroy.magportal.api.data.onlineOrders.DeliveryUpdatePayload;
 import com.leroy.magportal.api.data.onlineOrders.OnlineOrderData;
 import com.leroy.magportal.api.data.onlineOrders.OrderDeliveryRecalculateResponseData;
-import com.leroy.magportal.api.data.onlineOrders.OrderFulfilmentToGivenAwayPayload;
 import com.leroy.magportal.api.data.onlineOrders.OrderProductDataPayload;
+import com.leroy.magportal.api.data.onlineOrders.OrderProductsToGivenAwayData;
+import com.leroy.magportal.api.data.onlineOrders.OrderProductsToGivenAwayData.FulfilmentGroups;
 import com.leroy.magportal.api.data.onlineOrders.OrderRearrangePayload;
 import com.leroy.magportal.api.data.onlineOrders.OrderWorkflowPayload;
 import com.leroy.magportal.api.data.onlineOrders.OrderWorkflowPayload.WorkflowPayload;
@@ -63,6 +65,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.SneakyThrows;
 import org.testng.asserts.SoftAssert;
 import org.testng.util.Strings;
@@ -226,7 +229,8 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         }
     }
 
-    private Response<JsonNode> postChangeDate(OnlineOrderData orderData, TimeslotData timeslotData) {
+    private Response<JsonNode> postChangeDate(OnlineOrderData orderData,
+            TimeslotData timeslotData) {
         List<String> stores = new ArrayList<>();
         List<String> lmCodes = new ArrayList<>();
         TimeslotUpdatePayload payload = new TimeslotUpdatePayload();
@@ -386,11 +390,13 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     public List<OrderProductData> waitAndReturnProductsReadyToGiveaway(String orderId) {
         long currentTimeMillis = System.currentTimeMillis();
         while (System.currentTimeMillis() - currentTimeMillis < waitTimeoutInSeconds * 1000) {
-            Response<OrderFulfilmentToGivenAwayPayload> response = this
+            Response<OrderProductsToGivenAwayData> response = this
                     .productsToGivenAway(orderId);
             if (response.isSuccessful()) {
                 List<OrderProductData> products = response.asJson().getGroups().stream()
-                        .filter(x -> x.getGroupName().equals("TO_GIVEAWAY")).findFirst().get()
+                        .filter(x -> x.getGroupName().equals(GiveAwayGroups.TO_GIVEAWAY.toString()))
+                        .findFirst()
+                        .get()
                         .getProducts();
                 if (products.size() > 0) {
                     return products;
@@ -401,12 +407,13 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         return null;
     }
 
-    private Response<OrderFulfilmentToGivenAwayPayload> productsToGivenAway(String orderId) {
+    @Step("Return product groups to TO_GIVEAWAY")
+    public Response<OrderProductsToGivenAwayData> productsToGivenAway(String orderId) {
         OnlineOrderData orderData = this.getOnlineOrder(orderId).asJson();
         return execute(new OrderFulfilmentGivenAwayRequest()
                         .setFulfillmentTaskId(orderData.getFulfillmentTaskId())
                         .setUserLdap(getUserSessionData().getUserLdap()),
-                OrderFulfilmentToGivenAwayPayload.class);
+                OrderProductsToGivenAwayData.class);
     }
 
     private Response<JsonNode> makeAction(String orderId, String action,
@@ -775,5 +782,83 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         softAssert.assertTrue(orderData.getSolutionVersion() > 0, "SolutionVersion is empty.");
 
         softAssert.assertAll();
+    }
+
+    @Step("Check that products give away groups")
+    public void assertProductsToGivenAwayResult(Response<OrderProductsToGivenAwayData> response,
+            States status) {
+        assertThat("Check Quantity has Failed.", response, successful());
+        OrderProductsToGivenAwayData data = response.asJson();
+        softAssert().isTrue(Strings.isNotNullAndNotEmpty(data.getFulfillmentStatus()),
+                "FF status is empty");
+        softAssert().isTrue(Strings.isNotNullAndNotEmpty(data.getFulfillmentTaskId()),
+                "FF taskId is empty");
+        softAssert().isTrue(Objects.nonNull(data.getFulfillmentVersion()), "FF version is empty");
+        softAssert().isTrue(Objects.nonNull(data.getRefundAvailable()), "Refund status is empty");
+
+        switch (status) {
+            case ALLOWED_FOR_PICKING:
+            case PICKED_WAIT:
+            case PICKING_IN_PROGRESS:
+            case PARTIALLY_PICKED:
+                softAssert().isTrue(
+                        getGwGroup(data, GiveAwayGroups.TO_GIVEAWAY).getProducts().size() == 0,
+                        status + ": Not 0 count in TO_GIVEAWAY");
+                softAssert().isTrue(
+                        getGwGroup(data, GiveAwayGroups.GIVEN_AWAY).getProducts().size() == 0,
+                        status + ": Not 0 count in GIVEN_AWAY");
+                softAssert().isTrue(
+                        getGwGroup(data, GiveAwayGroups.UNAVAILABLE_FOR_GIVEAWAY).getProducts()
+                                .size() > 0,
+                        status + ": count == 0 in group");
+                break;
+            case PICKED:
+                softAssert().isTrue(
+                        getGwGroup(data, GiveAwayGroups.TO_GIVEAWAY).getProducts().size() > 0,
+                        status + ": count == 0 in TO_GIVEAWAY");
+                softAssert().isTrue(
+                        getGwGroup(data, GiveAwayGroups.GIVEN_AWAY).getProducts().size() == 0,
+                        status + ": Not 0 count in GIVEN_AWAY");
+                softAssert().isTrue(
+                        getGwGroup(data, GiveAwayGroups.UNAVAILABLE_FOR_GIVEAWAY).getProducts()
+                                .size() == 0,
+                        status + ": Not 0 count in UNAVAILABLE_FOR_GIVEAWAY");
+                break;
+            case PARTIALLY_GIVEN_AWAY:
+            case PARTIALLY_SHIPPED:
+                softAssert().isTrue(
+                        getGwGroup(data, GiveAwayGroups.TO_GIVEAWAY).getProducts().size() > 0,
+                        status + ": count == 0 in TO_GIVEAWAY");
+                softAssert().isTrue(
+                        getGwGroup(data, GiveAwayGroups.GIVEN_AWAY).getProducts().size() > 0,
+                        status + ": count == 0 in GIVEN_AWAY");
+                softAssert().isTrue(
+                        getGwGroup(data, GiveAwayGroups.UNAVAILABLE_FOR_GIVEAWAY).getProducts().size() == 0,
+                        status + ": Not 0 count in UNAVAILABLE_FOR_GIVEAWAY");
+                break;
+            case GIVEN_AWAY:
+            case SHIPPED:
+            case PARTIALLY_DELIVERED:
+            case DELIVERED:
+                softAssert().isTrue(
+                        getGwGroup(data, GiveAwayGroups.TO_GIVEAWAY).getProducts().size() == 0,
+                        "Invalid count in group");
+                softAssert().isTrue(
+                        getGwGroup(data, GiveAwayGroups.GIVEN_AWAY).getProducts().size() > 0,
+                        "Invalid count in group");
+                softAssert().isTrue(
+                        getGwGroup(data, GiveAwayGroups.UNAVAILABLE_FOR_GIVEAWAY).getProducts().size() == 0,
+                        "Invalid count in group");
+                break;
+            default:
+                break;
+        }
+        softAssert().verifyAll();
+    }
+
+    private FulfilmentGroups getGwGroup(OrderProductsToGivenAwayData data, GiveAwayGroups name) {
+        return data.getGroups().stream().filter(x -> x.getGroupName().equals(name.toString()))
+                .findFirst()
+                .orElse(new FulfilmentGroups());
     }
 }

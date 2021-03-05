@@ -178,6 +178,7 @@ public class OrderClient extends BaseMashupClient {
 
         assertThat("customers", data.getCustomers(), not(nullValue()));
         assertThat("products", data.getProducts(), hasSize(greaterThan(0)));
+//        assertThat("delivery", data.getDelivery(), not(nullValue()));//TODO uncomment when fixed
 
         return data;
     }
@@ -419,5 +420,4 @@ public class OrderClient extends BaseMashupClient {
                 r.isSuccessful());
         return null;
     }
-
 }
