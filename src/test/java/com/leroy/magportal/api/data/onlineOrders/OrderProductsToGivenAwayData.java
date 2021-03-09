@@ -5,12 +5,13 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class OrderFulfilmentToGivenAwayPayload {
+public class OrderProductsToGivenAwayData {
 
     private String fulfillmentStatus;
     private String fulfillmentTaskId;
     private Integer fulfillmentVersion;
     private List<FulfilmentGroups> groups;
+    private Boolean refundAvailable;
 
     @Data
     public static class FulfilmentGroups {
