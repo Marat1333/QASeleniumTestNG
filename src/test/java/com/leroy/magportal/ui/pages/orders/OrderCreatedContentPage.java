@@ -65,6 +65,9 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
             metaName = "Кнопка Сохранить")
     Button saveBtn;
 
+    @WebFindBy(xpath = "//div[contains(@class, 'lm-puz2-Order-OrderViewFooter__buttonsWrapper')]//span[contains(text(), 'Доставить')]/ancestor::button", metaName = "Кнопка 'Отгрузить'")
+    Button deliveryBtn;
+
     @WebFindBy(xpath = "//div[contains(@class, 'OrderViewFooter__buttonsWrapper')]//button[descendant::span[text()='Отмена']]",
             metaName = "Кнопка Отмена")
     Button cancelBtn;
@@ -122,6 +125,13 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
             waitForSpinnerAppearAndDisappear();
         }
         shouldModalThatChangesIsNotSavedIsNotVisible();
+        return this;
+    }
+
+    @Step("Нажать кнопку 'Доставить'")
+    public OrderCreatedContentPage clickDeliveryButton() {
+        deliveryBtn.click();
+        waitForSpinnerAppearAndDisappear();
         return this;
     }
 

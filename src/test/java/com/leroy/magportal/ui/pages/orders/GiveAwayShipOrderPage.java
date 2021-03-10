@@ -15,7 +15,7 @@ public class GiveAwayShipOrderPage extends OrderCreatedPage {
     @WebFindBy(xpath = "//div[contains(@class, 'lm-puz2-Order-OrderViewFooter__buttonsWrapper')]", metaName = "Кнопка 'Выдать'")
     Button giveAwayBtn;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'lm-puz2-Order-OrderViewFooter__buttonsWrapper')]//button//span[text()='Отгрузить']", metaName = "Кнопка 'Отгрузить'")
+    @WebFindBy(xpath = "//div[contains(@class, 'lm-puz2-Order-OrderViewFooter__buttonsWrapper')]//span[contains(text(), 'Отгрузить')]/ancestor::button", metaName = "Кнопка 'Отгрузить'")
     Button shipBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'Order-GiveAway-Card')]",

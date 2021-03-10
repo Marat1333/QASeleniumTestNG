@@ -51,6 +51,13 @@ public abstract class OrderCreatedPage extends OrderHeaderPage {
 
     // Actions
 
+    @Step ("Перейти на вкладку 'Содержание'")
+    public OrderCreatedContentPage clickGoToContentTab()  {
+        mainTab.click();
+        return new OrderCreatedContentPage();
+
+    }
+
     @Step ("Перейти на вкладку 'Сборки'")
     public AssemblyOrderPage clickGoToPickings()  {
         pickingsTab.click();

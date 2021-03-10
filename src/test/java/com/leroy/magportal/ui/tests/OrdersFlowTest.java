@@ -396,8 +396,28 @@ public class OrdersFlowTest extends BasePAOTest {
         orderPage.refreshDocumentList();
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(
-                SalesDocumentsConst.States.SHIPPED.getUiVal());
+                SalesDocumentsConst.States.SHIPPED_WAIT.getUiVal());
         orderPage.shouldDocumentCountIs(1);
+
+        // Step 15:
+        step("Дождаться перехода заказа в Доставку");
+        orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.ON_DELIVERY,PaymentStatusEnum.COMPLETED);
+        getDriver().navigate().refresh();
+        orderPage.enterSearchTextAndSubmit(orderId);
+        //orderPage.refreshDocumentList();
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(
+                SalesDocumentsConst.States.ON_DELIVERY.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
+
+        // Step 16:
+        step("Перейти на вкладку 'Содержание'");
+        orderPage.clickDocumentInLeftMenu(orderId);
+        createdContentPage.shouldOrderProductCountIs(3);
+
+        // Step 17:
+        step("Нажать кнопку доставить");
+        createdContentPage.clickDeliveryButton();
 
     }
 
@@ -409,7 +429,6 @@ public class OrdersFlowTest extends BasePAOTest {
         // Step 1:
         step("Открыть страницу с Заказами");
         OrderHeaderPage orderPage = loginAndGoTo(OrderHeaderPage.class);
-        //orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.DELIVERY_TO_DOOR).getSolutionId();
 
         // Step 2:
         step("Найти созданный заказ в статусе 'Готов к Сборке' с номером" + " " + orderId);
@@ -460,8 +479,8 @@ public class OrdersFlowTest extends BasePAOTest {
         pickingContentPage.clickFinishAssemblyButton();
 
         // Step 9:
-        step("Оплатить заказ через API");
-        paymentHelper.makePayment(orderId, PaymentMethodEnum.API);
+        step("Оплатить заказ через TPNET");
+        paymentHelper.makePayment(orderId, PaymentMethodEnum.TPNET);
 
         // Step 10:
         step("Вернуться на страницу заказов ");
@@ -470,17 +489,14 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 11:
         step("Проверить статус собранного заказа");
+        orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.PICKED, PaymentStatusEnum.PAID);
         orderPage.refreshDocumentList();
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(
-                SalesDocumentsConst.States.PICKED_WAIT.getUiVal());
+                SalesDocumentsConst.States.PICKED.getUiVal());
         orderPage.shouldDocumentCountIs(1);
 
         // Step 12:
-        step("Оплатить заказ через TPNET");
-        paymentHelper.makePayment(orderId, PaymentMethodEnum.TPNET);
-
-        // Step 13:
         step("Перейти на вкладку 'К выдаче и возврату'");
         GiveAwayShipOrderPage giveAwayShipOrderPage = createdContentPage.clickGoToShipRefund();
 
