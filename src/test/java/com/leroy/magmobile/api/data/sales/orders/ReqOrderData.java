@@ -2,11 +2,10 @@ package com.leroy.magmobile.api.data.sales.orders;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.leroy.common_mashups.customer_accounts.data.CustomerData;
-import lombok.Data;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class ReqOrderData {
@@ -17,4 +16,5 @@ public class ReqOrderData {
     private List<CustomerData> customers = new ArrayList<>();
     private List<ReqOrderProductData> products = new ArrayList<>();
     private boolean withDelivery;
+    private String shopId;
 }

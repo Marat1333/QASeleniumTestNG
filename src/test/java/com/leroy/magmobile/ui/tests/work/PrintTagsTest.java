@@ -318,6 +318,7 @@ public class PrintTagsTest extends AppBaseSteps {
         tagsListPage.switchToGroupEditorMode();
         editTagModalPage = tagsListPage.choseProductsAndOpenGroupEditModal(lmCodesList.get(0));
         editTagModalPage.deleteProductFromSession();
+        tagsListPage.navigateBack();
         tagsListPage.shouldProductDeleted(lmCodesList.get(0));
         lmCodesList.remove(0);
 

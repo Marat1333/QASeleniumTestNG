@@ -30,6 +30,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.Assert;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -57,7 +58,7 @@ public class BitrixHelper extends BaseHelper {
     @Step("Creates Online order with Dimensional LmCode")
     public BitrixSolutionResponse createDimensionalOnlineOrder(OnlineOrderTypeData orderData) {
         orderData.setLmCode(LmCodeTypeEnum.DIMENSIONAL.getValue());
-        return this.createOnlineOrders(1, orderData, 1, API).stream().findFirst().get();
+        return this.createOnlineOrders(1, orderData, 1, CARD).stream().findFirst().get();
     }
 
     @Step("Creates Online order with 3 LmCodes")
@@ -94,7 +95,7 @@ public class BitrixHelper extends BaseHelper {
             myThread.sendRequest(client -> client.createSolutionFromBitrix(bitrixPayload));
             threads.add(myThread);
         }
-
+        List<String> errors = new ArrayList<>();
         threads.forEach(t -> {
             try {
                 BitrixSolutionResponse response = t.getData();
@@ -111,10 +112,15 @@ public class BitrixHelper extends BaseHelper {
                 }
             } catch (Exception e) {
                 Log.error(e.getMessage());
+                try {
+                    errors.add(t.getData().toString());
+                } catch (Exception ignore) {
+                }
             }
         });
 
-        Assert.assertTrue("No orders were created!", result.size() > 0);
+        Assert.assertTrue("No orders were created due to: " + Arrays.toString(errors.toArray()),
+                result.size() > 0);
         return result;
     }
 
@@ -136,7 +142,7 @@ public class BitrixHelper extends BaseHelper {
         ArrayList<BitrixSolutionPayload.Basket> result = new ArrayList<>();
 
         if (orderData.getLmCode() != null) {
-            ProductData product = searchProductHelper.searchProductByLmCode(orderData.getLmCode());
+            ProductData product = searchProductHelper.getProductByLmCode(orderData.getLmCode());
             result.add(productDataToPayload(product));
         } else {
             List<ProductData> products = searchProductHelper
@@ -274,10 +280,12 @@ public class BitrixHelper extends BaseHelper {
 //        payload.setPvzData(orderData.pvzData);
 
         payload.setAddress(makeAddressPayload());
-        if (orderData.getDeliveryType().getType().equals(DeliveryServiceTypeEnum.PICKUP.getType())) {
+        if (orderData.getDeliveryType().getType()
+                .equals(DeliveryServiceTypeEnum.PICKUP.getType())) {
             payload.setPickupShop(makePickupShopPayload(shop));
         }
-        if (orderData.getDeliveryType().getType().equals(DeliveryServiceTypeEnum.DELIVERY_PVZ.getType())) {
+        if (orderData.getDeliveryType().getType()
+                .equals(DeliveryServiceTypeEnum.DELIVERY_PVZ.getType())) {
             payload.setPvzData(makePvzPayload());
         }
 

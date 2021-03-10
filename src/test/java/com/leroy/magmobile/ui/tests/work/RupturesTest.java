@@ -1307,7 +1307,7 @@ public class RupturesTest extends AppBaseSteps {
                 .shouldTasksAreCorrect(stickRedStickerTaskData, giveApologizeTaskData, findProductAndLayItOutTaskData);
     }
 
-    @Test(description = "C23389122 Создание отзыва с РМ с экрана добавляемого товара")
+    @Test(description = "C23389122 Создание отзыва с РМ с экрана добавляемого товара", enabled = false)
     public void testCreateRecallFromRmFromAddedProductPage() throws Exception {
         getUserSessionData().setUserShopId(EnvConstants.SHOP_WITH_NEW_INTERFACE);
         List<TransferSearchProductData> products = transferHelper.searchForProductsForTransfer();
@@ -1400,7 +1400,7 @@ public class RupturesTest extends AppBaseSteps {
         sessionListPage.shouldActiveSessionsContainSession(sessionNumber);
     }
 
-    @Test(description = "C23389123 Создание отзыва с РМ из активной сессии (карточка, список перебоев)")
+    @Test(description = "C23389123 Создание отзыва с РМ из активной сессии (карточка, список перебоев)", enabled = false)
     public void testCreateRecallFromRmFromActiveSession() throws Exception {
         getUserSessionData().setUserShopId(EnvConstants.SHOP_WITH_NEW_INTERFACE);
         getUserSessionData().setUserDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
@@ -1468,7 +1468,7 @@ public class RupturesTest extends AppBaseSteps {
                 .verifyRequiredElements();
     }
 
-    @Test(description = "C23389124 Создание отзыва с РМ из завершенной сессии")
+    @Test(description = "C23389124 Создание отзыва с РМ из завершенной сессии", enabled = false)
     public void testCreateRecallFromRmFromFinishedSession() throws Exception {
         getUserSessionData().setUserShopId(EnvConstants.SHOP_WITH_NEW_INTERFACE);
         getUserSessionData().setUserDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);

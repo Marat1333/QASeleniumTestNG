@@ -1,20 +1,39 @@
 package com.leroy.magmobile.api.clients;
 
+import static com.leroy.core.matchers.Matchers.isNumber;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.api.BaseMashupClient;
+import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
-import com.leroy.magmobile.api.requests.salesdoc.cart.*;
+import com.leroy.magmobile.api.requests.salesdoc.cart.CartChangeStatusRequest;
+import com.leroy.magmobile.api.requests.salesdoc.cart.CartConfirmQuantityRequest;
+import com.leroy.magmobile.api.requests.salesdoc.cart.CartConsolidateProductsRequest;
+import com.leroy.magmobile.api.requests.salesdoc.cart.CartDiscountRequest;
+import com.leroy.magmobile.api.requests.salesdoc.cart.CartGet;
+import com.leroy.magmobile.api.requests.salesdoc.cart.CartItemsRequest;
+import com.leroy.magmobile.api.requests.salesdoc.cart.CartPOST;
+import com.leroy.magmobile.api.requests.salesdoc.cart.CartUpdateRequest;
+import com.leroy.magmobile.api.requests.salesdoc.discount.GetSalesDocDiscount;
 import io.qameta.allure.Step;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import ru.leroymerlin.qa.core.clients.base.Response;
-
-import java.util.*;
-
-import static com.leroy.core.matchers.Matchers.isNumber;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 
 public class CartClient extends BaseMashupClient {
 
@@ -27,13 +46,13 @@ public class CartClient extends BaseMashupClient {
      **/
 
     @Step("Get Cart info by cartId={cartId}")
-    public Response<CartData> sendRequestGet(String cartId) {
+    public Response<CartData> getCartRequest(String cartId) {
         return execute(new CartGet().setCartId(cartId)
                 .setShopId(getUserSessionData().getUserShopId()), CartData.class);
     }
 
     @Step("Create Cart")
-    public Response<CartData> sendRequestCreate(List<CartProductOrderData> productOrderDataList) {
+    public Response<CartData> createCartRequest(List<CartProductOrderData> productOrderDataList) {
         CartData cartData = new CartData();
         cartData.setProducts(productOrderDataList);
         return execute(new CartPOST()
@@ -41,9 +60,9 @@ public class CartClient extends BaseMashupClient {
                 .jsonBody(cartData), CartData.class);
     }
 
-    public Response<CartData> sendRequestCreate(
+    public Response<CartData> createCartRequest(
             CartProductOrderData productOrderData) {
-        return sendRequestCreate(Collections.singletonList(productOrderData));
+        return createCartRequest(Collections.singletonList(productOrderData));
     }
 
     @Step("Add product for cartId={cartId}")
@@ -75,6 +94,18 @@ public class CartClient extends BaseMashupClient {
         putData.setProducts(Collections.singletonList(putProductCartData));
         req.jsonBody(putData);
         return execute(req, CartData.class);
+    }
+
+    @Step("GET Sales Doc Discount Reasons")
+    public Response<SalesDocDiscountData> getDiscountReasons() {
+        return getDiscountReasons(getUserSessionData().getUserShopId());
+    }
+
+    @Step("GET Sales Doc Discount Reasons by shopId={shopId}")
+    public Response<SalesDocDiscountData> getDiscountReasons(String shopId) {
+        GetSalesDocDiscount req = new GetSalesDocDiscount();
+        req.setShopId(shopId);
+        return execute(req, SalesDocDiscountData.class);
     }
 
     @Step("Add discount for cartId={cartId}")

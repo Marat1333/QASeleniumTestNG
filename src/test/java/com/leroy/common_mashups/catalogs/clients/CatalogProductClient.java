@@ -6,7 +6,7 @@ import com.leroy.common_mashups.catalogs.data.CatalogSearchFilter;
 import com.leroy.common_mashups.catalogs.data.CatalogSimilarProductsDataV1;
 import com.leroy.common_mashups.catalogs.data.CatalogSimilarProductsDataV2;
 import com.leroy.common_mashups.catalogs.data.NearestShopsData;
-import com.leroy.common_mashups.catalogs.data.NearestShopsV2Data;
+import com.leroy.common_mashups.catalogs.data.NearestShopsDataV2;
 import com.leroy.common_mashups.catalogs.data.ProductDataList;
 import com.leroy.common_mashups.catalogs.data.ServiceItemDataList;
 import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
@@ -104,7 +104,7 @@ public class CatalogProductClient extends BaseMashupClient {
         GetCatalogProduct req = new GetCatalogProduct();
         req.setLmCode(lmCode);
         req.setShopId(getUserSessionData().getUserShopId());
-        return execute(req, ProductData.class, oldGatewayUrl);
+        return execute(req, ProductData.class);
     }
 
     @Step("Get Catalog Product for lmCode={lmCode}, pointOfGiveAway={pointOfGiveAway}, extend={extend}")
@@ -121,7 +121,7 @@ public class CatalogProductClient extends BaseMashupClient {
         req.setShopId(shopId);
         req.setPointOfGiveAway(pointOfGiveAway.getApiVal());
         req.setExtend(extend.toString());
-        return execute(req, ProductData.class, oldGatewayUrl);
+        return execute(req, ProductData.class);
     }
 
     @Step("Get Product Reviews for lmCode={lmCode}, pageNumber={pageNumber}, pageSize={pageSize}")
@@ -317,16 +317,16 @@ public class CatalogProductClient extends BaseMashupClient {
     }
 
     @Step("Get stocks and prices in nearest shops for users shopId V2")
-    public Response<NearestShopsV2Data> getNearestShopsInfoV2(String lmCode) {
+    public Response<NearestShopsDataV2> getNearestShopsInfoV2(String lmCode) {
         return getNearestShopsInfoV2(lmCode, getUserSessionData().getUserShopId());
     }
 
     @Step("Get stocks and prices in nearest shops V2")
-    public Response<NearestShopsV2Data> getNearestShopsInfoV2(String lmCode, String shopId) {
+    public Response<NearestShopsDataV2> getNearestShopsInfoV2(String lmCode, String shopId) {
         GetNearestShopsRequest req = new GetNearestShopsRequest()
                 .setVersion("v2")
                 .setLmCode(lmCode)
                 .setShopId(shopId);
-        return execute(req, NearestShopsV2Data.class);
+        return execute(req, NearestShopsDataV2.class);
     }
 }

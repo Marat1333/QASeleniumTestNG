@@ -508,7 +508,7 @@ public class SearchProductPage extends CommonMagMobilePage {
     }
 
     @Step("Проверить, что фронт корректно отобразил ответ от сервера по запросу на catalog services")
-    public SearchProductPage shouldServicesResponceEqualsContent(ServiceItemDataList responseData, Integer entityCount) throws Exception {
+    public SearchProductPage shouldServicesResponseEqualsContent(ServiceItemDataList responseData, Integer entityCount) throws Exception {
         List<ServiceItemData> serviceData = responseData.getItems();
         List<ServiceCardData> serviceCardDataList = serviceCardsScrollView.getFullDataList(entityCount);
         if (serviceCardDataList.size() != serviceData.size()) {
