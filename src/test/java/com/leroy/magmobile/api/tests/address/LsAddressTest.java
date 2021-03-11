@@ -231,18 +231,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     // Cell products
     @Test(description = "C23194989 lsAddress POST Cell products")
     public void testCreateCellProducts() {
-        step("Create a new alley");
-        AlleyData alleyData = lsAddressHelper.createRandomAlley();
-        createdAlleyId = alleyData.getId();
-
-        step("Create new stands");
-        standDataList = lsAddressHelper.createDefaultStands(alleyData);
-
-        step("Get first stand from list");
-        StandData standData = lsAddressHelper.getStandFromList(0, alleyData.getId());
-
-        step("Create new cells");
-        cellDataList = lsAddressHelper.createDefaultCells(standData.getId());
+        prepareDefaultData(true, true);
 
         step("Prepare test data");
         CellData cellData = cellDataList.getItems().get(0);
