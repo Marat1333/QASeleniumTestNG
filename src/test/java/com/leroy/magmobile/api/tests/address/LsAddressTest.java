@@ -184,8 +184,7 @@ public class LsAddressTest extends BaseProjectApiTest {
         prepareDefaultData(true, true);
 
         step("Get cells from list");
-        int standId = standDataList.getItems().get(0).getId();
-        Response<CellDataList> resp = lsAddressClient.getCells(standId);
+        Response<CellDataList> resp = lsAddressClient.getCells(standData.getId());
         lsAddressClient.assertThatDataMatches(resp, cellDataList);
     }
 
