@@ -181,9 +181,7 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C3316323 lsAddress GET cells")
     public void testGetCells() {
-        prepareDefaultData(false, true);
-        step("Get first stand from list");
-        StandData standData = lsAddressHelper.getStandFromList(0, alleyData.getId());
+        prepareDefaultData(true, true);
 
         step("Get cells from list");
         int standId = standDataList.getItems().get(0).getId();
