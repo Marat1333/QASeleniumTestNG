@@ -50,14 +50,14 @@ public class OrdersFlowTest extends BasePAOTest {
         List<CartProductOrderData> productOrderDataList = makeCartProductsList(productCount, 2.0);
         switch (orderStatus) {
             case ALLOWED_FOR_PICKING:
-                orderId = helper.createConfirmedOrder(productOrderDataList, true).getOrderId();
+                orderId = helper.createConfirmedPickupOrder(productOrderDataList, true).getOrderId();
                 break;
             case PICKED:
-                orderId = helper.createConfirmedOrder(productOrderDataList, true).getOrderId();
+                orderId = helper.createConfirmedPickupOrder(productOrderDataList, true).getOrderId();
                 orderClient.moveNewOrderToStatus(orderId, orderStatus);
                 break;
             default:
-                orderId = helper.createConfirmedOrder(productOrderDataList, false).getOrderId();
+                orderId = helper.createConfirmedPickupOrder(productOrderDataList, false).getOrderId();
                 break;
         }
 
@@ -89,14 +89,6 @@ public class OrdersFlowTest extends BasePAOTest {
         initCreateOrder(productCount, SalesDocumentsConst.States.CONFIRMED);
     }
 
-    private void initFindPickingTask() {
-        orderClient.waitUntilOrderGetStatus(orderId,
-                SalesDocumentsConst.States.ALLOWED_FOR_PICKING, null);
-        Response<PickingTaskDataList> respPickingTasks = pickingTaskClient
-                .searchForPickingTasks(orderId);
-        assertThat(respPickingTasks, successful());
-        pickingTaskId = respPickingTasks.asJson().getItems().get(0).getTaskId();
-    }
 
     @AfterClass(enabled = true)
     private void cancelConfirmedOrder() {
@@ -114,7 +106,6 @@ public class OrdersFlowTest extends BasePAOTest {
         // Step 1:
         step("Открыть страницу с Заказами");
         OrderHeaderPage orderPage = loginAndGoTo(OrderHeaderPage.class);
-        //initFindPickingTask();
 
         // Step 2:
         step("Ввести номер заказа из корзины и нажать кнопку Поиска. Заказ: " + orderId);

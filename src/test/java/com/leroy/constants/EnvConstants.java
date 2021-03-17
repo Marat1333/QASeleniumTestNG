@@ -1,11 +1,10 @@
 package com.leroy.constants;
 
 import com.leroy.core.configuration.Log;
-import org.testng.util.Strings;
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
+import org.testng.util.Strings;
 
 public class EnvConstants {
 
@@ -55,6 +54,7 @@ public class EnvConstants {
     public static final String CLIENT_API_HOST = getProperty("url.api.client_host");
     public static final String RUPTURES_API_HOST = getProperty("url.api.ruptures_host");
     public static final String PICK_API_HOST = getProperty("url.api.pick_host");
+    public static final String PAO_API_HOST = getProperty("url.api.pao_host");
     public static final String RABBIT_API_HOST = getProperty("url.api.rabbit.host");
     public static final String BACKEND_API_HOST = getProperty("url.api.backend.host");
 

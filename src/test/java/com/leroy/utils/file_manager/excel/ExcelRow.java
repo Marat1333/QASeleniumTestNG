@@ -1,7 +1,7 @@
 package com.leroy.utils.file_manager.excel;
 
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.testng.util.Strings;
 
 public class ExcelRow {
     private Row row;
@@ -11,11 +11,20 @@ public class ExcelRow {
     }
 
     public String getCellStringValueByIndex(int index) {
-        return row.getCell(index).getStringCellValue();
+        try {
+            return row.getCell(index).getStringCellValue();
+        } catch (Exception ignore) {
+            return String.valueOf(row.getCell(index).getNumericCellValue());
+        }
     }
 
     public double getCellDoubleValueByIndex(int index) {
-        return row.getCell(index).getNumericCellValue();
+        try {
+            return row.getCell(index).getNumericCellValue();
+        } catch (Exception ignore) {
+            String x = row.getCell(index).getStringCellValue();
+            return Double.parseDouble(Strings.isNotNullAndNotEmpty(x) ? x : "0.0");
+        }
     }
 
     public ExcelCell getCellByIndex(int index){

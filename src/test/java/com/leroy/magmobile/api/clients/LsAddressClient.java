@@ -8,7 +8,6 @@ import com.leroy.magmobile.api.data.address.cellproducts.*;
 import com.leroy.magmobile.api.helpers.LsAddressHelper;
 import com.leroy.magmobile.api.requests.address.*;
 import io.qameta.allure.Step;
-import org.assertj.core.internal.Integers;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -219,7 +218,7 @@ public class LsAddressClient extends BaseMashupClient {
         List<AlleyData> items = resp.asJson().getItems();
         assertThat("items count", items, hasSize(greaterThan(0)));
         for (AlleyData alleyData : items) {
-            String desc = "AlleyID(" + alleyData.getId() + ")";
+            String desc = String.format("AlleyId(%s): ", alleyData.getId());
             softAssert().isTrue(alleyData.getId() >= 0, desc + ": id doesn't match");
             softAssert().isTrue(alleyData.getCount() >= 0, desc + ": count doesn't match");
             softAssert().isTrue(alleyData.getType() >= 0, desc + ": type doesn't match");
@@ -286,15 +285,25 @@ public class LsAddressClient extends BaseMashupClient {
         for (int i = 0; i < actualData.getItems().size(); i++) {
             StandData actualItem = actualData.getItems().get(i);
             StandData expectedItem = expectedData.getItems().get(i);
-            assertThat("id", actualItem.getId(), is(expectedItem.getId()));
-            assertThat("code", actualItem.getCode(), is(expectedItem.getCode()));
-            assertThat("side", actualItem.getSide(), is(expectedItem.getSide()));
-            assertThat("size", actualItem.getSize(), is(expectedItem.getSize()));
-            assertThat("position", actualItem.getPosition(), is(expectedItem.getPosition()));
-            assertThat("cellsCount", actualItem.getCellsCount(), is(expectedItem.getCellsCount()));
-            assertThat("productsCount", actualItem.getProductsCount(), is(expectedItem.getProductsCount()));
-            assertThat("equipmentId", actualItem.getEquipmentId(), is(expectedItem.getEquipmentId()));
+            String desc = String.format("StandId(%s): ", actualItem.getId());
+            softAssert().isEquals(actualItem.getId(), expectedItem.getId(),
+                    desc + "id doesn't match the expected");
+            softAssert().isEquals(actualItem.getCode(), expectedItem.getCode(),
+                    desc + "code doesn't match the expected");
+            softAssert().isEquals(actualItem.getSide(), expectedItem.getSide(),
+                    desc + "side doesn't match the expected");
+            softAssert().isEquals(actualItem.getSize(), expectedItem.getSize(),
+                    desc + "size doesn't match the expected");
+            softAssert().isEquals(actualItem.getPosition(), expectedItem.getPosition(),
+                    desc + "position doesn't match the expected");
+            softAssert().isEquals(actualItem.getCellsCount(), expectedItem.getCellsCount(),
+                    desc + "Cells count doesn't match the expected");
+            softAssert().isEquals(actualItem.getProductsCount(), expectedItem.getProductsCount(),
+                    desc + "Products count doesn't match the expected");
+            softAssert().isEquals(actualItem.getEquipmentId(), expectedItem.getEquipmentId(),
+                    desc + "Equipment id doesn't match the expected");
         }
+        softAssert().verifyAll();
     }
 
     // Scheme
@@ -307,22 +316,28 @@ public class LsAddressClient extends BaseMashupClient {
     // Cell
 
     @Step("Check that cell is created and response has valid data")
-    public CellDataList assertThatCellIsCreatedAndGetData(Response<CellDataList> resp, int standId, CellDataList postData) {
+    public void assertThatCellIsCreated(Response<CellDataList> resp, int standId, CellDataList postData) {
         assertThatResponseIsOk(resp);
         CellDataList actualData = resp.asJson();
         assertThat("items count", actualData.getItems(), hasSize(postData.getItems().size()));
         for (int i = 0; i < actualData.getItems().size(); i++) {
             CellData actualItem = actualData.getItems().get(i);
             CellData expectedItem = postData.getItems().get(i);
-            assertThat("id", actualItem.getId(), not(emptyOrNullString()));
-            assertThat("code", actualItem.getCode(), not(emptyOrNullString()));
-            assertThat("shelf", actualItem.getShelf(), is(expectedItem.getShelf()));
-            assertThat("side", actualItem.getPosition(), is(expectedItem.getPosition()));
-            assertThat("type", actualItem.getType(), is(expectedItem.getType()));
-            assertThat("standId", actualItem.getStandId(), is(standId));
-            assertThat("productsCount", actualItem.getProductsCount(), is(0));
+            String desc = String.format("StandId(%s), CellId(%s): ", standId, actualItem.getId());
+            softAssert().isTrue(Strings.isNotNullAndNotEmpty(actualItem.getId()), desc + "id is null or empty");
+            softAssert().isTrue(Strings.isNotNullAndNotEmpty(actualItem.getCode()), desc + "code is null or empty");
+            softAssert().isEquals(actualItem.getShelf(), expectedItem.getShelf(),
+                    desc + "shelf doesn't match the expected");
+            softAssert().isEquals(actualItem.getPosition(), expectedItem.getPosition(),
+                    desc + "side doesn't match the expected");
+            softAssert().isEquals(actualItem.getType(), expectedItem.getType(),
+                    desc + "type doesn't match the expected");
+            softAssert().isEquals(actualItem.getStandId(), standId,
+                    desc + "standId doesn't match the expected");
+            softAssert().isTrue(actualItem.getProductsCount() >= 0,
+                    desc + "productsCount doesn't match the expected");
         }
-        return actualData;
+        softAssert().verifyAll();
     }
 
     public void assertThatDataMatches(Response<CellDataList> resp, CellDataList expectedData) {
@@ -344,21 +359,31 @@ public class LsAddressClient extends BaseMashupClient {
         for (int i = 0; i < actualData.getItems().size(); i++) {
             CellData actualItem = actualData.getItems().get(i);
             CellData expectedItem = expectedData.getItems().get(i);
+            String desc = String.format("StandId(%s), CellId(%s): ", actualData.getStandId(), actualItem.getId());
             if (ResponseType.PUT.equals(respType) && expectedItem.getId() == null) {
-                assertThat("id", actualItem.getId(), not(emptyOrNullString()));
-                assertThat("code", actualItem.getCode(), not(emptyOrNullString()));
-                assertThat("productsCount", actualItem.getProductsCount(), is(0));
-                assertThat("stand id", actualItem.getStandId(), notNullValue());
+                softAssert().isTrue(Strings.isNotNullAndNotEmpty(actualItem.getId()), "id is null or empty");
+                softAssert().isTrue(Strings.isNotNullAndNotEmpty(actualItem.getCode()), "code is null or empty");
+                softAssert().isTrue(actualItem.getProductsCount() >= 0,
+                        "productsCount doesn't match the expected");
+                softAssert().isNotNull(actualItem.getStandId(), "StandId is null");
             } else {
-                assertThat("id", actualItem.getId(), is(expectedItem.getId()));
-                assertThat("code", actualItem.getCode(), is(expectedItem.getCode()));
-                assertThat("productsCount", actualItem.getProductsCount(), is(expectedItem.getProductsCount()));
-                assertThat("stand id", actualItem.getStandId(), is(expectedItem.getStandId()));
+                softAssert().isEquals(actualItem.getId(), expectedItem.getId(),
+                        desc + "id doesn't match the expected");
+                softAssert().isEquals(actualItem.getCode(), expectedItem.getCode(),
+                        desc + "code doesn't match the expected");
+                softAssert().isEquals(actualItem.getProductsCount(), expectedItem.getProductsCount(),
+                        desc + "product count doesn't match the expected");
+                softAssert().isEquals(actualItem.getStandId(), expectedItem.getStandId(),
+                        desc + "stand id doesn't match the expected");
             }
-            assertThat("shelf", actualItem.getShelf(), is(expectedItem.getShelf()));
-            assertThat("position", actualItem.getPosition(), is(expectedItem.getPosition()));
-            assertThat("type", actualItem.getType(), is(expectedItem.getType()));
+            softAssert().isEquals(actualItem.getShelf(), expectedItem.getShelf(),
+                    desc + "shelf doesn't match the expected");
+            softAssert().isEquals(actualItem.getPosition(), expectedItem.getPosition(),
+                    desc + "position doesn't match the expected");
+            softAssert().isEquals(actualItem.getType(), expectedItem.getType(),
+                    desc + "type doesn't match the expected");
         }
+        softAssert().verifyAll();
     }
 
     @Step("Check that cell is deleted. CellId={deletedCellId}")

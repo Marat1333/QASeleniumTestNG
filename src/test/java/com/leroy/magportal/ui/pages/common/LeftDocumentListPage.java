@@ -49,6 +49,7 @@ public abstract class LeftDocumentListPage<W extends CardWebWidget<D>, D extends
 
     @Step("Выберите документ в списке слева")
     public void clickDocumentInLeftMenu(String number) throws Exception {
+        refreshDocumentList();
         boolean result = false;
         for (W widget : documentCardList()) {
             D data = widget.collectDataFromPage();

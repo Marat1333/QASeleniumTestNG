@@ -1,4 +1,4 @@
-package com.leroy.magportal.api.tests.cart;
+package com.leroy.magportal.api.tests.offlineOrders;
 
 import static com.leroy.constants.sales.DiscountConst.TYPE_NEW_PRICE;
 
@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
-import com.leroy.constants.sales.DiscountConst;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
@@ -34,9 +33,9 @@ public class CartTest extends BaseMagPortalApiTest {
     @Inject
     private CartClient cartClient;
     @Inject
-    private PAOHelper paoHelper;
+    private SearchProductHelper searchProductHelper;
     @Inject
-    SearchProductHelper searchProductHelper;
+    private PAOHelper paoHelper;
 
     @Override
     protected boolean isNeedAccessToken() {
@@ -67,7 +66,7 @@ public class CartTest extends BaseMagPortalApiTest {
 
     @Step("Pre-condition: Создаем корзину")
     private void initPreConditionCartData(int productCount) {
-        Response<CartData> resp = cartClient.sendRequestCreate(
+        Response<CartData> resp = cartClient.createCartRequest(
                 getTestProductData(productCount));
         isResponseOk(resp);
         cartData = resp.asJson();
@@ -80,7 +79,7 @@ public class CartTest extends BaseMagPortalApiTest {
 
         // Step 1
         step("POST cart");
-        Response<CartData> response = cartClient.sendRequestCreate(
+        Response<CartData> response = cartClient.createCartRequest(
                 cartProductDataList);
         // Check Create
         cartData = cartClient.assertThatIsCreatedAndGetData(response);
@@ -90,7 +89,7 @@ public class CartTest extends BaseMagPortalApiTest {
 
         // Step 2
         step("GET cart");
-        Response<CartData> respGet = cartClient.sendRequestGet(cartData.getCartId());
+        Response<CartData> respGet = cartClient.getCartRequest(cartData.getCartId());
         cartClient.assertThatResponseMatches(respGet, cartData);
     }
 
@@ -107,7 +106,7 @@ public class CartTest extends BaseMagPortalApiTest {
         discountData.setType(TYPE_NEW_PRICE);
         discountData.setTypeValue(putCartProductOrderData.getPrice() - 1);
         discountData.setReason(
-                new CartDiscountReasonData(DiscountConst.Reasons.PRODUCT_SAMPLE.getId()));
+                new CartDiscountReasonData(paoHelper.getDiscountReasonId()));
         putCartProductOrderData.setDiscount(discountData);
         Response<CartData> resp = cartClient
                 .addDiscount(cartData.getCartId(), cartData.getDocumentVersion(),
@@ -118,7 +117,7 @@ public class CartTest extends BaseMagPortalApiTest {
 
         // Step 2
         step("GET cart");
-        Response<CartData> respGet = cartClient.sendRequestGet(cartData.getCartId());
+        Response<CartData> respGet = cartClient.getCartRequest(cartData.getCartId());
         cartClient.assertThatResponseMatches(respGet, cartData);
     }
 
@@ -141,7 +140,7 @@ public class CartTest extends BaseMagPortalApiTest {
 
         // Step 2
         step("GET Cart");
-        Response<CartData> respGet = cartClient.sendRequestGet(cartData.getCartId());
+        Response<CartData> respGet = cartClient.getCartRequest(cartData.getCartId());
         cartClient.assertThatResponseMatches(respGet, cartData);
     }
 
@@ -184,7 +183,7 @@ public class CartTest extends BaseMagPortalApiTest {
 
         // Step 2
         step("GET Cart");
-        Response<CartData> respGet = cartClient.sendRequestGet(cartData.getCartId());
+        Response<CartData> respGet = cartClient.getCartRequest(cartData.getCartId());
         cartClient.assertThatResponseMatches(respGet, cartData);
     }
 
@@ -202,7 +201,7 @@ public class CartTest extends BaseMagPortalApiTest {
 
         // Step 2
         step("GET Cart");
-        Response<CartData> getResponse = cartClient.sendRequestGet(cartData.getCartId());
+        Response<CartData> getResponse = cartClient.getCartRequest(cartData.getCartId());
         cartData.setSalesDocStatus(SalesDocumentsConst.States.DELETED.getApiVal());
         cartData.setStatus(SalesDocumentsConst.States.DELETED.getApiVal());
         cartData.increaseDocumentVersion();

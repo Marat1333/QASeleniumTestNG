@@ -3,8 +3,8 @@
 <suite name="Product search Suite">
 
     <suite-files>
-        <suite-file path="productsearch/CatalogProductSuite.xml"/>
-        <suite-file path="productsearch/CatalogSearchSuite.xml"/>
+        <suite-file path="areas/CatalogProductSuite.xml"/>
+        <suite-file path="areas/CatalogSearchSuite.xml"/>
     </suite-files>
 
 </suite>
