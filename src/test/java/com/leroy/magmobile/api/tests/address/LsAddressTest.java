@@ -90,7 +90,9 @@ public class LsAddressTest extends BaseProjectApiTest {
         if (createdAlleyId > 0) {
             Response<JsonNode> deleteResp = lsAddressBackClient.deleteAlley(createdAlleyId);
             isResponseOk(deleteResp);
+            createdAlleyId = 0;
         }
+
     }
 
     @Test(description = "C3316285 lsAddress POST alleys")
@@ -109,7 +111,6 @@ public class LsAddressTest extends BaseProjectApiTest {
         step("Get list of alleys");
         Response<AlleyDataItems> resp = lsAddressClient.searchForAlleys();
         lsAddressClient.assertThatGetAlleyList(resp);
-
     }
 
     @Test(description = "C23415877 lsAddress PUT alleys - rename alleys")
@@ -234,9 +235,8 @@ public class LsAddressTest extends BaseProjectApiTest {
         prepareDefaultData(true, true);
 
         step("Prepare test data");
-        CellData cellData = cellDataList.getItems().get(0);
-        String cellId = cellData.getId();
-        String lmCode = searchProductHelper.getProducts(1).get(0).getLmCode();
+        cellData = cellDataList.getItems().get(0);
+        String lmCode = searchProductHelper.getProductLmCode();
         int quantity = 2;
 
         ReqCellProductData reqCellProductData = new ReqCellProductData();
@@ -246,14 +246,14 @@ public class LsAddressTest extends BaseProjectApiTest {
         ReqCellProductDataList postData = new ReqCellProductDataList();
         postData.setItems(Collections.singletonList(reqCellProductData));
 
-        Response<CellProductDataList> response = lsAddressClient.createCellProducts(
-                cellId, postData);
-        this.cellProductDataList = lsAddressClient.assertThatIsCellProductsIsCreatedAndGetData(response, postData, cellData);
+        Response<CellProductDataList> response = lsAddressClient.createCellProducts(cellData.getId(), postData);
+        lsAddressClient.assertThatIsCellProductsIsCreated(response, postData, cellData);
     }
 
     @Test(description = "C23194985 lsAddress GET Cell products")
     public void testGetCellProducts() {
         // Test data
+
         CellData cellData = cellDataList.getItems().get(0);
         String cellId = cellData.getId();
 
