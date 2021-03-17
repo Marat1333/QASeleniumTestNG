@@ -64,8 +64,6 @@ public class ControlOrderPage extends OrderCreatedPage {
         return this;
     }
 
-
-
 }
     
 

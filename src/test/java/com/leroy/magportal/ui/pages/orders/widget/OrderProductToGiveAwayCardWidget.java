@@ -33,7 +33,7 @@ public class OrderProductToGiveAwayCardWidget extends CardWebWidget<ToGiveAwayPr
 
     // Actions
 
-    public void editQuantity(int value) {
+    public void editQuantity(double value) {
         toGiveAwayQuantity.clear(true);
         toGiveAwayQuantity.fill(String.valueOf(value));
         toGiveAwayQuantity.sendBlurEvent();
