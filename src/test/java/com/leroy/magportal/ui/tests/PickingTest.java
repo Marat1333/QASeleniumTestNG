@@ -307,7 +307,7 @@ public class PickingTest extends BasePAOTest {
         initCreateOrder(2);
         // Test data
         PickingConst.AssemblyType assemblyType = PickingConst.AssemblyType.SHOPPING_ROOM;
-        double editQuantity = 1;
+        double editQuantity = 1.0;
 
         PickingPage pickingPage = loginSelectShopAndGoTo(PickingPage.class);
         initFindPickingTask();
@@ -549,7 +549,7 @@ public class PickingTest extends BasePAOTest {
 
         // Step 6
         step("Ввести число меньшее, чем товара в сборке. Нажать на кнопку Сохранить");
-        double editQuantity = 1;
+        double editQuantity = 1.0;
         splitProductData.setWantToMoveQuantity(editQuantity);
         splitProductData.setMoveToNewQuantity(editQuantity);
         splitProductData.setRemainInOriginalQuantity(
