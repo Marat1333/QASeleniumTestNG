@@ -236,7 +236,7 @@ public class LsAddressTest extends BaseProjectApiTest {
 
         step("Prepare test data");
         cellData = cellDataList.getItems().get(0);
-        String lmCode = searchProductHelper.getRandomProduct().getLmCode();
+        String lmCode = searchProductHelper.getProductLmCode();
         int quantity = 2;
 
         ReqCellProductData reqCellProductData = new ReqCellProductData();

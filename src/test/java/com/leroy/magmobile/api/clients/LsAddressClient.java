@@ -407,9 +407,9 @@ public class LsAddressClient extends BaseMashupClient {
             ProductCellData actualCellData = actualCellProductData.getLsAddressCells().get(0);
             String desc = String.format("StandId(%s), CellCode(%s): ", actualCellData.getStandId(), actualCellData.getCode());
             softAssert().isEquals(actualCellProductData.getQuantity(), expectedCellProductData.getQuantity(),
-                    "Product quantity doesn't match the expected");
+                    desc + "Product quantity doesn't match the expected");
             softAssert().isEquals(actualCellProductData.getLmCode(), expectedCellProductData.getLmCode(),
-                    "Product lmCode doesn't match the expected");
+                    desc + "Product lmCode doesn't match the expected");
             softAssert().isNotNull(actualCellProductData.getLsAddressCells(),
                     desc + "Cells list is empty or null");
             softAssert().isEquals(actualCellProductData.getLsAddressCells().size(), 1,
