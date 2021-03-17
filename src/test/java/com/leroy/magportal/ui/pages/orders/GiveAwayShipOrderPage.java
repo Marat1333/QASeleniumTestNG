@@ -38,7 +38,7 @@ public class GiveAwayShipOrderPage extends OrderCreatedPage {
     // Verifications
 
     @Step("Проверить, что кол-во 'К выдаче' у {index}-ого товара равно {value}")
-    public GiveAwayShipOrderPage shouldProductToShipQuantityIs(int index, int value) throws Exception {
+    public GiveAwayShipOrderPage shouldProductToShipQuantityIs(int index, double value) throws Exception {
         index--;
         anAssert.isEquals(productCards.get(index).getToGiveAwayQuantity(), String.valueOf(value),
                 "Неверное кол-во 'К выдаче' у " + (index + 1) + "-ого товара");
