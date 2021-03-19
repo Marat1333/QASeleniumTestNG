@@ -5,7 +5,7 @@ import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.UserSessionData;
 import com.leroy.magportal.api.requests.order.OrderGetRequest;
 import com.leroy.magportal.api.requests.salesdoc.SalesDocSearchV4Get;
-import com.leroy.magportal.api.requests.usertasks.UserTasksRequest;
+import com.leroy.magportal.api.requests.usertasks.UserTasksGetRequest;
 import com.leroy.magportal.ui.constants.OrderConst;
 import com.leroy.magportal.ui.pages.orders.OrderCreatedContentPage;
 import com.leroy.magportal.ui.pages.orders.OrderCreatedInfoPage;
@@ -61,7 +61,7 @@ public class SizOrderTest extends BaseMockMagPortalUiTest {
         createStub(PredicateType.DEEP_EQUALS, new CustomerAccountGetRequest()
                 .setCustomerNumber(customerNumber)
                 .setShopId(getUserSessionData().getUserShopId()), 2);
-        createStub(PredicateType.EQUALS, new UserTasksRequest()
+        createStub(PredicateType.EQUALS, new UserTasksGetRequest()
                 .setProjectId("PUZ2"), 3);
     }
 
