@@ -925,10 +925,6 @@ public class OrderTest extends SalesBaseTest {
     @Test(description = "C22847031 Удалить товар из подтвержденного заказа", groups = NEED_PRODUCTS_GROUP)
     public void testRemoveProductFromConfirmedOrder() throws Exception {
         startFromScreenWithConfirmedOrder(lmCodes.subList(0, 2));
-        OrderAppData orderAppData = salesDocumentData.getOrderAppDataList().get(0);
-        // Т.к. в списке документов стоимость может отличаться от стоимости при открытии карточки,
-        // приходиться делать такие вот "костыли"
-        double totalPriceBefore = orderAppData.getTotalPrice();
 
         // Step 1
         step("Нажать на мини-карточку последнего добавленного товара из списка доступных");
@@ -944,10 +940,7 @@ public class OrderTest extends SalesBaseTest {
 
         // Step 4
         step("Нажмите на Перейти в список документов");
-        double totalPriceAfter = orderAppData.getTotalPrice();
-        orderAppData.setTotalPrice(totalPriceBefore);
         stepClickGoToSalesDocumentsList(true);
-        orderAppData.setTotalPrice(totalPriceAfter);
 
         // Step 5
         step("Нажмите на мини-карточку оформленного документа");

@@ -378,7 +378,8 @@ public class PrintTagsTest extends AppBaseSteps {
         productCardPage.verifyRequiredElements(true);
     }
 
-    @Test(description = "C23389195 отправка на печать ценников")
+    @Test(description = "C23389195 отправка на печать ценников", enabled = false)
+    // Тест выключен, т.к. (предположительно) ценники реально печатаются
     public void testSendingToPrint() throws Exception {
         int productsCount = 3;
         List<String> lmCodesList = searchProductHelper.getProductLmCodes(productsCount);
@@ -783,7 +784,8 @@ public class PrintTagsTest extends AppBaseSteps {
         searchProductPage.shouldNotCardsBeOnPage(SearchProductPage.CardType.SERVICE);
     }
 
-    @Test(description = "C23411538 Проверить подсчет кол-ва страниц")
+    @Test(description = "C23411538 Проверить подсчет кол-ва страниц", enabled = false)
+    // Тест выключен, т.к. (предположительно) ценники реально печатаются
     public void testPagesAmount() throws Exception {
         int productsCount = 2;
         List<String> lmCodesList = searchProductHelper.getProductLmCodes(productsCount);
@@ -817,7 +819,8 @@ public class PrintTagsTest extends AppBaseSteps {
         pagesQuantityModalPage.shouldPagesQuantityAndFormatAreCorrect(Format.BIG, 5);
     }
 
-    @Test(description = "C23409752 Порядок отправки форматов ценников на печать")
+    @Test(description = "C23409752 Порядок отправки форматов ценников на печать", enabled = false)
+    // Тест выключен, т.к. (предположительно) ценники реально печатаются
     public void testFormatPrintingOrder() throws Exception {
         int productsCount = 3;
         List<String> lmCodesList = searchProductHelper.getProductLmCodes(productsCount);
@@ -908,7 +911,8 @@ public class PrintTagsTest extends AppBaseSteps {
         pagesQuantityModalPage.shouldPagesQuantityAndFormatAreCorrect(Format.BIG, 1);
     }
 
-    @Test(description = "C23411003 навигация")
+    @Test(description = "C23411003 навигация", enabled = false)
+    // Тест выключен, т.к. (предположительно) ценники реально печатаются
     public void testNavigation() throws Exception {
         String lmCode = searchProductHelper.getRandomProduct().getLmCode();
 
