@@ -87,7 +87,8 @@ public class PrintTagPriceTest extends BaseProjectApiTest {
         assertThat(resp, valid(PrintDepartmentList.class));
     }
 
-    @Test(description = "C23190528 post print task (few products)", priority = 2)
+    @Test(description = "C23190528 post print task (few products)", priority = 2, enabled = false)
+    // Тест выключен, т.к. (предположительно) ценники реально печатаются
     public void testSendPrintTaskFewProduct() {
         List<PrintPrinterData> dept5 = printDepartmentsList.getDept5();
         Response<PrintTaskResponseData> response = printPriceClient.sendPrintTask(
@@ -95,7 +96,8 @@ public class PrintTagPriceTest extends BaseProjectApiTest {
         printPriceClient.assertThatSendPrintTaskIsSuccessful(response);
     }
 
-    @Test(description = "C23190527 post print task (1 product)", priority = 3)
+    @Test(description = "C23190527 post print task (1 product)", priority = 3, enabled = false)
+    // Тест выключен, т.к. (предположительно) ценники реально печатаются
     public void testSendPrintTaskOneProduct() {
         List<PrintPrinterData> dept5 = printDepartmentsList.getDept5();
         Response<PrintTaskResponseData> response = printPriceClient.sendPrintTask(
