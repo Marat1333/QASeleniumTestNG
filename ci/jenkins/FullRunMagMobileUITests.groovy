@@ -20,7 +20,8 @@ timestamps {
                         [$class: 'StringParameterValue', name: 'SNIFFING_TRAFFIC_AVAILABLE', value: 'true'],
                         [$class: 'StringParameterValue', name: 'AUTOTESTS_BRANCH', value: 'master'],
                         [$class: 'StringParameterValue', name: 'TELEGRAM_REPORTS_CHAT', value: '-1001343153150(OMFREM autotest reports)'],
-                        [$class: 'StringParameterValue', name: 'SEND_TO_REPORTS_CHAT', value: 'true']
+                        [$class: 'StringParameterValue', name: 'SEND_TO_REPORTS_CHAT', value: 'true'],
+                        [$class: 'StringParameterValue', name: 'CALCULATOR_BUNDLE_VERSION', value: 'latest']
                 ]
             }
         } finally {
@@ -43,7 +44,8 @@ timestamps {
                         [$class: 'StringParameterValue', name: 'SNIFFING_TRAFFIC_AVAILABLE', value: 'true'],
                         [$class: 'StringParameterValue', name: 'AUTOTESTS_BRANCH', value: 'master'],
                         [$class: 'StringParameterValue', name: 'TELEGRAM_REPORTS_CHAT', value: '-1001343153150'],
-                        [$class: 'StringParameterValue', name: 'SEND_TO_REPORTS_CHAT', value: 'true']
+                        [$class: 'StringParameterValue', name: 'SEND_TO_REPORTS_CHAT', value: 'true'],
+                        [$class: 'StringParameterValue', name: 'CALCULATOR_BUNDLE_VERSION', value: 'latest']
                 ]
             }
         }
