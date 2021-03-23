@@ -30,7 +30,7 @@ public class ShopsHelper extends BaseHelper {
     }
 
     @Step("Get shop by Id")
-    public ShopData getShopById(String shopId) {
+    public ShopData getShopById(Integer shopId) {
         Optional<ShopData> shopData = this.getShops().stream()
                 .filter(x -> x.getId().equals(shopId)).findFirst();
         assertThat(shopId + " was NOT found.", shopData.isPresent());
@@ -38,20 +38,24 @@ public class ShopsHelper extends BaseHelper {
     }
 
     @Step("Get random shop")
-    public String getRandomShopId() {
+    public Integer getRandomShopId() {
         List<ShopData> shopsData = getShops();
         int id = new Random().nextInt(shopsData.size());
         return shopsData.get(id).getId();
     }
 
     @Step("Get regionId by shopId")
-    public int getRegionIdByShopId(String shopId) {
-        ShopData shopData = getShopById(shopId);
-        return Integer.parseInt(shopData.getRegionId());
+    public int getRegionIdByShopId(Integer shopId) {
+        return getShopById(shopId).getRegionId();
+    }
+
+    @Step("Get regionId by shopId")
+    public int getRandomRegionId() {
+        return getShopById(getRandomShopId()).getRegionId();
     }
 
     @Step("Get RefStoreId by shopId")
-    public int getRefStoreIdByShopId(String shopId) {
+    public int getRefStoreIdByShopId(Integer shopId) {
         int regionId = getRegionIdByShopId(shopId);
         Response<List<StoreInfo>> response = gagarinClient.getStoreByRegion(regionId);
         assertThatResponseIsOk(response);
@@ -63,7 +67,7 @@ public class ShopsHelper extends BaseHelper {
             return storeInfo.getStoreId();
         } catch (Exception e) {
             Log.warn("RefStoreId was NOT found for Shop: " + shopId);
-            return Integer.parseInt(shopId);
+            return shopId;
         }
     }
 }

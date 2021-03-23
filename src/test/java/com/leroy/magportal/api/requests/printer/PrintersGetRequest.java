@@ -6,7 +6,7 @@ import ru.leroymerlin.qa.core.clients.base.Method;
 @Method(value = "GET", path = "/v1/printers")
 public class PrintersGetRequest extends CommonLegoRequest<PrintersGetRequest> {
 
-    public PrintersGetRequest setStoreId(String value) {
+    public PrintersGetRequest setStoreId(Integer value) {
         return queryParam("storeId", value);
     }
 

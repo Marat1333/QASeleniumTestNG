@@ -22,11 +22,11 @@ public class GetPrintersTest extends BaseMagPortalApiTest {
     @Inject
     private ShopsHelper shopsHelper;
 
-    private String shopId;
+    private Integer shopId;
 
     @Test(description = "C23749381 Get Printers for Default Shop")
     public void testGetPrintersDefaultShop() {
-        shopId = getUserSessionData().getUserShopId();
+        shopId = Integer.parseInt(getUserSessionData().getUserShopId());
         Response<PrinterData> response = orderClient.getPrinters(shopId);
         assertCheckPrintersResult(response);
     }
@@ -40,7 +40,7 @@ public class GetPrintersTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23749383 Get Printers No Shop")
     public void testGetPrintersNoShop() {
-        shopId = "0";
+        shopId = 0;
         Response<PrinterData> response = orderClient.getPrinters(shopId);
         assertCheckPrintersResult(response);
     }
@@ -51,7 +51,7 @@ public class GetPrintersTest extends BaseMagPortalApiTest {
         assertThat("Get Printers request has Failed.", response, successful());
         String desc = String.format("ShopId: %s: NO printers for Department ", shopId);
         Departments data = response.asJson().getDepartments();
-        if (Integer.parseInt(shopId) > 0) {
+        if (shopId > 0) {
             softAssert().isTrue(verifyDep(data.getDep1()), desc + 1);
             softAssert().isTrue(verifyDep(data.getDep2()), desc + 2);
             softAssert().isTrue(verifyDep(data.getDep3()), desc + 3);

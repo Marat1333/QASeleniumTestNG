@@ -497,7 +497,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     }
 
     @Step("Return printers for shop == {storeId}")
-    public Response<PrinterData> getPrinters(String storeId) {
+    public Response<PrinterData> getPrinters(Integer storeId) {
         return execute(new PrintersGetRequest()
                         .setStoreId(storeId)
                         .setLdapHeader(getUserSessionData().getUserLdap()),

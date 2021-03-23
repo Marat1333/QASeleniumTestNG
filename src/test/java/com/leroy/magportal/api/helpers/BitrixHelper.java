@@ -132,7 +132,7 @@ public class BitrixHelper extends BaseHelper {
         payload.setTotal(makeTotalPayload());
         payload.setUserData(makeUserDataPayload(customerData));
         payload.setDeliveryData(makeDeliveryDataPayload(orderData, shop));
-        payload.setBasket(makeBasket(productCount, shop.getId(), orderData));
+        payload.setBasket(makeBasket(productCount, shop.getId().toString(), orderData));
 
         return payload;
     }
@@ -181,8 +181,8 @@ public class BitrixHelper extends BaseHelper {
     private BitrixSolutionPayload makeGeneralPayload(OnlineOrderTypeData orderData, ShopData shop) {
         BitrixSolutionPayload payload = new BitrixSolutionPayload();
         payload.setLId("mn");
-        payload.setIdRegion(Integer.parseInt(shop.getRegionId()));
-        payload.setIdShop(convertShopId(Integer.parseInt(shop.getId())));
+        payload.setIdRegion(Integer.parseInt(shop.getRegionId().toString()));
+        payload.setIdShop(convertShopId(Integer.parseInt(shop.getId().toString())));
         payload.setPersonTypeId("1");
         payload.setPayed("N");
         payload.setCanceled("N");
@@ -309,7 +309,7 @@ public class BitrixHelper extends BaseHelper {
         BitrixSolutionPayload.PickupShop payload = new BitrixSolutionPayload.PickupShop();
         payload.setId("3895480");
         payload.setIblockId("4");
-        payload.setXmlId(convertShopId(Integer.parseInt(shop.getId())));
+        payload.setXmlId(convertShopId(Integer.parseInt(shop.getId().toString())));
         payload.setName(shop.getName());
         payload.setPropertyAddressValue(shop.getAddress());
         payload.setPropertyAddressValuerId("3177131060");
@@ -339,11 +339,11 @@ public class BitrixHelper extends BaseHelper {
     }
 
     private ShopData getShopData(OnlineOrderTypeData orderData) {
-        String shopId;
+        Integer shopId;
         if (orderData.getShopId() != null) {
             shopId = orderData.getShopId();
         } else {
-            shopId = userSessionData().getUserShopId();
+            shopId = Integer.parseInt(userSessionData().getUserShopId());
         }
 
         return shopsHelper.getShopById(shopId);
