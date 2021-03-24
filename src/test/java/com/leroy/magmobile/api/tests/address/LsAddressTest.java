@@ -253,11 +253,12 @@ public class LsAddressTest extends BaseProjectApiTest {
     @Test(description = "C23194985 lsAddress GET Cell products")
     public void testGetCellProducts() {
         // Test data
+        prepareDefaultData(true, true);
+        cellData = cellDataList.getItems().get(0);
+        cellProductDataList = lsAddressHelper.addDefaultProductToCell(cellData, 5);
 
-        CellData cellData = cellDataList.getItems().get(0);
-        String cellId = cellData.getId();
-
-        Response<CellProductDataList> response = lsAddressClient.getCellProducts(cellId);
+        step("Get products from list");
+        Response<CellProductDataList> response = lsAddressClient.getCellProducts(cellData.getId());
         lsAddressClient.assertThatDataMatches(response, cellProductDataList);
     }
 
