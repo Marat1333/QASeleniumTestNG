@@ -440,11 +440,15 @@ public class LsAddressClient extends BaseMashupClient {
     }
 
     @Step("Check that response matches expected Data")
-    public void assertThatDataMatches(Response<CellProductData> resp, CellProductData expectedData) {
+    public void assertThatDataMatches(Response<CellProductData> resp, CellProductData expectedData, String cellCode) {
         assertThatResponseIsOk(resp);
         CellProductData actualRespData = resp.asJson();
-        assertThat("Cell Product - quantity", actualRespData.getQuantity(), equalTo(expectedData.getQuantity()));
-        assertThat("Cell Product - lm code", actualRespData.getLmCode(), equalTo(expectedData.getLmCode()));
+        String desc = String.format("CellCode(%s), LmCode(%s): ", cellCode, actualRespData.getLmCode());
+        softAssert().isEquals(actualRespData.getQuantity(), expectedData.getQuantity(),
+                desc + "\n Products quantity doesn't match the expected.");
+        softAssert().isEquals(actualRespData.getLmCode(), expectedData.getLmCode(),
+                desc + "\n Products lmcode doesn't match the expected.");
+        softAssert().verifyAll();
         // to be continued if necessary
     }
 
