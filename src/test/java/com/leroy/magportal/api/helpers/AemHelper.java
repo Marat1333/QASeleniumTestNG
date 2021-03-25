@@ -3,7 +3,7 @@ package com.leroy.magportal.api.helpers;
 import static com.leroy.magportal.api.constants.PaymentMethodEnum.API;
 import static com.leroy.magportal.api.constants.PaymentMethodEnum.CARD;
 import static com.leroy.magportal.api.constants.PaymentMethodEnum.TPNET;
-import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+import static com.leroy.magportal.ui.constants.TestDataConstants.CORPORATE_CUSTOMER;
 import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_2;
 
 import com.google.inject.Inject;
@@ -282,7 +282,7 @@ public class AemHelper extends BaseHelper {
 
     private CommunicationPayload makePutCommPayload(
             DeliveryServiceTypeEnum deliveryServiceTypeEnum) {
-        SimpleCustomerData payerData = SIMPLE_CUSTOMER_DATA_1;
+        SimpleCustomerData payerData = CORPORATE_CUSTOMER;
         payerData.fillFirstLastNames();
         SimpleCustomerData recipientData = SIMPLE_CUSTOMER_DATA_2;
         recipientData.fillFirstLastNames();
@@ -292,6 +292,7 @@ public class AemHelper extends BaseHelper {
         payer.setSurname(payerData.getLastName());
         payer.setEmail(payerData.getEmail());
         payer.setPhone(payerData.getPhoneNumber());
+        payer.setAdditionalProperty("type", payerData.getType());
         TunnelRecepient recipient = new TunnelRecepient();
         recipient.setName(recipientData.getFirstName());
         recipient.setSurname(recipientData.getLastName());
