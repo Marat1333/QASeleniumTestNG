@@ -55,7 +55,7 @@ public class ShopsHelper extends BaseHelper {
     }
 
     @Step("Get RefStoreId by shopId")
-    public int getRefStoreIdByShopId(Integer shopId) {
+    public Integer getRefStoreIdByShopId(Integer shopId) {
         int regionId = getRegionIdByShopId(shopId);
         Response<List<StoreInfo>> response = gagarinClient.getStoreByRegion(regionId);
         assertThatResponseIsOk(response);

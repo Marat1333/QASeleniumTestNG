@@ -181,8 +181,8 @@ public class BitrixHelper extends BaseHelper {
     private BitrixSolutionPayload makeGeneralPayload(OnlineOrderTypeData orderData, ShopData shop) {
         BitrixSolutionPayload payload = new BitrixSolutionPayload();
         payload.setLId("mn");
-        payload.setIdRegion(Integer.parseInt(shop.getRegionId().toString()));
-        payload.setIdShop(convertShopId(Integer.parseInt(shop.getId().toString())));
+        payload.setIdRegion(shop.getRegionId());
+        payload.setIdShop(convertShopId(shop.getId()));
         payload.setPersonTypeId("1");
         payload.setPayed("N");
         payload.setCanceled("N");
@@ -309,7 +309,7 @@ public class BitrixHelper extends BaseHelper {
         BitrixSolutionPayload.PickupShop payload = new BitrixSolutionPayload.PickupShop();
         payload.setId("3895480");
         payload.setIblockId("4");
-        payload.setXmlId(convertShopId(Integer.parseInt(shop.getId().toString())));
+        payload.setXmlId(convertShopId(shop.getId()));
         payload.setName(shop.getName());
         payload.setPropertyAddressValue(shop.getAddress());
         payload.setPropertyAddressValuerId("3177131060");
