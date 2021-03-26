@@ -45,12 +45,12 @@ public class ShopsHelper extends BaseHelper {
     }
 
     @Step("Get regionId by shopId")
-    public int getRegionIdByShopId(Integer shopId) {
+    public Integer getRegionIdByShopId(Integer shopId) {
         return getShopById(shopId).getRegionId();
     }
 
     @Step("Get regionId by shopId")
-    public int getRandomRegionId() {
+    public Integer getRandomRegionId() {
         return getShopById(getRandomShopId()).getRegionId();
     }
 
