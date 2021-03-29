@@ -4,6 +4,7 @@ import static com.leroy.magportal.api.constants.PaymentMethodEnum.API;
 import static com.leroy.magportal.api.constants.PaymentMethodEnum.CARD;
 import static com.leroy.magportal.api.constants.PaymentMethodEnum.TPNET;
 import static com.leroy.magportal.ui.constants.TestDataConstants.CORPORATE_CUSTOMER;
+import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
 import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_2;
 
 import com.google.inject.Inject;
@@ -69,6 +70,7 @@ public class AemHelper extends BaseHelper {
     private OrderClient orderClient;
 
     private static final int floor = 5;
+    private SimpleCustomerData customerData = SIMPLE_CUSTOMER_DATA_1;
 
     @Step("Creates Online order with Dimensional LmCode")
     public AemPaymentResponseData createDimensionalOnlineOrder(OnlineOrderTypeData orderData) {
@@ -76,7 +78,7 @@ public class AemHelper extends BaseHelper {
         return this.createOnlineOrders(1, orderData, 1, CARD).stream().findFirst().orElse(null);
     }
 
-    @Step("Creates Online order with 3 LmCodes")
+    @Step("Creates Online order with 3 LmCodes with API payment")
     public AemPaymentResponseData createOnlineOrder(OnlineOrderTypeData orderData) {
         return this.createOnlineOrders(1, orderData, 3, API).stream().findFirst().orElse(null);
     }
@@ -88,6 +90,12 @@ public class AemHelper extends BaseHelper {
 
     @Step("Creates Online order with 3 LmCodes with Card payment method")
     public AemPaymentResponseData createOnlineOrderCardPayment(OnlineOrderTypeData orderData) {
+        return this.createOnlineOrders(1, orderData, 3, CARD).stream().findFirst().orElse(null);
+    }
+
+    @Step("Creates Online order with 3 LmCodes with Card payment method and Legal client")
+    public AemPaymentResponseData createOnlineOrderLegal(OnlineOrderTypeData orderData) {
+        customerData = CORPORATE_CUSTOMER;
         return this.createOnlineOrders(1, orderData, 3, CARD).stream().findFirst().orElse(null);
     }
 
@@ -282,7 +290,7 @@ public class AemHelper extends BaseHelper {
 
     private CommunicationPayload makePutCommPayload(
             DeliveryServiceTypeEnum deliveryServiceTypeEnum) {
-        SimpleCustomerData payerData = CORPORATE_CUSTOMER;
+        SimpleCustomerData payerData = customerData;
         payerData.fillFirstLastNames();
         SimpleCustomerData recipientData = SIMPLE_CUSTOMER_DATA_2;
         recipientData.fillFirstLastNames();
