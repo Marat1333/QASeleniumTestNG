@@ -8,7 +8,6 @@ import static org.hamcrest.Matchers.not;
 import com.google.inject.Inject;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.magportal.api.clients.OrderClient;
-import com.leroy.magportal.api.clients.PickingTaskClient;
 import com.leroy.magportal.api.data.onlineOrders.OrderProductsInfoData;
 import com.leroy.magportal.api.data.picking.PickingTaskProductsInfoData;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;

@@ -27,4 +27,18 @@
         </classes>
     </test>
 
+    <test name="UserTasks: Verifies UserTasks">
+        <classes>
+            <class name="com.leroy.magportal.api.tests.onlineOrders.other.UserTasksTest">
+            </class>
+        </classes>
+    </test>
+
+    <test name="Printers: Verifies GET Printers for different shops">
+        <classes>
+            <class name="com.leroy.magportal.api.tests.onlineOrders.other.GetPrintersTest">
+            </class>
+        </classes>
+    </test>
+
 </suite>
