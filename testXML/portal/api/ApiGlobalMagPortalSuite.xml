@@ -10,6 +10,7 @@
         <suite-file path="areas/PickupOnlineOrdersSuite.xml"/>
         <suite-file path="areas/PickingSuite.xml"/>
         <suite-file path="areas/DeliveryOnlineOrdersSuite.xml"/>
+        <suite-file path="areas/ShopsSuite.xml"/>
     </suite-files>
 
 </suite>

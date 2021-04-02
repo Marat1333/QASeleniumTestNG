@@ -28,6 +28,8 @@ import com.leroy.magportal.api.constants.OrderReasonEnum;
 import com.leroy.magportal.api.constants.OrderWorkflowEnum;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.constants.PaymentTypeEnum;
+import com.leroy.magportal.api.constants.UserTasksProject;
+import com.leroy.magportal.api.constants.UserTasksType;
 import com.leroy.magportal.api.data.onlineOrders.CheckQuantityData;
 import com.leroy.magportal.api.data.onlineOrders.DeliveryCustomerData;
 import com.leroy.magportal.api.data.onlineOrders.DeliveryData;
@@ -43,6 +45,7 @@ import com.leroy.magportal.api.data.onlineOrders.OrderWorkflowPayload.WorkflowPa
 import com.leroy.magportal.api.data.onlineOrders.RefundPayload;
 import com.leroy.magportal.api.data.onlineOrders.RefundPayload.Line;
 import com.leroy.magportal.api.data.onlineOrders.ShipToData;
+import com.leroy.magportal.api.data.printer.PrinterData;
 import com.leroy.magportal.api.data.timeslot.AppointmentData;
 import com.leroy.magportal.api.data.timeslot.AppointmentPayload;
 import com.leroy.magportal.api.data.timeslot.AppointmentResponseData;
@@ -50,6 +53,9 @@ import com.leroy.magportal.api.data.timeslot.TimeslotData;
 import com.leroy.magportal.api.data.timeslot.TimeslotPayload;
 import com.leroy.magportal.api.data.timeslot.TimeslotResponseData;
 import com.leroy.magportal.api.data.timeslot.TimeslotUpdatePayload;
+import com.leroy.magportal.api.data.userTasks.UserTasksData;
+import com.leroy.magportal.api.data.userTasks.UserTasksDataList;
+import com.leroy.magportal.api.data.userTasks.UserTasksPayload;
 import com.leroy.magportal.api.helpers.PaymentHelper;
 import com.leroy.magportal.api.requests.order.CheckQuantityRequest;
 import com.leroy.magportal.api.requests.order.DeliveryUpdateRequest;
@@ -59,9 +65,13 @@ import com.leroy.magportal.api.requests.order.OrderGetAdditionalProductsInfo;
 import com.leroy.magportal.api.requests.order.OrderGetRequest;
 import com.leroy.magportal.api.requests.order.OrderWorkflowRequest;
 import com.leroy.magportal.api.requests.order.RefundRequest;
+import com.leroy.magportal.api.requests.printer.PrintersGetRequest;
 import com.leroy.magportal.api.requests.timeslot.AppointmentsRequest;
 import com.leroy.magportal.api.requests.timeslot.ChangeDateRequest;
 import com.leroy.magportal.api.requests.timeslot.TimeslotRequest;
+import com.leroy.magportal.api.requests.usertasks.UserTasksGetRequest;
+import com.leroy.magportal.api.requests.usertasks.UserTasksPostRequest;
+import com.leroy.magportal.api.requests.usertasks.UserTasksPutRequest;
 import io.qameta.allure.Step;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -444,6 +454,56 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
                 OrderProductsToGivenAwayData.class);
     }
 
+    @Step("Return user tasks for order == {orderId}")
+    public Response<UserTasksDataList> getUserTasks(String orderId) {
+        return execute(new UserTasksGetRequest()
+                        .setProjectId(UserTasksProject.PUZ2.toString())
+                        .setOrderId(orderId)
+                        .setLdapHeader(getUserSessionData().getUserLdap()),
+                UserTasksDataList.class);
+    }
+
+    @Step("Creates and Return user task")
+    public Response<UserTasksData> postUserTasks(String orderId, UserTasksType taskType,
+            String text) {
+        UserTasksPayload body = new UserTasksPayload();
+        body.setLdap(getUserSessionData().getUserLdap());
+        body.setTaskType(taskType);
+        body.setOrderId(orderId);
+        body.setText(text);
+        body.setNeedToDo(taskType == UserTasksType.COMMENT);
+
+        UserTasksPostRequest req = new UserTasksPostRequest();
+        req.jsonBody(body);
+
+        return execute(req, UserTasksData.class);
+    }
+
+    @Step("Updates and Return user task")
+    public Response<UserTasksData> putUserTasks(String orderId, String taskId) {
+        UserTasksPayload body = new UserTasksPayload();
+        body.setLdap(getUserSessionData().getUserLdap());
+        UserTasksData tasksData = this.getUserTasks(orderId).asJson().getUserTasks().stream()
+                .filter(x -> x.getUserTaskId().equals(taskId))
+                .findFirst()
+                .orElse(new UserTasksData());
+        body.setVersion(tasksData.getVersion() == null ? 0 : tasksData.getVersion());
+
+        UserTasksPutRequest req = new UserTasksPutRequest();
+        req.setTaskId(taskId);
+        req.jsonBody(body);
+
+        return execute(req, UserTasksData.class);
+    }
+
+    @Step("Return printers for shop == {storeId}")
+    public Response<PrinterData> getPrinters(Integer storeId) {
+        return execute(new PrintersGetRequest()
+                        .setStoreId(storeId)
+                        .setLdapHeader(getUserSessionData().getUserLdap()),
+                PrinterData.class);
+    }
+
     private Response<JsonNode> makeAction(String orderId, String action,
             OrderWorkflowPayload payload) {
         payload.setAction(action);
@@ -689,7 +749,8 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         }
     }
 
-    private RefundPayload makeRefundPayload(String orderId, List<String> lmCodes, Double refundCount,
+    private RefundPayload makeRefundPayload(String orderId, List<String> lmCodes,
+            Double refundCount,
             Double newDeliveryPrice) {
         RefundPayload payload = new RefundPayload();
         payload.setUpdatedBy(getUserSessionData().getUserLdap());
@@ -705,7 +766,8 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         List<OrderProductData> products = orderData.getProducts();
         for (String lmCode : lmCodes) {
             Line line = new Line();
-            OrderProductData product = products.stream().filter(x -> x.getLmCode().equals(lmCode)).findFirst().orElseGet(null);
+            OrderProductData product = products.stream().filter(x -> x.getLmCode().equals(lmCode))
+                    .findFirst().orElseGet(null);
             line.setLineId(product == null ? null : product.getLineId());
             line.setQuantityToRefund(refundCount);
             lines.add(line);
@@ -885,7 +947,8 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
                         getGwGroup(data, GiveAwayGroups.GIVEN_AWAY).getProducts().size() > 0,
                         status + ": count == 0 in GIVEN_AWAY");
                 softAssert().isTrue(
-                        getGwGroup(data, GiveAwayGroups.UNAVAILABLE_FOR_GIVEAWAY).getProducts().size() == 0,
+                        getGwGroup(data, GiveAwayGroups.UNAVAILABLE_FOR_GIVEAWAY).getProducts()
+                                .size() == 0,
                         status + ": Not 0 count in UNAVAILABLE_FOR_GIVEAWAY");
                 break;
             case GIVEN_AWAY:
@@ -899,7 +962,8 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
                         getGwGroup(data, GiveAwayGroups.GIVEN_AWAY).getProducts().size() > 0,
                         "Invalid count in group");
                 softAssert().isTrue(
-                        getGwGroup(data, GiveAwayGroups.UNAVAILABLE_FOR_GIVEAWAY).getProducts().size() == 0,
+                        getGwGroup(data, GiveAwayGroups.UNAVAILABLE_FOR_GIVEAWAY).getProducts()
+                                .size() == 0,
                         "Invalid count in group");
                 break;
             default:

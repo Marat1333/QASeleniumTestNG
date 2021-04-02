@@ -187,10 +187,9 @@ public class AemHelper extends BaseHelper {
     }
 
     private StepStartPayload makeStartPayload(OnlineOrderTypeData orderData,
-            Integer productCount, String shopId) {
+            Integer productCount, Integer shopId) {
 
         StepStartPayload payload = new StepStartPayload();
-
         payload.setReferral("");
         payload.setRegionId(shopsHelper.getRegionIdByShopId(shopId));
         payload.setContextStoreId(shopsHelper.getRefStoreIdByShopId(shopId));
@@ -323,7 +322,7 @@ public class AemHelper extends BaseHelper {
         return payload;
     }
 
-    private ArrayList<Product> makeProducts(Integer productsCount, String shopId,
+    private ArrayList<Product> makeProducts(Integer productsCount, Integer shopId,
             OnlineOrderTypeData orderData) {
         ArrayList<Product> result = new ArrayList<>();
 
@@ -332,7 +331,7 @@ public class AemHelper extends BaseHelper {
             result.add(productItemDataToPayload(product));
         } else {
             List<ProductData> products = searchProductHelper
-                    .getProductsForShop(productsCount, shopId);
+                    .getProductsForShop(productsCount, shopId.toString());
             for (ProductData productData : products) {
                 result.add(productItemDataToPayload(productData));
             }
@@ -354,11 +353,11 @@ public class AemHelper extends BaseHelper {
     }
 
     private ShopData getShopData(OnlineOrderTypeData orderData) {
-        String shopId;
+        Integer shopId;
         if (orderData.getShopId() != null) {
             shopId = orderData.getShopId();
         } else {
-            shopId = userSessionData().getUserShopId();
+            shopId = Integer.parseInt(userSessionData().getUserShopId());
         }
 
         return shopsHelper.getShopById(shopId);
