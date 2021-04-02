@@ -25,10 +25,13 @@ import com.leroy.magportal.ui.pages.orders.OrderHeaderPage;
 import com.leroy.magportal.ui.pages.orders.*;
 import com.leroy.magportal.ui.pages.picking.PickingContentPage;
 import com.leroy.magportal.ui.pages.picking.PickingPage;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
+import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionResponse;
 
 public class OrdersFlowTest extends BasePAOTest {
 
@@ -402,9 +405,8 @@ public class OrdersFlowTest extends BasePAOTest {
         // Step 15:
         step("Дождаться перехода заказа в Доставку");
         orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.ON_DELIVERY,PaymentStatusEnum.COMPLETED);
-        getDriver().navigate().refresh();
-        orderPage.enterSearchTextAndSubmit(orderId);
-        //orderPage.refreshDocumentList();
+        orderPage.reloadPage();
+        new OrderHeaderPage().enterSearchTextAndSubmit(orderId);
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(
                 SalesDocumentsConst.States.ON_DELIVERY.getUiVal());
@@ -522,6 +524,38 @@ public class OrdersFlowTest extends BasePAOTest {
         orderPage.shouldDocumentCountIs(1);
     }
 
+
+    @Test(description = "Заказ онлайн. ЮрЛицо", groups = NEED_PRODUCTS_GROUP)
+    public void testLegalEntityOrder() throws Exception {
+
+        ArrayList<BitrixSolutionResponse> ordersResponses;
+        ordersResponses = bitrixHelper.createOnlineOrders(1, OnlineOrderTypeConst.PICKUP_POSTPAYMENT,3, PaymentMethodEnum.API);
+        if (ordersResponses.size() < 1) {
+            throw new Exception ("Wrong array length");
+        };
+        orderId = ordersResponses.get(0).getSolutionId();
+        System.out.print(orderId);
+
+        /*// Step 1:
+        step("Открыть страницу с Заказами");
+        OrderHeaderPage orderPage = loginAndGoTo(OrderHeaderPage.class);
+
+        // Step 2:
+        step("Ввести номер заказа из корзины и нажать кнопку Поиска. Заказ: " + orderId);
+        orderPage.enterSearchTextAndSubmit(orderId);
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(
+                SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
+
+        // Step 3:
+
+        step("Кликнуть на заказ: " + orderId);
+        orderPage.clickDocumentInLeftMenu(orderId);
+        OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
+        createdContentPage.shouldOrderProductCountIs(1);*/
+
+    }
 
 
 }

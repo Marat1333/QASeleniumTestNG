@@ -3,7 +3,7 @@ package com.leroy.magportal.api.helpers;
 import static com.leroy.magportal.api.constants.PaymentMethodEnum.API;
 import static com.leroy.magportal.api.constants.PaymentMethodEnum.CARD;
 import static com.leroy.magportal.api.constants.PaymentMethodEnum.TPNET;
-import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+import static com.leroy.magportal.ui.constants.TestDataConstants.*;
 
 import com.google.inject.Inject;
 import com.leroy.common_mashups.catalogs.data.product.ProductData;
@@ -16,6 +16,7 @@ import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.api.ThreadApiClient;
 import com.leroy.core.configuration.Log;
+import com.leroy.magmobile.ui.models.customer.MagLegalCustomerData;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
 import com.leroy.magportal.api.constants.LmCodeTypeEnum;
@@ -79,7 +80,7 @@ public class BitrixHelper extends BaseHelper {
     @Step("Creates Online orders of different types")
     public ArrayList<BitrixSolutionResponse> createOnlineOrders(Integer ordersCount,
             OnlineOrderTypeData orderData, Integer productCount, PaymentMethodEnum paymentMethod) {
-        SimpleCustomerData customerData = SIMPLE_CUSTOMER_DATA_1;
+        SimpleCustomerData customerData = CORPORATE_CUSTOMER;
         customerData.setId(getCustomerId(customerData));
 
         ArrayList<BitrixSolutionResponse> result = new ArrayList<>();
