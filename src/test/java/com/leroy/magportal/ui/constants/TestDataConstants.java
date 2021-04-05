@@ -4,7 +4,6 @@ import com.leroy.constants.EnvConstants;
 import com.leroy.magmobile.ui.models.customer.MagCustomerData;
 import com.leroy.magmobile.ui.models.customer.MagLegalCustomerData;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
-import java.util.Arrays;
 
 public class TestDataConstants extends EnvConstants {
 
@@ -35,9 +34,10 @@ public class TestDataConstants extends EnvConstants {
             .build();
 
     public static final SimpleCustomerData CORPORATE_CUSTOMER = new SimpleCustomerData().toBuilder()
-            .phoneNumber("+79265342961")
-            .name("Корп Клиент")
-            .email("corp.client@leroymerlin.ru")
+            .phoneNumber("+78009996655")
+            .name("БАНК ЗАРЕЧЬЕ")
+            .email("zarechye@bank.ru")
             .cardNumber(getProperty("data.customer.cardNumber.corporate"))
+            .type("B2B")
             .build();
 }

@@ -530,9 +530,8 @@ public class OrdersFlowTest extends BasePAOTest {
 
         ArrayList<BitrixSolutionResponse> ordersResponses;
         ordersResponses = bitrixHelper.createOnlineOrders(1, OnlineOrderTypeConst.PICKUP_POSTPAYMENT,3, PaymentMethodEnum.API);
-        if (ordersResponses.size() < 1) {
-            throw new Exception ("Wrong array length");
-        };
+
+        anAssert().isTrue(ordersResponses.size() < 1, "No orders were created" );
         orderId = ordersResponses.get(0).getSolutionId();
         System.out.print(orderId);
 

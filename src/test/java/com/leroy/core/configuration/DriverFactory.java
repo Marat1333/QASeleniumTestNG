@@ -50,7 +50,8 @@ public class DriverFactory {
     private static final String BROWSER_VERSION_KEY = "browserVersion";
 
     // Default value for version of local driver.
-    private static String LOCAL_DRIVER_VERSION = "latest";
+    //private static String LOCAL_DRIVER_VERSION = "latest";
+    private static String LOCAL_DRIVER_VERSION =  "89.0.4389.23 " ;
 
     // Default implicitly wait timeout, in seconds.
     public static int IMPLICIT_WAIT_TIME_OUT = 30;
