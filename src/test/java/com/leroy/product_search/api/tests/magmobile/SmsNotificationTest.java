@@ -1,4 +1,4 @@
-package com.leroy.magmobile.api.tests.catalog_search;
+package com.leroy.product_search.api.tests.magmobile;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
@@ -30,7 +30,7 @@ public class SmsNotificationTest extends BaseProjectApiTest {
         return true;
     }
 
-    @Test(description = "C3175887 SMS post")
+    @Test(description = "C3175887 SMS post", groups = "productSearch")
     public void testCreateNotification() {
         // Get test data:
         ProductData product = searchProductHelper.getProducts(1).get(0);
@@ -57,7 +57,7 @@ public class SmsNotificationTest extends BaseProjectApiTest {
         smsNotificationClient.assertThatIsCreated(resp);
     }
 
-    @Test(description = "C3175886 SMS get")
+    @Test(description = "C3175886 SMS get", groups = "productSearch")
     public void testGetNotification() {
         Response<SmsNotificationData> resp = smsNotificationClient.getNotification(
                 smsNotificationData.getProduct().getLmCode());

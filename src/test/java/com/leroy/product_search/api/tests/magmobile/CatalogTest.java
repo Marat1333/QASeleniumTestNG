@@ -1,4 +1,4 @@
-package com.leroy.magmobile.api.tests.catalog_products;
+package com.leroy.product_search.api.tests.magmobile;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
@@ -58,7 +58,7 @@ public class CatalogTest extends BaseProjectApiTest {
         lmCode = searchProductHelper.getRandomProduct().getLmCode();
     }
 
-    @Test(description = "C23195046 GET nomenclature")
+    @Test(description = "C23195046 GET nomenclature", groups = "productSearch")
     public void testNomenclature() {
         Response<?> response = catalogProductClient.getNomenclature();
         isResponseOk(response);
@@ -66,7 +66,7 @@ public class CatalogTest extends BaseProjectApiTest {
         assertThat("count of departments", nomenclatureData.size(), equalTo(15)); //15 отделов
     }
 
-    @Test(description = "C3172856 get catalog product")
+    @Test(description = "C3172856 get catalog product", groups = "productSearch")
     public void testCatalogProduct() {
         Response<ProductData> catalogProductDataResponse = catalogProductClient.getProduct(lmCode,
                 SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR, CatalogProductClient.Extend.builder().inventory(true)
@@ -77,7 +77,7 @@ public class CatalogTest extends BaseProjectApiTest {
         assertThat("product barCode", data.getBarCode(), notNullValue());
     }
 
-    @Test(description = "C23195047 GET reviews by lmCode")
+    @Test(description = "C23195047 GET reviews by lmCode", groups = "productSearch")
     public void testCatalogProductReviews() {
         Response<CatalogReviewsOfProductList> reviewsOfProductResponse = catalogProductClient.getProductReviews(
                 lmProductWithReviews, 1, 3);
@@ -87,7 +87,7 @@ public class CatalogTest extends BaseProjectApiTest {
         assertThat("count of items with reviews", data.getItems(), hasSize(greaterThan(0)));
     }
 
-    @Test(description = "C23195048 GET info about sales history")
+    @Test(description = "C23195048 GET info about sales history", groups = "productSearch")
     public void testCatalogProductSales() {
         Response<?> salesHistoryResponse = catalogProductClient.getProductSales(lmProductWithSalesHistory);
         isResponseOk(salesHistoryResponse);
@@ -103,7 +103,7 @@ public class CatalogTest extends BaseProjectApiTest {
         }
     }
 
-    @Test(description = "C3161101 catalog shops - get remains info by lm code")
+    @Test(description = "C3161101 catalog shops - get remains info by lm code", groups = "productSearch")
     public void testCatalogShops() {
         String[] shops = {"32", "5", "69"};
         Response<?> catalogShopsResponse = catalogProductClient.getProductShopsPriceAndQuantity(
@@ -117,7 +117,7 @@ public class CatalogTest extends BaseProjectApiTest {
         }
     }
 
-    @Test(description = "C3254677 GET V1 catalog/similarProducts")
+    @Test(description = "C3254677 GET V1 catalog/similarProducts", groups = "productSearch")
     public void testCatalogSimilarProductsV1() {
         CatalogProductClient.Extend extendParam = CatalogProductClient.Extend.builder()
                 .rating(true).logistic(true).inventory(true).build();
@@ -129,7 +129,7 @@ public class CatalogTest extends BaseProjectApiTest {
         assertThat("product items", data.getComplements(), hasSize(greaterThan(0)));
     }
 
-    @Test(description = "C3254677 GET V2 catalog/similarProducts")
+    @Test(description = "C3254677 GET V2 catalog/similarProducts", groups = "productSearch")
     public void testCatalogSimilarProductsV2() {
         CatalogProductClient.Extend extendParam = CatalogProductClient.Extend.builder()
                 .rating(true).logistic(true).inventory(true).build();
@@ -141,7 +141,7 @@ public class CatalogTest extends BaseProjectApiTest {
         assertThat("product items", data.getItems(), hasSize(greaterThan(0)));
     }
 
-    @Test(description = "C3254678 GET catalog/supplier")
+    @Test(description = "C3254678 GET catalog/supplier", groups = "productSearch")
     public void testCatalogSupplier() {
         Response<CatalogSupplierDataOld> response = catalogProductClient.getSupplyInfo(lmCode);
         isResponseOk(response);
@@ -151,7 +151,7 @@ public class CatalogTest extends BaseProjectApiTest {
                 data.getStoreId(), equalTo(Integer.parseInt(getUserSessionData().getUserShopId())));
     }
 
-    @Test(description = "C23195049 POST product review default values")
+    @Test(description = "C23195049 POST product review default values", groups = "productSearch")
     public void testSendReview() {
         UserData userData = new UserData();
         userData.setLdap(getUserSessionData().getUserLdap());
@@ -174,7 +174,7 @@ public class CatalogTest extends BaseProjectApiTest {
         assertThat(response.asJson().get("id").asText(), not(emptyOrNullString()));
     }
 
-    @Test(description = "C23416163 GET /catalog/complementary-products")
+    @Test(description = "C23416163 GET /catalog/complementary-products", groups = "productSearch")
     public void testComplementaryProducts() {
         Response<CatalogComplementaryProductsDataV2> response = catalogProductClient.getComplementaryProducts(
                 searchProductHelper.getRandomProduct().getLmCode());

@@ -6,16 +6,37 @@
         <listener class-name="com.leroy.core.listeners.TestRailListener"/>
     </listeners>
 
-    <test name="Export Excel Test">
+    <test name="Export Excel (MagPortal) Test">
         <classes>
-            <class name="com.leroy.magportal.api.tests.productSearch.ExportExcelTest">
+            <class name="com.leroy.product_search.api.tests.magportal.ExportExcelTest">
             </class>
         </classes>
     </test>
 
-    <test name="Catalog endpoints Test">
+    <test name="Catalog endpoints (MagPortal) Test">
         <classes>
-            <class name="com.leroy.magportal.api.tests.productSearch.CatalogTest">
+            <class name="com.leroy.product_search.api.tests.magportal.CatalogTest">
+            </class>
+        </classes>
+    </test>
+
+    <test name="Catalog endpoints (MagMobile) Test">
+        <classes>
+            <class name="com.leroy.product_search.api.tests.magmobile.CatalogTest">
+            </class>
+        </classes>
+    </test>
+
+    <test name="Catalog search (MagPortal) Test">
+        <classes>
+            <class name="com.leroy.product_search.api.tests.magmobile.CatalogSearchTest">
+            </class>
+        </classes>
+    </test>
+
+    <test name="SMS Notification (MagPortal) Test">
+        <classes>
+            <class name="com.leroy.product_search.api.tests.magmobile.SmsNotificationTest">
             </class>
         </classes>
     </test>
