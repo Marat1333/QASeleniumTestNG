@@ -32,7 +32,7 @@ public class CatalogTest extends BaseCatalogTest {
     @Test(description = "C23718699 GET Nearest Shops for Random shop")
     public void testNearestShopsForRandomShop() {
         Response<NearestShopsData> response = catalogProductClient
-                .getNearestShopsInfo(lmCode, shopsHelper.getRandomShopId());
+                .getNearestShopsInfo(lmCode, shopsHelper.getRandomShopId().toString());
         isNearestShopsDataValid(response);
     }
 
@@ -45,7 +45,7 @@ public class CatalogTest extends BaseCatalogTest {
     @Test(description = "C23718701 GET Nearest Shops V2 for Random shop")
     public void testNearestShopsForRandomShopV2() {
         Response<NearestShopsDataV2> response = catalogProductClient
-                .getNearestShopsInfoV2(lmCode, shopsHelper.getRandomShopId());
+                .getNearestShopsInfoV2(lmCode, shopsHelper.getRandomShopId().toString());
         isNearestShopsDataV2Valid(response);
     }
 

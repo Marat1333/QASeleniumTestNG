@@ -146,7 +146,7 @@ public class PostRefundsTest extends BaseMagPortalApiTest {
 
     //Verification
     @SneakyThrows
-    @Step("Check that check Quantity response is OK. Response body matches expected data")
+    @Step("Check that Refund response is OK.")
     public void assertRefundResult(Response<?> response, int refunds) {
         assertThat("Post Refunds request has Failed.", response, successful());
         Thread.sleep(15000);

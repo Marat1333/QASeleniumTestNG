@@ -42,6 +42,9 @@ public class LsAddressTest extends BaseProjectApiTest {
     private LsAddressHelper lsAddressHelper;
 
     @Inject
+    private StandData standData;
+
+    @Inject
     private StandDataList standDataList;
 
     @Inject
@@ -56,6 +59,24 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     private int createdAlleyId;
 
+    private void prepareDefaultData(boolean requiredStand, boolean requiredCell) {
+        step("Create a new alley");
+        alleyData = lsAddressHelper.createRandomAlley();
+        createdAlleyId = alleyData.getId();
+
+        if (requiredStand) {
+            step("Create new stands");
+            standDataList = lsAddressHelper.createDefaultStands(alleyData);
+
+            step("Get first stand from list");
+            standData = lsAddressHelper.getStandFromList(0, alleyData.getId());
+
+            if (requiredCell) {
+                step("Create new cells");
+                cellDataList = lsAddressHelper.createDefaultCells(standData.getId());
+            }
+        }
+    }
 
     @Override
     protected UserSessionData initTestClassUserSessionDataTemplate() {
@@ -69,7 +90,9 @@ public class LsAddressTest extends BaseProjectApiTest {
         if (createdAlleyId > 0) {
             Response<JsonNode> deleteResp = lsAddressBackClient.deleteAlley(createdAlleyId);
             isResponseOk(deleteResp);
+            createdAlleyId = 0;
         }
+
     }
 
     @Test(description = "C3316285 lsAddress POST alleys")
@@ -88,15 +111,11 @@ public class LsAddressTest extends BaseProjectApiTest {
         step("Get list of alleys");
         Response<AlleyDataItems> resp = lsAddressClient.searchForAlleys();
         lsAddressClient.assertThatGetAlleyList(resp);
-
     }
 
     @Test(description = "C23415877 lsAddress PUT alleys - rename alleys")
     public void testRenameAlleys() {
-        step("Create new alley");
-        alleyData = lsAddressHelper.createRandomAlley();
-        createdAlleyId = alleyData.getId();
-
+        prepareDefaultData(false, false);
         step("Rename alley");
         alleyData.setCode("24700");
         Response<AlleyData> renameResp = lsAddressClient.renameAlley(alleyData);
@@ -105,9 +124,7 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C23415876 lsAddress DELETE alleys - delete alley")
     public void testDeleteAlleys() {
-        step("Create new alley");
-        alleyData = lsAddressHelper.createRandomAlley();
-        createdAlleyId = alleyData.getId();
+        prepareDefaultData(false, false);
 
         step("Delete alley");
         Response<AlleyData> deleteResp = lsAddressClient.deleteAlley(alleyData);
@@ -152,12 +169,7 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C3316322 lsAddress POST cells")
     public void testCreateCell() {
-        step("Create a new alley");
-        AlleyData alleyData = lsAddressHelper.createRandomAlley();
-        createdAlleyId = alleyData.getId();
-
-        step("Create new stands");
-        standDataList = lsAddressHelper.createDefaultStands(alleyData);
+        prepareDefaultData(true, false);
 
         step("Create new cells");
         int standId = standDataList.getItems().get(0).getId();
@@ -166,44 +178,20 @@ public class LsAddressTest extends BaseProjectApiTest {
         cellDataList.setItems(Arrays.asList(itemData1, itemData2));
         Response<CellDataList> resp = lsAddressClient.createCell(standId, cellDataList);
         lsAddressClient.assertThatCellIsCreated(resp, standId, cellDataList);
-
     }
 
     @Test(description = "C3316323 lsAddress GET cells")
     public void testGetCells() {
-        step("Create a new alley");
-        AlleyData alleyData = lsAddressHelper.createRandomAlley();
-        createdAlleyId = alleyData.getId();
-
-        step("Create new stands");
-        standDataList = lsAddressHelper.createDefaultStands(alleyData);
-
-        step("Get first stand from list");
-        StandData standData = lsAddressHelper.getStandFromList(0, alleyData.getId());
-
-        step("Create new cells");
-        cellDataList = lsAddressHelper.createDefaultCells(standData.getId());
+        prepareDefaultData(true, true);
 
         step("Get cells from list");
-        int standId = standDataList.getItems().get(0).getId();
-        Response<CellDataList> resp = lsAddressClient.getCells(standId);
+        Response<CellDataList> resp = lsAddressClient.getCells(standData.getId());
         lsAddressClient.assertThatDataMatches(resp, cellDataList);
     }
 
     @Test(description = "C23194975 lsAddress PUT cells - Add item")
     public void testUpdateCells() {
-        step("Create a new alley");
-        AlleyData alleyData = lsAddressHelper.createRandomAlley();
-        createdAlleyId = alleyData.getId();
-
-        step("Create new stands");
-        standDataList = lsAddressHelper.createDefaultStands(alleyData);
-
-        step("Get first stand from list");
-        StandData standData = lsAddressHelper.getStandFromList(0, alleyData.getId());
-
-        step("Create new cells");
-        cellDataList = lsAddressHelper.createDefaultCells(standData.getId());
+        prepareDefaultData(true, true);
 
         step("Prepare cells data to update");
         cellData.setType(5);
@@ -227,28 +215,31 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     @Test(description = "C23194977 lsAddress DELETE cells")
     public void testDeleteCell() {
-        int itemIndexToRemove = 0;
-        int standId = cellDataList.getItems().get(0).getStandId();
-        String cellIdToRemove = cellDataList.getItems().get(itemIndexToRemove).getId();
+        prepareDefaultData(true, true);
 
+        step("Delete cell");
+        int itemIndexToRemove = 0;
+        String cellIdToRemove = cellDataList.getItems().get(itemIndexToRemove).getId();
         Response<JsonNode> resp = lsAddressClient.deleteCell(cellIdToRemove);
         lsAddressClient.assertThatCellIsDeleted(resp, cellIdToRemove);
         cellDataList.getItems().remove(itemIndexToRemove);
 
-        step("Send Get request and check data");
-        Response<CellDataList> getResp = lsAddressClient.getCells(standId);
+        step("Send Get request to delete cell");
+        Response<CellDataList> getResp = lsAddressClient.getCells(standData.getId());
         lsAddressClient.assertThatDataMatches(getResp, cellDataList);
     }
 
     // Cell products
     @Test(description = "C23194989 lsAddress POST Cell products")
     public void testCreateCellProducts() {
-        // Test data
-        CellData cellData = cellDataList.getItems().get(0);
-        String cellId = cellData.getId();
-        String lmCode = searchProductHelper.getProducts(1).get(0).getLmCode();
+        prepareDefaultData(true, true);
+
+        step("Prepare test data");
+        cellData = cellDataList.getItems().get(0);
+        String lmCode = searchProductHelper.getProductLmCode();
         int quantity = 2;
 
+        step("Prepare request body to add product");
         ReqCellProductData reqCellProductData = new ReqCellProductData();
         reqCellProductData.setLmCode(lmCode);
         reqCellProductData.setQuantity(quantity);
@@ -256,39 +247,42 @@ public class LsAddressTest extends BaseProjectApiTest {
         ReqCellProductDataList postData = new ReqCellProductDataList();
         postData.setItems(Collections.singletonList(reqCellProductData));
 
-        Response<CellProductDataList> response = lsAddressClient.createCellProducts(
-                cellId, postData);
-        this.cellProductDataList = lsAddressClient.assertThatIsCellProductsIsCreatedAndGetData(response, postData, cellData);
+        step("Send POST request to add product");
+        Response<CellProductDataList> response = lsAddressClient.createCellProducts(cellData.getId(), postData);
+        lsAddressClient.assertThatIsCellProductsIsCreated(response, postData, cellData);
     }
 
     @Test(description = "C23194985 lsAddress GET Cell products")
     public void testGetCellProducts() {
         // Test data
-        CellData cellData = cellDataList.getItems().get(0);
-        String cellId = cellData.getId();
+        prepareDefaultData(true, true);
+        cellData = cellDataList.getItems().get(0);
+        cellProductDataList = lsAddressHelper.addDefaultProductToCell(cellData, 5);
 
-        Response<CellProductDataList> response = lsAddressClient.getCellProducts(cellId);
+        step("Get products from list");
+        Response<CellProductDataList> response = lsAddressClient.getCellProducts(cellData.getId());
         lsAddressClient.assertThatDataMatches(response, cellProductDataList);
     }
 
     @Test(description = "C23194986 lsAddress PUT Cell products - Change quantity")
     public void testUpdateCellProducts() {
         // Test data
-        CellData cellData = cellDataList.getItems().get(0);
-        String cellId = cellData.getId();
+        prepareDefaultData(true, true);
+        cellData = cellDataList.getItems().get(0);
+        cellProductDataList = lsAddressHelper.addDefaultProductToCell(cellData, 5);
         CellProductData cellProductData = cellProductDataList.getItems().get(0);
-        String lmCode = cellProductData.getLmCode();
-        int quantity = 7;
 
+        step("Prepare request body to update quantity");
+        int quantity = 7;
         ReqCellProductData updateCellProductData = new ReqCellProductData();
         updateCellProductData.setQuantity(quantity);
-        updateCellProductData.setUsername("Auto_" + RandomStringUtils.randomAlphabetic(5));
+        updateCellProductData.setUsername(getUserSessionData().getUserLdap());
 
+        step("Send PUT request to update a product quantity");
         Response<CellProductData> response = lsAddressClient.updateCellProducts(
-                cellId, lmCode, updateCellProductData);
+                cellData.getId(), cellProductData.getLmCode(), updateCellProductData);
         cellProductData.setQuantity(quantity);
-        lsAddressClient.assertThatDataMatches(response, cellProductData);
-        cellProductData.setQuantity(quantity);
+        lsAddressClient.assertThatDataMatches(response, cellProductData, cellData.getCode());
     }
 
     @Test(description = "C23194987 Move Cell Products - 1 Product")
