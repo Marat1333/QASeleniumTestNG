@@ -2,14 +2,19 @@ package com.leroy.magmobile.api.helpers;
 
 import com.google.common.collect.Table;
 import com.google.inject.Inject;
+import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.magmobile.api.clients.LsAddressClient;
 import com.leroy.magmobile.api.data.address.*;
+import com.leroy.magmobile.api.data.address.cellproducts.CellProductDataList;
+import com.leroy.magmobile.api.data.address.cellproducts.ReqCellProductData;
+import com.leroy.magmobile.api.data.address.cellproducts.ReqCellProductDataList;
 import com.leroy.magportal.api.helpers.BaseHelper;
 import io.qameta.allure.Step;
 import org.apache.commons.lang3.RandomStringUtils;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.leroy.core.matchers.IsSuccessful.successful;
@@ -21,6 +26,9 @@ public class LsAddressHelper extends BaseHelper {
 
     @Inject
     private LsAddressClient lsAddressClient;
+
+    @Inject
+    private SearchProductHelper searchProductHelper;
 
     @Step("Create default alley")
     public AlleyData createDefaultAlley(String name) {
@@ -102,5 +110,21 @@ public class LsAddressHelper extends BaseHelper {
         Response<CellDataList> resp = lsAddressClient.createCell(standId, cellDataList);
         assertThat("Failed to create cells for StandId: " + standId, resp, successful());
         return resp.asJson();
+    }
+
+    @Step("Add products to cell")
+    public CellProductDataList addDefaultProductToCell(CellData cellData, int quantity){
+        String lmCode = searchProductHelper.getProductLmCode();
+
+        ReqCellProductData reqCellProductData = new ReqCellProductData();
+        reqCellProductData.setLmCode(lmCode);
+        reqCellProductData.setQuantity(quantity);
+
+        ReqCellProductDataList postData = new ReqCellProductDataList();
+        postData.setItems(Collections.singletonList(reqCellProductData));
+
+        Response<CellProductDataList> response = lsAddressClient.createCellProducts(cellData.getId(), postData);
+        assertThat("Failed to add a product to cell: " + cellData.getCode(), response, successful());
+        return response.asJson();
     }
 }

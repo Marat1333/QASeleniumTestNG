@@ -3,6 +3,7 @@ package com.leroy.magportal.api.helpers;
 import static com.leroy.magportal.api.constants.PaymentMethodEnum.API;
 import static com.leroy.magportal.api.constants.PaymentMethodEnum.CARD;
 import static com.leroy.magportal.api.constants.PaymentMethodEnum.TPNET;
+import static com.leroy.magportal.ui.constants.TestDataConstants.CORPORATE_CUSTOMER;
 import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
 import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_2;
 
@@ -69,6 +70,7 @@ public class AemHelper extends BaseHelper {
     private OrderClient orderClient;
 
     private static final int floor = 5;
+    private SimpleCustomerData customerData = SIMPLE_CUSTOMER_DATA_1;
 
     @Step("Creates Online order with Dimensional LmCode")
     public AemPaymentResponseData createDimensionalOnlineOrder(OnlineOrderTypeData orderData) {
@@ -76,7 +78,7 @@ public class AemHelper extends BaseHelper {
         return this.createOnlineOrders(1, orderData, 1, CARD).stream().findFirst().orElse(null);
     }
 
-    @Step("Creates Online order with 3 LmCodes")
+    @Step("Creates Online order with 3 LmCodes with API payment")
     public AemPaymentResponseData createOnlineOrder(OnlineOrderTypeData orderData) {
         return this.createOnlineOrders(1, orderData, 3, API).stream().findFirst().orElse(null);
     }
@@ -88,6 +90,12 @@ public class AemHelper extends BaseHelper {
 
     @Step("Creates Online order with 3 LmCodes with Card payment method")
     public AemPaymentResponseData createOnlineOrderCardPayment(OnlineOrderTypeData orderData) {
+        return this.createOnlineOrders(1, orderData, 3, CARD).stream().findFirst().orElse(null);
+    }
+
+    @Step("Creates Online order with 3 LmCodes with Card payment method and Legal client")
+    public AemPaymentResponseData createOnlineOrderLegal(OnlineOrderTypeData orderData) {
+        customerData = CORPORATE_CUSTOMER;
         return this.createOnlineOrders(1, orderData, 3, CARD).stream().findFirst().orElse(null);
     }
 
@@ -187,10 +195,9 @@ public class AemHelper extends BaseHelper {
     }
 
     private StepStartPayload makeStartPayload(OnlineOrderTypeData orderData,
-            Integer productCount, String shopId) {
+            Integer productCount, Integer shopId) {
 
         StepStartPayload payload = new StepStartPayload();
-
         payload.setReferral("");
         payload.setRegionId(shopsHelper.getRegionIdByShopId(shopId));
         payload.setContextStoreId(shopsHelper.getRefStoreIdByShopId(shopId));
@@ -283,7 +290,7 @@ public class AemHelper extends BaseHelper {
 
     private CommunicationPayload makePutCommPayload(
             DeliveryServiceTypeEnum deliveryServiceTypeEnum) {
-        SimpleCustomerData payerData = SIMPLE_CUSTOMER_DATA_1;
+        SimpleCustomerData payerData = customerData;
         payerData.fillFirstLastNames();
         SimpleCustomerData recipientData = SIMPLE_CUSTOMER_DATA_2;
         recipientData.fillFirstLastNames();
@@ -293,6 +300,7 @@ public class AemHelper extends BaseHelper {
         payer.setSurname(payerData.getLastName());
         payer.setEmail(payerData.getEmail());
         payer.setPhone(payerData.getPhoneNumber());
+        payer.setAdditionalProperty("type", payerData.getType());
         TunnelRecepient recipient = new TunnelRecepient();
         recipient.setName(recipientData.getFirstName());
         recipient.setSurname(recipientData.getLastName());
@@ -323,7 +331,7 @@ public class AemHelper extends BaseHelper {
         return payload;
     }
 
-    private ArrayList<Product> makeProducts(Integer productsCount, String shopId,
+    private ArrayList<Product> makeProducts(Integer productsCount, Integer shopId,
             OnlineOrderTypeData orderData) {
         ArrayList<Product> result = new ArrayList<>();
 
@@ -332,7 +340,7 @@ public class AemHelper extends BaseHelper {
             result.add(productItemDataToPayload(product));
         } else {
             List<ProductData> products = searchProductHelper
-                    .getProductsForShop(productsCount, shopId);
+                    .getProductsForShop(productsCount, shopId.toString());
             for (ProductData productData : products) {
                 result.add(productItemDataToPayload(productData));
             }
@@ -354,11 +362,11 @@ public class AemHelper extends BaseHelper {
     }
 
     private ShopData getShopData(OnlineOrderTypeData orderData) {
-        String shopId;
+        Integer shopId;
         if (orderData.getShopId() != null) {
             shopId = orderData.getShopId();
         } else {
-            shopId = userSessionData().getUserShopId();
+            shopId = Integer.parseInt(userSessionData().getUserShopId());
         }
 
         return shopsHelper.getShopById(shopId);

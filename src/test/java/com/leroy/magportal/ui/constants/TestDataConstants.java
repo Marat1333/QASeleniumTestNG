@@ -2,7 +2,6 @@ package com.leroy.magportal.ui.constants;
 
 import com.leroy.constants.EnvConstants;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
-import java.util.Arrays;
 
 public class TestDataConstants extends EnvConstants {
 
@@ -30,5 +29,13 @@ public class TestDataConstants extends EnvConstants {
             .name("Дарья Колтакова")
             .email("darya.koltakova@leroymerlin.ru")
             .cardNumber(getProperty("data.customer.cardNumber.service"))
+            .build();
+
+    public static final SimpleCustomerData CORPORATE_CUSTOMER = new SimpleCustomerData().toBuilder()
+            .phoneNumber("+78009996655")
+            .name("БАНК ЗАРЕЧЬЕ")
+            .email("zarechye@bank.ru")
+            .cardNumber(getProperty("data.customer.cardNumber.corporate"))
+            .type("B2B")
             .build();
 }

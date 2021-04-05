@@ -17,7 +17,7 @@ public class OnlineOrderTypeConst {
         public Integer lift;
         public String deliveryFullPrice;
         public String liftPrice;
-        public String shopId;
+        public Integer shopId;
         public String lmCode;
         public int sameDay;
         public Boolean pickupShop = false;
