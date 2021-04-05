@@ -275,14 +275,14 @@ public class OrdersFlowTest extends BasePAOTest {
 
     @Test(description = "C23438407 Заказы. статус \"Собран\". Отображение полей на вкладке \"Контроль\". Контроль не пройден", groups = NEED_PRODUCTS_GROUP)
     public void testControlTabPickedNonControlled() throws Exception {
-        initCreateOrder(1, SalesDocumentsConst.GiveAwayPoints.PICKUP, SalesDocumentsConst.States.PICKED);
+        initCreateOrder(1,SalesDocumentsConst.GiveAwayPoints.PICKUP, SalesDocumentsConst.States.PICKED);
 
         // Step 1:
         step("Открыть страницу с Заказами");
-        OrderHeaderPage orderPage = loginAndGoTo(OrderHeaderPage.class);
+        OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
 
         // Step 2:
-        step("Найти созданный заказ с статусе 'Готов к Сборке' с номером" + " " + orderId);
+        step("Найти созданный заказ с статусе 'Готов к Сборке' с номером "+ orderId);
         orderPage.enterSearchTextAndSubmit(orderId);
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.PICKED.getUiVal());
@@ -300,16 +300,15 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 5:
         step("Сравнить Заказанное количество");
-        controlPage.shouldOrderedQuantityIs(1, 2);
+        controlPage.shouldOrderedQuantityIs(1,2);
 
         // Step 6:
         step("Сравнить Собранное количество");
-        controlPage.shouldPickedQuantityIs(1, 2);
+        controlPage.shouldPickedQuantityIs(1,2);
 
         // Step 7:
         step("Сравнить количество на Контроль");
-        controlPage.shouldControlledQuantityIs(1, 0);
-
+        controlPage.shouldControlledQuantityIs(1,0);
     }
 
     @Test(description = "C22829616 Заказы. Процесс обработки заказа. Онлайн. Доставка. Предоплата", groups = NEED_PRODUCTS_GROUP)

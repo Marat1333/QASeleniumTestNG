@@ -7,8 +7,6 @@ public class ControlProductCardData {
     private String lmCode;
     private String barCode;
     private String title;
-
-
     private String reasonForNonGiveaway;
     private Double createdQuantity;
     private Double orderedQuantity;

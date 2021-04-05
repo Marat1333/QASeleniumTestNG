@@ -17,14 +17,10 @@ public class PickingWidget extends CardWebWidget<PickingData> {
         super(driver, locator);
     }
 
-
    @WebFindBy(xpath = ".//div[contains(@class, 'shared-order-StyledLabel')]", metaName = "Номер отдела")
    Element department;
 
-
     // Actions
-
-
 
     @Override
     public PickingData collectDataFromPage() {
@@ -41,10 +37,7 @@ public class PickingWidget extends CardWebWidget<PickingData> {
         return null;
     }
 
-
-
     // Examples
-
 
     @WebFindBy(xpath = ".//div[span[contains(@class, 'LmCode__accent')]]", metaName = "ЛМ код")
     Element lmCode;

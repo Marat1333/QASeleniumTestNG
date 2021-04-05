@@ -105,7 +105,7 @@ public class PickingContentPage extends PickingPage {
     }
 
     @Step("Изменить кол-во сборка для {index}-ого товара")
-    public PickingContentPage editCollectQuantity(int index, int val) throws Exception {
+    public PickingContentPage editCollectQuantity(int index, double val) throws Exception {
         index--;
         productCards.get(index).editCollectQuantity(val);
         return this;
@@ -147,7 +147,7 @@ public class PickingContentPage extends PickingPage {
     }
 
     @Step("Проверить, что кол-во 'Собрано' у {index}-ого товара равно {value}")
-    public PickingContentPage shouldProductCollectedQuantityIs(int index, int value) throws Exception {
+    public PickingContentPage shouldProductCollectedQuantityIs(int index, double value) throws Exception {
         index--;
         anAssert.isEquals(productCards.get(index).getCollectedQuantity(), String.valueOf(value),
                 "Неверное кол-во 'собрано' у " + (index + 1) + "-ого товара");

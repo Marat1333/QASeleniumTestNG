@@ -83,9 +83,9 @@ public class ShipProductCardWidget extends CardWebWidget<PickingProductCardData>
         pickingProductCardData.setTitle(title.getText());
         pickingProductCardData.setPrice(ParserUtil.strToDouble(price.getText()));
         pickingProductCardData.setWeight(ParserUtil.strToDouble(weight.getText(), "."));
-        pickingProductCardData.setStockQuantity(ParserUtil.strToInt(stockQuantity.getText()));
-        pickingProductCardData.setCollectedQuantity(ParserUtil.strToInt(collectedQuantityFld.getText()));
-        pickingProductCardData.setOrderedQuantity(ParserUtil.strToInt(orderedQuantityFld.getText()));
+        pickingProductCardData.setStockQuantity(ParserUtil.strToDouble(stockQuantity.getText()));
+        pickingProductCardData.setCollectedQuantity(ParserUtil.strToDouble(collectedQuantityFld.getText()));
+        pickingProductCardData.setOrderedQuantity(ParserUtil.strToDouble(orderedQuantityFld.getText()));
         return pickingProductCardData;
     }
 }

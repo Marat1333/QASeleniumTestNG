@@ -11,7 +11,6 @@ import io.qameta.allure.Step;
  */
 public class ControlOrderPage extends OrderCreatedPage {
 
-
     @WebFindBy(xpath = "//div[contains(@class, 'Order-GiveAway-Card')]",
             clazz = OrderProductControlCardWidget.class)
     CardWebWidgetList<OrderProductControlCardWidget, ControlProductCardData> productCards;
@@ -25,11 +24,10 @@ public class ControlOrderPage extends OrderCreatedPage {
         return this;
     }
 
-
     // Verifications
 
     @Step("Проверить, что кол-во 'Заказано' у {index}-ого товара равно {value}")
-    public ControlOrderPage shouldOrderedQuantityIs(int index, int value) throws Exception {
+    public ControlOrderPage shouldOrderedQuantityIs(int index, double value) throws Exception {
         index--;
         anAssert.isEquals(productCards.get(index).getOrderedQuantity(), String.valueOf(value),
                 "Неверное кол-во 'Заказано' у " + (index + 1) + "-ого товара");
@@ -37,7 +35,7 @@ public class ControlOrderPage extends OrderCreatedPage {
     }
 
     @Step("Проверить, что кол-во 'Собрано' у {index}-ого товара равно {value}")
-    public ControlOrderPage shouldPickedQuantityIs(int index, int value) throws Exception {
+    public ControlOrderPage shouldPickedQuantityIs(int index, double value) throws Exception {
         index--;
         anAssert.isEquals(productCards.get(index).getCollectedQuantity(),String.valueOf(value),
                 "Неверное кол-во 'Собрано' у " + (index + 1) + "-ого товара");
@@ -45,12 +43,27 @@ public class ControlOrderPage extends OrderCreatedPage {
     }
 
     @Step("Проверить, что кол-во 'Контроль' у {index}-ого товара равно {value}")
-    public ControlOrderPage shouldControlledQuantityIs(int index, int value) throws Exception {
+    public ControlOrderPage shouldControlledQuantityIs(int index, double value) throws Exception {
         index--;
         anAssert.isEquals(productCards.get(index).getControlledQuantity(), String.valueOf(value),
                 "Неверное кол-во 'Контроль' у " + (index + 1) + "-ого товара");
         return this;
     }
+
+
+    
+    @Step("Проверить, кол-во 'Заказано', 'Собрано', 'Контроль' у {index}-ого товара равно {value}")
+    public ControlOrderPage orderPageVerifications(int index, double value) throws Exception {
+        index--;
+        softAssert.isEquals(productCards.get(index).getOrderedQuantity(), String.valueOf(value),
+                "Неверное кол-во 'Заказано' у " + (index + 1) + "-ого товара");
+        softAssert.isEquals(productCards.get(index).getCollectedQuantity(),String.valueOf(value),
+                "Неверное кол-во 'Собрано' у " + (index + 1) + "-ого товара");
+        softAssert.isEquals(productCards.get(index).getControlledQuantity(), String.valueOf(value),
+                "Неверное кол-во 'Контроль' у " + (index + 1) + "-ого товара");
+        return this;
+    }
+
 }
     
 

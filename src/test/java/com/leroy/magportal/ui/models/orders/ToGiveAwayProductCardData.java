@@ -17,7 +17,6 @@ public class ToGiveAwayProductCardData {
     private Double refundToClient;
     private Double toGiveAwayQuantity;
 
-
     public void increaseToGiveAwayQuantity(int val) { this.toGiveAwayQuantity += val;
     }
 
