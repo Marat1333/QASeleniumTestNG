@@ -1,4 +1,4 @@
-package com.leroy.product_search.api.tests.magmobile;
+package com.leroy.product_search.api.tests;
 
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;

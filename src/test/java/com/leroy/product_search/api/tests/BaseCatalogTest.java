@@ -1,4 +1,4 @@
-package com.leroy.product_search.api.tests.magportal;
+package com.leroy.product_search.api.tests;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;

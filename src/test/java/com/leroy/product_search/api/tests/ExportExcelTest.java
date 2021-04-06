@@ -1,4 +1,4 @@
-package com.leroy.product_search.api.tests.magportal;
+package com.leroy.product_search.api.tests;
 
 import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.constants.EnvConstants;
