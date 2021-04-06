@@ -8,7 +8,7 @@
 
     <test name="Sms Notification">
         <classes>
-            <class name="com.leroy.product_search.api.tests.magmobile.SmsNotificationTest">
+            <class name="com.leroy.product_search.api.tests.SmsNotificationTest">
                 <methods>
                     <include name="testCreateNotification"/>
                     <include name="testGetNotification"/>
