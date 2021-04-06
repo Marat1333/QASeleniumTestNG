@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="API Notification Suite" parallel="tests">
+
+    <listeners>
+        <listener class-name="com.leroy.core.listeners.TestRailListener"/>
+    </listeners>
+
+    <test name="Sms Notification">
+        <classes>
+            <class name="com.leroy.product_search.api.tests.SmsNotificationTest">
+                <methods>
+                    <include name="testCreateNotification"/>
+                    <include name="testGetNotification"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+</suite>
