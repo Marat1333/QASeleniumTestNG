@@ -17,7 +17,7 @@ def telegramMessage(message) {
 GString getMvnStrRun() {
     return "mvn clean test -B " +
             "-Dmaven.test.failure.ignore=true " +
-            "-DxmlPath=testXML/product_search${env.SUITE_XML} " +
+            "-DxmlPath=testXML/product_search/${env.SUITE_XML} " +
             "-DthreadCount=${env.THREAD_COUNT} " +
             "-DrunWithIssues=${env.RUN_CASE_WITH_ISSUE} " +
             "-DmRun=\"${env.RUN}\" " +
