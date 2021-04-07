@@ -35,6 +35,8 @@ import java.util.Random;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import ru.leroymerlin.qa.core.base.TestCase;
+import ru.leroymerlin.qa.core.base.TestCases;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class CatalogTest extends BaseCatalogTest {
@@ -206,6 +208,10 @@ public class CatalogTest extends BaseCatalogTest {
         isCatalogProductValid(response);
     }
 
+    @TestCases(cases = {
+        @TestCase(3254677),
+        @TestCase(23718705)
+    })
     @Test(description = "C23718705 GET Catalog Similar Products", groups = "productSearch")
     public void testCatalogSimilarProductsV1() {
         Response<CatalogSimilarProductsDataV1> response = catalogProductClient
@@ -225,6 +231,10 @@ public class CatalogTest extends BaseCatalogTest {
         isSimilarProductsValid(response, true);
     }
 
+    @TestCases(cases = {
+        @TestCase(3254677),
+        @TestCase(23718707)
+    })
     @Test(description = "C23718707 GET Catalog Similar Products V2", groups = "productSearch")
     public void testCatalogSimilarProductsV2() {
         Response<CatalogSimilarProductsDataV2> response = catalogProductClient
