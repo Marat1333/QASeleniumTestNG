@@ -39,12 +39,10 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class CatalogProductClient extends BaseMashupClient {
 
-    private String oldGatewayUrl;
 
     @Override
     protected void init() {
         gatewayUrl = EnvConstants.SEARCH_API_HOST;
-        oldGatewayUrl = EnvConstants.MAIN_API_HOST;
         jaegerHost = EnvConstants.PRODUCTSEARCH_JAEGER_HOST;
         jaegerService = EnvConstants.PRODUCTSEARCH_JAEGER_SERVICE;
     }
@@ -146,7 +144,7 @@ public class CatalogProductClient extends BaseMashupClient {
         GetCatalogSupplierRequest params = new GetCatalogSupplierRequest()
                 .setLmCode(lmCode)
                 .setShopId(getUserSessionData().getUserShopId());
-        return execute(params, CatalogSupplierDataOld.class, oldGatewayUrl);
+        return execute(params, CatalogSupplierDataOld.class);
     }
 
     @Step("Get Product Sales for lmCode={lmCode}")
@@ -168,7 +166,7 @@ public class CatalogProductClient extends BaseMashupClient {
                 .setLmCode(lmCode);
         String shopsAsString = String.join(",", shops);
         params.setShopId(shopsAsString);
-        return execute(params, Object.class, oldGatewayUrl);
+        return execute(params, Object.class);
     }
 
     @Step("Get Similar products for lmCode={lmCode}, shopId={shopId}")
@@ -283,7 +281,7 @@ public class CatalogProductClient extends BaseMashupClient {
         GetCatalogSupplierSearchRequest params = new GetCatalogSupplierSearchRequest()
                 .setQuery(query)
                 .setPageSize(pageSize);
-        return execute(params, SupplierDataList.class, oldGatewayUrl);
+        return execute(params, SupplierDataList.class);
     }
 
     @Step("Get similar and complement products")
