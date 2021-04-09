@@ -3,6 +3,9 @@ package com.leroy.magportal.ui.pages.orders;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.Element;
+import com.leroy.magportal.ui.models.orders.ToGiveAwayProductCardData;
+import com.leroy.magportal.ui.pages.orders.widget.OrderProductToGiveAwayCardWidget;
+import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import io.qameta.allure.Step;
 
 public abstract class OrderCreatedPage extends OrderHeaderPage {
@@ -15,7 +18,7 @@ public abstract class OrderCreatedPage extends OrderHeaderPage {
             metaName = "Статус оплаты заказа")
     protected Element paymentStatus;
 
-    @WebFindBy(id = "info", metaName = "Вкладка 'Информация'")
+    @WebFindBy(xpath = "//button[@data-testid='info']", metaName = "Вкладка 'Информация'")
     Button infoTab;
 
     // Actions
@@ -27,18 +30,18 @@ public abstract class OrderCreatedPage extends OrderHeaderPage {
     }
 
 
-    @WebFindBy(xpath = "//button[@id='pickings']",
+    @WebFindBy(xpath = "//button[@data-testid='pickings']",
             metaName = "Вкладка Сборок")
     Button pickingsTab;
 
-    @WebFindBy(xpath = "//button[@id='giveaway']",
+    @WebFindBy(xpath = "//button[@data-testid='giveaway']",
             metaName = "Вкладка Выдачи и возврата")
     Element shipRefundTab;
 
-    @WebFindBy(id = "main", metaName = "Вкладка Содержания")
+    @WebFindBy(xpath = "//button[@data-testid='main']", metaName = "Вкладка Содержания")
     Element mainTab;
 
-    @WebFindBy(xpath = "//button[@id='control']",
+    @WebFindBy(xpath = "//button[@data-testid='control']",
             metaName = "Вкладка Контроля")
     Button ControlTab;
 
@@ -90,4 +93,15 @@ public abstract class OrderCreatedPage extends OrderHeaderPage {
         anAssert.isEquals(paymentStatus.getText().toLowerCase(), value.toLowerCase(),
                 "Неверный статус оплаты заказа");
     }
+
+
+
+    protected void checkIndex(int index){
+        anAssert.isTrue( index-- <= 0 , "Номер товара меньше или равен нулю");
+    };
+
+    protected void checkArray (CardWebWidgetList<OrderProductToGiveAwayCardWidget, ToGiveAwayProductCardData> productCards, int index) {
+        anAssert.isTrue(productCards.getCount()< index--, "Номер товара не соответствует количеству товаров в заказе ");
+    };
+
 }

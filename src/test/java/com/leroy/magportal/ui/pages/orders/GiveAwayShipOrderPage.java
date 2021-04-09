@@ -4,6 +4,7 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.magportal.ui.models.orders.ToGiveAwayProductCardData;
 import com.leroy.magportal.ui.pages.orders.widget.OrderProductToGiveAwayCardWidget;
+import com.leroy.magportal.ui.pages.picking.PickingContentPage;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import io.qameta.allure.Step;
 
@@ -21,6 +22,11 @@ public class GiveAwayShipOrderPage extends OrderCreatedPage {
     @WebFindBy(xpath = "//div[contains(@class, 'Order-GiveAway-Card')]",
             clazz = OrderProductToGiveAwayCardWidget.class)
     CardWebWidgetList<OrderProductToGiveAwayCardWidget, ToGiveAwayProductCardData> productCards;
+
+    //Variables
+
+
+    //int productCardIndex = productCards.get(index);
 
     // Actions
 
@@ -47,10 +53,14 @@ public class GiveAwayShipOrderPage extends OrderCreatedPage {
 
     // Verifications
 
+
     @Step("Проверить, что кол-во 'К выдаче' у {index}-ого товара равно {value}")
     public GiveAwayShipOrderPage shouldProductToShipQuantityIs(int index, double value) throws Exception {
+
+        checkIndex(index);
+        checkArray(productCards, index);
         index--;
-        anAssert.isEquals(productCards.get(index).getToGiveAwayQuantity(), String.valueOf(value),
+        anAssert.isEquals(Double.parseDouble(productCards.get(index).getToGiveAwayQuantity()), value,
                 "Неверное кол-во 'К выдаче' у " + (index + 1) + "-ого товара");
         return this;
     }

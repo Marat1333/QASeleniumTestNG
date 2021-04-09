@@ -149,7 +149,8 @@ public class PickingContentPage extends PickingPage {
     @Step("Проверить, что кол-во 'Собрано' у {index}-ого товара равно {value}")
     public PickingContentPage shouldProductCollectedQuantityIs(int index, double value) throws Exception {
         index--;
-        anAssert.isEquals(productCards.get(index).getCollectedQuantity(), String.valueOf(value),
+        double actualCollectedQuantity = Double.parseDouble(productCards.get(index).getCollectedQuantity());
+        anAssert.isEquals(actualCollectedQuantity, value,
                 "Неверное кол-во 'собрано' у " + (index + 1) + "-ого товара");
         return this;
     }
