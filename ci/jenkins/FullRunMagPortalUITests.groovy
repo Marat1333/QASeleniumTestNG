@@ -13,7 +13,7 @@ timestamps {
                         [$class: 'StringParameterValue', name: 'TEST_CONFIG', value: 'chrome_grid'],
                         [$class: 'StringParameterValue', name: 'AUTOTESTS_BRANCH', value: env.AUTOTESTS_BRANCH],
                         [$class: 'StringParameterValue', name: 'TELEGRAM_REPORTS_CHAT', value: '-1001343153150'],
-                        [$class: 'StringParameterValue', name: 'SEND_TO_REPORTS_CHAT', value: 'true']
+                        [$class: 'BooleanParameterValue', name: 'SEND_TO_REPORTS_CHAT', value: true]
                 ]
             }
         } finally {
@@ -30,7 +30,7 @@ timestamps {
                             [$class: 'StringParameterValue', name: 'TEST_CONFIG', value: 'android_web_grid'],
                             [$class: 'StringParameterValue', name: 'AUTOTESTS_BRANCH', value: env.AUTOTESTS_BRANCH],
                             [$class: 'StringParameterValue', name: 'TELEGRAM_REPORTS_CHAT', value: '-1001343153150'],
-                            [$class: 'StringParameterValue', name: 'SEND_TO_REPORTS_CHAT', value: 'true']
+                            [$class: 'BooleanParameterValue', name: 'SEND_TO_REPORTS_CHAT', value: true]
                     ]
                 }
             } finally {
@@ -46,7 +46,7 @@ timestamps {
                             [$class: 'StringParameterValue', name: 'TEST_CONFIG', value: 'chrome_grid'],
                             [$class: 'StringParameterValue', name: 'AUTOTESTS_BRANCH', value: env.AUTOTESTS_BRANCH],
                             [$class: 'StringParameterValue', name: 'TELEGRAM_REPORTS_CHAT', value: '-1001343153150'],
-                            [$class: 'StringParameterValue', name: 'SEND_TO_REPORTS_CHAT', value: 'true']
+                            [$class: 'BooleanParameterValue', name: 'SEND_TO_REPORTS_CHAT', value: true]
                     ]
                 }
             }
