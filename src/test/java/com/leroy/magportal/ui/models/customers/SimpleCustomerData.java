@@ -24,6 +24,7 @@ public class SimpleCustomerData {
     private String cardNumber;
     private String phoneNumber;
     private String email;
+    private String type;
 
     public SimpleCustomerData clone() {
         SimpleCustomerData clone = new SimpleCustomerData().toBuilder()
@@ -34,6 +35,7 @@ public class SimpleCustomerData {
                 .cardNumber(cardNumber)
                 .phoneNumber(phoneNumber)
                 .email(email)
+                .type(type)
                 .build();
         return clone;
     }
