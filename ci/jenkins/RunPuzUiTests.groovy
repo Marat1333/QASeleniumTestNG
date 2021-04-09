@@ -12,7 +12,7 @@ def telegramMessage(message) {
                 -d text="${message}"
         """
     }
-    if (env.SEND_TO_REPORTS_CHAT == 'true') {
+    if (env.SEND_TO_REPORTS_CHAT) {
         sh """
            curl -X POST ${TELEGRAM_BOT_URL}/sendMessage \
                 -d parse_mode=Markdown \
