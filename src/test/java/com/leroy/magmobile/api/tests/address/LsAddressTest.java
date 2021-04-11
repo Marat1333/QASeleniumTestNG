@@ -319,13 +319,14 @@ public class LsAddressTest extends BaseProjectApiTest {
     @Test(description = "C23194988 lsAddress DELETE Cell products")
     public void testDeleteCellProducts() {
         // Test data
-        CellData cellData = cellDataList.getItems().get(1);
-        String cellId = cellData.getId();
+        prepareDefaultData(true, true);
+        cellData = cellDataList.getItems().get(0);
+        cellProductDataList = lsAddressHelper.addDefaultProductToCell(cellData, 5);
         CellProductData cellProductData = cellProductDataList.getItems().get(0);
-        String lmCode = cellProductData.getLmCode();
+        String cellId = cellData.getId();
 
         step("Delete cell products");
-        Response<JsonNode> response = lsAddressClient.deleteCellProducts(cellId, lmCode);
+        Response<JsonNode> response = lsAddressClient.deleteCellProducts(cellId, cellProductData.getLmCode());
         lsAddressClient.assertThatCellProductsIsDeleted(response, cellId);
         cellProductDataList.getItems().remove(0);
 
