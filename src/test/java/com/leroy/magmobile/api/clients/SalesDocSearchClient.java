@@ -1,5 +1,6 @@
 package com.leroy.magmobile.api.clients;
 
+import com.leroy.constants.EnvConstants;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.requests.salesdoc.search.SalesDocSearchV3Get;
@@ -9,6 +10,13 @@ import lombok.experimental.Accessors;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class SalesDocSearchClient extends BaseMashupClient {
+
+    @Override
+    protected void init() {
+        gatewayUrl = EnvConstants.PAO_API_HOST;
+        jaegerHost = EnvConstants.PAO_JAEGER_HOST;
+        jaegerService = EnvConstants.PAO_JAEGER_SERVICE;
+    }
 
     @Data
     @Accessors(chain = true)

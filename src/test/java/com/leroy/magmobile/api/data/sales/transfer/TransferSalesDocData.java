@@ -2,11 +2,10 @@ package com.leroy.magmobile.api.data.sales.transfer;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class TransferSalesDocData {
@@ -20,7 +19,7 @@ public class TransferSalesDocData {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     private ZonedDateTime createdDate;
     private String pointOfGiveAway;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SXXX")
     private ZonedDateTime dateOfGiveAway;
     private String departmentId;
     private List<TransferProductOrderData> products;
