@@ -1,6 +1,7 @@
 package com.leroy.magmobile.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
@@ -19,6 +20,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class EstimateClient extends BaseMashupClient {
+
+    @Override
+    protected void init() {
+        gatewayUrl = EnvConstants.PAO_API_HOST;
+        jaegerHost = EnvConstants.PAO_JAEGER_HOST;
+        jaegerService = EnvConstants.PAO_JAEGER_SERVICE;
+    }
 
     /**
      * ---------- Executable Requests -------------

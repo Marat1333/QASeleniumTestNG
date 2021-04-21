@@ -361,6 +361,13 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
                 this.waitAndReturnProductsReadyToGiveaway(orderId);
                 this.giveAway(orderId, true);
                 break;
+            case ON_DELIVERY:
+                pickingTaskClient.completeAllPickings(orderId, true);
+                this.waitUntilOrderGetStatus(orderId, pickedState, null);
+                paymentHelper.makePaid(orderId);
+                this.waitAndReturnProductsReadyToGiveaway(orderId);
+                this.giveAway(orderId, true);
+                break;
             case PARTIALLY_DELIVERED:
                 pickingTaskClient.completeAllPickings(orderId, true);
                 this.waitUntilOrderGetStatus(orderId, pickedState, null);

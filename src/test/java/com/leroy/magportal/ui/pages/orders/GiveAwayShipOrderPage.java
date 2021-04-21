@@ -23,10 +23,7 @@ public class GiveAwayShipOrderPage extends OrderCreatedPage {
             clazz = OrderProductToGiveAwayCardWidget.class)
     CardWebWidgetList<OrderProductToGiveAwayCardWidget, ToGiveAwayProductCardData> productCards;
 
-    //Variables
 
-
-    //int productCardIndex = productCards.get(index);
 
     // Actions
 
@@ -46,21 +43,16 @@ public class GiveAwayShipOrderPage extends OrderCreatedPage {
 
     @Step("Изменить кол-во 'К выдаче' для {index}-ого товара")
     public GiveAwayShipOrderPage editToShipQuantity(int index, double val) throws Exception {
-        index--;
-        productCards.get(index).editQuantity(val);
+        --index;
+        productCards.get(index).editToShipmentQuantity(val);
         return this;
     }
 
     // Verifications
 
-
     @Step("Проверить, что кол-во 'К выдаче' у {index}-ого товара равно {value}")
     public GiveAwayShipOrderPage shouldProductToShipQuantityIs(int index, double value) throws Exception {
-
-        checkIndex(index);
-        checkArray(productCards, index);
-        index--;
-        anAssert.isEquals(Double.parseDouble(productCards.get(index).getToGiveAwayQuantity()), value,
+        anAssert.isEquals(Double.parseDouble(productCards.get(--index).getToGiveAwayQuantity()), value,
                 "Неверное кол-во 'К выдаче' у " + (index + 1) + "-ого товара");
         return this;
     }

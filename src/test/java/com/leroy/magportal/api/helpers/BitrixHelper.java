@@ -80,7 +80,7 @@ public class BitrixHelper extends BaseHelper {
     @Step("Creates Online orders of different types")
     public ArrayList<BitrixSolutionResponse> createOnlineOrders(Integer ordersCount,
             OnlineOrderTypeData orderData, Integer productCount, PaymentMethodEnum paymentMethod) {
-        SimpleCustomerData customerData = CORPORATE_CUSTOMER;
+        SimpleCustomerData customerData = CUSTOMER_WITH_SERVICE_CARD;
         customerData.setId(getCustomerId(customerData));
 
         ArrayList<BitrixSolutionResponse> result = new ArrayList<>();

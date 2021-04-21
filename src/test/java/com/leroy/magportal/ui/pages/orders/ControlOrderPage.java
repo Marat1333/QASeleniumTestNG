@@ -29,7 +29,7 @@ public class ControlOrderPage extends OrderCreatedPage {
     @Step("Проверить, что кол-во 'Заказано' у {index}-ого товара равно {value}")
     public ControlOrderPage shouldOrderedQuantityIs(int index, double value) throws Exception {
         index--;
-        anAssert.isEquals(productCards.get(index).getOrderedQuantity(), String.valueOf(value),
+        anAssert.isEquals(Double.parseDouble(productCards.get(index).getOrderedQuantity()), value,
                 "Неверное кол-во 'Заказано' у " + (index + 1) + "-ого товара");
         return this;
     }
@@ -37,7 +37,7 @@ public class ControlOrderPage extends OrderCreatedPage {
     @Step("Проверить, что кол-во 'Собрано' у {index}-ого товара равно {value}")
     public ControlOrderPage shouldPickedQuantityIs(int index, double value) throws Exception {
         index--;
-        anAssert.isEquals(productCards.get(index).getCollectedQuantity(),String.valueOf(value),
+        anAssert.isEquals(Double.parseDouble(productCards.get(index).getCollectedQuantity()),value,
                 "Неверное кол-во 'Собрано' у " + (index + 1) + "-ого товара");
         return this;
     }
@@ -45,7 +45,7 @@ public class ControlOrderPage extends OrderCreatedPage {
     @Step("Проверить, что кол-во 'Контроль' у {index}-ого товара равно {value}")
     public ControlOrderPage shouldControlledQuantityIs(int index, double value) throws Exception {
         index--;
-        anAssert.isEquals(productCards.get(index).getControlledQuantity(), String.valueOf(value),
+        anAssert.isEquals(Double.parseDouble(productCards.get(index).getControlledQuantity()), value,
                 "Неверное кол-во 'Контроль' у " + (index + 1) + "-ого товара");
         return this;
     }

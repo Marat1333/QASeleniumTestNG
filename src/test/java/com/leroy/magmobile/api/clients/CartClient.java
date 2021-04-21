@@ -12,6 +12,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
@@ -39,6 +40,13 @@ public class CartClient extends BaseMashupClient {
 
     public enum RequestType {
         UPDATE, GET;
+    }
+
+    @Override
+    protected void init() {
+        gatewayUrl = EnvConstants.PAO_API_HOST;
+        jaegerHost = EnvConstants.PAO_JAEGER_HOST;
+        jaegerService = EnvConstants.PAO_JAEGER_SERVICE;
     }
 
     /**

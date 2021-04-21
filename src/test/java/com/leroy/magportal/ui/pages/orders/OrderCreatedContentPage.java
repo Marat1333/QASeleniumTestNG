@@ -11,6 +11,7 @@ import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
 import com.leroy.magportal.ui.pages.customers.form.CustomerSearchForm;
 import com.leroy.magportal.ui.pages.orders.modal.RemoveOrderModal;
+import com.leroy.magportal.ui.pages.orders.modal.ReturnDeliveryValueModal;
 import com.leroy.magportal.ui.pages.orders.widget.OrderProductCardWidget;
 import com.leroy.magportal.ui.pages.products.form.AddProductForm;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
@@ -57,7 +58,7 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
 
     // View Footer
 
-    @WebFindBy(xpath = "//div[contains(@class, 'OrderViewFooter__buttonsWrapper')]//button[descendant::span[descendant::*[name()='svg']]]",
+    @WebFindBy(xpath = "//button[@data-testid='aao-footer-edit-btn']",
             metaName = "Кнопка редактирования заказа")
     Button editBtn;
 
@@ -65,7 +66,7 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
             metaName = "Кнопка Сохранить")
     Button saveBtn;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'lm-puz2-Order-OrderViewFooter__buttonsWrapper')]//span[contains(text(), 'Доставить')]/ancestor::button", metaName = "Кнопка 'Отгрузить'")
+    @WebFindBy(xpath = "//button[@data-testid='aao-footer-confirmDeliveryAfford-btn']", metaName = "Кнопка 'Доставить'")
     Button deliveryBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'OrderViewFooter__buttonsWrapper')]//button[descendant::span[text()='Отмена']]",
@@ -129,16 +130,24 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
     }
 
     @Step("Нажать кнопку 'Доставить'")
-    public OrderCreatedContentPage clickDeliveryButton() {
+    public ReturnDeliveryValueModal clickDeliveryButton() {
         deliveryBtn.click();
         waitForSpinnerAppearAndDisappear();
-        return this;
+        return new ReturnDeliveryValueModal();
     }
 
-    @Step("Изменить количество 'заказано' для {index}-ого товара")
+    @Step("Изменить количество 'Заказано' для {index}-ого товара")
     public OrderCreatedContentPage editSelectedQuantity(int index, int value) throws Exception {
         index--;
         productCards.get(index).editQuantity(value);
+        shouldModalThatChangesIsNotSavedIsNotVisible();
+        return this;
+    }
+
+    @Step("Изменить количество 'К доставке' для {index}-ого товара")
+    public OrderCreatedContentPage editToDeliveryQuantity(int index, int value) throws Exception {
+        index--;
+        productCards.get(index).editToDeliveryQuantity(value);
         shouldModalThatChangesIsNotSavedIsNotVisible();
         return this;
     }
