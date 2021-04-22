@@ -324,7 +324,6 @@ public class LsAddressClient extends BaseMashupClient {
         softAssert().verifyAll();
     }
 
-
     @Step("Check that response is success")
     public void assertThatSchemeIsUpdated(Response<JsonNode> resp) {
         assertThatResponseIsOk(resp);
