@@ -317,12 +317,11 @@ public class LsAddressClient extends BaseMashupClient {
                 "Navigation type doesn't match the expected");
         softAssert().isEquals(schemeData.getDepartmentId(),
                 Integer.parseInt(getUserSessionData().getUserDepartmentId()),
-                "Shop id doesn't match the expected");
+                "Department id doesn't match the expected");
         softAssert().isEquals(schemeData.getShopId(),
                 Integer.parseInt(getUserSessionData().getUserShopId()),
-                "Department id doesn't match the expected");
+                "Shop id doesn't match the expected");
         softAssert().verifyAll();
-
     }
 
 
