@@ -307,6 +307,23 @@ public class LsAddressClient extends BaseMashupClient {
     }
 
     // Scheme
+    @Step("Check that we can get scheme and check data")
+    public void assertThatGetScheme(Response<SchemeData> resp) {
+        assertThatResponseIsOk(resp);
+        SchemeData schemeData = resp.asJson();
+        softAssert().isTrue(schemeData.getSchemeType() >= 0 && schemeData.getSchemeType() < 3,
+                "Scheme type doesn't match the expected");
+        softAssert().isTrue(schemeData.getNavigationType() > 0,
+                "Navigation type doesn't match the expected");
+        softAssert().isEquals(schemeData.getDepartmentId(),
+                Integer.parseInt(getUserSessionData().getUserDepartmentId()),
+                "Department id doesn't match the expected");
+        softAssert().isEquals(schemeData.getShopId(),
+                Integer.parseInt(getUserSessionData().getUserShopId()),
+                "Shop id doesn't match the expected");
+        softAssert().verifyAll();
+    }
+
     @Step("Check that response is success")
     public void assertThatSchemeIsUpdated(Response<JsonNode> resp) {
         assertThatResponseIsOk(resp);
