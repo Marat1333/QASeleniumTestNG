@@ -290,21 +290,24 @@ public class LsAddressTest extends BaseProjectApiTest {
     @Test(description = "C23194987 Move Cell Products - 1 Product")
     public void testMoveCellProducts() {
         // Test data
-        CellData cellData = cellDataList.getItems().get(0);
+        prepareDefaultData(true, true);
+        cellData = cellDataList.getItems().get(0);
         String cellId = cellData.getId();
         CellData newCellData = cellDataList.getItems().get(1);
-        String newCellId = newCellData.getId();
+
+        cellProductDataList = lsAddressHelper.addDefaultProductToCell(cellData, 5);
         CellProductData cellProductData = cellProductDataList.getItems().get(0);
         String lmCode = cellProductData.getLmCode();
         int quantity = 1;
 
+        step("Prepare data to move product");
         ReqCellProductData moveCellProductData = new ReqCellProductData();
-        moveCellProductData.setNewCellId(newCellId);
+        moveCellProductData.setNewCellId(newCellData.getId());
         moveCellProductData.setLmCode(lmCode);
         moveCellProductData.setQuantity(quantity);
         moveCellProductData.setUsername("Auto_" + RandomStringUtils.randomAlphabetic(5));
 
-        step("Move");
+        step("Send request to move product in new cell");
         Response<JsonNode> response = lsAddressClient.moveCellProducts(cellId, moveCellProductData);
         assertThat(response, successful());
 

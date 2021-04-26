@@ -71,8 +71,8 @@ public class LsAddressHelper extends BaseHelper {
     @Step("Create default stand")
     public StandDataList createDefaultStands(AlleyData alleyData) {
         StandDataList postStandDataList = new StandDataList();
-        StandData item1 = new StandData(1, 2, 3);
-        StandData item2 = new StandData(4, 3, 2);
+        StandData item1 = new StandData(3, 0, 0);
+        StandData item2 = new StandData(6, 1, 0);
         postStandDataList.setItems(Arrays.asList(item1, item2));
         postStandDataList.setAlleyCode(alleyData.getCode());
         postStandDataList.setAlleyType(alleyData.getType());
@@ -104,8 +104,8 @@ public class LsAddressHelper extends BaseHelper {
     @Step("Create default cells")
     public CellDataList createDefaultCells(int standId) {
         CellDataList cellDataList = new CellDataList();
-        CellData itemData1 = new CellData(1, 2, "A");
-        CellData itemData2 = new CellData(3, 4, "B");
+        CellData itemData1 = new CellData(1, 0, "A");
+        CellData itemData2 = new CellData(1, 0, "B");
         cellDataList.setItems(Arrays.asList(itemData1, itemData2));
         Response<CellDataList> resp = lsAddressClient.createCell(standId, cellDataList);
         assertThat("Failed to create cells for StandId: " + standId, resp, successful());
