@@ -14,7 +14,9 @@ import com.leroy.magportal.api.clients.PickingTaskClient;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst;
 import com.leroy.magportal.api.constants.PaymentMethodEnum;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
+import com.leroy.magportal.api.data.onlineOrders.AemPaymentResponseData;
 import com.leroy.magportal.api.data.picking.PickingTaskDataList;
+import com.leroy.magportal.api.helpers.AemHelper;
 import com.leroy.magportal.api.helpers.BitrixHelper;
 import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.api.helpers.PaymentHelper;
@@ -23,6 +25,7 @@ import com.leroy.magportal.ui.pages.orders.GiveAwayShipOrderPage;
 import com.leroy.magportal.ui.pages.orders.OrderCreatedContentPage;
 import com.leroy.magportal.ui.pages.orders.OrderHeaderPage;
 import com.leroy.magportal.ui.pages.orders.*;
+import com.leroy.magportal.ui.pages.orders.modal.ReturnDeliveryValueModal;
 import com.leroy.magportal.ui.pages.picking.PickingContentPage;
 import com.leroy.magportal.ui.pages.picking.PickingPage;
 
@@ -45,6 +48,8 @@ public class OrdersFlowTest extends BasePAOTest {
     private PickingTaskClient pickingTaskClient;
     @Inject
     private BitrixHelper bitrixHelper;
+    @Inject
+    private AemHelper aemHelper;
 
     @Override
     protected UserSessionData initTestClassUserSessionDataTemplate() {
@@ -318,7 +323,11 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 1:
         step("Открыть страницу с Заказами");
-        OrderHeaderPage orderPage = loginAndGoTo(OrderHeaderPage.class);
+        OrderHeaderPage orderPage = new OrderHeaderPage();
+        try {  orderPage = loginAndGoTo(OrderHeaderPage.class);
+        }
+        catch(Exception exception){ };
+
 
         // Step 2:
         step("Найти созданный заказ в статусе 'Готов к Сборке' с номером" + " " + orderId);
@@ -367,7 +376,7 @@ public class OrdersFlowTest extends BasePAOTest {
         PickingPage pickingPage = new PickingPage();
         pickingPage.clickOrderLinkAndGoToOrderPage();
 
-        // Step 10:
+        // Step 11:
         step("Проверить статус собранного заказа");
         orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.PICKED, PaymentStatusEnum.PAID);
         orderPage.refreshDocumentList();
@@ -376,24 +385,30 @@ public class OrdersFlowTest extends BasePAOTest {
                 SalesDocumentsConst.States.PICKED.getUiVal());
         orderPage.shouldDocumentCountIs(1);
 
-        // Step 11:
+        // Step 12:
         step("Перейти на вкладку 'К выдаче и возврату'");
         GiveAwayShipOrderPage giveAwayShipOrderPage = createdContentPage.clickGoToShipRefund();
 
-        // Step 12:
+        // Step 13:
         step("Товар 1: Ввести в инпут 'К выдаче' количество равное,  указанному в Заказано");
         giveAwayShipOrderPage.editToShipQuantity(1, 10)
                 .shouldProductToShipQuantityIs(1, 10);
+
+        // Step 14:
+        step("Товар 2: Ввести в инпут 'К выдаче' количество равное,  указанному в Заказано");
         giveAwayShipOrderPage.editToShipQuantity(2, 10)
                 .shouldProductToShipQuantityIs(2, 10);
+
+        // Step 15:
+        step("Товар 2: Ввести в инпут 'К выдаче' количество равное,  указанному в Заказано");
         giveAwayShipOrderPage.editToShipQuantity(3, 10)
                 .shouldProductToShipQuantityIs(3, 10);
 
-        // Step 13
+        // Step 16
         step("Нажать на кнопку 'Отгрузить'");
         giveAwayShipOrderPage.clickShipButton();
 
-        // Step 14:
+        // Step 17:
         step("Обновить список документов и проверить статус выданного заказас номером:" + orderId);
         orderPage.refreshDocumentList();
         orderPage.shouldDocumentIsPresent(orderId);
@@ -401,7 +416,7 @@ public class OrdersFlowTest extends BasePAOTest {
                 SalesDocumentsConst.States.SHIPPED_WAIT.getUiVal());
         orderPage.shouldDocumentCountIs(1);
 
-        // Step 15:
+        // Step 18:
         step("Дождаться перехода заказа в Доставку");
         orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.ON_DELIVERY,PaymentStatusEnum.COMPLETED);
         orderPage.reloadPage();
@@ -411,15 +426,28 @@ public class OrdersFlowTest extends BasePAOTest {
                 SalesDocumentsConst.States.ON_DELIVERY.getUiVal());
         orderPage.shouldDocumentCountIs(1);
 
-        // Step 16:
+        // Step 19:
         step("Перейти на вкладку 'Содержание'");
         orderPage.clickDocumentInLeftMenu(orderId);
         createdContentPage.shouldOrderProductCountIs(3);
 
-        // Step 17:
+        // Step 20:
         step("Нажать кнопку доставить");
-        createdContentPage.clickDeliveryButton();
+        ReturnDeliveryValueModal  deliveryRefund = createdContentPage.clickDeliveryButton();
 
+        // Step 21:
+        step("Нажать кнопку Сохранить в модальном окне возврата стоимости доставки");
+
+        deliveryRefund.clickSaveOrderButton();
+
+        // Step 22:
+        step("Проверить статус доставленного заказа");
+        orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.DELIVERED, PaymentStatusEnum.COMPLETED);
+        orderPage.refreshDocumentList();
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(
+                SalesDocumentsConst.States.DELIVERED.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
     }
 
     @Test(description = "C22829616 Заказы. Процесс обработки заказа. Онлайн. Предоплата. Самовывоз", groups = NEED_PRODUCTS_GROUP)
@@ -501,20 +529,26 @@ public class OrdersFlowTest extends BasePAOTest {
         step("Перейти на вкладку 'К выдаче и возврату'");
         GiveAwayShipOrderPage giveAwayShipOrderPage = createdContentPage.clickGoToShipRefund();
 
-        // Step 14:
+        // Step 13:
         step("Товар 1: Ввести в инпут 'К выдаче' количество равное,  указанному в Заказано");
         giveAwayShipOrderPage.editToShipQuantity(1, 10)
                 .shouldProductToShipQuantityIs(1, 10);
+
+        // Step 14:
+        step("Товар 2: Ввести в инпут 'К выдаче' количество равное,  указанному в Заказано");
         giveAwayShipOrderPage.editToShipQuantity(2, 10)
                 .shouldProductToShipQuantityIs(2, 10);
+
+        // Step 15:
+        step("Товар 2: Ввести в инпут 'К выдаче' количество равное,  указанному в Заказано");
         giveAwayShipOrderPage.editToShipQuantity(3, 10)
                 .shouldProductToShipQuantityIs(3, 10);
 
-        // Step 15:
+        // Step 16:
         step("Нажать на кнопку 'Выдать'");
         giveAwayShipOrderPage.clickGiveAwayButton();
 
-        // Step 16:
+        // Step 17:
         step("Обновить список документов и проверить статус выданного заказас номером:" + orderId);
         orderPage.refreshDocumentList();
         orderPage.shouldDocumentIsPresent(orderId);
@@ -523,15 +557,99 @@ public class OrdersFlowTest extends BasePAOTest {
         orderPage.shouldDocumentCountIs(1);
     }
 
+    @Test(description = "C23425890 Orders Процесс обработки заказа. Онлайн. Предоплата. Полная  доставка. Возврат после доставки", groups = NEED_PRODUCTS_GROUP)
+    public void testFullDeliveryRefund() throws Exception {
+        // Step 1:
+        step("Создать заказ Онлайн с Предоплатой");
+        orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.DELIVERY_TO_DOOR).getSolutionId();
+        System.out.print("Создан заказ " + orderId);
+
+        // Step 2:
+        step("Перевести заказ " + orderId + " в статус 'В доставке'");
+        System.out.print("Создан заказ " + orderId);
+        orderClient.moveNewOrderToStatus(orderId, SalesDocumentsConst.States.DELIVERED);
+        System.out.print("Доставленный заказ " + orderId);
+
+        // Step 3:
+        step("Проверить статус доставленного заказа" + orderId);
+        orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.DELIVERED,PaymentStatusEnum.COMPLETED);
+        OrderHeaderPage orderPage = loginAndGoTo(OrderHeaderPage.class);
+        orderPage.reloadPage();
+        new OrderHeaderPage().enterSearchTextAndSubmit(orderId);
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(
+                SalesDocumentsConst.States.DELIVERED.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
+
+    }
+
+    @Test(description = "Частичная доставка", groups = NEED_PRODUCTS_GROUP)
+    public void testPartialDelivery() throws Exception {
+        // Step 1:
+        step("Создать заказ Онлайн с Предоплатой");
+        orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.DELIVERY_TO_DOOR).getSolutionId();
+        System.out.print("Создан заказ " + orderId);
+
+        // Step 2:
+        step("Перевести заказ " + orderId + " в статус 'В доставке'");
+        System.out.print("Создан заказ " + orderId);
+        orderClient.moveNewOrderToStatus(orderId, SalesDocumentsConst.States.ON_DELIVERY);
+        System.out.print("Доставленный заказ " + orderId);
+
+        // Step 3:
+        step("Проверить статус доставленного заказа" + orderId);
+        OrderHeaderPage orderPage = loginAndGoTo(OrderHeaderPage.class);
+        orderPage.enterSearchTextAndSubmit(orderId);
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.ON_DELIVERY.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
+
+        // Step 4:
+        step("Перейти на вкладку 'Содержание'");
+        orderPage.clickDocumentInLeftMenu(orderId);
+        OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
+        createdContentPage.shouldOrderProductCountIs(3);
+
+        // Step 5:
+        step("Товар 1: Ввести в инпут 'К доставке' количество меньше указанного в Заказано");
+        createdContentPage.editToDeliveryQuantity(1, 1);
+
+        // Step 6:
+        step("Товар 2: Ввести в инпут 'К доставке' количество меньше указанного в Заказано");
+        createdContentPage.editToDeliveryQuantity(2, 1);
+
+        // Step 7:
+        step("Товар 2: Ввести в инпут 'К доставке' количество меньше указанного в Заказано");
+        createdContentPage.editToDeliveryQuantity(3, 1);
+
+        // Step 8:
+        step("Нажать кнопку доставить");
+        ReturnDeliveryValueModal  deliveryRefund = createdContentPage.clickDeliveryButton();
+
+        // Step 9:
+        step("Нажать кнопку Сохранить в модальном окне возврата стоимости доставки");
+
+        deliveryRefund.clickSaveOrderButton();
+
+        // Step 10:
+        step("Проверить статус доставленного заказа");
+        orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.PARTIALLY_DELIVERED, PaymentStatusEnum.COMPLETED);
+        orderPage.refreshDocumentList();
+        orderPage.shouldDocumentIsPresent(orderId);
+        orderPage.shouldDocumentListContainsOnlyWithStatuses(
+                SalesDocumentsConst.States.PARTIALLY_DELIVERED.getUiVal());
+        orderPage.shouldDocumentCountIs(1);
+    }
+
 
     @Test(description = "Заказ онлайн. ЮрЛицо", groups = NEED_PRODUCTS_GROUP)
     public void testLegalEntityOrder() throws Exception {
 
-        ArrayList<BitrixSolutionResponse> ordersResponses;
-        ordersResponses = bitrixHelper.createOnlineOrders(1, OnlineOrderTypeConst.PICKUP_POSTPAYMENT,3, PaymentMethodEnum.API);
+        AemPaymentResponseData ordersResponse;
+        ordersResponse = aemHelper.createOnlineOrderLegal(OnlineOrderTypeConst.DELIVERY_TO_DOOR);
 
-        anAssert().isTrue(ordersResponses.size() < 1, "No orders were created" );
-        orderId = ordersResponses.get(0).getSolutionId();
+        anAssert().isTrue(orderId == null, "No orders were created" );
+        orderId = ordersResponse.getSolutionId();
         System.out.print(orderId);
 
         /*// Step 1:
