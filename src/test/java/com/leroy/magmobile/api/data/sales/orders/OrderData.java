@@ -1,6 +1,5 @@
 package com.leroy.magmobile.api.data.sales.orders;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import lombok.Data;
 
@@ -46,6 +45,10 @@ public class OrderData {
 
     public void increaseFulfillmentVersion() {
         fulfillmentVersion++;
+    }
+
+    public void increaseSolutionVersion() {
+        solutionVersion++;
     }
 
     public void increaseFulfillmentVersion(int val) {

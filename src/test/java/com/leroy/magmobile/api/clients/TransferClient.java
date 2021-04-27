@@ -1,23 +1,41 @@
 package com.leroy.magmobile.api.clients;
 
+import static com.leroy.core.matchers.IsApproximatelyEqual.approximatelyEqual;
+import static com.leroy.core.matchers.Matchers.valid;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.api.StatusCodes;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.api.BaseMashupClient;
 import com.leroy.core.configuration.Log;
-import com.leroy.magmobile.api.data.sales.transfer.*;
-import com.leroy.magmobile.api.requests.salesdoc.transfer.*;
+import com.leroy.magmobile.api.data.sales.transfer.TransferDataList;
+import com.leroy.magmobile.api.data.sales.transfer.TransferProductOrderData;
+import com.leroy.magmobile.api.data.sales.transfer.TransferRunRespData;
+import com.leroy.magmobile.api.data.sales.transfer.TransferSalesDocData;
+import com.leroy.magmobile.api.data.sales.transfer.TransferSearchFilters;
+import com.leroy.magmobile.api.data.sales.transfer.TransferSearchProductDataList;
+import com.leroy.magmobile.api.data.sales.transfer.TransferStatusRespData;
+import com.leroy.magmobile.api.requests.salesdoc.transfer.DeleteSalesDocTransferRequest;
+import com.leroy.magmobile.api.requests.salesdoc.transfer.GetSalesDocTransfer;
+import com.leroy.magmobile.api.requests.salesdoc.transfer.PostSalesDocTransfer;
+import com.leroy.magmobile.api.requests.salesdoc.transfer.PutSalesDocTransferAdd;
+import com.leroy.magmobile.api.requests.salesdoc.transfer.TransferProductSearchRequest;
+import com.leroy.magmobile.api.requests.salesdoc.transfer.TransferRunRequest;
+import com.leroy.magmobile.api.requests.salesdoc.transfer.TransferSearchRequest;
+import com.leroy.magmobile.api.requests.salesdoc.transfer.TransferStatusRequest;
+import com.leroy.magmobile.api.requests.salesdoc.transfer.TransferUpdateRequest;
 import io.qameta.allure.Step;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
-
-import static com.leroy.core.matchers.IsApproximatelyEqual.approximatelyEqual;
-import static com.leroy.core.matchers.Matchers.valid;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class TransferClient extends BaseMashupClient {
 
@@ -168,8 +186,8 @@ public class TransferClient extends BaseMashupClient {
                 approximatelyEqual(ZonedDateTime.now()));
         assertThat("pointOfGiveAway", data.getPointOfGiveAway(),
                 is(postSalesDocData.getPointOfGiveAway()));
-        assertThat("dateOfGiveAway", data.getDateOfGiveAway(),
-                is(postSalesDocData.getDateOfGiveAway()));
+        assertThat("dateOfGiveAway", data.getDateOfGiveAway().truncatedTo(ChronoUnit.MINUTES),
+                is(postSalesDocData.getDateOfGiveAway().truncatedTo(ChronoUnit.MINUTES)));
         assertThat("departmentId", data.getDepartmentId(),
                 is(postSalesDocData.getDepartmentId()));
         assertThat("products size", data.getProducts(), hasSize(postSalesDocData.getProducts().size()));
