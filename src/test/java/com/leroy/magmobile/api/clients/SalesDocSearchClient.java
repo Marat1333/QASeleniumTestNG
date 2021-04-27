@@ -27,13 +27,6 @@ public class SalesDocSearchClient extends BaseMashupClient {
         private String customerNumber;
     }
 
-    @Override
-    protected void init() {
-        gatewayUrl = EnvConstants.PAO_API_HOST;
-        jaegerHost = EnvConstants.PAO_JAEGER_HOST;
-        jaegerService = EnvConstants.PAO_JAEGER_SERVICE;
-    }
-
     /**
      * ---------- Requests -------------
      **/
