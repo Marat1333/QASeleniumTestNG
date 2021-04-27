@@ -11,6 +11,13 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class SalesDocSearchClient extends BaseMashupClient {
 
+    @Override
+    protected void init() {
+        gatewayUrl = EnvConstants.PAO_API_HOST;
+        jaegerHost = EnvConstants.PAO_JAEGER_HOST;
+        jaegerService = EnvConstants.PAO_JAEGER_SERVICE;
+    }
+
     @Data
     @Accessors(chain = true)
     public static class Filters {

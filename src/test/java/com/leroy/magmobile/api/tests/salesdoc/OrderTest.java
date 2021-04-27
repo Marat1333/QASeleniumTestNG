@@ -1,13 +1,13 @@
 package com.leroy.magmobile.api.tests.salesdoc;
 
 import static com.leroy.core.matchers.Matchers.successful;
+import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.common_mashups.catalogs.data.product.ProductData;
-import com.leroy.common_mashups.customer_accounts.data.CustomerData;
 import com.leroy.common_mashups.customer_accounts.data.PhoneData;
 import com.leroy.common_mashups.helpers.CustomerHelper;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
@@ -32,6 +32,7 @@ import com.leroy.magmobile.api.data.sales.orders.ReqOrderProductData;
 import com.leroy.magmobile.api.data.sales.orders.ResOrderCheckQuantityData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import com.leroy.magportal.api.helpers.PAOHelper;
+import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -84,12 +85,12 @@ public class OrderTest extends BaseProjectApiTest {
                 getResp, orderData, responseType);
     }
 
-    @Test(description = "C23195019 POST Order")
+    @Test(description = "C23195019 POST Order", priority = 1)
     public void testCreateOrder() {
         // Prepare request data
         CartProductOrderData productOrderData = new CartProductOrderData(
                 productDataList.get(0));
-        productOrderData.setQuantity(1.0);
+        productOrderData.setQuantity(10.0);
 
         // Create
         step("Create Cart");
@@ -121,15 +122,16 @@ public class OrderTest extends BaseProjectApiTest {
         orderData.increasePaymentVersion(); // TODO это правильно или баг?
     }
 
-    @Test(description = "C23195023 GET Order")
+    @Test(description = "C23195023 GET Order", priority = 2)
     public void testGetOrder() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
         Response<OrderData> getResp = orderClient.getOrder(orderData.getOrderId());
         orderClient.assertThatResponseMatches(getResp, orderData);
+        orderData = getResp.asJson();//TODO Create Order response issue: no delivery field
     }
 
-    @Test(description = "C23195024 PUT SetPinCode")
+    @Test(description = "C23195024 PUT SetPinCode", priority = 3)
     public void testSetPinCode() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
@@ -142,20 +144,20 @@ public class OrderTest extends BaseProjectApiTest {
         orderClient.assertThatPinCodeIsSet(response);
         orderData.setPinCode(validPinCode);
         orderData.increasePaymentVersion();
+        orderData.increaseSolutionVersion();
     }
 
-    @Test(description = "C23195027 PUT Confirm Order")
+    @Test(description = "C23195027 PUT Confirm Order", priority = 4)
     public void testConfirmOrder() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
         step("Search for a customer");
-        CustomerData customerData = customerHelper.getAnyCustomer();
+        SimpleCustomerData customerData = SIMPLE_CUSTOMER_DATA_1;
         OrderCustomerData orderCustomerData = new OrderCustomerData();
-        orderCustomerData.setFirstName(customerData.getFirstName());
-        orderCustomerData.setLastName(customerData.getLastName());
+        orderCustomerData.setFirstName(customerData.getName());
         orderCustomerData.setRoles(Collections.singletonList(CustomerConst.Role.RECEIVER.name()));
         orderCustomerData.setType(CustomerConst.Type.PERSON.name());
-        orderCustomerData.setPhone(new PhoneData(customerData.getMainPhoneFromCommunication()));
+        orderCustomerData.setPhone(new PhoneData(customerData.getPhoneNumber()));
 
         step("Confirm order");
         OrderData confirmOrderData = new OrderData();
@@ -175,14 +177,13 @@ public class OrderTest extends BaseProjectApiTest {
         giveAwayData.setPoint(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal());
         giveAwayData.setShopId(Integer.valueOf(getUserSessionData().getUserShopId()));
         confirmOrderData.setGiveAway(giveAwayData);
-
         Response<OrderData> resp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
         orderClient.assertThatIsConfirmed(resp, orderData);
         OrderData confirmResponseData = resp.asJson();
         orderData.setCustomers(confirmResponseData.getCustomers());
     }
 
-    @Test(description = "C23195028 PUT Rearrange Order - Add new product in confirmed order")
+    @Test(description = "C23195028 PUT Rearrange Order - Add new product in confirmed order", priority = 5)
     public void testRearrangeOrder() throws Exception {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
@@ -208,7 +209,7 @@ public class OrderTest extends BaseProjectApiTest {
         orderData.setProducts(getResp.asJson().getProducts());
     }
 
-    @Test(description = "C23195026 POST Check Quantity Order - happy path")
+    @Test(description = "C23195026 POST Check Quantity Order - happy path", priority = 6)
     public void testCheckQuantity() {
         OrderProductData orderProductData = orderData.getProducts().get(0);
 
@@ -224,7 +225,7 @@ public class OrderTest extends BaseProjectApiTest {
         orderClient.assertThatCheckQuantityIsOk(resp, reqOrderData.getProducts());
     }
 
-    @Test(description = "C23195030 PUT OrderWorkflow - cancel confirmed order")
+    @Test(description = "C23195030 PUT OrderWorkflow - cancel confirmed order", priority = 7)
     public void testCancelOrder() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
@@ -238,7 +239,7 @@ public class OrderTest extends BaseProjectApiTest {
         sendGetOrderRequestAndCheckData(true);
     }
 
-    @Test(description = "C23195040 PUT Order - Remove Product line from Draft Order")
+    @Test(description = "C23195040 PUT Order - Remove Product line from Draft Order", priority = 8)
     public void testUpdateDraftOrderRemoveProductLine() {
         // Prepare request data
         CartProductOrderData productOrderData1 = new CartProductOrderData(
@@ -288,7 +289,7 @@ public class OrderTest extends BaseProjectApiTest {
         sendGetOrderRequestAndCheckData();
     }
 
-    @Test(description = "C23195043 PUT Order - Change status to Deleted from Draft")
+    @Test(description = "C23195043 PUT Order - Change status to Deleted from Draft", priority = 9)
     public void testDeleteDraftOrder() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");

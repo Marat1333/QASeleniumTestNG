@@ -1,4 +1,4 @@
-package com.leroy.magportal.api.tests.productSearch;
+package com.leroy.product_search.api.tests;
 
 import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.constants.EnvConstants;
@@ -95,7 +95,7 @@ public class ExportExcelTest extends BaseCatalogTest {
         softAssert().verifyAll();
     }
 
-    @Test(description = "C23416271 Excel output")
+    @Test(description = "C23416271 Excel output", groups = "productSearch")
     public void testExcelDownload() throws Exception {
         FileManager fileManager = new FileManager();
         String resource = "/v1/products";

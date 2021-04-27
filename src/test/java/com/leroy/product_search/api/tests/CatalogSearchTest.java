@@ -1,4 +1,4 @@
-package com.leroy.magmobile.api.tests.catalog_search;
+package com.leroy.product_search.api.tests;
 
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -48,7 +48,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     private CatalogProductClient catalogSearchClient;
 
     @TestCase(3161100)
-    @Test(description = "C3161100 search by lmCode")
+    @Test(description = "C3161100 search by lmCode", groups = "productSearch")
     public void testSearchByLmCode() {
         final String lmCode = "18546124";
 
@@ -69,7 +69,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893254)
-    @Test(description = "C22893254 search by short lmCode")
+    @Test(description = "C22893254 search by short lmCode", groups = "productSearch")
     public void testSearchByShortLmCode() {
         final String lmCode = "1234";
 
@@ -91,7 +91,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893255)
-    @Test(description = "C22893255 search by barCode")
+    @Test(description = "C22893255 search by barCode", groups = "productSearch")
     public void testSearchByBarCode() {
         final String barCode = "4605865275387";
 
@@ -112,7 +112,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893256)
-    @Test(description = "C22893256 search by short barCode")
+    @Test(description = "C22893256 search by short barCode", groups = "productSearch")
     public void testSearchByShortBarCode() {
         final String barCode = "460586527";
 
@@ -133,7 +133,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893248)
-    @Test(description = "C22893248 search by shortName")
+    @Test(description = "C22893248 search by shortName", groups = "productSearch")
     public void testSearchByName() {
         //final String name = "Тепломир радиатор"; TODO почему бэки возвращают другие значения?
         final String name = "12";
@@ -158,7 +158,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893258)
-    @Test(description = "C22893258 search by long (length>8) lmCode")
+    @Test(description = "C22893258 search by long (length>8) lmCode", groups = "productSearch")
     public void testSearchByLongLmCode() {
         //часть штрихкода, по которому можно найти товар
         final String longLmCode = "464001538";
@@ -178,7 +178,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893329)
-    @Test(description = "C22893329 search by gamma filter")
+    @Test(description = "C22893329 search by gamma filter", groups = "productSearch")
     public void testSearchByGammaFilter() {
         final String GAMMA = "S";
 
@@ -200,7 +200,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893330)
-    @Test(description = "C22893330 search by multiply gamma filter")
+    @Test(description = "C22893330 search by multiply gamma filter", groups = "productSearch")
     public void testSearchByMultiplyGammaFilter() {
         final String FIRST_GAMMA = "Bc";
         final String SECOND_GAMMA = "ET";
@@ -223,7 +223,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893331)
-    @Test(description = "C22893331 search by top filter")
+    @Test(description = "C22893331 search by top filter", groups = "productSearch")
     public void testSearchByTopFilter() {
         final String TOP = "1";
 
@@ -247,7 +247,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893332)
-    @Test(description = "C22893332 search by multiply top filter")
+    @Test(description = "C22893332 search by multiply top filter", groups = "productSearch")
     public void testSearchByMultiplyTopFilter() {
         final String FIRST_TOP = "1";
         final String SECOND_TOP = "2";
@@ -271,7 +271,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         }
     }
 
-    @Test(description = "C22893333 search by hasAvailableStock filter")
+    @Test(description = "C22893333 search by hasAvailableStock filter", groups = "productSearch")
     public void testSearchByHasAvailableStockFilter() {
         final boolean hasAvailableStock = true;
 
@@ -296,7 +296,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @Issue("BACKEND_ISSUE")
-    @Test(description = "C22893334 search by topEm filter")
+    @Test(description = "C22893334 search by topEm filter", groups = "productSearch")
     public void testSearchByTopEmFilter() {
         final boolean topEm = true;
 
@@ -320,7 +320,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
 
     //может работать некорректно, т.к. есть бизнес дефект
     @TestCase(22893335)
-    @Test(description = "C22893335 search by bestPrice filter")
+    @Test(description = "C22893335 search by bestPrice filter", groups = "productSearch")
     public void testSearchByBestPriceFilter() {
         final boolean bestPrice = true;
 
@@ -342,7 +342,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @Issue("BACKEND_ISSUE")
-    @Test(description = "C22893336 search by top1000 filter")
+    @Test(description = "C22893336 search by top1000 filter", groups = "productSearch")
     public void testSearchByTop1000Filter() {
         final boolean top1000 = true;
 
@@ -365,7 +365,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
 
     //может работать некорректно, т.к. есть бизнес дефект
     @Issue("BUSINESS_DEFECT")
-    @Test(description = "C22893337 search by limitedOffer filter")
+    @Test(description = "C22893337 search by limitedOffer filter", groups = "productSearch")
     public void testSearchByLimitedOfferFilter() {
         final boolean limitedOffer = true;
 
@@ -388,7 +388,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893338)
-    @Test(description = "C22893338 search by ctm filter")
+    @Test(description = "C22893338 search by ctm filter", groups = "productSearch")
     public void testSearchByCtmFilter() {
         final boolean ctm = true;
 
@@ -410,7 +410,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @Issue("BACKEND_ISSUE")
-    @Test(description = "C22893341 search by supplier filter")
+    @Test(description = "C22893341 search by supplier filter", groups = "productSearch")
     public void testSearchBySupplierFilter() {
         final String SUPPLIER_CODE = "1001123001";
 
@@ -435,7 +435,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @Issue("BACKEND_ISSUE")
-    @Test(description = "C22893342 search by multiply supplier filter")
+    @Test(description = "C22893342 search by multiply supplier filter", groups = "productSearch")
     public void testSearchByMultiplySupplierFilter() {
         final String FIRST_SUPPLIER_CODE = "1002978015";
         final String SECOND_SUPPLIER_CODE = "1003509015";
@@ -460,7 +460,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         }
     }
 
-    @Test(description = "C22893343 search by avs neq null filter")
+    @Test(description = "C22893343 search by avs neq null filter", groups = "productSearch")
     public void testSearchByAvsNeqNullFilter() {
 
         GetCatalogProductSearchRequest byAvsNeqNullParams = new GetCatalogProductSearchRequest()
@@ -481,7 +481,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893344)
-    @Test(description = "C22893344 search by avs date filter")
+    @Test(description = "C22893344 search by avs date filter", groups = "productSearch")
     public void testSearchByAvsDateFilter() {
         LocalDate avsDate = LocalDate.of(2019, 3, 19);
 
@@ -507,7 +507,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893345)
-    @Test(description = "C22893345 search by few filters")
+    @Test(description = "C22893345 search by few filters", groups = "productSearch")
     public void testSearchByFewFilters() {
         final boolean ctm = true;
         final boolean topEm = true;
@@ -544,7 +544,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893348)
-    @Test(description = "C22893348 sort by lmCode DESC")
+    @Test(description = "C22893348 sort by lmCode DESC", groups = "productSearch")
     public void testSortByLmCodeDesc() {
 
         GetCatalogProductSearchRequest byLmDescSortParams = new GetCatalogProductSearchRequest()
@@ -570,7 +570,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893349)
-    @Test(description = "C22893349 sort by lmCode ASC")
+    @Test(description = "C22893349 sort by lmCode ASC", groups = "productSearch")
     public void testSortByLmCodeAsc() {
 
         GetCatalogProductSearchRequest byLmAscSortParams = new GetCatalogProductSearchRequest()
@@ -594,7 +594,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893350)
-    @Test(description = "C22893350 sort by availableStock DESC", enabled = false)
+    @Test(description = "C22893350 sort by availableStock DESC", groups = "productSearch", enabled = false)
     public void testSortByAvailableStockDesc() {
 
         GetCatalogProductSearchRequest byAvailableStockSortParams = new GetCatalogProductSearchRequest()
@@ -627,7 +627,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893351)
-    @Test(description = "C22893351 sort by availableStock ASC", enabled = false)
+    @Test(description = "C22893351 sort by availableStock ASC", groups = "productSearch", enabled = false)
     public void testSortByAvailableStockAsc() {
 
         GetCatalogProductSearchRequest byAvailableStockSortParams = new GetCatalogProductSearchRequest()
@@ -662,7 +662,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(23183649)
-    @Test(description = "C23183649 sort by name DESC")
+    @Test(description = "C23183649 sort by name DESC", groups = "productSearch")
     public void testSortByNameDesc() {
 
         GetCatalogProductSearchRequest byAvailableStockSortParams = new GetCatalogProductSearchRequest()
@@ -690,7 +690,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(23183650)
-    @Test(description = "C23183650 sort by name ASC")
+    @Test(description = "C23183650 sort by name ASC", groups = "productSearch")
     public void testSortByNameAsc() {
 
         GetCatalogProductSearchRequest byAvailableStockSortParams = new GetCatalogProductSearchRequest()
@@ -718,7 +718,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893405)
-    @Test(description = "C22893405 search by short name")
+    @Test(description = "C22893405 search by short name", groups = "productSearch")
     public void testSearchServicesByShortName() {
         final String name = "Овер";
 
@@ -735,7 +735,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893406)
-    @Test(description = "C22893406 search by full name")
+    @Test(description = "C22893406 search by full name", groups = "productSearch")
     public void testSearchServicesByFullName() {
         final String name = "Оверлок";
 
@@ -752,7 +752,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893407)
-    @Test(description = "C22893407 search by short lmCode")
+    @Test(description = "C22893407 search by short lmCode", groups = "productSearch")
     public void testSearchServicesByShortLmCode() {
         final String shortLmCode = "4905510";
 
@@ -769,7 +769,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893408)
-    @Test(description = "C22893408 search by lmCode")
+    @Test(description = "C22893408 search by lmCode", groups = "productSearch")
     public void testSearchServicesByFullLmCode() {
         final String shortLmCode = "4905510";
 
@@ -787,7 +787,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893410)
-    @Test(description = "C22893410 search by department")
+    @Test(description = "C22893410 search by department", groups = "productSearch")
     public void testSearchServicesByDepartmentId() {
         final int departmentId = 2;
 
@@ -805,7 +805,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893411)
-    @Test(description = "C22893411 search all services")
+    @Test(description = "C22893411 search all services", groups = "productSearch")
     public void testSearchAllServices() {
         GetCatalogServicesRequest allServicesParams = new GetCatalogServicesRequest();
 
@@ -816,7 +816,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         assertThat("Services count is less than expected", responseData.size(), greaterThanOrEqualTo(5));
     }
 
-    @Test(description = "C23195045 search supplier by code")
+    @Test(description = "C23195045 search supplier by code", groups = "productSearch")
     public void testSearchSupplierByCode() {
         String query = "123";
         Response<SupplierDataList> response = catalogSearchClient.searchSupplierBy(query, 3);
@@ -829,7 +829,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
         }
     }
 
-    @Test(description = "C23195044 search supplier by name")
+    @Test(description = "C23195044 search supplier by name", groups = "productSearch")
     public void testSearchSupplierByName() {
         String query = "сази";
         Response<SupplierDataList> response = catalogSearchClient.searchSupplierBy(query, 30);

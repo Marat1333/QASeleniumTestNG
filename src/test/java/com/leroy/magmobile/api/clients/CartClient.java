@@ -48,7 +48,6 @@ public class CartClient extends BaseMashupClient {
         jaegerHost = EnvConstants.PAO_JAEGER_HOST;
         jaegerService = EnvConstants.PAO_JAEGER_SERVICE;
     }
-
     /**
      * ---------- Executable Requests -------------
      **/

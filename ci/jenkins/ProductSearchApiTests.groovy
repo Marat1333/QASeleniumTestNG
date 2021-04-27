@@ -1,7 +1,7 @@
 TELEGRAM_BOT_URL = 'https://api.telegram.org/bot596012234:AAGAaYCfc2nDS3BAr2J7l0PRTgzOoBqGqy4'
-TELEGRAM_REPORTS_CHAT = '-1001343153150'
 
 env.TELEGRAM_CHAT = env.TELEGRAM_CHAT.replaceFirst(/^(.*?)\(.*\)/, '$1')
+env.RUN = env.RUN.replaceFirst('_', '-')
 
 def telegramMessage(message) {
     if (env.TELEGRAM_CHAT) {
@@ -12,32 +12,23 @@ def telegramMessage(message) {
                 -d text="${message}"
         """
     }
-    if (env.SEND_TO_REPORTS_CHAT) {
-        sh """
-           curl -X POST ${TELEGRAM_BOT_URL}/sendMessage \
-                -d parse_mode=Markdown \
-                -d chat_id=${TELEGRAM_REPORTS_CHAT} \
-                -d text="${message}"
-        """
-    }
 }
 
 GString getMvnStrRun() {
     return "mvn clean test -B " +
             "-Dmaven.test.failure.ignore=true " +
-            "-DxmlPath=testXML/portal/ui/${env.SUITE_XML} " +
-            "-DmpropsFile=src/main/resources/configurationFiles/${env.TEST_CONFIG}.yml " +
+            "-DxmlPath=testXML/product_search/${env.SUITE_XML} " +
             "-DthreadCount=${env.THREAD_COUNT} " +
             "-DrunWithIssues=${env.RUN_CASE_WITH_ISSUE} " +
-            "-DmRun=${env.RUN} " +
+            "-DmRun=\"${env.RUN}\" " +
             "-Denv=${env.ENVIROMENT} " +
             "-DretryOnFailCount=${env.RETRY_COUNT} " +
-            "-DmSuite=4378 -DmProject=16"
+            "-DmSuite=29833 -DmProject=10"
 }
 
 timestamps {
     node("dockerhost") {
-        stage('Run UI auto tests') {
+        stage('Run Product Search API auto tests') {
 
             checkout(
                     [$class                           : 'GitSCM',
@@ -69,7 +60,7 @@ timestamps {
         }
 
         stage('Send notification') {
-            telegramMessage("Маг Портал UI Тесты завершены. Test run: ${env.RUN} \n " +
+            telegramMessage("Product Search API Тесты завершены. \nTest run: ${env.RUN} \n" +
                     "[Allure report](" + env.BUILD_URL + "allure)")
         }
     }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="API Global Mag Portal Suite">
+
+    <suite-files>
+        <suite-file path="areas/CatalogProductSuite.xml"/>
+        <suite-file path="areas/CatalogSearchSuite.xml"/>
+        <suite-file path="areas/ProductSearchSuite.xml"/>
+        <suite-file path="areas/NotificationSuite.xml"/>
+    </suite-files>
+
+</suite>

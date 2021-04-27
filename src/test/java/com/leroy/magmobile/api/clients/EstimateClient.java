@@ -1,5 +1,14 @@
 package com.leroy.magmobile.api.clients;
 
+import static com.leroy.core.matchers.Matchers.isNumber;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
@@ -9,15 +18,18 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateCustome
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.SendEmailData;
-import com.leroy.magmobile.api.requests.salesdoc.estimate.*;
+import com.leroy.magmobile.api.requests.salesdoc.estimate.EstimateChangeStatusPut;
+import com.leroy.magmobile.api.requests.salesdoc.estimate.EstimateGet;
+import com.leroy.magmobile.api.requests.salesdoc.estimate.EstimatePost;
+import com.leroy.magmobile.api.requests.salesdoc.estimate.EstimatePut;
+import com.leroy.magmobile.api.requests.salesdoc.estimate.EstimateSendEmailRequest;
 import io.qameta.allure.Step;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import ru.leroymerlin.qa.core.clients.base.Response;
-
-import java.util.*;
-
-import static com.leroy.core.matchers.Matchers.isNumber;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 
 public class EstimateClient extends BaseMashupClient {
 
@@ -31,6 +43,13 @@ public class EstimateClient extends BaseMashupClient {
     /**
      * ---------- Executable Requests -------------
      **/
+
+    @Override
+    protected void init() {
+        gatewayUrl = EnvConstants.PAO_API_HOST;
+        jaegerHost = EnvConstants.PAO_JAEGER_HOST;
+        jaegerService = EnvConstants.PAO_JAEGER_SERVICE;
+    }
 
     @Step("Get Estimate info for estimateId={estimateId}")
     public Response<EstimateData> sendRequestGet(String estimateId) {
