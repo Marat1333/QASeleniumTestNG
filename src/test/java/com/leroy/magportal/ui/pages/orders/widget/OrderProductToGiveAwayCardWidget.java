@@ -21,6 +21,10 @@ public class OrderProductToGiveAwayCardWidget extends CardWebWidget<ToGiveAwayPr
             metaName = "Поле 'К выдаче'")
     EditBox toGiveAwayQuantity;
 
+    @WebFindBy(xpath = ".//div[contains(@class, 'ProductCard__quantities')]//div[contains(@class, 'inputCounter') and descendant::label[contains(text(), 'К выдаче')]]//input",
+            metaName = "Поле 'Возврат клиенту'")
+    EditBox toRefundQuantity;
+
     @WebFindBy(xpath = ".//span[contains(@class, 'Price-container')]", metaName = "Цена")
     Element price;
 
@@ -31,12 +35,22 @@ public class OrderProductToGiveAwayCardWidget extends CardWebWidget<ToGiveAwayPr
         return toGiveAwayQuantity.getText();
     }
 
+    public String getToRefundQuantity() {
+        return toRefundQuantity.getText();
+    }
+
     // Actions
 
     public void editToShipmentQuantity(double value) {
         toGiveAwayQuantity.clear(true);
         toGiveAwayQuantity.fill(String.valueOf(value));
         toGiveAwayQuantity.sendBlurEvent();
+    }
+
+    public void editToRefundQuantity(double value) {
+        toRefundQuantity.clear(true);
+        toRefundQuantity.fill(String.valueOf(value));
+        toRefundQuantity.sendBlurEvent();
     }
 
     @Override

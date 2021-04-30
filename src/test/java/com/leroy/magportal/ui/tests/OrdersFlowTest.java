@@ -578,6 +578,33 @@ public class OrdersFlowTest extends BasePAOTest {
                 SalesDocumentsConst.States.DELIVERED.getUiVal());
         orderPage.shouldDocumentCountIs(1);
 
+        // Step 4:
+        step("Перейти на вкладку 'К выдаче и возврату'");
+        orderPage.clickDocumentInLeftMenu(orderId);
+        OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
+        createdContentPage.shouldOrderProductCountIs(3);
+        GiveAwayShipOrderPage giveAwayShipOrderPage = createdContentPage.clickGoToShipRefund();
+
+        // Step 5:
+        step("Товар 1: Ввести в инпут 'Возврат клиенту' количество равное,  указанному в Заказано");
+        giveAwayShipOrderPage.editToRefundQuantity(1, 1)
+                .shouldProductToShipQuantityIs(1, 1);
+
+        // Step 6:
+        step("Товар 1: Ввести в инпут 'Возврат клиенту' количество равное,  указанному в Заказано");
+        giveAwayShipOrderPage.editToRefundQuantity(2, 1)
+                .shouldProductToShipQuantityIs(2, 1);
+
+        // Step 7:
+        step("Товар 1: Ввести в инпут 'Возврат клиенту' количество равное,  указанному в Заказано");
+        giveAwayShipOrderPage.editToRefundQuantity(3, 1)
+                .shouldProductToShipQuantityIs(3, 1);
+
+        // Step 8:
+        // нажать кнопку "Далее", id неуникальны
+
+
+
     }
 
     @Test(description = "Частичная доставка", groups = NEED_PRODUCTS_GROUP)

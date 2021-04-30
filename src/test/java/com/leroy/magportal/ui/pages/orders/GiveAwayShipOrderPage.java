@@ -23,6 +23,16 @@ public class GiveAwayShipOrderPage extends OrderCreatedPage {
             clazz = OrderProductToGiveAwayCardWidget.class)
     CardWebWidgetList<OrderProductToGiveAwayCardWidget, ToGiveAwayProductCardData> productCards;
 
+    @WebFindBy(xpath = "//button[@data-testid='aao-footer-undefined-btn']", metaName = "Кнопка 'Начать возврат'")
+    Button RefundBtn;
+
+    @WebFindBy(xpath = "  ", metaName = "Кнопка 'Отмена'")
+    Button CancelBtn;
+
+    @WebFindBy(xpath = "  ", metaName = "Кнопка 'Далее'")
+    Button FurtherBtn;
+
+
 
 
     // Actions
@@ -41,10 +51,24 @@ public class GiveAwayShipOrderPage extends OrderCreatedPage {
         return this;
     }
 
+    @Step("Нажать кнопку 'Начать возврат'")
+    public GiveAwayShipOrderPage clickRefundBtn() {
+        RefundBtn.click();
+        waitForSpinnerAppearAndDisappear();
+        return this;
+    }
+
     @Step("Изменить кол-во 'К выдаче' для {index}-ого товара")
     public GiveAwayShipOrderPage editToShipQuantity(int index, double val) throws Exception {
         --index;
         productCards.get(index).editToShipmentQuantity(val);
+        return this;
+    }
+
+    @Step("Изменить кол-во 'Возврат клиенту' для {index}-ого товара")
+    public GiveAwayShipOrderPage editToRefundQuantity(int index, double val) throws Exception {
+        --index;
+        productCards.get(index).editToRefundQuantity(val);
         return this;
     }
 
@@ -53,6 +77,13 @@ public class GiveAwayShipOrderPage extends OrderCreatedPage {
     @Step("Проверить, что кол-во 'К выдаче' у {index}-ого товара равно {value}")
     public GiveAwayShipOrderPage shouldProductToShipQuantityIs(int index, double value) throws Exception {
         anAssert.isEquals(Double.parseDouble(productCards.get(--index).getToGiveAwayQuantity()), value,
+                "Неверное кол-во 'К выдаче' у " + (index + 1) + "-ого товара");
+        return this;
+    }
+
+    @Step("Проверить, что кол-во 'Возврат клиенту' у {index}-ого товара равно {value}")
+    public GiveAwayShipOrderPage shouldToRefundQuantity(int index, double value) throws Exception {
+        anAssert.isEquals(Double.parseDouble(productCards.get(--index).getToRefundQuantity()), value,
                 "Неверное кол-во 'К выдаче' у " + (index + 1) + "-ого товара");
         return this;
     }
