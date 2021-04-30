@@ -105,7 +105,6 @@ public class OrdersFlowTest extends BasePAOTest {
         initCreateOrder(productCount, SalesDocumentsConst.States.CONFIRMED);
     }
 
-
     private void initFindPickingTask() {
         orderClient.waitUntilOrderGetStatus(orderId,
                 SalesDocumentsConst.States.ALLOWED_FOR_PICKING, null);
@@ -126,7 +125,6 @@ public class OrdersFlowTest extends BasePAOTest {
 
     @Test(description = "C23416311 Заказы.Оффлайн.Самовывоз.Переход из статуса Готов к сборке в статус Собран", groups = NEED_PRODUCTS_GROUP)
     public void testMoveFromReadyPickingToPicked() throws Exception {
-
         initCreateOrder(1);
 
         // Step 1:
@@ -327,7 +325,6 @@ public class OrdersFlowTest extends BasePAOTest {
         try {  orderPage = loginAndGoTo(OrderHeaderPage.class);
         }
         catch(Exception exception){ };
-
 
         // Step 2:
         step("Найти созданный заказ в статусе 'Готов к Сборке' с номером" + " " + orderId);
