@@ -28,7 +28,7 @@ import com.leroy.common_mashups.catalogs.requests.GetNomenclatureRequest;
 import com.leroy.common_mashups.catalogs.requests.PostCatalogProductReviewCreate;
 import com.leroy.common_mashups.catalogs.requests.obsolete.GetCatalogProduct;
 import com.leroy.common_mashups.catalogs.requests.obsolete.GetCatalogShops;
-import com.leroy.common_mashups.catalogs.requests.obsolete.GetCatalogSupplierRequest;
+import com.leroy.common_mashups.catalogs.requests.obsolete.GetCatalogSupplierRequestObsolete;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst.GiveAwayPoints;
 import com.leroy.core.api.BaseMashupClient;
@@ -141,7 +141,7 @@ public class CatalogProductClient extends BaseMashupClient {
 
     @Step("Get Supply Info for lmCode={lmCode}")
     public Response<CatalogSupplierDataOld> getSupplyInfo(String lmCode) {
-        GetCatalogSupplierRequest params = new GetCatalogSupplierRequest()
+        GetCatalogSupplierRequestObsolete params = new GetCatalogSupplierRequestObsolete()
                 .setLmCode(lmCode)
                 .setShopId(getUserSessionData().getUserShopId());
         return execute(params, CatalogSupplierDataOld.class);
