@@ -449,6 +449,33 @@ public class LsAddressClient extends BaseMashupClient {
         softAssert().verifyAll();
     }
 
+    @Step("Check that product moved to new cell ")
+    public void assertThatProductMovedToNewCell(Response<CellProductDataList> resp, CellProductData expectedData) {
+        assertThatResponseIsOk(resp);
+        CellProductData actualRespData = resp.asJson().getItems().get(0);
+        ProductCellData expectedProductCellData = expectedData.getLsAddressCells().get(0);
+
+        // if a product stands at several addresses, searching index of new cells
+        int newCellIndex = 0;
+        for (int i = 0; i < actualRespData.getLsAddressCells().size(); i++) {
+            if (actualRespData.getLsAddressCells().get(i).getId().equals(expectedProductCellData.getId())) {
+                newCellIndex = i;
+                break;
+            }
+        }
+        ProductCellData actualProductCellData = actualRespData.getLsAddressCells().get(newCellIndex);
+
+        softAssert().isEquals(actualProductCellData.getId(), expectedProductCellData.getId(),
+                "lsAddress Cell - Cell's id doesn't match the expected");
+        softAssert().isEquals(actualProductCellData.getCode(), expectedProductCellData.getCode(),
+                "lsAddress Cell - Cell's code id doesn't match the expected");
+        softAssert().isEquals(actualRespData.getLmCode(), expectedData.getLmCode(),
+                "lsAddress Cell - LmCode doesn't match the expected");
+        softAssert().isEquals(actualRespData.getQuantity(), expectedData.getQuantity(),
+                "lsAddress Cell - Product quantity doesn't match the expected");
+        softAssert().verifyAll();
+    }
+
     @Step("Check that response matches expected Data")
     public void assertThatDataMatches(Response<CellProductDataList> resp, CellProductDataList expectedData) {
         assertThatResponseIsOk(resp);
