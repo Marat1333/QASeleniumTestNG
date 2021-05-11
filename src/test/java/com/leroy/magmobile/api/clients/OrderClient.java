@@ -306,7 +306,7 @@ public class OrderClient extends BaseMashupClient {
         assertThatResponseIsOk(resp);
         OrderData actualData = resp.asJson();
         assertThat("orderId", actualData.getOrderId(), is(expectedData.getOrderId()));
-        assertThat("fullDocId", actualData.getFullDocId(), is(expectedData.getFullDocId()));
+        assertThat("fullDocId", actualData.getFullDocId(), is(expectedData.getOrderId()));
         assertThat("status", actualData.getStatus(),
                 is(SalesDocumentsConst.States.IN_PROGRESS.getApiVal()));
         assertThat("salesDocStatus", actualData.getSalesDocStatus(),
