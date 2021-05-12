@@ -586,17 +586,22 @@ public class OrdersFlowTest extends BasePAOTest {
         GiveAwayShipOrderPage giveAwayShipOrderPage = createdContentPage.clickGoToShipRefund();
 
         // Step 5:
-        step("Товар 1: Ввести в инпут 'Возврат клиенту' количество равное,  указанному в Заказано");
+        step("Начать возврат");
+        giveAwayShipOrderPage.clickRefundBtn();
+
+
+        // Step 6:
+        step("Товар 1: Ввести в инпут 'Возврат клиенту' количество товара к возврату");
         giveAwayShipOrderPage.editToRefundQuantity(1, 1)
                 .shouldProductToShipQuantityIs(1, 1);
 
-        // Step 6:
-        step("Товар 1: Ввести в инпут 'Возврат клиенту' количество равное,  указанному в Заказано");
+        // Step 7:
+        step("Товар 1: Ввести в инпут 'Возврат клиенту' количество товара к возврату");
         giveAwayShipOrderPage.editToRefundQuantity(2, 1)
                 .shouldProductToShipQuantityIs(2, 1);
 
         // Step 7:
-        step("Товар 1: Ввести в инпут 'Возврат клиенту' количество равное,  указанному в Заказано");
+        step("Товар 1: Ввести в инпут 'Возврат клиенту' количество товара к возврату");
         giveAwayShipOrderPage.editToRefundQuantity(3, 1)
                 .shouldProductToShipQuantityIs(3, 1);
 

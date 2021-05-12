@@ -23,7 +23,7 @@ public class GiveAwayShipOrderPage extends OrderCreatedPage {
             clazz = OrderProductToGiveAwayCardWidget.class)
     CardWebWidgetList<OrderProductToGiveAwayCardWidget, ToGiveAwayProductCardData> productCards;
 
-    @WebFindBy(xpath = "//button[@data-testid='aao-footer-undefined-btn']", metaName = "Кнопка 'Начать возврат'")
+    @WebFindBy(xpath = "//button[@data-testid='aao-footer-startRefund-btn']", metaName = "Кнопка 'Начать возврат'")
     Button RefundBtn;
 
     @WebFindBy(xpath = "  ", metaName = "Кнопка 'Отмена'")
