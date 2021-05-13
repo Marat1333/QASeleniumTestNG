@@ -72,7 +72,7 @@ public class LsAddressHelper extends BaseHelper {
     public StandDataList createDefaultStands(AlleyData alleyData) {
         StandDataList postStandDataList = new StandDataList();
         StandData item1 = new StandData(3, 0, 0);
-        StandData item2 = new StandData(6, 1, 0);
+        StandData item2 = new StandData(6, 0, 5);
         postStandDataList.setItems(Arrays.asList(item1, item2));
         postStandDataList.setAlleyCode(alleyData.getCode());
         postStandDataList.setAlleyType(alleyData.getType());

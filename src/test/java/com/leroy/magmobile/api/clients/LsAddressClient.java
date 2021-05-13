@@ -11,6 +11,7 @@ import io.qameta.allure.Step;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -281,6 +282,8 @@ public class LsAddressClient extends BaseMashupClient {
     public void assertThatDataMatches(Response<StandDataList> resp, StandDataList expectedData) {
         assertThatResponseIsOk(resp);
         StandDataList actualData = resp.asJson();
+        
+//        Collections.reverse(expectedData.getItems());
         assertThat("items count", actualData.getItems(), hasSize(expectedData.getItems().size()));
         for (int i = 0; i < actualData.getItems().size(); i++) {
             StandData actualItem = actualData.getItems().get(i);
@@ -429,7 +432,7 @@ public class LsAddressClient extends BaseMashupClient {
                     desc + "Product lmCode doesn't match the expected");
             softAssert().isNotNull(actualCellProductData.getLsAddressCells(),
                     desc + "Cells list is empty or null");
-            softAssert().isEquals(actualCellProductData.getLsAddressCells().size(), 1,
+            softAssert().isEquals(actualCellProductData.getLsAddressCells().size(), 2,
                     desc + "lsAddressCells count doesn't match the expected");
             softAssert().isEquals(actualCellData.getId(), cellData.getId(),
                     desc + "lsAddress Cell - Id doesn't match the expected");
