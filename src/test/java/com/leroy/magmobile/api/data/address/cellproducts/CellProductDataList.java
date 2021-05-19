@@ -6,6 +6,6 @@ import java.util.List;
 
 @Data
 public class CellProductDataList {
-    private int quantity;
+    private Integer quantity;
     private List<CellProductData> items;
 }

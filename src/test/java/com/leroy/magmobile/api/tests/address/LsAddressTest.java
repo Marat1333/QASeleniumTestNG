@@ -29,7 +29,6 @@ import static org.hamcrest.Matchers.hasSize;
 
 public class LsAddressTest extends BaseProjectApiTest {
 
-
     @Inject
     private LsAddressBackClient lsAddressBackClient;
 

@@ -8,6 +8,7 @@ import com.leroy.magmobile.api.data.address.cellproducts.*;
 import com.leroy.magmobile.api.helpers.LsAddressHelper;
 import com.leroy.magmobile.api.requests.address.*;
 import io.qameta.allure.Step;
+import org.testng.Assert;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -282,8 +283,7 @@ public class LsAddressClient extends BaseMashupClient {
     public void assertThatDataMatches(Response<StandDataList> resp, StandDataList expectedData) {
         assertThatResponseIsOk(resp);
         StandDataList actualData = resp.asJson();
-        
-//        Collections.reverse(expectedData.getItems());
+
         assertThat("items count", actualData.getItems(), hasSize(expectedData.getItems().size()));
         for (int i = 0; i < actualData.getItems().size(); i++) {
             StandData actualItem = actualData.getItems().get(i);
@@ -457,16 +457,9 @@ public class LsAddressClient extends BaseMashupClient {
         assertThatResponseIsOk(resp);
         CellProductData actualRespData = resp.asJson().getItems().get(0);
         ProductCellData expectedProductCellData = expectedData.getLsAddressCells().get(0);
-
-        // if a product stands at several addresses, searching index of new cells
-        int newCellIndex = 0;
-        for (int i = 0; i < actualRespData.getLsAddressCells().size(); i++) {
-            if (actualRespData.getLsAddressCells().get(i).getId().equals(expectedProductCellData.getId())) {
-                newCellIndex = i;
-                break;
-            }
-        }
-        ProductCellData actualProductCellData = actualRespData.getLsAddressCells().get(newCellIndex);
+        ProductCellData actualProductCellData = actualRespData.getLsAddressCells().stream().findFirst()
+                .filter((s) -> s.getId().equals(expectedProductCellData.getId()))
+                .orElseThrow(() -> new AssertionError("Required cellId doesn't found"));
 
         softAssert().isEquals(actualProductCellData.getId(), expectedProductCellData.getId(),
                 "lsAddress Cell - Cell's id doesn't match the expected");
