@@ -589,26 +589,30 @@ public class OrdersFlowTest extends BasePAOTest {
         step("Начать возврат");
         giveAwayShipOrderPage.clickRefundBtn();
 
-
         // Step 6:
         step("Товар 1: Ввести в инпут 'Возврат клиенту' количество товара к возврату");
         giveAwayShipOrderPage.editToRefundQuantity(1, 1)
-                .shouldProductToShipQuantityIs(1, 1);
+                .shouldToRefundQuantity(1, 1);
 
         // Step 7:
-        step("Товар 1: Ввести в инпут 'Возврат клиенту' количество товара к возврату");
+        step("Товар 2: Ввести в инпут 'Возврат клиенту' количество товара к возврату");
         giveAwayShipOrderPage.editToRefundQuantity(2, 1)
-                .shouldProductToShipQuantityIs(2, 1);
+                .shouldToRefundQuantity(2, 1);
 
         // Step 7:
-        step("Товар 1: Ввести в инпут 'Возврат клиенту' количество товара к возврату");
+        step("Товар 3: Ввести в инпут 'Возврат клиенту' количество товара к возврату");
         giveAwayShipOrderPage.editToRefundQuantity(3, 1)
-                .shouldProductToShipQuantityIs(3, 1);
+                .shouldToRefundQuantity(3, 1);
 
         // Step 8:
-        // нажать кнопку "Далее", id неуникальны
+        step("Перейти на модалку возврата стоимости Доставки");
+        ReturnDeliveryValueModal  deliveryRefund = giveAwayShipOrderPage.clickFurtherBtn();
 
-
+        // Step 9:
+        step("Завершить возврат стоимости Доставки");
+        deliveryRefund.editInputDeliveryFinalPrice(2500.00);
+        deliveryRefund.shouldInputDeliveryFinalPrice(2500.00);
+        deliveryRefund.clickSaveOrderButton();
 
     }
 
@@ -699,6 +703,11 @@ public class OrdersFlowTest extends BasePAOTest {
         orderPage.clickDocumentInLeftMenu(orderId);
         OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
         createdContentPage.shouldOrderProductCountIs(1);*/
+
+    }
+
+    @Test(description = "Заказ онлайн. ЮрЛицо", groups = NEED_PRODUCTS_GROUP)
+    public void  testActionFromExistingOrder() throws Exception {
 
     }
 

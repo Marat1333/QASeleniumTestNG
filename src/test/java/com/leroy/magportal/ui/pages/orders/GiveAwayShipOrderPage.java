@@ -3,6 +3,7 @@ package com.leroy.magportal.ui.pages.orders;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.magportal.ui.models.orders.ToGiveAwayProductCardData;
+import com.leroy.magportal.ui.pages.orders.modal.ReturnDeliveryValueModal;
 import com.leroy.magportal.ui.pages.orders.widget.OrderProductToGiveAwayCardWidget;
 import com.leroy.magportal.ui.pages.picking.PickingContentPage;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
@@ -26,12 +27,11 @@ public class GiveAwayShipOrderPage extends OrderCreatedPage {
     @WebFindBy(xpath = "//button[@data-testid='aao-footer-startRefund-btn']", metaName = "Кнопка 'Начать возврат'")
     Button RefundBtn;
 
-    @WebFindBy(xpath = "  ", metaName = "Кнопка 'Отмена'")
+    @WebFindBy(xpath = "//button[@data-testid='aao-footer-cancel-btn']", metaName = "Кнопка 'Отмена'")
     Button CancelBtn;
 
-    @WebFindBy(xpath = "  ", metaName = "Кнопка 'Далее'")
+    @WebFindBy(xpath = "//button[@data-testid='aao-footer-next-btn']", metaName = "Кнопка 'Далее'")
     Button FurtherBtn;
-
 
 
 
@@ -56,6 +56,13 @@ public class GiveAwayShipOrderPage extends OrderCreatedPage {
         RefundBtn.click();
         waitForSpinnerAppearAndDisappear();
         return this;
+    }
+
+    @Step("Нажать кнопку 'Далее'")
+    public ReturnDeliveryValueModal clickFurtherBtn() {
+        FurtherBtn.click();
+        waitForSpinnerAppearAndDisappear();
+        return new ReturnDeliveryValueModal();
     }
 
     @Step("Изменить кол-во 'К выдаче' для {index}-ого товара")

@@ -21,7 +21,7 @@ public class OrderProductToGiveAwayCardWidget extends CardWebWidget<ToGiveAwayPr
             metaName = "Поле 'К выдаче'")
     EditBox toGiveAwayQuantity;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'ProductCard__quantities')]//div[contains(@class, 'inputCounter') and descendant::label[contains(text(), 'К выдаче')]]//input",
+    @WebFindBy(xpath = ".//div[contains(@class, 'ProductCard__quantities')]//div[contains(@class, 'inputCounter') and descendant::label[contains(text(), 'Возврат клиенту')]]//input",
             metaName = "Поле 'Возврат клиенту'")
     EditBox toRefundQuantity;
 
