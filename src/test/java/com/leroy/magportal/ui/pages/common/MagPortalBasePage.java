@@ -13,9 +13,10 @@ import java.time.Duration;
 
 public class MagPortalBasePage extends BaseWebPage {
 
-    public MagPortalBasePage() {
-        super(By.id("ClientOrdersApp"));
-    }
+//    public MagPortalBasePage() {
+//        super(By.id("ClientOrdersApp"));
+//    }
+//    TODO Удалено из-за падения тестов. Предназначение строк выше неизвестно
 
     protected Context context;
 
