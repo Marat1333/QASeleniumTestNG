@@ -8,9 +8,11 @@ import com.leroy.magmobile.api.data.address.cellproducts.*;
 import com.leroy.magmobile.api.helpers.LsAddressHelper;
 import com.leroy.magmobile.api.requests.address.*;
 import io.qameta.allure.Step;
+import org.testng.Assert;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -281,6 +283,7 @@ public class LsAddressClient extends BaseMashupClient {
     public void assertThatDataMatches(Response<StandDataList> resp, StandDataList expectedData) {
         assertThatResponseIsOk(resp);
         StandDataList actualData = resp.asJson();
+
         assertThat("items count", actualData.getItems(), hasSize(expectedData.getItems().size()));
         for (int i = 0; i < actualData.getItems().size(); i++) {
             StandData actualItem = actualData.getItems().get(i);
@@ -429,7 +432,7 @@ public class LsAddressClient extends BaseMashupClient {
                     desc + "Product lmCode doesn't match the expected");
             softAssert().isNotNull(actualCellProductData.getLsAddressCells(),
                     desc + "Cells list is empty or null");
-            softAssert().isEquals(actualCellProductData.getLsAddressCells().size(), 1,
+            softAssert().isEquals(actualCellProductData.getLsAddressCells().size(), 2,
                     desc + "lsAddressCells count doesn't match the expected");
             softAssert().isEquals(actualCellData.getId(), cellData.getId(),
                     desc + "lsAddress Cell - Id doesn't match the expected");
@@ -446,6 +449,26 @@ public class LsAddressClient extends BaseMashupClient {
             softAssert().isEquals(actualCellData.getType(), cellData.getType(),
                     desc + "lsAddress Cell - Type doesn't match the expected");
         }
+        softAssert().verifyAll();
+    }
+
+    @Step("Check that product moved to new cell ")
+    public void assertThatProductMovedToNewCell(Response<CellProductDataList> resp, CellProductData expectedData) {
+        assertThatResponseIsOk(resp);
+        CellProductData actualRespData = resp.asJson().getItems().get(0);
+        ProductCellData expectedProductCellData = expectedData.getLsAddressCells().get(0);
+        ProductCellData actualProductCellData = actualRespData.getLsAddressCells().stream().findFirst()
+                .filter((s) -> s.getId().equals(expectedProductCellData.getId()))
+                .orElseThrow(() -> new AssertionError("Required cellId doesn't found"));
+
+        softAssert().isEquals(actualProductCellData.getId(), expectedProductCellData.getId(),
+                "lsAddress Cell - Cell's id doesn't match the expected");
+        softAssert().isEquals(actualProductCellData.getCode(), expectedProductCellData.getCode(),
+                "lsAddress Cell - Cell's code id doesn't match the expected");
+        softAssert().isEquals(actualRespData.getLmCode(), expectedData.getLmCode(),
+                "lsAddress Cell - LmCode doesn't match the expected");
+        softAssert().isEquals(actualRespData.getQuantity(), expectedData.getQuantity(),
+                "lsAddress Cell - Product quantity doesn't match the expected");
         softAssert().verifyAll();
     }
 

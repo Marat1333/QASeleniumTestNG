@@ -29,7 +29,6 @@ import static org.hamcrest.Matchers.hasSize;
 
 public class LsAddressTest extends BaseProjectApiTest {
 
-
     @Inject
     private LsAddressBackClient lsAddressBackClient;
 
@@ -290,32 +289,30 @@ public class LsAddressTest extends BaseProjectApiTest {
     @Test(description = "C23194987 Move Cell Products - 1 Product")
     public void testMoveCellProducts() {
         // Test data
-        CellData cellData = cellDataList.getItems().get(0);
-        String cellId = cellData.getId();
+        prepareDefaultData(true, true);
+        cellData = cellDataList.getItems().get(0);
         CellData newCellData = cellDataList.getItems().get(1);
         String newCellId = newCellData.getId();
+        int quantity = 5;
+        cellProductDataList = lsAddressHelper.addDefaultProductToCell(cellData, quantity);
         CellProductData cellProductData = cellProductDataList.getItems().get(0);
-        String lmCode = cellProductData.getLmCode();
-        int quantity = 1;
 
+        step("Prepare data to move product");
         ReqCellProductData moveCellProductData = new ReqCellProductData();
         moveCellProductData.setNewCellId(newCellId);
-        moveCellProductData.setLmCode(lmCode);
+        moveCellProductData.setLmCode(cellProductData.getLmCode());
         moveCellProductData.setQuantity(quantity);
-        moveCellProductData.setUsername("Auto_" + RandomStringUtils.randomAlphabetic(5));
+        moveCellProductData.setUsername(getUserSessionData().getUserLdap());
 
-        step("Move");
-        Response<JsonNode> response = lsAddressClient.moveCellProducts(cellId, moveCellProductData);
+        step("Send request to move product in new cell");
+        Response<JsonNode> response = lsAddressClient.moveCellProducts(cellData.getId(), moveCellProductData);
         assertThat(response, successful());
 
-        cellProductData.setAddressCells(cellData, newCellData);
-        cellProductData.setQuantity(cellProductData.getQuantity() - quantity);
-        cellProductData.getLsAddressCells().get(0).setQuantity(cellProductData.getQuantity());
-        cellProductData.getLsAddressCells().get(1).setQuantity(quantity);
+        cellProductData.setAddressCells(newCellData);
 
         step("Send Get request and check data");
-        Response<CellProductDataList> getResponse = lsAddressClient.getCellProducts(cellId);
-        lsAddressClient.assertThatDataMatches(getResponse, cellProductDataList);
+        Response<CellProductDataList> getResponse = lsAddressClient.getCellProducts(newCellId);
+        lsAddressClient.assertThatProductMovedToNewCell(getResponse, cellProductData);
     }
 
     @Test(description = "C23194988 lsAddress DELETE Cell products")
@@ -346,7 +343,11 @@ public class LsAddressTest extends BaseProjectApiTest {
 
         List<ProductCellData> expectedSearchData = cellProductData.getLsAddressCells();
         for (ProductCellData productCellData : expectedSearchData) {
-            productCellData.setQuantity(0);
+            if(productCellData.getId().equals(cellData.getId())) {
+                productCellData.setQuantity(5);
+            } else {
+                productCellData.setQuantity(0);
+            }
         }
 
         Response<ProductCellDataList> resp = lsAddressClient.searchProductCells(cellProductData.getLmCode());
