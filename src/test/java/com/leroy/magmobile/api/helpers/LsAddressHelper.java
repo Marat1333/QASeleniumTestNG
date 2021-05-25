@@ -1,6 +1,5 @@
 package com.leroy.magmobile.api.helpers;
 
-import com.google.common.collect.Table;
 import com.google.inject.Inject;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.magmobile.api.clients.LsAddressClient;

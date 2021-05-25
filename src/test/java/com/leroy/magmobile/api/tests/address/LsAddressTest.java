@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -343,10 +344,9 @@ public class LsAddressTest extends BaseProjectApiTest {
         cellData = cellDataList.getItems().get(0);
         cellProductDataList = lsAddressHelper.addDefaultProductToCell(cellData, 4, 3);
         String cellId = cellData.getId();
-        List<String> lmCodes = new ArrayList<>();
-        for(int i = 0; i < cellProductDataList.getItems().size(); i++){
-            lmCodes.add(cellProductDataList.getItems().get(i).getLmCode());
-        }
+        List<String> lmCodes = cellProductDataList.getItems().stream()
+                .map((s)->s.getLmCode())
+                .collect(Collectors.toList());
 
         step("Prepare a post data for request");
         ProductBatchData postData = new ProductBatchData();
@@ -356,7 +356,11 @@ public class LsAddressTest extends BaseProjectApiTest {
         step("Batch Delete cell products");
         Response<JsonNode> response = lsAddressClient.batchDeleteCellProduct(postData);
         lsAddressClient.assertThatCellProductsIsDeleted(response, cellId);
+        cellProductDataList.getItems().clear();
 
+        step("Send get request and check data");
+        Response<CellProductDataList> getResponse = lsAddressClient.getCellProducts(cellId);
+        lsAddressClient.assertThatDataMatches(getResponse, cellProductDataList);
     }
 
 
