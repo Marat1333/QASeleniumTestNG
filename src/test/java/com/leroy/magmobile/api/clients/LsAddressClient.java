@@ -192,6 +192,14 @@ public class LsAddressClient extends BaseMashupClient {
         req.setShopId(getUserSessionData().getUserShopId());
         return execute(req, JsonNode.class);
     }
+    @Step("Delete cell products for cellId={cellId}")
+    public Response<JsonNode> batchDeleteCellProduct(ProductBatchData postData){
+        LsAddressCellProductsBatchDelete req = new LsAddressCellProductsBatchDelete();
+        req.jsonBody(postData);
+        req.setLdapHeader(getUserSessionData().getUserLdap());
+        req.setShopId(getUserSessionData().getUserShopId());
+        return execute(req, JsonNode.class);
+    }
 
 
     // VERIFICATIONS ///

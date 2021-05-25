@@ -13,6 +13,7 @@ import io.qameta.allure.Step;
 import org.apache.commons.lang3.RandomStringUtils;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -112,7 +113,7 @@ public class LsAddressHelper extends BaseHelper {
         return resp.asJson();
     }
 
-    @Step("Add products to cell")
+    @Step("Add product to cell")
     public CellProductDataList addDefaultProductToCell(CellData cellData, int quantity){
         String lmCode = searchProductHelper.getProductLmCode();
 
@@ -123,6 +124,25 @@ public class LsAddressHelper extends BaseHelper {
         ReqCellProductDataList postData = new ReqCellProductDataList();
         postData.setItems(Collections.singletonList(reqCellProductData));
 
+        Response<CellProductDataList> response = lsAddressClient.createCellProducts(cellData.getId(), postData);
+        assertThat("Failed to add a product to cell: " + cellData.getCode(), response, successful());
+        return response.asJson();
+    }
+
+    @Step("Add a few products to cell")
+    public CellProductDataList addDefaultProductToCell(CellData cellData, int quantity, int necessaryCount){
+        List<String> lmCodes = searchProductHelper.getProductLmCodes(necessaryCount);
+
+        ReqCellProductDataList postData = new ReqCellProductDataList();
+        List<ReqCellProductData> items = new ArrayList<>();
+        for(String lmCode: lmCodes){
+            ReqCellProductData reqCellProductData = new ReqCellProductData();
+            reqCellProductData.setLmCode(lmCode);
+            reqCellProductData.setQuantity(quantity);
+            items.add(reqCellProductData);
+        }
+
+        postData.setItems(items);
         Response<CellProductDataList> response = lsAddressClient.createCellProducts(cellData.getId(), postData);
         assertThat("Failed to add a product to cell: " + cellData.getCode(), response, successful());
         return response.asJson();
