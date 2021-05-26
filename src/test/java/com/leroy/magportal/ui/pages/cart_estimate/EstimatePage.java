@@ -147,10 +147,7 @@ public class EstimatePage extends CartEstimatePage {
     @Step("Нажимаем кнопку 'Создать'")
     public <T extends MagPortalBasePage> T clickCreateButton() {
         createBtn.click();
-        if (customerSearchForm.isCustomerSelected())
-            return (T) new SubmittedEstimateModal();
-        else
-            return (T) this;
+        return (T) new SubmittedEstimateModal();
     }
 
     @Step("Удалить смету")
