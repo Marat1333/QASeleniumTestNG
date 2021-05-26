@@ -14,7 +14,6 @@ import com.leroy.magportal.api.clients.PickingTaskClient;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst;
 import com.leroy.magportal.api.constants.PaymentMethodEnum;
 import com.leroy.magportal.api.constants.PaymentStatusEnum;
-import com.leroy.magportal.api.data.onlineOrders.AemPaymentResponseData;
 import com.leroy.magportal.api.data.picking.PickingTaskDataList;
 import com.leroy.magportal.api.helpers.AemHelper;
 import com.leroy.magportal.api.helpers.BitrixHelper;
@@ -99,7 +98,6 @@ public class OrdersFlowTest extends BasePAOTest {
                 break;
         }
     }
-
 
     private void initCreateOrder(int productCount) {
         initCreateOrder(productCount, SalesDocumentsConst.States.CONFIRMED);
@@ -447,6 +445,7 @@ public class OrdersFlowTest extends BasePAOTest {
         orderPage.shouldDocumentCountIs(1);
     }
 
+
     @Test(description = "C22829616 Заказы. Процесс обработки заказа. Онлайн. Предоплата. Самовывоз", groups = NEED_PRODUCTS_GROUP)
     public void testOrderFlowOnlinePrepaymentPickUp() throws Exception {
         orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.PICKUP_PREPAYMENT).getSolutionId();
@@ -464,7 +463,6 @@ public class OrdersFlowTest extends BasePAOTest {
         orderPage.shouldDocumentCountIs(1);
 
         // Step 2:
-        //orderId = "210103322645";
         step("Найти созданный заказ в статусе 'Готов к Сборке' с номером" + " " + orderId);
         orderPage.enterSearchTextAndSubmit(orderId);
         orderPage.shouldDocumentIsPresent(orderId);
@@ -473,7 +471,6 @@ public class OrdersFlowTest extends BasePAOTest {
         orderPage.shouldDocumentCountIs(1);
 
         // Step 3:
-
         step("Кликнуть на заказ: " + orderId);
         orderPage.clickDocumentInLeftMenu(orderId);
         OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
@@ -554,6 +551,7 @@ public class OrdersFlowTest extends BasePAOTest {
         orderPage.shouldDocumentCountIs(1);
     }
 
+
     @Test(description = "C23425890 Orders Процесс обработки заказа. Онлайн. Предоплата. Полная  доставка. Возврат после доставки", groups = NEED_PRODUCTS_GROUP)
     public void testFullDeliveryRefund() throws Exception {
         // Step 1:
@@ -615,6 +613,7 @@ public class OrdersFlowTest extends BasePAOTest {
         giveAwayDeliveryRefund.clickSaveOrderButton();
 
     }
+
 
     @Test(description = "Частичная доставка", groups = NEED_PRODUCTS_GROUP)
     public void testPartialDelivery() throws Exception {

@@ -16,7 +16,6 @@ import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.api.ThreadApiClient;
 import com.leroy.core.configuration.Log;
-import com.leroy.magmobile.ui.models.customer.MagLegalCustomerData;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
 import com.leroy.magportal.api.constants.LmCodeTypeEnum;

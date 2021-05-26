@@ -47,7 +47,6 @@ public class MainReturnDeliveryValueModal extends CommonYesNoModal {
     }
 
     @Step("Проверить, что Новая стоимость доставки равна {value}")
-
     public MainReturnDeliveryValueModal shouldInputDeliveryFinalPrice(double value) throws Exception {
         anAssert.isEquals(Double.parseDouble(inputDeliveryFinalPrice.getText()), value,
                 "Неверное кол-во 'К выдаче'");
