@@ -62,8 +62,6 @@ public class WebBaseSteps extends MagPortalBaseTest {
     }
 
     public <T extends MagPortalBasePage> T loginAndGoTo(Class<T> pageClass) throws Exception {
-        Log.info("|" + EnvConstants.BASIC_USER_LDAP + "|");
-        Log.info("|" + EnvConstants.BASIC_USER_PASS + "|");
         return loginAndGoTo(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS, null, pageClass);
     }
 
