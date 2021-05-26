@@ -214,7 +214,7 @@ public class PAOHelper extends BaseHelper {
         orderData.increasePaymentVersion();
 
         // Подтверждение заказа
-        SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+        SimpleCustomerData customerData = TestDataConstants.CORPORATE_CUSTOMER;
         OrderCustomerData orderCustomerData = new OrderCustomerData();
         orderCustomerData.setFirstName(ParserUtil.parseFirstName(customerData.getName()));
         orderCustomerData.setLastName(ParserUtil.parseLastName(customerData.getName()));

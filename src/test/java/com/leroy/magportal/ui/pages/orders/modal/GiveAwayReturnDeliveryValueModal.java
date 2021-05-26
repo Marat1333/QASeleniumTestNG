@@ -4,11 +4,13 @@ import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.magportal.ui.pages.common.modal.CommonYesNoModal;
-import com.leroy.magportal.ui.pages.orders.GiveAwayShipOrderPage;
-import com.leroy.magportal.ui.pages.orders.OrderCreatedContentPage;
 import io.qameta.allure.Step;
 
-public class ReturnDeliveryValueModal extends CommonYesNoModal {
+/**
+ * Описывает модальное окно возврата стоимости доставки, вызываемое с вкладки  "К выдаче и возврату"
+ */
+
+public class GiveAwayReturnDeliveryValueModal extends CommonYesNoModal {
 
     @WebFindBy(xpath = "//button[@data-testid='aao-refund-delivery-modal-save-btn']",
             metaName = "Кнопка Сохранить")
@@ -25,15 +27,15 @@ public class ReturnDeliveryValueModal extends CommonYesNoModal {
     // Actions
 
     @Step("Нажать кнопку Отмены")
-    public ReturnDeliveryValueModal clickCancelOrderButton() {
+    public GiveAwayReturnDeliveryValueModal clickCancelOrderButton() {
         cancelBtn.click();
-        return new ReturnDeliveryValueModal();
+        return new GiveAwayReturnDeliveryValueModal();
     }
 
     @Step("Нажать кнопку Сохранить")
-    public ReturnDeliveryValueModal clickSaveOrderButton() {
+    public GiveAwayReturnDeliveryValueModal clickSaveOrderButton() {
         saveBtn.click();
-        return new ReturnDeliveryValueModal();
+        return new GiveAwayReturnDeliveryValueModal();
     }
 
     @Step("Изменить Новую стоимость доставки")
@@ -45,7 +47,7 @@ public class ReturnDeliveryValueModal extends CommonYesNoModal {
 
     @Step("Проверить, что Новая стоимость доставки равна {value}")
 
-    public ReturnDeliveryValueModal shouldInputDeliveryFinalPrice(double value) throws Exception {
+    public GiveAwayReturnDeliveryValueModal shouldInputDeliveryFinalPrice(double value) throws Exception {
         anAssert.isEquals(Double.parseDouble(inputDeliveryFinalPrice.getText()), value,
                 "Неверное кол-во 'К выдаче'");
         return this;

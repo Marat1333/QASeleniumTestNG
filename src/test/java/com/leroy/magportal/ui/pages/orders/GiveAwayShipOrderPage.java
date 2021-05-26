@@ -3,9 +3,8 @@ package com.leroy.magportal.ui.pages.orders;
 import com.leroy.core.annotations.WebFindBy;
 import com.leroy.core.web_elements.general.Button;
 import com.leroy.magportal.ui.models.orders.ToGiveAwayProductCardData;
-import com.leroy.magportal.ui.pages.orders.modal.ReturnDeliveryValueModal;
+import com.leroy.magportal.ui.pages.orders.modal.GiveAwayReturnDeliveryValueModal;
 import com.leroy.magportal.ui.pages.orders.widget.OrderProductToGiveAwayCardWidget;
-import com.leroy.magportal.ui.pages.picking.PickingContentPage;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
 import io.qameta.allure.Step;
 
@@ -59,10 +58,10 @@ public class GiveAwayShipOrderPage extends OrderCreatedPage {
     }
 
     @Step("Нажать кнопку 'Далее'")
-    public ReturnDeliveryValueModal clickFurtherBtn() {
+    public GiveAwayReturnDeliveryValueModal clickFurtherBtn() {
         FurtherBtn.click();
         waitForSpinnerAppearAndDisappear();
-        return new ReturnDeliveryValueModal();
+        return new GiveAwayReturnDeliveryValueModal();
     }
 
     @Step("Изменить кол-во 'К выдаче' для {index}-ого товара")

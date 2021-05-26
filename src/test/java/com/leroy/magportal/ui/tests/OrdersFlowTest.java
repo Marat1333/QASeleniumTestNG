@@ -25,16 +25,16 @@ import com.leroy.magportal.ui.pages.orders.GiveAwayShipOrderPage;
 import com.leroy.magportal.ui.pages.orders.OrderCreatedContentPage;
 import com.leroy.magportal.ui.pages.orders.OrderHeaderPage;
 import com.leroy.magportal.ui.pages.orders.*;
-import com.leroy.magportal.ui.pages.orders.modal.ReturnDeliveryValueModal;
+import com.leroy.magportal.ui.pages.orders.modal.AllowRefundModal;
+import com.leroy.magportal.ui.pages.orders.modal.GiveAwayReturnDeliveryValueModal;
+import com.leroy.magportal.ui.pages.orders.modal.MainReturnDeliveryValueModal;
 import com.leroy.magportal.ui.pages.picking.PickingContentPage;
 import com.leroy.magportal.ui.pages.picking.PickingPage;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
-import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionResponse;
 
 public class OrdersFlowTest extends BasePAOTest {
 
@@ -47,7 +47,7 @@ public class OrdersFlowTest extends BasePAOTest {
     @Inject
     private PickingTaskClient pickingTaskClient;
     @Inject
-    private BitrixHelper bitrixHelper;
+    private BitrixHelper   bitrixHelper;
     @Inject
     private AemHelper aemHelper;
 
@@ -430,12 +430,12 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 20:
         step("Нажать кнопку доставить");
-        ReturnDeliveryValueModal  deliveryRefund = createdContentPage.clickDeliveryButton();
+        MainReturnDeliveryValueModal  contentReturnDeliveryValueModalDeliveryRefund = createdContentPage.clickDeliveryButton();
 
         // Step 21:
         step("Нажать кнопку Сохранить в модальном окне возврата стоимости доставки");
 
-        deliveryRefund.clickSaveOrderButton();
+        contentReturnDeliveryValueModalDeliveryRefund.clickSaveOrderButton();
 
         // Step 22:
         step("Проверить статус доставленного заказа");
@@ -606,13 +606,13 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 8:
         step("Перейти на модалку возврата стоимости Доставки");
-        ReturnDeliveryValueModal  deliveryRefund = giveAwayShipOrderPage.clickFurtherBtn();
+        GiveAwayReturnDeliveryValueModal giveAwayDeliveryRefund = giveAwayShipOrderPage.clickFurtherBtn();
 
         // Step 9:
         step("Завершить возврат стоимости Доставки");
-        deliveryRefund.editInputDeliveryFinalPrice(2500.00);
-        deliveryRefund.shouldInputDeliveryFinalPrice(2500.00);
-        deliveryRefund.clickSaveOrderButton();
+        giveAwayDeliveryRefund.editInputDeliveryFinalPrice(2500.00);
+        giveAwayDeliveryRefund.shouldInputDeliveryFinalPrice(2500.00);
+        giveAwayDeliveryRefund.clickSaveOrderButton();
 
     }
 
@@ -630,7 +630,7 @@ public class OrdersFlowTest extends BasePAOTest {
         System.out.print("Доставленный заказ " + orderId);
 
         // Step 3:
-        step("Проверить статус доставленного заказа" + orderId);
+        step("Проверить статус доставленного заказа " + orderId);
         OrderHeaderPage orderPage = loginAndGoTo(OrderHeaderPage.class);
         orderPage.enterSearchTextAndSubmit(orderId);
         orderPage.shouldDocumentIsPresent(orderId);
@@ -652,19 +652,24 @@ public class OrdersFlowTest extends BasePAOTest {
         createdContentPage.editToDeliveryQuantity(2, 1);
 
         // Step 7:
-        step("Товар 2: Ввести в инпут 'К доставке' количество меньше указанного в Заказано");
+        step("Товар 3: Ввести в инпут 'К доставке' количество меньше указанного в Заказано");
         createdContentPage.editToDeliveryQuantity(3, 1);
 
         // Step 8:
         step("Нажать кнопку доставить");
-        ReturnDeliveryValueModal  deliveryRefund = createdContentPage.clickDeliveryButton();
+        AllowRefundModal allowRefundModal = createdContentPage.clickDeliveryButtonPartDelivery();
 
         // Step 9:
-        step("Нажать кнопку Сохранить в модальном окне возврата стоимости доставки");
-
-        deliveryRefund.clickSaveOrderButton();
+        step("Нажать кнопку Да в модальном окне фиксации доставленного");
+        MainReturnDeliveryValueModal giveAwayReturnDeliveryRefund = allowRefundModal.clickYesBtn();
 
         // Step 10:
+        step("Завершить возврат стоимости Доставки");
+        giveAwayReturnDeliveryRefund.editInputDeliveryFinalPrice(2500.00);
+        giveAwayReturnDeliveryRefund.shouldInputDeliveryFinalPrice(2500.00);
+        giveAwayReturnDeliveryRefund.clickSaveOrderButton();
+
+        // Step 11:
         step("Проверить статус доставленного заказа");
         orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.PARTIALLY_DELIVERED, PaymentStatusEnum.COMPLETED);
         orderPage.refreshDocumentList();
@@ -673,45 +678,6 @@ public class OrdersFlowTest extends BasePAOTest {
                 SalesDocumentsConst.States.PARTIALLY_DELIVERED.getUiVal());
         orderPage.shouldDocumentCountIs(1);
     }
-
-
-    @Test(description = "Заказ онлайн. ЮрЛицо", groups = NEED_PRODUCTS_GROUP)
-    public void testLegalEntityOrder() throws Exception {
-
-        AemPaymentResponseData ordersResponse;
-        ordersResponse = aemHelper.createOnlineOrderLegal(OnlineOrderTypeConst.DELIVERY_TO_DOOR);
-
-        anAssert().isTrue(orderId == null, "No orders were created" );
-        orderId = ordersResponse.getSolutionId();
-        System.out.print(orderId);
-
-        /*// Step 1:
-        step("Открыть страницу с Заказами");
-        OrderHeaderPage orderPage = loginAndGoTo(OrderHeaderPage.class);
-
-        // Step 2:
-        step("Ввести номер заказа из корзины и нажать кнопку Поиска. Заказ: " + orderId);
-        orderPage.enterSearchTextAndSubmit(orderId);
-        orderPage.shouldDocumentIsPresent(orderId);
-        orderPage.shouldDocumentListContainsOnlyWithStatuses(
-                SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getUiVal());
-        orderPage.shouldDocumentCountIs(1);
-
-        // Step 3:
-
-        step("Кликнуть на заказ: " + orderId);
-        orderPage.clickDocumentInLeftMenu(orderId);
-        OrderCreatedContentPage createdContentPage = new OrderCreatedContentPage();
-        createdContentPage.shouldOrderProductCountIs(1);*/
-
-    }
-
-    @Test(description = "Заказ онлайн. ЮрЛицо", groups = NEED_PRODUCTS_GROUP)
-    public void  testActionFromExistingOrder() throws Exception {
-
-    }
-
-
 }
 
 

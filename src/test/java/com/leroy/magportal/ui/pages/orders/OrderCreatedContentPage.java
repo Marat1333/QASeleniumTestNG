@@ -10,8 +10,9 @@ import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
 import com.leroy.magportal.ui.pages.customers.form.CustomerSearchForm;
+import com.leroy.magportal.ui.pages.orders.modal.AllowRefundModal;
+import com.leroy.magportal.ui.pages.orders.modal.MainReturnDeliveryValueModal;
 import com.leroy.magportal.ui.pages.orders.modal.RemoveOrderModal;
-import com.leroy.magportal.ui.pages.orders.modal.ReturnDeliveryValueModal;
 import com.leroy.magportal.ui.pages.orders.widget.OrderProductCardWidget;
 import com.leroy.magportal.ui.pages.products.form.AddProductForm;
 import com.leroy.magportal.ui.webelements.CardWebWidgetList;
@@ -129,11 +130,18 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
         return this;
     }
 
-    @Step("Нажать кнопку 'Доставить'")
-    public ReturnDeliveryValueModal clickDeliveryButton() {
+   @Step("Нажать кнопку 'Доставить'")
+    public MainReturnDeliveryValueModal clickDeliveryButton() {
         deliveryBtn.click();
         waitForSpinnerAppearAndDisappear();
-        return new ReturnDeliveryValueModal();
+        return new MainReturnDeliveryValueModal();
+    }
+
+    @Step("Нажать кнопку 'Доставить' при частичной доставке")
+    public AllowRefundModal clickDeliveryButtonPartDelivery() {
+        deliveryBtn.click();
+        waitForSpinnerAppearAndDisappear();
+        return new AllowRefundModal();
     }
 
     @Step("Изменить количество 'Заказано' для {index}-ого товара")
