@@ -13,6 +13,7 @@ import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
 import io.qameta.allure.Step;
 
 import java.util.Arrays;
+import org.openqa.selenium.By;
 
 public class CustomerSearchForm extends MagPortalBasePage {
 
@@ -32,10 +33,11 @@ public class CustomerSearchForm extends MagPortalBasePage {
             metaName = "Кнопка-опция 'Юр. лица'")
     Element legalPersonBtn;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'Common-Filter__select')]", metaName = "Контрол выбора типа поиска")
+    @WebFindBy(xpath = "//div[contains(@class, 'Common-Filter__select')]", metaName = "Контроль выбора типа поиска")
     PuzComboBox searchTypeComboBox;
 
-    @WebFindBy(xpath = "//input[@name='phone']", metaName = "Поле для ввода телефона клиента")
+    //TODO Поправить на нормальный поиск локатора, как только его сделают. Было: //input[@name='phone']
+    @WebFindBy(xpath = "(//div[contains(@class, 'lmui-SearchString__desktop-input')])[2]//input", metaName = "Поле для ввода телефона клиента")
     EditBox customerPhoneSearchFld;
     @WebFindBy(xpath = "//input[@name='card']", metaName = "Поле для ввода номера карты клиента")
     EditBox customerCardSearchFld;
@@ -45,7 +47,8 @@ public class CustomerSearchForm extends MagPortalBasePage {
             metaName = "Кнопка 'Создать клиента'")
     Element createCustomerBtn;
 
-    @WebFindBy(xpath = "//div[substring(@class, string-length(@class) - 19) = 'SearchResultListItem']")
+    //TODO Первая часть xpath - костыльное решение, должно быть исправлено после внесения изменений в магпортал
+    @WebFindBy(xpath = "(//div[contains(@class, 'lmui-SearchString__desktop-input')])[1]//div[substring(@class, string-length(@class) - 19) = 'SearchResultListItem']")
     ElementList<Element> customerSearchItems;
 
     @WebFindBy(xpath = "//div[contains(@class, 'CustomerControl-ViewCard__action-btn')]",
