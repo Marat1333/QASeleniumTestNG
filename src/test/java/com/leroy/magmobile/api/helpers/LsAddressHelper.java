@@ -113,7 +113,7 @@ public class LsAddressHelper extends BaseHelper {
     }
 
     @Step("Add product to cell")
-    public CellProductDataList addDefaultProductToCell(CellData cellData, int quantity){
+    public CellProductDataList addDefaultProductsToCell(CellData cellData, int quantity){
         String lmCode = searchProductHelper.getProductLmCode();
 
         ReqCellProductData reqCellProductData = new ReqCellProductData();
@@ -129,7 +129,7 @@ public class LsAddressHelper extends BaseHelper {
     }
 
     @Step("Add a few products to cell")
-    public CellProductDataList addDefaultProductToCell(CellData cellData, int quantity, int necessaryCount){
+    public CellProductDataList addDefaultProductsToCell(CellData cellData, int quantity, int necessaryCount){
         List<String> lmCodes = searchProductHelper.getProductLmCodes(necessaryCount);
 
         ReqCellProductDataList postData = new ReqCellProductDataList();

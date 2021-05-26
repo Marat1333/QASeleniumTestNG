@@ -260,7 +260,7 @@ public class LsAddressTest extends BaseProjectApiTest {
         // Test data
         prepareDefaultData(true, true);
         cellData = cellDataList.getItems().get(0);
-        cellProductDataList = lsAddressHelper.addDefaultProductToCell(cellData, 5);
+        cellProductDataList = lsAddressHelper.addDefaultProductsToCell(cellData, 5);
 
         step("Get products from list");
         Response<CellProductDataList> response = lsAddressClient.getCellProducts(cellData.getId());
@@ -272,7 +272,7 @@ public class LsAddressTest extends BaseProjectApiTest {
         // Test data
         prepareDefaultData(true, true);
         cellData = cellDataList.getItems().get(0);
-        cellProductDataList = lsAddressHelper.addDefaultProductToCell(cellData, 5);
+        cellProductDataList = lsAddressHelper.addDefaultProductsToCell(cellData, 5);
         CellProductData cellProductData = cellProductDataList.getItems().get(0);
 
         step("Prepare request body to update quantity");
@@ -324,7 +324,7 @@ public class LsAddressTest extends BaseProjectApiTest {
         // Test data
         prepareDefaultData(true, true);
         cellData = cellDataList.getItems().get(0);
-        cellProductDataList = lsAddressHelper.addDefaultProductToCell(cellData, 5);
+        cellProductDataList = lsAddressHelper.addDefaultProductsToCell(cellData, 5);
         CellProductData cellProductData = cellProductDataList.getItems().get(0);
         String cellId = cellData.getId();
 
@@ -342,16 +342,16 @@ public class LsAddressTest extends BaseProjectApiTest {
     public void testBatchDeleteCellProducts() {
         prepareDefaultData(true, true);
         cellData = cellDataList.getItems().get(0);
-        cellProductDataList = lsAddressHelper.addDefaultProductToCell(cellData, 4, 3);
+        cellProductDataList = lsAddressHelper.addDefaultProductsToCell(cellData, 4, 3);
         String cellId = cellData.getId();
-        List<String> lmCodes = cellProductDataList.getItems().stream()
-                .map((s)->s.getLmCode())
-                .collect(Collectors.toList());
+        String[] lmCodes = cellProductDataList.getItems().stream()
+                .map((s)->s.getLmCode()).toArray(size -> new String[size]);
+
 
         step("Prepare a post data for request");
         ProductBatchData postData = new ProductBatchData();
         postData.setCellId(cellId);
-        postData.setItems(lmCodes.toArray(new String[0]));
+        postData.setItems(lmCodes);
 
         step("Batch Delete cell products");
         Response<JsonNode> response = lsAddressClient.batchDeleteCellProduct(postData);
@@ -368,7 +368,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     public void testSearchCells() {
         prepareDefaultData(true, true);
         cellData = cellDataList.getItems().get(0);
-        cellProductDataList = lsAddressHelper.addDefaultProductToCell(cellData, 5);
+        cellProductDataList = lsAddressHelper.addDefaultProductsToCell(cellData, 5);
         CellProductData cellProductData = cellProductDataList.getItems().get(0);
 
         List<ProductCellData> expectedSearchData = cellProductData.getLsAddressCells();
