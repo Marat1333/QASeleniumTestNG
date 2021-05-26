@@ -334,6 +334,32 @@ public class LsAddressTest extends BaseProjectApiTest {
         lsAddressClient.assertThatDataMatches(getResponse, cellProductDataList);
     }
 
+    @Test(description = "C23749767 lsAddress POST Cell Products - Batch Delete")
+    public void testBatchDeleteCellProducts() {
+        prepareDefaultData(true, true);
+        cellData = cellDataList.getItems().get(0);
+        cellProductDataList = lsAddressHelper.addDefaultProductsToCell(cellData, 4, 3);
+        String cellId = cellData.getId();
+        String[] lmCodes = cellProductDataList.getItems().stream()
+                .map((s) -> s.getLmCode()).toArray(size -> new String[size]);
+
+
+        step("Prepare a post data for request");
+        ProductBatchData postData = new ProductBatchData();
+        postData.setCellId(cellId);
+        postData.setItems(lmCodes);
+
+        step("Batch Delete cell products");
+        Response<JsonNode> response = lsAddressClient.batchDeleteCellProduct(postData);
+        lsAddressClient.assertThatCellProductsIsDeleted(response, cellId);
+        cellProductDataList.getItems().clear();
+
+        step("Send get request and check data");
+        Response<CellProductDataList> getResponse = lsAddressClient.getCellProducts(cellId);
+        lsAddressClient.assertThatDataMatches(getResponse, cellProductDataList);
+    }
+
+
     @Test(description = "C6638969 lsAddress GET cells search")
     public void testSearchCells() {
         prepareDefaultData(true, true);
