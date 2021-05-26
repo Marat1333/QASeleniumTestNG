@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -260,7 +259,7 @@ public class LsAddressTest extends BaseProjectApiTest {
         // Test data
         prepareDefaultData(true, true);
         cellData = cellDataList.getItems().get(0);
-        cellProductDataList = lsAddressHelper.addDefaultProductsToCell(cellData, 5);
+        cellProductDataList = lsAddressHelper.addDefaultProductToCell(cellData, 5);
 
         step("Get products from list");
         Response<CellProductDataList> response = lsAddressClient.getCellProducts(cellData.getId());
@@ -272,7 +271,7 @@ public class LsAddressTest extends BaseProjectApiTest {
         // Test data
         prepareDefaultData(true, true);
         cellData = cellDataList.getItems().get(0);
-        cellProductDataList = lsAddressHelper.addDefaultProductsToCell(cellData, 5);
+        cellProductDataList = lsAddressHelper.addDefaultProductToCell(cellData, 5);
         CellProductData cellProductData = cellProductDataList.getItems().get(0);
 
         step("Prepare request body to update quantity");
@@ -324,7 +323,7 @@ public class LsAddressTest extends BaseProjectApiTest {
         // Test data
         prepareDefaultData(true, true);
         cellData = cellDataList.getItems().get(0);
-        cellProductDataList = lsAddressHelper.addDefaultProductsToCell(cellData, 5);
+        cellProductDataList = lsAddressHelper.addDefaultProductToCell(cellData, 5);
         CellProductData cellProductData = cellProductDataList.getItems().get(0);
         String cellId = cellData.getId();
 
@@ -345,7 +344,7 @@ public class LsAddressTest extends BaseProjectApiTest {
         cellProductDataList = lsAddressHelper.addDefaultProductsToCell(cellData, 4, 3);
         String cellId = cellData.getId();
         String[] lmCodes = cellProductDataList.getItems().stream()
-                .map((s)->s.getLmCode()).toArray(size -> new String[size]);
+                .map((s) -> s.getLmCode()).toArray(size -> new String[size]);
 
 
         step("Prepare a post data for request");
@@ -368,7 +367,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     public void testSearchCells() {
         prepareDefaultData(true, true);
         cellData = cellDataList.getItems().get(0);
-        cellProductDataList = lsAddressHelper.addDefaultProductsToCell(cellData, 5);
+        cellProductDataList = lsAddressHelper.addDefaultProductToCell(cellData, 5);
         CellProductData cellProductData = cellProductDataList.getItems().get(0);
 
         List<ProductCellData> expectedSearchData = cellProductData.getLsAddressCells();
