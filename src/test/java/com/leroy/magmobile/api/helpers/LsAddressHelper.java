@@ -1,6 +1,5 @@
 package com.leroy.magmobile.api.helpers;
 
-import com.google.common.collect.Table;
 import com.google.inject.Inject;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.magmobile.api.clients.LsAddressClient;
@@ -13,6 +12,7 @@ import io.qameta.allure.Step;
 import org.apache.commons.lang3.RandomStringUtils;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -71,8 +71,8 @@ public class LsAddressHelper extends BaseHelper {
     @Step("Create default stand")
     public StandDataList createDefaultStands(AlleyData alleyData) {
         StandDataList postStandDataList = new StandDataList();
-        StandData item1 = new StandData(1, 2, 3);
-        StandData item2 = new StandData(4, 3, 2);
+        StandData item1 = new StandData(3, 0, 0);
+        StandData item2 = new StandData(6, 0, 5);
         postStandDataList.setItems(Arrays.asList(item1, item2));
         postStandDataList.setAlleyCode(alleyData.getCode());
         postStandDataList.setAlleyType(alleyData.getType());
@@ -104,15 +104,15 @@ public class LsAddressHelper extends BaseHelper {
     @Step("Create default cells")
     public CellDataList createDefaultCells(int standId) {
         CellDataList cellDataList = new CellDataList();
-        CellData itemData1 = new CellData(1, 2, "A");
-        CellData itemData2 = new CellData(3, 4, "B");
+        CellData itemData1 = new CellData(1, 0, "A");
+        CellData itemData2 = new CellData(1, 0, "B");
         cellDataList.setItems(Arrays.asList(itemData1, itemData2));
         Response<CellDataList> resp = lsAddressClient.createCell(standId, cellDataList);
         assertThat("Failed to create cells for StandId: " + standId, resp, successful());
         return resp.asJson();
     }
 
-    @Step("Add products to cell")
+    @Step("Add product to cell")
     public CellProductDataList addDefaultProductToCell(CellData cellData, int quantity){
         String lmCode = searchProductHelper.getProductLmCode();
 
@@ -123,6 +123,25 @@ public class LsAddressHelper extends BaseHelper {
         ReqCellProductDataList postData = new ReqCellProductDataList();
         postData.setItems(Collections.singletonList(reqCellProductData));
 
+        Response<CellProductDataList> response = lsAddressClient.createCellProducts(cellData.getId(), postData);
+        assertThat("Failed to add a product to cell: " + cellData.getCode(), response, successful());
+        return response.asJson();
+    }
+
+    @Step("Add a few products to cell")
+    public CellProductDataList addDefaultProductsToCell(CellData cellData, int quantity, int necessaryCount){
+        List<String> lmCodes = searchProductHelper.getProductLmCodes(necessaryCount);
+
+        ReqCellProductDataList postData = new ReqCellProductDataList();
+        List<ReqCellProductData> items = new ArrayList<>();
+        for(String lmCode: lmCodes){
+            ReqCellProductData reqCellProductData = new ReqCellProductData();
+            reqCellProductData.setLmCode(lmCode);
+            reqCellProductData.setQuantity(quantity);
+            items.add(reqCellProductData);
+        }
+
+        postData.setItems(items);
         Response<CellProductDataList> response = lsAddressClient.createCellProducts(cellData.getId(), postData);
         assertThat("Failed to add a product to cell: " + cellData.getCode(), response, successful());
         return response.asJson();
