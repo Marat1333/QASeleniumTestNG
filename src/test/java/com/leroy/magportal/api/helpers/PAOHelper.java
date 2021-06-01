@@ -219,7 +219,7 @@ public class PAOHelper extends BaseHelper {
         orderCustomerData.setFirstName(ParserUtil.parseFirstName(customerData.getName()));
         orderCustomerData.setLastName(ParserUtil.parseLastName(customerData.getName()));
         orderCustomerData.setRoles(Collections.singletonList(CustomerConst.Role.RECEIVER.name()));
-        orderCustomerData.setType(CustomerConst.Type.PERSON.name());
+        orderCustomerData.setType(customerData.getType() == null ? CustomerConst.Type.PERSON.name() : customerData.getType());
         orderCustomerData.setPhone(new PhoneData(customerData.getPhoneNumber()));
 
         OrderData confirmOrderData = new OrderData();
