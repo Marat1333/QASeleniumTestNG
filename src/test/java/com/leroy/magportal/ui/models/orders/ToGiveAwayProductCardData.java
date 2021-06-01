@@ -17,10 +17,10 @@ public class ToGiveAwayProductCardData {
     protected Double refundToClient;
     protected Double toGiveAwayQuantity;
 
-    public void increaseToGiveAwayQuantity(int val) { this.toGiveAwayQuantity += val;
+    public void increaseToGiveAwayQuantity(Double val) { this.toGiveAwayQuantity += val;
     }
 
-    public void decreaseToGiveAwayQuantity(int val) {
+    public void decreaseToGiveAwayQuantity(Double val) {
         this.toGiveAwayQuantity -= val;
     }
 

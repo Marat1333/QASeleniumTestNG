@@ -10,10 +10,10 @@ public class ContentProductCardData extends ToGiveAwayProductCardData {
     private String reasonForNonGiveaway = null;
 
 
-    public void increaseCreatedQuantity(int val) { this.createdQuantity += val;
+    public void increaseCreatedQuantity(Double val) { this.createdQuantity += val;
     }
 
-    public void decreaseCreatedQuantity(int val) {
+    public void decreaseCreatedQuantity(Double val) {
         this.createdQuantity -= val;
     }
 

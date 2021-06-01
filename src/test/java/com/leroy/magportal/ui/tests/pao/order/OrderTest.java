@@ -430,7 +430,7 @@ public class OrderTest extends BasePAOTest {
 
         // Step 1
         step("Измените кол-во товара таким образом, чтоб его было заказно, больше чем доступно");
-        int newQuantity = (int) Math.round(productIData.getAvailableStock() + 100);
+        Double newQuantity = Double.valueOf(Math.round(productIData.getAvailableStock() + 100));
         OrderWebData oneOrderData = orderData.getOrders().get(0);
         oneOrderData.changeProductQuantity(0, newQuantity, true);
         oneOrderData.setTotalWeight(null);
@@ -462,8 +462,8 @@ public class OrderTest extends BasePAOTest {
 
         // Step 1
         step("В мини-карточке товара в поле 'заказано' измените количество товара");
-        int newQuantity = (int) Math.round(
-                orderData.getOrders().get(0).getProductCardDataList().get(0).getSelectedQuantity()) + 2;
+        Double newQuantity = Double.valueOf((int) Math.round(
+                orderData.getOrders().get(0).getProductCardDataList().get(0).getSelectedQuantity()) + 2);
         OrderWebData oneOrderData = orderData.getOrders().get(0);
         oneOrderData.changeProductQuantity(0, newQuantity, true);
         if (INVISIBLE_AUTHOR_ORDER_DRAFT)
