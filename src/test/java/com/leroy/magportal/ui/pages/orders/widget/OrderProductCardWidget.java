@@ -73,13 +73,13 @@ public class OrderProductCardWidget extends CardWebWidget<ProductOrderCardWebDat
         trashBtn.click();
     }
 
-    public void editQuantity(int value) {
+    public void editQuantity(double value) {
         orderedQuantityFld.clear(true);
         orderedQuantityFld.fill(String.valueOf(value));
         orderedQuantityFld.sendBlurEvent();
     }
 
-    public void editToDeliveryQuantity(int value) {
+    public void editToDeliveryQuantity(double value) {
         toDeliveryQuantityFld.clear(true);
         toDeliveryQuantityFld.fill(String.valueOf(value));
         toDeliveryQuantityFld.sendBlurEvent();

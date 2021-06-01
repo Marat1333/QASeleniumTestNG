@@ -145,16 +145,16 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
     }
 
     @Step("Изменить количество 'Заказано' для {index}-ого товара")
-    public OrderCreatedContentPage editSelectedQuantity(int index, int value) throws Exception {
-        index--;
+    public OrderCreatedContentPage editSelectedQuantity(int index, double value) throws Exception {
+        --index;
         productCards.get(index).editQuantity(value);
         shouldModalThatChangesIsNotSavedIsNotVisible();
         return this;
     }
 
     @Step("Изменить количество 'К доставке' для {index}-ого товара")
-    public OrderCreatedContentPage editToDeliveryQuantity(int index, int value) throws Exception {
-        index--;
+    public OrderCreatedContentPage editToDeliveryQuantity(int index, double value) throws Exception {
+        --index;
         productCards.get(index).editToDeliveryQuantity(value);
         shouldModalThatChangesIsNotSavedIsNotVisible();
         return this;
@@ -223,8 +223,8 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
     }
 
     @Step("Проверить количество 'заказано' для {index}-ого товара")
-    public OrderCreatedContentPage shouldSelectedProductQuantityIs(int index, int value) throws Exception {
-        index--;
+    public OrderCreatedContentPage shouldSelectedProductQuantityIs(int index, double value) throws Exception {
+        --index;
         anAssert.isEquals(productCards.get(index).getOrderedQuantity(), String.valueOf(value),
                 "Неверное количество 'заказано' у " + (index + 1) + " товара");
         return this;
