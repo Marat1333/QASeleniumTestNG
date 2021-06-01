@@ -554,15 +554,15 @@ public class OrderTest extends BasePAOTest {
         // Step 1
         step("Нажмите на иконку редактирования заказа в левом нижнем углу");
         orderCreatedContentPage.clickEditOrderButton();
-        orderCreatedContentPage.shouldSelectedProductQuantityIs(1, 2);
+        orderCreatedContentPage.shouldSelectedProductQuantityIs(1, 2.0);
         AddProductForm addProductForm = orderCreatedContentPage.getAddProductForm();
         addProductForm.shouldSearchFieldIsVisible();
 
         // Step 2
         step("Измените количество товара плашкой");
         orderData.getOrders().get(0).changeProductQuantity(0, 1, true);
-        orderCreatedContentPage.editSelectedQuantity(1, 1)
-                .shouldSelectedProductQuantityIs(1, 1);
+        orderCreatedContentPage.editSelectedQuantity(1, 1.0)
+                .shouldSelectedProductQuantityIs(1, 1.0);
 
         // Step 3
         step("Нажмите на кнопку 'Сохранить'");
@@ -583,8 +583,8 @@ public class OrderTest extends BasePAOTest {
         // Step 2
         step("Измените количество товара плашкой до значения 0");
         orderData.getOrders().get(0).changeProductQuantity(0, 0, true);
-        orderCreatedContentPage.editSelectedQuantity(1, 0)
-                .shouldSelectedProductQuantityIs(1, 0);
+        orderCreatedContentPage.editSelectedQuantity(1, 0.0)
+                .shouldSelectedProductQuantityIs(1, 0.0);
 
         // Step 3
         step("Нажмите на кнопку 'Сохранить'");
@@ -604,8 +604,8 @@ public class OrderTest extends BasePAOTest {
 
         // Step 2
         step("Измените количество товара плашкой до значения 0");
-        orderCreatedContentPage.editSelectedQuantity(1, 0)
-                .shouldSelectedProductQuantityIs(1, 0);
+        orderCreatedContentPage.editSelectedQuantity(1, 0.0)
+                .shouldSelectedProductQuantityIs(1, 0.0);
 
         // Step 3
         step("Нажмите на кнопку 'Сохранить'");

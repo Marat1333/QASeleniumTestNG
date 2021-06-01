@@ -96,11 +96,11 @@ public abstract class OrderCreatedPage extends OrderHeaderPage {
 
 
     protected void checkIndex(int index){
-        anAssert.isFalse( index-- <= 0 , "Номер товара меньше или равен нулю");
+        anAssert.isFalse( --index <= 0 , "Номер товара меньше или равен нулю");
     };
 
     protected void checkArray (CardWebWidgetList<OrderProductToGiveAwayCardWidget, ToGiveAwayProductCardData> productCards, int index) {
-        anAssert.isFalse(productCards.getCount()< index--, "Номер товара не соответствует количеству товаров в заказе ");
+        anAssert.isFalse(productCards.getCount()< --index, "Номер товара не соответствует количеству товаров в заказе ");
     };
 
 }

@@ -145,7 +145,7 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
     }
 
     @Step("Изменить количество 'Заказано' для {index}-ого товара")
-    public OrderCreatedContentPage editSelectedQuantity(int index, double value) throws Exception {
+    public OrderCreatedContentPage editSelectedQuantity(int index, Double value) throws Exception {
         --index;
         productCards.get(index).editQuantity(value);
         shouldModalThatChangesIsNotSavedIsNotVisible();
@@ -153,7 +153,7 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
     }
 
     @Step("Изменить количество 'К доставке' для {index}-ого товара")
-    public OrderCreatedContentPage editToDeliveryQuantity(int index, double value) throws Exception {
+    public OrderCreatedContentPage editToDeliveryQuantity(int index, Double value) throws Exception {
         --index;
         productCards.get(index).editToDeliveryQuantity(value);
         shouldModalThatChangesIsNotSavedIsNotVisible();
@@ -199,8 +199,8 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
         anAssert.isTrue(salesDocWebData.getOrders() != null && salesDocWebData.getOrders().size() == 1,
                 "Информация о заказе недоступна");
         OrderWebData orderWebData = salesDocWebData.getOrders().get(0);
-        double expectedTotalWeight = 0.0;
-        double expectedTotalPrice = 0.0;
+        Double expectedTotalWeight = 0.0;
+        Double expectedTotalPrice = 0.0;
         Set<String> actualLmCodes = new HashSet<>();
         for (ProductOrderCardWebData productData : orderWebData.getProductCardDataList()) {
             expectedTotalWeight += productData.getWeight() * productData.getSelectedQuantity();
@@ -223,7 +223,7 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
     }
 
     @Step("Проверить количество 'заказано' для {index}-ого товара")
-    public OrderCreatedContentPage shouldSelectedProductQuantityIs(int index, double value) throws Exception {
+    public OrderCreatedContentPage shouldSelectedProductQuantityIs(int index, Double value) throws Exception {
         --index;
         anAssert.isEquals(productCards.get(index).getOrderedQuantity(), String.valueOf(value),
                 "Неверное количество 'заказано' у " + (index + 1) + " товара");

@@ -644,15 +644,15 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 5:
         step("Товар 1: Ввести в инпут 'К доставке' количество меньше указанного в Заказано");
-        createdContentPage.editToDeliveryQuantity(1, 1);
+        createdContentPage.editToDeliveryQuantity(1, 1.0);
 
         // Step 6:
         step("Товар 2: Ввести в инпут 'К доставке' количество меньше указанного в Заказано");
-        createdContentPage.editToDeliveryQuantity(2, 1);
+        createdContentPage.editToDeliveryQuantity(2, 1.0);
 
         // Step 7:
         step("Товар 3: Ввести в инпут 'К доставке' количество меньше указанного в Заказано");
-        createdContentPage.editToDeliveryQuantity(3, 1);
+        createdContentPage.editToDeliveryQuantity(3, 1.0);
 
         // Step 8:
         step("Нажать кнопку доставить");
