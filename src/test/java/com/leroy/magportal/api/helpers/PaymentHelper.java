@@ -10,7 +10,6 @@ import com.leroy.core.configuration.DriverFactory;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.constants.CardConst;
 import com.leroy.magportal.api.constants.PaymentMethodEnum;
-import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.data.onlineOrders.OnlineOrderData;
 import com.leroy.magportal.api.helpers.ui.PaymentPage;
 import com.leroy.umbrella_extension.tpnet.TpNetClient;
@@ -19,6 +18,7 @@ import java.util.List;
 import lombok.SneakyThrows;
 import org.openqa.selenium.WebDriver;
 import ru.leroymerlin.qa.core.clients.base.Response;
+import ru.leroymerlin.qa.core.clients.customerorders.enums.PaymentStatus;
 import ru.leroymerlin.qa.core.clients.payment.PaymentClient;
 import ru.leroymerlin.qa.core.clients.payment.data.task.ChangeStatus;
 import ru.leroymerlin.qa.core.clients.payment.data.task.Link;
@@ -48,12 +48,12 @@ public class PaymentHelper extends BaseHelper {
         return resp.asJson().getPaymentTaskId();
     }
 
-    private void updatePayment(String orderId, PaymentStatusEnum status) {
+    private void updatePayment(String orderId, PaymentStatus status) {
         String paymentTaskId = getPaymentTaskId(orderId);
 
         Response<PaymentTask> paymentTaskResponse = paymentClient.getPaymentTask(paymentTaskId);
         if (paymentTaskResponse.isSuccessful()
-                && status.equals(PaymentStatusEnum.PAID)
+                && status.equals(PaymentStatus.PAID)
                 && paymentTaskResponse.asJson().getTaskType().equals("SBERLINK_WITH_TPNET_DEPOSIT")) {
             return;
         }
@@ -95,7 +95,7 @@ public class PaymentHelper extends BaseHelper {
     }
 
     private void makeHoldCost(String orderId) {
-        updatePayment(orderId, PaymentStatusEnum.HOLD);
+        updatePayment(orderId, PaymentStatus.HOLD);
     }
 
     @SneakyThrows
@@ -138,6 +138,6 @@ public class PaymentHelper extends BaseHelper {
 
     @Step("PAID via API for Order with {orderId}")
     public void makePaid(String orderId) {
-        updatePayment(orderId, PaymentStatusEnum.PAID);
+        updatePayment(orderId, PaymentStatus.PAID);
     }
 }

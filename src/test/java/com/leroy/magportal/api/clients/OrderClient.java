@@ -75,6 +75,7 @@ import lombok.SneakyThrows;
 import org.testng.asserts.SoftAssert;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
+import ru.leroymerlin.qa.core.clients.customerorders.enums.PaymentStatus;
 
 public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
 
@@ -148,7 +149,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         OnlineOrderData orderData = this.getOnlineOrder(orderId).asJson();
         if ((orderData.getPaymentType().equals(PaymentTypeEnum.CASH.getMashName()) || orderData
                 .getPaymentType().equals(PaymentTypeEnum.CASH_OFFLINE.getMashName())) && !orderData
-                .getPaymentStatus().equals(PaymentStatusEnum.PAID.toString())) {
+                .getPaymentStatus().equals(PaymentStatus.PAID.toString())) {
             return rearrange(orderId, newProductsCount, newCount);
         } else {
             return editPrePaymentOrder(orderId, newCount);
@@ -382,7 +383,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     @SneakyThrows
     @Step("Wait until order comes to statuses. USE null for payment ignore")
     public void waitUntilOrderGetStatus(
-            String orderId, States expectedOrderStatus, PaymentStatusEnum expectedPaymentStatus) {
+            String orderId, States expectedOrderStatus, PaymentStatus expectedPaymentStatus) {
         long currentTimeMillis = System.currentTimeMillis();
         Response<OnlineOrderData> r = null;
         while (System.currentTimeMillis() - currentTimeMillis < waitTimeoutInSeconds * 1000) {

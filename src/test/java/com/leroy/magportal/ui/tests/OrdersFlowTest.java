@@ -13,7 +13,6 @@ import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.clients.PickingTaskClient;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst;
 import com.leroy.magportal.api.constants.PaymentMethodEnum;
-import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.data.picking.PickingTaskDataList;
 import com.leroy.magportal.api.helpers.AemHelper;
 import com.leroy.magportal.api.helpers.BitrixHelper;
@@ -34,6 +33,7 @@ import java.util.List;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
+import ru.leroymerlin.qa.core.clients.customerorders.enums.PaymentStatus;
 
 public class OrdersFlowTest extends BasePAOTest {
 
@@ -373,7 +373,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 11:
         step("Проверить статус собранного заказа");
-        orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.PICKED, PaymentStatusEnum.PAID);
+        orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.PICKED, PaymentStatus.PAID);
         orderPage.refreshDocumentList();
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(
@@ -413,7 +413,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 18:
         step("Дождаться перехода заказа в Доставку");
-        orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.ON_DELIVERY,PaymentStatusEnum.COMPLETED);
+        orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.ON_DELIVERY,PaymentStatus.COMPLETED);
         orderPage.reloadPage();
         new OrderHeaderPage().enterSearchTextAndSubmit(orderId);
         orderPage.shouldDocumentIsPresent(orderId);
@@ -437,7 +437,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 22:
         step("Проверить статус доставленного заказа");
-        orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.DELIVERED, PaymentStatusEnum.COMPLETED);
+        orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.DELIVERED, PaymentStatus.COMPLETED);
         orderPage.refreshDocumentList();
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(
@@ -512,7 +512,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 11:
         step("Проверить статус собранного заказа");
-        orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.PICKED, PaymentStatusEnum.PAID);
+        orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.PICKED, PaymentStatus.PAID);
         orderPage.refreshDocumentList();
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(
@@ -567,7 +567,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 3:
         step("Проверить статус доставленного заказа" + orderId);
-        orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.DELIVERED,PaymentStatusEnum.COMPLETED);
+        orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.DELIVERED,PaymentStatus.COMPLETED);
         OrderHeaderPage orderPage = loginAndGoTo(OrderHeaderPage.class);
         orderPage.reloadPage();
         new OrderHeaderPage().enterSearchTextAndSubmit(orderId);
@@ -670,7 +670,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 11:
         step("Проверить статус доставленного заказа");
-        orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.PARTIALLY_DELIVERED, PaymentStatusEnum.COMPLETED);
+        orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.PARTIALLY_DELIVERED, PaymentStatus.COMPLETED);
         orderPage.refreshDocumentList();
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(
