@@ -180,7 +180,7 @@ public class OrdersFlowTest extends BasePAOTest {
     }
 
 
-    @Test(description = "C23428132 Заказы.Оффлайн.Самовывоз.", groups = NEED_PRODUCTS_GROUP)
+    @Test(description = "C22829618 Заказы.Оффлайн.Самовывоз. Полная выдача", groups = NEED_PRODUCTS_GROUP)
     public void testOrderOfflinePickup() throws Exception {
         testOrderOffline(SalesDocumentsConst.GiveAwayPoints.PICKUP);
     }
@@ -276,7 +276,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
     @Test(description = "C23438407 Заказы. статус \"Собран\". Отображение полей на вкладке \"Контроль\". Контроль не пройден", groups = NEED_PRODUCTS_GROUP)
     public void testControlTabPickedNonControlled() throws Exception {
-        initCreateOrder(1,SalesDocumentsConst.GiveAwayPoints.PICKUP, SalesDocumentsConst.States.PICKED);
+          initCreateOrder(1,SalesDocumentsConst.GiveAwayPoints.PICKUP, SalesDocumentsConst.States.PICKED);
 
         // Step 1:
         step("Открыть страницу с Заказами");
@@ -312,7 +312,7 @@ public class OrdersFlowTest extends BasePAOTest {
         controlPage.shouldControlledQuantityIs(1,0);
     }
 
-    @Test(description = "C22829616 Заказы. Процесс обработки заказа. Онлайн. Доставка. Предоплата", groups = NEED_PRODUCTS_GROUP)
+    @Test(description = "C22829617 Заказы. Процесс обработки заказа. Онлайн. Доставка. Предоплата", groups = NEED_PRODUCTS_GROUP)
     public void testOrderFlowOnlinePrepaymentDelivery() throws Exception {
         orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.DELIVERY_TO_DOOR).getSolutionId();
         System.out.print(orderId);
@@ -615,7 +615,7 @@ public class OrdersFlowTest extends BasePAOTest {
     }
 
 
-    @Test(description = "Частичная доставка", groups = NEED_PRODUCTS_GROUP)
+    @Test(description = "C23751064 Orders Процесс обработки заказа. Онлайн. Предоплата. Частичная доставка", groups = NEED_PRODUCTS_GROUP)
     public void testPartialDelivery() throws Exception {
         // Step 1:
         step("Создать заказ Онлайн с Предоплатой");
