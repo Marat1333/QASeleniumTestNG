@@ -399,7 +399,7 @@ public class CreateCustomerForm extends MagPortalBasePage {
     public CreateCustomerForm shouldErrorTooltipUnderPhoneFldHasValidText() throws Exception {
         shouldControlsHighlightedInRed(Collections.singletonList(PageControls.PhoneFld));
         anAssert.isEquals(phoneTooltipErrorLabels.get(0).getText(),
-                "Введи телефон в формате +7 XXX XXX-XX-XX",
+                "Введи номер телефона в формате +7 ХХХ ХХX-ХХ-ХХ.",
                 "Неверное сообщение об ошибке введенных данных в поле Телефон");
         return this;
     }
