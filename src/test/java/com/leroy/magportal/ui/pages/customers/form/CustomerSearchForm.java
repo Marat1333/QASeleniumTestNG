@@ -171,7 +171,11 @@ public class CustomerSearchForm extends MagPortalBasePage {
     @Step("Выбираем клиента по email {email}")
     public void selectCustomerByEmail(String email) throws Exception {
         enterEmailInSearchCustomerField(email);
-        anAssert.isFalse(customerPhoneSearchFld.isVisible(),
+        int foundCustomerAccount = customerSearchItems.getCount();
+        if (foundCustomerAccount == 0)
+            customerPhoneSearchFld.waitForInvisibility(short_timeout);
+        customerSearchItems.get(0).click();
+        anAssert.isTrue(foundCustomerAccount > 0 || !customerPhoneSearchFld.isVisible(),
                 "Клиент с email " + email + " не удалось выбрать");
     }
 
