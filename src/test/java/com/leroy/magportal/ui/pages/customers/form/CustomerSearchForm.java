@@ -18,6 +18,7 @@ import io.qameta.allure.Step;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.SneakyThrows;
 import org.openqa.selenium.By;
 
 public class CustomerSearchForm extends MagPortalBasePage {
@@ -68,13 +69,13 @@ public class CustomerSearchForm extends MagPortalBasePage {
             metaName = "Кнопка '...' для раскрытия меню с действиями над клиентом")
     Element customerActionBtn;
 
-    @WebFindBy(id = "editCustomerButton", metaName = "Опция 'Редактировать данные клиента'")
+    @WebFindBy(xpath = "(//div[contains(@class, 'CustomerControl')]//button)[1]", metaName = "Опция 'Редактировать данные клиента'")
     Element editCustomerOptionBtn;
 
-    @WebFindBy(id = "searchCustomerButton", metaName = "Опция 'Выбрать другого клиента'")
+    @WebFindBy(xpath = "(//div[contains(@class, 'CustomerControl')]//button)[2]", metaName = "Опция 'Выбрать другого клиента'")
     Element searchCustomerOptionBtn;
 
-    @WebFindBy(id = "clearCustomerButton", metaName = "Опция 'Удалить клиента'")
+    @WebFindBy(xpath = "(//div[contains(@class, 'CustomerControl')]//button)[3]", metaName = "Опция 'Удалить клиента'")
     Element clearCustomerOptionBtn;
 
     // When Customer is selected
@@ -101,7 +102,6 @@ public class CustomerSearchForm extends MagPortalBasePage {
 
     @Step("Действия с клиентом: Редактировать данные клиента")
     public CreateCustomerForm clickOptionEditCustomer() {
-        customerActionBtn.click();
         editCustomerOptionBtn.click();
         return new CreateCustomerForm();
     }
