@@ -57,7 +57,7 @@ public class CustomerSearchForm extends MagPortalBasePage {
     @WebFindBy(xpath = "(//div[contains(@class, 'lmui-SearchString__desktop-input')])[2]//input", metaName = "Поле для ввода email клиента")
     EditBox customerEmailSearchFld;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'CustomerControl-SearchMode__menu')]//button[descendant::span[text()='Создать клиента']]",
+    @WebFindBy(xpath = "(//button[descendant::span[text()='Создать клиента']])[2]",
             metaName = "Кнопка 'Создать клиента'")
     Element createCustomerBtn;
 
