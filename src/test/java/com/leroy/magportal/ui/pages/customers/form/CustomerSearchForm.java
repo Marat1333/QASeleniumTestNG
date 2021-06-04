@@ -108,13 +108,11 @@ public class CustomerSearchForm extends MagPortalBasePage {
 
     @Step("Действия с клиентом: Выбрать другого клиента")
     public void clickOptionSelectAnotherCustomer() {
-        customerActionBtn.click();
         searchCustomerOptionBtn.click();
     }
 
     @Step("Действия с клиентом: Удалить клиента")
     public void clickOptionRemoveCustomer() {
-        customerActionBtn.click();
         clearCustomerOptionBtn.click();
     }
 
