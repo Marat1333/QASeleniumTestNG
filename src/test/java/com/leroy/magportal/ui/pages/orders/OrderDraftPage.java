@@ -29,7 +29,7 @@ public abstract class OrderDraftPage extends OrderHeaderPage {
 
     // Tabs
 
-    @WebFindBy(id = "ORDER_CONTENT_TAB_ID", metaName = "Вкладка 'Состав заказа'")
+    @WebFindBy(xpath = "//button[@data-testid='ORDER_CONTENT_TAB_ID']", metaName = "Вкладка 'Состав заказа'")
     Button contentOrderTab;
 
     @WebFindBy(id = "DELIVERY_TYPES_TAB_ID", metaName = "Вкладка 'Способ получения'")
