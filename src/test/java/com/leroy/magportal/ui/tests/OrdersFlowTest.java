@@ -619,7 +619,7 @@ public class OrdersFlowTest extends BasePAOTest {
     public void testPartialDelivery() throws Exception {
         // Step 1:
         step("Создать заказ Онлайн с Предоплатой");
-        orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.DELIVERY_TO_DOOR).getSolutionId();
+          orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.DELIVERY_TO_DOOR).getSolutionId();
         System.out.print("Создан заказ " + orderId);
 
         // Step 2:
@@ -644,31 +644,23 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 5:
         step("Товар 1: Ввести в инпут 'К доставке' количество меньше указанного в Заказано");
-        createdContentPage.editToDeliveryQuantity(1, 1.0);
+        createdContentPage.editToDeliveryQuantity(1, 0);
 
         // Step 6:
-        step("Товар 2: Ввести в инпут 'К доставке' количество меньше указанного в Заказано");
-        createdContentPage.editToDeliveryQuantity(2, 1.0);
-
-        // Step 7:
-        step("Товар 3: Ввести в инпут 'К доставке' количество меньше указанного в Заказано");
-        createdContentPage.editToDeliveryQuantity(3, 1.0);
-
-        // Step 8:
         step("Нажать кнопку доставить");
         AllowRefundModal allowRefundModal = createdContentPage.clickDeliveryButtonPartDelivery();
 
-        // Step 9:
+        // Step 7:
         step("Нажать кнопку Да в модальном окне фиксации доставленного");
         MainReturnDeliveryValueModal giveAwayReturnDeliveryRefund = allowRefundModal.clickYesBtn();
 
-        // Step 10:
+        // Step 8
         step("Завершить возврат стоимости Доставки");
         giveAwayReturnDeliveryRefund.editInputDeliveryFinalPrice(2500.00);
         giveAwayReturnDeliveryRefund.shouldInputDeliveryFinalPrice(2500.00);
         giveAwayReturnDeliveryRefund.clickSaveOrderButton();
 
-        // Step 11:
+        // Step 9:
         step("Проверить статус доставленного заказа");
         orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.PARTIALLY_DELIVERED, PaymentStatus.COMPLETED);
         orderPage.refreshDocumentList();
