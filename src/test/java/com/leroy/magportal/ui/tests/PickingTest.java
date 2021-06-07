@@ -6,7 +6,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.constants.sales.SalesDocumentsConst.GiveAwayPoints;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.UserSessionData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
@@ -68,16 +67,6 @@ public class PickingTest extends BasePAOTest {
                 break;
         }
 
-    }
-
-    private void initCreateOrder(int productCount, GiveAwayPoints giveAwayPoint) {
-        List<CartProductOrderData> productOrderDataList = makeCartProductsList(productCount, 2.0);
-
-        if (giveAwayPoint == null) {
-            giveAwayPoint = GiveAwayPoints.PICKUP;
-        }
-        orderId = helper.createConfirmedOrder(productOrderDataList, giveAwayPoint, false)
-                .getOrderId();
     }
 
     private void initCreateOrder(int productCount) {
@@ -248,7 +237,7 @@ public class PickingTest extends BasePAOTest {
         step("Нажать кнопку Вернуться к оригинальной сборке");
         pickingContentPage = successfullyCreatedAssemblyModal.clickRemainOldTaskButton();
         pickingTaskDataBefore.setStatus(SalesDocumentsConst.States.CANCELLED.getUiVal());
-        pickingTaskDataBefore.getProducts().get(0).setOrderedQuantity(0);
+        pickingTaskDataBefore.getProducts().get(0).setOrderedQuantity(0.00);
         pickingContentPage.shouldPickingTaskDataIs(pickingTaskDataBefore);
 
         // Step 9
@@ -318,7 +307,7 @@ public class PickingTest extends BasePAOTest {
         initCreateOrder(2);
         // Test data
         PickingConst.AssemblyType assemblyType = PickingConst.AssemblyType.SHOPPING_ROOM;
-        int editQuantity = 1;
+        double editQuantity = 1.0;
 
         PickingPage pickingPage = loginSelectShopAndGoTo(PickingPage.class);
         initFindPickingTask();
@@ -396,7 +385,7 @@ public class PickingTest extends BasePAOTest {
         // Step 9
         step("Нажать кнопку Вернуться к оригинальной сборке");
         pickingTaskDataBefore.getProducts().get(0).decreaseOrderedQuantity(editQuantity);
-        pickingTaskDataBefore.getProducts().get(1).setOrderedQuantity(0);
+        pickingTaskDataBefore.getProducts().get(1).setOrderedQuantity(0.00);
         pickingContentPage = successfullyCreatedAssemblyModal.clickRemainOldTaskButton();
         pickingContentPage.shouldPickingTaskDataIs(pickingTaskDataBefore);
 
@@ -439,7 +428,7 @@ public class PickingTest extends BasePAOTest {
 
         // Step 2
         step("Товар 1: Ввести в инпут Собрано количество больше, чем указано в Заказано");
-        int collectedQuantityProduct1 = pickingTaskDataBefore.getProducts().get(0)
+        double collectedQuantityProduct1 = pickingTaskDataBefore.getProducts().get(0)
                 .getOrderedQuantity();
         pickingContentPage.shouldProductCollectedQuantityIs(1, 0)
                 .editCollectQuantity(1, collectedQuantityProduct1 + 1)
@@ -463,7 +452,7 @@ public class PickingTest extends BasePAOTest {
 
         // Step 5
         step("Товар 3: Ввести в инпут Собрано количество равное указанному в Заказано");
-        int collectedQuantityProduct3 = pickingTaskDataBefore.getProducts().get(2)
+        double collectedQuantityProduct3 = pickingTaskDataBefore.getProducts().get(2)
                 .getOrderedQuantity();
         pickingContentPage
                 .editCollectQuantity(3, collectedQuantityProduct3)
@@ -560,7 +549,7 @@ public class PickingTest extends BasePAOTest {
 
         // Step 6
         step("Ввести число меньшее, чем товара в сборке. Нажать на кнопку Сохранить");
-        int editQuantity = 1;
+        double editQuantity = 1.0;
         splitProductData.setWantToMoveQuantity(editQuantity);
         splitProductData.setMoveToNewQuantity(editQuantity);
         splitProductData.setRemainInOriginalQuantity(

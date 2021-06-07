@@ -1,6 +1,8 @@
 package com.leroy.magportal.ui.constants;
 
 import com.leroy.constants.EnvConstants;
+import com.leroy.magmobile.ui.models.customer.MagCustomerData;
+import com.leroy.magmobile.ui.models.customer.MagLegalCustomerData;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 
 public class TestDataConstants extends EnvConstants {

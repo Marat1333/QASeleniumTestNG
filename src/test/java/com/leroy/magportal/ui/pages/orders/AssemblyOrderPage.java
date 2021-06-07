@@ -23,7 +23,6 @@ public class AssemblyOrderPage extends OrderCreatedPage {
         index--;
         orderPickingTaskListItem.get(index).click();
         return new PickingContentPage();
-
     }
 
 }

@@ -8,7 +8,6 @@ import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.clients.PickingTaskClient;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
-import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.data.onlineOrders.OnlineOrderData;
 import com.leroy.magportal.api.data.picking.PickingTaskData;
 import com.leroy.magportal.api.helpers.OnlineOrderHelper;
@@ -18,6 +17,7 @@ import io.qameta.allure.Step;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
+import ru.leroymerlin.qa.core.clients.customerorders.enums.PaymentStatus;
 
 public class PrepaymentWorkflowFullTest extends BaseMagPortalApiTest {
 
@@ -107,7 +107,7 @@ public class PrepaymentWorkflowFullTest extends BaseMagPortalApiTest {
     @Test(description = "C23438374 PARTIALLY_PICKED -> PICKED", priority = 8)
     public void testPicked() {
         paymentHelper.makePaid(currentOrderId);
-        orderClient.waitUntilOrderGetStatus(currentOrderId, States.PICKED, PaymentStatusEnum.PAID);
+        orderClient.waitUntilOrderGetStatus(currentOrderId, States.PICKED, PaymentStatus.PAID);
         Response<?> response = pickingTaskClient.getPickingTask(currentTaskId);//just for assert
         assertWorkflowResult(response, States.PICKED, PickingStatus.PICKED);
     }

@@ -20,16 +20,8 @@ import com.leroy.magmobile.api.data.sales.orders.OrderCustomerData;
 import com.leroy.magmobile.api.data.sales.orders.OrderProductData;
 import com.leroy.magmobile.api.data.sales.orders.ResOrderCheckQuantityData;
 import com.leroy.magmobile.api.requests.order.OrderRearrangeRequest;
-import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
-import com.leroy.magportal.api.constants.GiveAwayGroups;
+import com.leroy.magportal.api.constants.*;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
-import com.leroy.magportal.api.constants.OrderChannelEnum;
-import com.leroy.magportal.api.constants.OrderReasonEnum;
-import com.leroy.magportal.api.constants.OrderWorkflowEnum;
-import com.leroy.magportal.api.constants.PaymentStatusEnum;
-import com.leroy.magportal.api.constants.PaymentTypeEnum;
-import com.leroy.magportal.api.constants.UserTasksProject;
-import com.leroy.magportal.api.constants.UserTasksType;
 import com.leroy.magportal.api.data.onlineOrders.CheckQuantityData;
 import com.leroy.magportal.api.data.onlineOrders.DeliveryCustomerData;
 import com.leroy.magportal.api.data.onlineOrders.DeliveryData;
@@ -83,6 +75,7 @@ import lombok.SneakyThrows;
 import org.testng.asserts.SoftAssert;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
+import ru.leroymerlin.qa.core.clients.customerorders.enums.PaymentStatus;
 
 public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
 
@@ -156,7 +149,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         OnlineOrderData orderData = this.getOnlineOrder(orderId).asJson();
         if ((orderData.getPaymentType().equals(PaymentTypeEnum.CASH.getMashName()) || orderData
                 .getPaymentType().equals(PaymentTypeEnum.CASH_OFFLINE.getMashName())) && !orderData
-                .getPaymentStatus().equals(PaymentStatusEnum.PAID.toString())) {
+                .getPaymentStatus().equals(PaymentStatus.PAID.toString())) {
             return rearrange(orderId, newProductsCount, newCount);
         } else {
             return editPrePaymentOrder(orderId, newCount);
@@ -355,9 +348,11 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
                 this.giveAway(orderId, false);
                 break;
             case GIVEN_AWAY:
+            case ON_DELIVERY:
                 pickingTaskClient.completeAllPickings(orderId, true);
                 this.waitUntilOrderGetStatus(orderId, pickedState, null);
-                paymentHelper.makePaid(orderId);
+                //paymentHelper.makePaid(orderId);
+                paymentHelper.makePayment(orderId, PaymentMethodEnum.TPNET);
                 this.waitAndReturnProductsReadyToGiveaway(orderId);
                 this.giveAway(orderId, true);
                 break;
@@ -367,14 +362,17 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
                 paymentHelper.makePaid(orderId);
                 this.waitAndReturnProductsReadyToGiveaway(orderId);
                 this.giveAway(orderId, true);
+                waitUntilOrderGetStatus(orderId,States.ON_DELIVERY,null);
                 this.deliver(orderId, false);
                 break;
             case DELIVERED:
                 pickingTaskClient.completeAllPickings(orderId, true);
                 this.waitUntilOrderGetStatus(orderId, pickedState, null);
                 paymentHelper.makePaid(orderId);
+                //paymentHelper.makePayment(orderId, PaymentMethodEnum.TPNET);
                 this.waitAndReturnProductsReadyToGiveaway(orderId);
                 this.giveAway(orderId, true);
+                waitUntilOrderGetStatus(orderId,States.ON_DELIVERY,null);
                 this.deliver(orderId, true);
                 break;
             default:
@@ -385,7 +383,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     @SneakyThrows
     @Step("Wait until order comes to statuses. USE null for payment ignore")
     public void waitUntilOrderGetStatus(
-            String orderId, States expectedOrderStatus, PaymentStatusEnum expectedPaymentStatus) {
+            String orderId, States expectedOrderStatus, PaymentStatus expectedPaymentStatus) {
         long currentTimeMillis = System.currentTimeMillis();
         Response<OnlineOrderData> r = null;
         while (System.currentTimeMillis() - currentTimeMillis < waitTimeoutInSeconds * 1000) {

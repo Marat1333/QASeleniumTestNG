@@ -18,7 +18,6 @@ import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
 import com.leroy.magportal.api.constants.LmCodeTypeEnum;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
 import com.leroy.magportal.api.constants.PaymentMethodEnum;
-import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.constants.PaymentTypeEnum;
 import com.leroy.magportal.api.data.onlineOrders.AemPaymentResponseData;
 import com.leroy.magportal.api.data.shops.ShopData;
@@ -31,6 +30,7 @@ import java.util.stream.Collectors;
 import org.junit.Assert;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
+import ru.leroymerlin.qa.core.clients.customerorders.enums.PaymentStatus;
 import ru.leroymerlin.qa.core.clients.tunnel.TunnelClient;
 import ru.leroymerlin.qa.core.clients.tunnel.data.CommunicationPayload;
 import ru.leroymerlin.qa.core.clients.tunnel.data.NextStepResponse;
@@ -174,7 +174,7 @@ public class AemHelper extends BaseHelper {
                     if (orderData.getPaymentType().equals(PaymentTypeEnum.SBERBANK.getName())) {
                         orderClient.waitUntilOrderGetStatus(responseData.getSolutionId(),
                                 States.WAITING_FOR_PAYMENT,
-                                PaymentStatusEnum.CONFIRMED);
+                                PaymentStatus.CONFIRMED);
                         paymentHelper.makePayment(responseData.getSolutionId(), paymentMethod);
                     }
                     orderClient.waitUntilOrderGetStatus(responseData.getSolutionId(),

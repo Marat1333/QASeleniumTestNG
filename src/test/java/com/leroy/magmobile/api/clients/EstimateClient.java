@@ -33,7 +33,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class EstimateClient extends BaseMashupClient {
 
-    /**
+      /**
      * ---------- Executable Requests -------------
      **/
 

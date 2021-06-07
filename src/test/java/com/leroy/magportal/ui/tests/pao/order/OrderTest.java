@@ -430,7 +430,7 @@ public class OrderTest extends BasePAOTest {
 
         // Step 1
         step("Измените кол-во товара таким образом, чтоб его было заказно, больше чем доступно");
-        int newQuantity = (int) Math.round(productIData.getAvailableStock() + 100);
+        Double newQuantity = Double.valueOf(Math.round(productIData.getAvailableStock() + 100));
         OrderWebData oneOrderData = orderData.getOrders().get(0);
         oneOrderData.changeProductQuantity(0, newQuantity, true);
         oneOrderData.setTotalWeight(null);
@@ -462,8 +462,8 @@ public class OrderTest extends BasePAOTest {
 
         // Step 1
         step("В мини-карточке товара в поле 'заказано' измените количество товара");
-        int newQuantity = (int) Math.round(
-                orderData.getOrders().get(0).getProductCardDataList().get(0).getSelectedQuantity()) + 2;
+        Double newQuantity = Double.valueOf((int) Math.round(
+                orderData.getOrders().get(0).getProductCardDataList().get(0).getSelectedQuantity()) + 2);
         OrderWebData oneOrderData = orderData.getOrders().get(0);
         oneOrderData.changeProductQuantity(0, newQuantity, true);
         if (INVISIBLE_AUTHOR_ORDER_DRAFT)
@@ -554,15 +554,15 @@ public class OrderTest extends BasePAOTest {
         // Step 1
         step("Нажмите на иконку редактирования заказа в левом нижнем углу");
         orderCreatedContentPage.clickEditOrderButton();
-        orderCreatedContentPage.shouldSelectedProductQuantityIs(1, 2);
+        orderCreatedContentPage.shouldSelectedProductQuantityIs(1, 2.0);
         AddProductForm addProductForm = orderCreatedContentPage.getAddProductForm();
         addProductForm.shouldSearchFieldIsVisible();
 
         // Step 2
         step("Измените количество товара плашкой");
         orderData.getOrders().get(0).changeProductQuantity(0, 1, true);
-        orderCreatedContentPage.editSelectedQuantity(1, 1)
-                .shouldSelectedProductQuantityIs(1, 1);
+        orderCreatedContentPage.editSelectedQuantity(1, 1.0)
+                .shouldSelectedProductQuantityIs(1, 1.0);
 
         // Step 3
         step("Нажмите на кнопку 'Сохранить'");
@@ -583,8 +583,8 @@ public class OrderTest extends BasePAOTest {
         // Step 2
         step("Измените количество товара плашкой до значения 0");
         orderData.getOrders().get(0).changeProductQuantity(0, 0, true);
-        orderCreatedContentPage.editSelectedQuantity(1, 0)
-                .shouldSelectedProductQuantityIs(1, 0);
+        orderCreatedContentPage.editSelectedQuantity(1, 0.0)
+                .shouldSelectedProductQuantityIs(1, 0.0);
 
         // Step 3
         step("Нажмите на кнопку 'Сохранить'");
@@ -604,8 +604,8 @@ public class OrderTest extends BasePAOTest {
 
         // Step 2
         step("Измените количество товара плашкой до значения 0");
-        orderCreatedContentPage.editSelectedQuantity(1, 0)
-                .shouldSelectedProductQuantityIs(1, 0);
+        orderCreatedContentPage.editSelectedQuantity(1, 0.0)
+                .shouldSelectedProductQuantityIs(1, 0.0);
 
         // Step 3
         step("Нажмите на кнопку 'Сохранить'");

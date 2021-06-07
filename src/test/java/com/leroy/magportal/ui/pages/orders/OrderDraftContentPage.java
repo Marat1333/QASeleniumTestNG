@@ -63,7 +63,7 @@ public class OrderDraftContentPage extends OrderDraftPage {
     // Actions
 
     @Step("Изменить кол-во {index}-ого товара")
-    public OrderDraftContentPage editProductQuantity(int index, int value) throws Exception {
+    public OrderDraftContentPage editProductQuantity(int index, Double value) throws Exception {
         index--;
         productCards.get(index).editQuantity(value);
         waitForSpinnerAppearAndDisappear();
