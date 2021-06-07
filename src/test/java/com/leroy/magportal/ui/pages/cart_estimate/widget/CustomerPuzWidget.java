@@ -19,7 +19,7 @@ public class CustomerPuzWidget extends CardWebWidget<SimpleCustomerData> {
     @WebFindBy(xpath = VIEW_CARD_XPATH + "//p", metaName = "Имя клиента")
     Element name;
 
-    @WebFindBy(xpath = VIEW_CARD_XPATH + "/div/div[2]//span", metaName = "Номер телефона")
+    @WebFindBy(xpath = VIEW_CARD_XPATH + "//span[text()[contains(., '+7')]]", metaName = "Номер телефона")
     Element phoneNumber;
 
     @WebFindBy(xpath = VIEW_CARD_XPATH + "//div[contains(@class, 'lmui-View lmui-View-mt-gap2')]//span",
