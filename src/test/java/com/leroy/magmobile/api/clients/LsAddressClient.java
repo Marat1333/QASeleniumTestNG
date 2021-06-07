@@ -8,11 +8,9 @@ import com.leroy.magmobile.api.data.address.cellproducts.*;
 import com.leroy.magmobile.api.helpers.LsAddressHelper;
 import com.leroy.magmobile.api.requests.address.*;
 import io.qameta.allure.Step;
-import org.testng.Assert;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -194,12 +192,24 @@ public class LsAddressClient extends BaseMashupClient {
         req.setShopId(getUserSessionData().getUserShopId());
         return execute(req, JsonNode.class);
     }
+
     @Step("Delete cell products for cellId={cellId}")
-    public Response<JsonNode> batchDeleteCellProduct(ProductBatchData postData){
+    public Response<JsonNode> batchDeleteCellProduct(ProductBatchData postData) {
         LsAddressCellProductsBatchDelete req = new LsAddressCellProductsBatchDelete();
         req.jsonBody(postData);
         req.setLdapHeader(getUserSessionData().getUserLdap());
         req.setShopId(getUserSessionData().getUserShopId());
+        return execute(req, JsonNode.class);
+    }
+
+    // Pdf
+
+    @Step("Report pdf file to email")
+    public Response<JsonNode> pdfReport(StandDataList postData) {
+        LsAddressReportPostRequest req = new LsAddressReportPostRequest();
+        req.setShopId(getUserSessionData().getUserShopId());
+        req.setDepartmentId(getUserSessionData().getUserDepartmentId());
+        req.jsonBody(postData);
         return execute(req, JsonNode.class);
     }
 
@@ -432,7 +442,11 @@ public class LsAddressClient extends BaseMashupClient {
         for (int i = 0; i < postData.getItems().size(); i++) {
             CellProductData actualCellProductData = actualRespData.getItems().get(i);
             ReqCellProductData expectedCellProductData = postData.getItems().get(i);
-            ProductCellData actualCellData = actualCellProductData.getLsAddressCells().get(0);
+            ProductCellData actualCellData = actualCellProductData.getLsAddressCells().stream()
+                    .filter((s) -> s.getCode().equals(cellData.getCode())).findFirst()
+                    .orElseThrow(() -> new AssertionError("Required cell code doesn't found"));
+
+
             String desc = String.format("StandId(%s), CellCode(%s): ", actualCellData.getStandId(), actualCellData.getCode());
             softAssert().isEquals(actualCellProductData.getQuantity(), expectedCellProductData.getQuantity(),
                     desc + "Product quantity doesn't match the expected");
@@ -465,9 +479,10 @@ public class LsAddressClient extends BaseMashupClient {
         assertThatResponseIsOk(resp);
         CellProductData actualRespData = resp.asJson().getItems().get(0);
         ProductCellData expectedProductCellData = expectedData.getLsAddressCells().get(0);
-        ProductCellData actualProductCellData = actualRespData.getLsAddressCells().stream().findFirst()
-                .filter((s) -> s.getId().equals(expectedProductCellData.getId()))
+        ProductCellData actualProductCellData = actualRespData.getLsAddressCells().stream()
+                .filter((s) -> s.getId().equals(expectedProductCellData.getId())).findFirst()
                 .orElseThrow(() -> new AssertionError("Required cellId doesn't found"));
+
 
         softAssert().isEquals(actualProductCellData.getId(), expectedProductCellData.getId(),
                 "lsAddress Cell - Cell's id doesn't match the expected");
@@ -513,6 +528,13 @@ public class LsAddressClient extends BaseMashupClient {
         JsonNode respData = resp.asJson();
         assertThat("item id", respData.get("items").get(0).asText(),
                 is(deletedCellId));
+    }
+
+    @Step("Check that report pdf to email")
+    public void assertThatReportPdfIsSuccessful(Response<JsonNode> resp) {
+        assertThatResponseIsOk(resp);
+        JsonNode respData = resp.asJson();
+        assertThat("pdfCreated value", respData.get("pdfCreated").asBoolean(), is(true));
     }
 
 }

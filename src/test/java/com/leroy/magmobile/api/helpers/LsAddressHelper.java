@@ -78,7 +78,7 @@ public class LsAddressHelper extends BaseHelper {
         postStandDataList.setAlleyType(alleyData.getType());
         postStandDataList.setEmail(RandomStringUtils.randomAlphanumeric(5) + "@mail.com");
         Response<StandDataList> resp = lsAddressClient.createStand(alleyData.getId(), postStandDataList);
-        assertThat("Failed to create stand for AlleyId: " + alleyData.getId(), resp, successful());
+        assertThat("Failed to create stand for AlleyId: " + alleyData.getId(), resp.isSuccessful());
         return resp.asJson();
     }
 
