@@ -77,7 +77,7 @@ public class AssemblyProductCardWidget extends CardWebWidget<PickingProductCardD
         collectedQuantityFld.sendBlurEvent();
     }
 
-    public void editCollectQuantity(int val) {
+    public void editCollectQuantity(double val) {
         editCollectQuantity(String.valueOf(val));
     }
 
@@ -110,9 +110,9 @@ public class AssemblyProductCardWidget extends CardWebWidget<PickingProductCardD
         pickingProductCardData.setPrice(ParserUtil.strToDouble(price.getText()));
         pickingProductCardData.setWeight(ParserUtil.strToDouble(weight.getText(), "."));
         pickingProductCardData.setReasonOfLack(productCardReason.getTextIfPresent());
-        pickingProductCardData.setStockQuantity(ParserUtil.strToInt(stockQuantity.getText()));
-        pickingProductCardData.setCollectedQuantity(ParserUtil.strToInt(collectedQuantityFld.getText()));
-        pickingProductCardData.setOrderedQuantity(ParserUtil.strToInt(orderedQuantityFld.getText()));
+        pickingProductCardData.setStockQuantity(ParserUtil.strToDouble(stockQuantity.getText()));
+        pickingProductCardData.setCollectedQuantity(ParserUtil.strToDouble(collectedQuantityFld.getText()));
+        pickingProductCardData.setOrderedQuantity(ParserUtil.strToDouble(orderedQuantityFld.getText()));
         return pickingProductCardData;
     }
 }

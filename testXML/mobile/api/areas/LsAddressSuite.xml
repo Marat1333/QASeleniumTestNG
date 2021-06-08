@@ -34,8 +34,8 @@
                     <include name="testGetCellProducts"/>
                     <include name="testUpdateCellProducts"/>
                     <include name="testMoveCellProducts"/>
-                    <include name="testSearchCells"/>
                     <include name="testDeleteCellProducts"/>
+                    <include name="testSearchCells"/>
                 </methods>
             </class>
         </classes>

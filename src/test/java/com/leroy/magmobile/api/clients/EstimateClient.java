@@ -31,7 +31,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class EstimateClient extends BasePaoClient {
 
-    /**
+      /**
      * ---------- Executable Requests -------------
      **/
 

@@ -10,3 +10,4 @@ public class PickingTaskGetRequest extends CommonLegoRequest<PickingTaskGetReque
         return pathParam("taskId", val);
     }
 }
+

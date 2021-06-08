@@ -10,6 +10,8 @@ import com.leroy.magportal.ui.models.salesdoc.OrderWebData;
 import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
 import com.leroy.magportal.ui.models.salesdoc.SalesDocWebData;
 import com.leroy.magportal.ui.pages.customers.form.CustomerSearchForm;
+import com.leroy.magportal.ui.pages.orders.modal.AllowRefundModal;
+import com.leroy.magportal.ui.pages.orders.modal.MainReturnDeliveryValueModal;
 import com.leroy.magportal.ui.pages.orders.modal.RemoveOrderModal;
 import com.leroy.magportal.ui.pages.orders.widget.OrderProductCardWidget;
 import com.leroy.magportal.ui.pages.products.form.AddProductForm;
@@ -57,13 +59,16 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
 
     // View Footer
 
-    @WebFindBy(xpath = "//div[contains(@class, 'OrderViewFooter__buttonsWrapper')]//button[descendant::span[descendant::*[name()='svg']]]",
+    @WebFindBy(xpath = "//button[@data-testid='aao-footer-edit-btn']",
             metaName = "Кнопка редактирования заказа")
     Button editBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'OrderViewFooter__buttonsWrapper')]//button[descendant::span[text()='Сохранить']]",
             metaName = "Кнопка Сохранить")
     Button saveBtn;
+
+    @WebFindBy(xpath = "//button[@data-testid='aao-footer-confirmDeliveryAfford-btn']", metaName = "Кнопка 'Доставить'")
+    Button deliveryBtn;
 
     @WebFindBy(xpath = "//div[contains(@class, 'OrderViewFooter__buttonsWrapper')]//button[descendant::span[text()='Отмена']]",
             metaName = "Кнопка Отмена")
@@ -88,7 +93,7 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
         salesDocWebData.setNumber(ParserUtil.strWithOnlyDigits(orderNumber.getText()));
         salesDocWebData.setCreationDate(creationDate.getText());
         salesDocWebData.setStatus(orderStatus.getText());
-        salesDocWebData.setClient(customerSearchForm.getCustomerData());
+        //salesDocWebData.setClient(customerSearchForm.getCustomerData());
         salesDocWebData.setDeliveryType(deliveryType.getText().toLowerCase().equals("самовывоз") ?
                 SalesDocumentsConst.GiveAwayPoints.PICKUP : SalesDocumentsConst.GiveAwayPoints.DELIVERY);
         OrderWebData orderWebData = new OrderWebData();
@@ -125,10 +130,30 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
         return this;
     }
 
-    @Step("Изменить количество 'заказано' для {index}-ого товара")
-    public OrderCreatedContentPage editSelectedQuantity(int index, int value) throws Exception {
-        index--;
-        productCards.get(index).editQuantity(value);
+   @Step("Нажать кнопку 'Доставить'")
+    public MainReturnDeliveryValueModal clickDeliveryButton() {
+        deliveryBtn.click();
+        waitForSpinnerAppearAndDisappear();
+        return new MainReturnDeliveryValueModal();
+    }
+
+    @Step("Нажать кнопку 'Доставить' при частичной доставке")
+    public AllowRefundModal clickDeliveryButtonPartDelivery() {
+        deliveryBtn.click();
+        waitForSpinnerAppearAndDisappear();
+        return new AllowRefundModal();
+    }
+
+    @Step("Изменить количество 'Заказано' для {index}-ого товара")
+    public OrderCreatedContentPage editSelectedQuantity(int index, Double value) throws Exception {
+        productCards.get(--index).editQuantity(value);
+        shouldModalThatChangesIsNotSavedIsNotVisible();
+        return this;
+    }
+
+    @Step("Изменить количество 'К доставке' для {index}-ого товара")
+    public OrderCreatedContentPage editToDeliveryQuantity(int index, double value) throws Exception {
+        productCards.get(--index).editToDeliveryQuantity(value);
         shouldModalThatChangesIsNotSavedIsNotVisible();
         return this;
     }
@@ -172,8 +197,8 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
         anAssert.isTrue(salesDocWebData.getOrders() != null && salesDocWebData.getOrders().size() == 1,
                 "Информация о заказе недоступна");
         OrderWebData orderWebData = salesDocWebData.getOrders().get(0);
-        double expectedTotalWeight = 0.0;
-        double expectedTotalPrice = 0.0;
+        Double expectedTotalWeight = 0.0;
+        Double expectedTotalPrice = 0.0;
         Set<String> actualLmCodes = new HashSet<>();
         for (ProductOrderCardWebData productData : orderWebData.getProductCardDataList()) {
             expectedTotalWeight += productData.getWeight() * productData.getSelectedQuantity();
@@ -196,9 +221,8 @@ public class OrderCreatedContentPage extends OrderCreatedPage {
     }
 
     @Step("Проверить количество 'заказано' для {index}-ого товара")
-    public OrderCreatedContentPage shouldSelectedProductQuantityIs(int index, int value) throws Exception {
-        index--;
-        anAssert.isEquals(productCards.get(index).getOrderedQuantity(), String.valueOf(value),
+    public OrderCreatedContentPage shouldSelectedProductQuantityIs(int index, Double value) throws Exception {
+        anAssert.isEquals(productCards.get(--index).getOrderedQuantity(), String.valueOf(value),
                 "Неверное количество 'заказано' у " + (index + 1) + " товара");
         return this;
     }

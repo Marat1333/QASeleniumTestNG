@@ -4,24 +4,23 @@ import lombok.Data;
 
 @Data
 public class ToGiveAwayProductCardData {
-    private String lmCode;
-    private String barCode;
-    private String title;
+    protected String lmCode;
+    protected String barCode;
+    protected String title;
 
 
-    private String reasonForNonGiveaway;
-    private Integer createdQuantity;
-    private Integer orderedQuantity;
-    private Integer collectedQuantity;
-    private Integer givenAwayQuantity;
-    private Integer refundToClient;
-    private Integer toGiveAwayQuantity;
+    protected String reasonForNonGiveaway;
+    protected Double createdQuantity;
+    protected Double orderedQuantity;
+    protected Double collectedQuantity;
+    protected Double givenAwayQuantity;
+    protected Double refundToClient;
+    protected Double toGiveAwayQuantity;
 
-
-    public void increaseToGiveAwayQuantity(int val) { this.toGiveAwayQuantity += val;
+    public void increaseToGiveAwayQuantity(Double val) { this.toGiveAwayQuantity += val;
     }
 
-    public void decreaseToGiveAwayQuantity(int val) {
+    public void decreaseToGiveAwayQuantity(Double val) {
         this.toGiveAwayQuantity -= val;
     }
 

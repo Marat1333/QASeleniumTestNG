@@ -16,15 +16,18 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static com.leroy.core.matchers.Matchers.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
 
 
 public class LsAddressTest extends BaseProjectApiTest {
-
 
     @Inject
     private LsAddressBackClient lsAddressBackClient;
@@ -54,8 +57,6 @@ public class LsAddressTest extends BaseProjectApiTest {
     private CellDataList cellDataList;
 
     private CellProductDataList cellProductDataList;
-
-    private int schemeType;
 
     private int createdAlleyId;
 
@@ -288,44 +289,43 @@ public class LsAddressTest extends BaseProjectApiTest {
     @Test(description = "C23194987 Move Cell Products - 1 Product")
     public void testMoveCellProducts() {
         // Test data
-        CellData cellData = cellDataList.getItems().get(0);
-        String cellId = cellData.getId();
+        prepareDefaultData(true, true);
+        cellData = cellDataList.getItems().get(0);
         CellData newCellData = cellDataList.getItems().get(1);
         String newCellId = newCellData.getId();
+        int quantity = 5;
+        cellProductDataList = lsAddressHelper.addDefaultProductToCell(cellData, quantity);
         CellProductData cellProductData = cellProductDataList.getItems().get(0);
-        String lmCode = cellProductData.getLmCode();
-        int quantity = 1;
 
+        step("Prepare data to move product");
         ReqCellProductData moveCellProductData = new ReqCellProductData();
         moveCellProductData.setNewCellId(newCellId);
-        moveCellProductData.setLmCode(lmCode);
+        moveCellProductData.setLmCode(cellProductData.getLmCode());
         moveCellProductData.setQuantity(quantity);
-        moveCellProductData.setUsername("Auto_" + RandomStringUtils.randomAlphabetic(5));
+        moveCellProductData.setUsername(getUserSessionData().getUserLdap());
 
-        step("Move");
-        Response<JsonNode> response = lsAddressClient.moveCellProducts(cellId, moveCellProductData);
+        step("Send request to move product in new cell");
+        Response<JsonNode> response = lsAddressClient.moveCellProducts(cellData.getId(), moveCellProductData);
         assertThat(response, successful());
 
-        cellProductData.setAddressCells(cellData, newCellData);
-        cellProductData.setQuantity(cellProductData.getQuantity() - quantity);
-        cellProductData.getLsAddressCells().get(0).setQuantity(cellProductData.getQuantity());
-        cellProductData.getLsAddressCells().get(1).setQuantity(quantity);
+        cellProductData.setAddressCells(newCellData);
 
         step("Send Get request and check data");
-        Response<CellProductDataList> getResponse = lsAddressClient.getCellProducts(cellId);
-        lsAddressClient.assertThatDataMatches(getResponse, cellProductDataList);
+        Response<CellProductDataList> getResponse = lsAddressClient.getCellProducts(newCellId);
+        lsAddressClient.assertThatProductMovedToNewCell(getResponse, cellProductData);
     }
 
     @Test(description = "C23194988 lsAddress DELETE Cell products")
     public void testDeleteCellProducts() {
         // Test data
-        CellData cellData = cellDataList.getItems().get(1);
-        String cellId = cellData.getId();
+        prepareDefaultData(true, true);
+        cellData = cellDataList.getItems().get(0);
+        cellProductDataList = lsAddressHelper.addDefaultProductToCell(cellData, 5);
         CellProductData cellProductData = cellProductDataList.getItems().get(0);
-        String lmCode = cellProductData.getLmCode();
+        String cellId = cellData.getId();
 
         step("Delete cell products");
-        Response<JsonNode> response = lsAddressClient.deleteCellProducts(cellId, lmCode);
+        Response<JsonNode> response = lsAddressClient.deleteCellProducts(cellId, cellProductData.getLmCode());
         lsAddressClient.assertThatCellProductsIsDeleted(response, cellId);
         cellProductDataList.getItems().remove(0);
 
@@ -334,38 +334,66 @@ public class LsAddressTest extends BaseProjectApiTest {
         lsAddressClient.assertThatDataMatches(getResponse, cellProductDataList);
     }
 
+    @Test(description = "C23749767 lsAddress POST Cell Products - Batch Delete")
+    public void testBatchDeleteCellProducts() {
+        prepareDefaultData(true, true);
+        cellData = cellDataList.getItems().get(0);
+        cellProductDataList = lsAddressHelper.addDefaultProductsToCell(cellData, 4, 3);
+        String cellId = cellData.getId();
+        String[] lmCodes = cellProductDataList.getItems().stream()
+                .map((s) -> s.getLmCode()).toArray(size -> new String[size]);
+
+
+        step("Prepare a post data for request");
+        ProductBatchData postData = new ProductBatchData();
+        postData.setCellId(cellId);
+        postData.setItems(lmCodes);
+
+        step("Batch Delete cell products");
+        Response<JsonNode> response = lsAddressClient.batchDeleteCellProduct(postData);
+        lsAddressClient.assertThatCellProductsIsDeleted(response, cellId);
+        cellProductDataList.getItems().clear();
+
+        step("Send get request and check data");
+        Response<CellProductDataList> getResponse = lsAddressClient.getCellProducts(cellId);
+        lsAddressClient.assertThatDataMatches(getResponse, cellProductDataList);
+    }
+
+
     @Test(description = "C6638969 lsAddress GET cells search")
     public void testSearchCells() {
+        prepareDefaultData(true, true);
+        cellData = cellDataList.getItems().get(0);
+        cellProductDataList = lsAddressHelper.addDefaultProductToCell(cellData, 5);
         CellProductData cellProductData = cellProductDataList.getItems().get(0);
-        String lmCode = cellProductData.getLmCode();
 
         List<ProductCellData> expectedSearchData = cellProductData.getLsAddressCells();
         for (ProductCellData productCellData : expectedSearchData) {
-            productCellData.setQuantity(0);
+            if(productCellData.getId().equals(cellData.getId())) {
+                productCellData.setQuantity(5);
+            } else {
+                productCellData.setQuantity(0);
+            }
         }
 
-        Response<ProductCellDataList> resp = lsAddressClient.searchProductCells(lmCode);
+        Response<ProductCellDataList> resp = lsAddressClient.searchProductCells(cellProductData.getLmCode());
         lsAddressClient.assertThatDataMatches(resp, expectedSearchData);
     }
 
     @Test(description = "C3316286 lsAddress GET scheme")
     public void testGetScheme() {
+        step("Send request to get scheme and check data");
         Response<SchemeData> resp = lsAddressClient.getScheme();
-        assertThat(resp, successful());
-        SchemeData schemeData = resp.asJson();
-        assertThat("schemeType", schemeData.getSchemeType(), is(schemeType));
-        assertThat("navigationType", schemeData.getNavigationType(), is(greaterThan(0)));
-        assertThat("departmentId", schemeData.getDepartmentId(),
-                is(Integer.parseInt(getUserSessionData().getUserDepartmentId())));
-        assertThat("shopId", schemeData.getShopId(),
-                is(Integer.parseInt(getUserSessionData().getUserShopId())));
+        lsAddressClient.assertThatGetScheme(resp);
+
     }
 
     @Test(description = "C3316287 lsAddress PUT scheme")
     public void testPutScheme() {
-        schemeType = new Random().nextInt(10);
-        Response<JsonNode> resp = lsAddressClient.putScheme(schemeType);
+        step("Send request to update scheme and check data");
+        Response<JsonNode> resp = lsAddressClient.putScheme((int) (Math.random() * 3));
         lsAddressClient.assertThatSchemeIsUpdated(resp);
+
     }
 
 }

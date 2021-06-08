@@ -1,53 +1,24 @@
 package com.leroy.magmobile.api.clients;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
-import com.leroy.magmobile.api.data.address.AlleyData;
-import com.leroy.magmobile.api.data.address.AlleyDataItems;
-import com.leroy.magmobile.api.data.address.CellData;
-import com.leroy.magmobile.api.data.address.CellDataList;
-import com.leroy.magmobile.api.data.address.SchemeData;
-import com.leroy.magmobile.api.data.address.StandData;
-import com.leroy.magmobile.api.data.address.StandDataList;
-import com.leroy.magmobile.api.data.address.cellproducts.CellProductData;
-import com.leroy.magmobile.api.data.address.cellproducts.CellProductDataList;
-import com.leroy.magmobile.api.data.address.cellproducts.ProductCellData;
-import com.leroy.magmobile.api.data.address.cellproducts.ProductCellDataList;
-import com.leroy.magmobile.api.data.address.cellproducts.ReqCellProductData;
-import com.leroy.magmobile.api.data.address.cellproducts.ReqCellProductDataList;
+import com.leroy.core.api.BaseMashupClient;
+import com.leroy.magmobile.api.data.address.*;
+import com.leroy.magmobile.api.data.address.cellproducts.*;
 import com.leroy.magmobile.api.helpers.LsAddressHelper;
-import com.leroy.magmobile.api.requests.address.LsAddressAlleysDeleteRequest;
-import com.leroy.magmobile.api.requests.address.LsAddressAlleysPostRequest;
-import com.leroy.magmobile.api.requests.address.LsAddressAlleysPutRequest;
-import com.leroy.magmobile.api.requests.address.LsAddressAlleysRequest;
-import com.leroy.magmobile.api.requests.address.LsAddressCellProductsDelete;
-import com.leroy.magmobile.api.requests.address.LsAddressCellProductsMove;
-import com.leroy.magmobile.api.requests.address.LsAddressCellProductsPostRequest;
-import com.leroy.magmobile.api.requests.address.LsAddressCellProductsPut;
-import com.leroy.magmobile.api.requests.address.LsAddressCellProductsRequest;
-import com.leroy.magmobile.api.requests.address.LsAddressCellSearchRequest;
-import com.leroy.magmobile.api.requests.address.LsAddressCellsDeleteRequest;
-import com.leroy.magmobile.api.requests.address.LsAddressCellsPostRequest;
-import com.leroy.magmobile.api.requests.address.LsAddressCellsPutRequest;
-import com.leroy.magmobile.api.requests.address.LsAddressCellsRequest;
-import com.leroy.magmobile.api.requests.address.LsAddressSchemePutRequest;
-import com.leroy.magmobile.api.requests.address.LsAddressSchemeRequest;
-import com.leroy.magmobile.api.requests.address.LsAddressStandsPostRequest;
-import com.leroy.magmobile.api.requests.address.LsAddressStandsRequest;
+import com.leroy.magmobile.api.requests.address.*;
 import io.qameta.allure.Step;
-import java.util.List;
+import org.testng.Assert;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class LsAddressClient extends BaseMagMobileClient {
+import java.util.Collections;
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
+public class LsAddressClient extends BaseMashupClient {
 
     @Inject
     private LsAddressHelper lsAddressHelper;
@@ -223,6 +194,14 @@ public class LsAddressClient extends BaseMagMobileClient {
         req.setShopId(getUserSessionData().getUserShopId());
         return execute(req, JsonNode.class);
     }
+    @Step("Delete cell products for cellId={cellId}")
+    public Response<JsonNode> batchDeleteCellProduct(ProductBatchData postData){
+        LsAddressCellProductsBatchDelete req = new LsAddressCellProductsBatchDelete();
+        req.jsonBody(postData);
+        req.setLdapHeader(getUserSessionData().getUserLdap());
+        req.setShopId(getUserSessionData().getUserShopId());
+        return execute(req, JsonNode.class);
+    }
 
 
     // VERIFICATIONS ///
@@ -312,6 +291,7 @@ public class LsAddressClient extends BaseMagMobileClient {
     public void assertThatDataMatches(Response<StandDataList> resp, StandDataList expectedData) {
         assertThatResponseIsOk(resp);
         StandDataList actualData = resp.asJson();
+
         assertThat("items count", actualData.getItems(), hasSize(expectedData.getItems().size()));
         for (int i = 0; i < actualData.getItems().size(); i++) {
             StandData actualItem = actualData.getItems().get(i);
@@ -338,6 +318,23 @@ public class LsAddressClient extends BaseMagMobileClient {
     }
 
     // Scheme
+    @Step("Check that we can get scheme and check data")
+    public void assertThatGetScheme(Response<SchemeData> resp) {
+        assertThatResponseIsOk(resp);
+        SchemeData schemeData = resp.asJson();
+        softAssert().isTrue(schemeData.getSchemeType() >= 0 && schemeData.getSchemeType() < 3,
+                "Scheme type doesn't match the expected");
+        softAssert().isTrue(schemeData.getNavigationType() > 0,
+                "Navigation type doesn't match the expected");
+        softAssert().isEquals(schemeData.getDepartmentId(),
+                Integer.parseInt(getUserSessionData().getUserDepartmentId()),
+                "Department id doesn't match the expected");
+        softAssert().isEquals(schemeData.getShopId(),
+                Integer.parseInt(getUserSessionData().getUserShopId()),
+                "Shop id doesn't match the expected");
+        softAssert().verifyAll();
+    }
+
     @Step("Check that response is success")
     public void assertThatSchemeIsUpdated(Response<JsonNode> resp) {
         assertThatResponseIsOk(resp);
@@ -443,7 +440,7 @@ public class LsAddressClient extends BaseMagMobileClient {
                     desc + "Product lmCode doesn't match the expected");
             softAssert().isNotNull(actualCellProductData.getLsAddressCells(),
                     desc + "Cells list is empty or null");
-            softAssert().isEquals(actualCellProductData.getLsAddressCells().size(), 1,
+            softAssert().isEquals(actualCellProductData.getLsAddressCells().size(), 2,
                     desc + "lsAddressCells count doesn't match the expected");
             softAssert().isEquals(actualCellData.getId(), cellData.getId(),
                     desc + "lsAddress Cell - Id doesn't match the expected");
@@ -460,6 +457,26 @@ public class LsAddressClient extends BaseMagMobileClient {
             softAssert().isEquals(actualCellData.getType(), cellData.getType(),
                     desc + "lsAddress Cell - Type doesn't match the expected");
         }
+        softAssert().verifyAll();
+    }
+
+    @Step("Check that product moved to new cell ")
+    public void assertThatProductMovedToNewCell(Response<CellProductDataList> resp, CellProductData expectedData) {
+        assertThatResponseIsOk(resp);
+        CellProductData actualRespData = resp.asJson().getItems().get(0);
+        ProductCellData expectedProductCellData = expectedData.getLsAddressCells().get(0);
+        ProductCellData actualProductCellData = actualRespData.getLsAddressCells().stream().findFirst()
+                .filter((s) -> s.getId().equals(expectedProductCellData.getId()))
+                .orElseThrow(() -> new AssertionError("Required cellId doesn't found"));
+
+        softAssert().isEquals(actualProductCellData.getId(), expectedProductCellData.getId(),
+                "lsAddress Cell - Cell's id doesn't match the expected");
+        softAssert().isEquals(actualProductCellData.getCode(), expectedProductCellData.getCode(),
+                "lsAddress Cell - Cell's code id doesn't match the expected");
+        softAssert().isEquals(actualRespData.getLmCode(), expectedData.getLmCode(),
+                "lsAddress Cell - LmCode doesn't match the expected");
+        softAssert().isEquals(actualRespData.getQuantity(), expectedData.getQuantity(),
+                "lsAddress Cell - Product quantity doesn't match the expected");
         softAssert().verifyAll();
     }
 

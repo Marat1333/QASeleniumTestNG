@@ -6,8 +6,10 @@ import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.magportal.ui.models.salesdoc.ProductOrderCardWebData;
+import com.leroy.magportal.ui.pages.orders.GiveAwayShipOrderPage;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
 import com.leroy.utils.ParserUtil;
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 
 public class OrderProductCardWidget extends CardWebWidget<ProductOrderCardWebData> {
@@ -50,9 +52,12 @@ public class OrderProductCardWidget extends CardWebWidget<ProductOrderCardWebDat
         return availableQuantity.getText();
     }
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'ProductCard__quantities')]//div[descendant::label[contains(text(), 'Заказано')]]//input",
+    @WebFindBy(xpath = ".//div[contains(@class, 'ProductCard__quantities')]//div[contains(@class, 'inputCounter') and descendant::label[contains(text(), 'Заказано')]]//input",
             metaName = "Поле 'Заказано'")
     EditBox orderedQuantityFld;
+
+    @WebFindBy(xpath = ".//div[contains(@class, 'ProductCard__quantities')]//div[contains(@class, 'inputCounter') and descendant::label[contains(text(), 'К доставке')]]//input", metaName = "Поле 'Заказано'")
+    EditBox toDeliveryQuantityFld;
 
     public String getOrderedQuantity() {
         return orderedQuantityFld.getText();
@@ -68,10 +73,16 @@ public class OrderProductCardWidget extends CardWebWidget<ProductOrderCardWebDat
         trashBtn.click();
     }
 
-    public void editQuantity(int value) {
+    public void editQuantity(Double value) {
         orderedQuantityFld.clear(true);
         orderedQuantityFld.fill(String.valueOf(value));
         orderedQuantityFld.sendBlurEvent();
+    }
+
+    public void editToDeliveryQuantity(double value) {
+        toDeliveryQuantityFld.clear(true);
+        toDeliveryQuantityFld.fill(String.valueOf(value));
+        toDeliveryQuantityFld.sendBlurEvent();
     }
 
     @Override
@@ -79,8 +90,6 @@ public class OrderProductCardWidget extends CardWebWidget<ProductOrderCardWebDat
         ProductOrderCardWebData productOrderCardWebData = new ProductOrderCardWebData();
         productOrderCardWebData.setBarCode(ParserUtil.strWithOnlyDigits(barCode.getTextIfPresent()));
         productOrderCardWebData.setLmCode(lmCode.getText());
-        //productOrderCardWebData.setDepartment(ParserUtil.strToInt(department.getText()));
-        //productOrderCardWebData.setDimension(dimension.getText());
         productOrderCardWebData.setTitle(title.getText());
         productOrderCardWebData.setAvailableTodayQuantity(ParserUtil.strToDouble(availableQuantity.getText()));
         productOrderCardWebData.setSelectedQuantity(ParserUtil.strToDouble(orderedQuantityFld.getText()));

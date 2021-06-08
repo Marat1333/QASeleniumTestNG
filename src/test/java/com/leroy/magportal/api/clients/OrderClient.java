@@ -1,9 +1,5 @@
 package com.leroy.magportal.api.clients;
 
-import static com.leroy.constants.sales.SalesDocumentsConst.States.ALLOWED_FOR_PICKING;
-import static com.leroy.constants.sales.SalesDocumentsConst.States.CONFIRMED;
-import static com.leroy.constants.sales.SalesDocumentsConst.States.PICKED;
-import static com.leroy.constants.sales.SalesDocumentsConst.States.PICKED_WAIT;
 import static com.leroy.core.matchers.IsSuccessful.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -21,20 +17,11 @@ import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.sales.BaseProductOrderData;
 import com.leroy.magmobile.api.data.sales.orders.GiveAwayData;
 import com.leroy.magmobile.api.data.sales.orders.OrderCustomerData;
-import com.leroy.magmobile.api.data.sales.orders.OrderData;
 import com.leroy.magmobile.api.data.sales.orders.OrderProductData;
 import com.leroy.magmobile.api.data.sales.orders.ResOrderCheckQuantityData;
 import com.leroy.magmobile.api.requests.order.OrderRearrangeRequest;
-import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
-import com.leroy.magportal.api.constants.GiveAwayGroups;
+import com.leroy.magportal.api.constants.*;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
-import com.leroy.magportal.api.constants.OrderChannelEnum;
-import com.leroy.magportal.api.constants.OrderReasonEnum;
-import com.leroy.magportal.api.constants.OrderWorkflowEnum;
-import com.leroy.magportal.api.constants.PaymentStatusEnum;
-import com.leroy.magportal.api.constants.PaymentTypeEnum;
-import com.leroy.magportal.api.constants.UserTasksProject;
-import com.leroy.magportal.api.constants.UserTasksType;
 import com.leroy.magportal.api.data.onlineOrders.CheckQuantityData;
 import com.leroy.magportal.api.data.onlineOrders.DeliveryCustomerData;
 import com.leroy.magportal.api.data.onlineOrders.DeliveryData;
@@ -84,13 +71,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import org.testng.asserts.SoftAssert;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
+import ru.leroymerlin.qa.core.clients.customerorders.enums.PaymentStatus;
 
-public class OrderClient extends BaseMagPortalClient {
+public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
 
     @Inject
     private SearchProductHelper searchProductHelper;
@@ -122,7 +109,7 @@ public class OrderClient extends BaseMagPortalClient {
         return null;
     }
 
-//    @Override
+    @Override
     @Step("Cancel order with id = {orderId}")
     public Response<JsonNode> cancelOrder(String orderId) {
         return makeAction(orderId, OrderWorkflowEnum.CANCEL.getValue(), new OrderWorkflowPayload());
@@ -162,7 +149,7 @@ public class OrderClient extends BaseMagPortalClient {
         OnlineOrderData orderData = this.getOnlineOrder(orderId).asJson();
         if ((orderData.getPaymentType().equals(PaymentTypeEnum.CASH.getMashName()) || orderData
                 .getPaymentType().equals(PaymentTypeEnum.CASH_OFFLINE.getMashName())) && !orderData
-                .getPaymentStatus().equals(PaymentStatusEnum.PAID.toString())) {
+                .getPaymentStatus().equals(PaymentStatus.PAID.toString())) {
             return rearrange(orderId, newProductsCount, newCount);
         } else {
             return editPrePaymentOrder(orderId, newCount);
@@ -275,7 +262,7 @@ public class OrderClient extends BaseMagPortalClient {
     @Step("Returns available Timeslots for DELIVERY order with id = {orderId}")
     public Response<AppointmentResponseData> getAppointments(String orderId) {
         OnlineOrderData orderData = this.getOnlineOrder(orderId).asJson();
-        AppointmentPayload payload = makeAppointmentPayload(orderData);
+        TimeslotPayload payload = makeTimeslotPayload(orderData);
         AppointmentsRequest req = new AppointmentsRequest();
         req.jsonBody(payload);
         return execute(req, AppointmentResponseData.class);
@@ -332,13 +319,13 @@ public class OrderClient extends BaseMagPortalClient {
     @Step("Moves NEW order to specified status")
     public void moveNewOrderToStatus(String orderId, States status) {
         OnlineOrderData orderData = this.getOnlineOrder(orderId).asJson();
-        if (status.equals(ALLOWED_FOR_PICKING)) {
-            this.waitUntilOrderGetStatus(orderId, ALLOWED_FOR_PICKING, null);
+        if (status.equals(States.ALLOWED_FOR_PICKING)) {
+            this.waitUntilOrderGetStatus(orderId, States.ALLOWED_FOR_PICKING, null);
             return;
         }
-        States pickedState = PICKED;
+        States pickedState = States.PICKED;
         if (orderData.getPaymentType().equalsIgnoreCase(PaymentTypeEnum.SBERBANK.getMashName())) {
-            pickedState = PICKED_WAIT;
+            pickedState = States.PICKED_WAIT;
         }
 
         pickingTaskClient.startAllPickings(orderId);
@@ -361,9 +348,11 @@ public class OrderClient extends BaseMagPortalClient {
                 this.giveAway(orderId, false);
                 break;
             case GIVEN_AWAY:
+            case ON_DELIVERY:
                 pickingTaskClient.completeAllPickings(orderId, true);
                 this.waitUntilOrderGetStatus(orderId, pickedState, null);
-                paymentHelper.makePaid(orderId);
+                //paymentHelper.makePaid(orderId);
+                paymentHelper.makePayment(orderId, PaymentMethodEnum.TPNET);
                 this.waitAndReturnProductsReadyToGiveaway(orderId);
                 this.giveAway(orderId, true);
                 break;
@@ -373,15 +362,17 @@ public class OrderClient extends BaseMagPortalClient {
                 paymentHelper.makePaid(orderId);
                 this.waitAndReturnProductsReadyToGiveaway(orderId);
                 this.giveAway(orderId, true);
+                waitUntilOrderGetStatus(orderId,States.ON_DELIVERY,null);
                 this.deliver(orderId, false);
                 break;
             case DELIVERED:
                 pickingTaskClient.completeAllPickings(orderId, true);
                 this.waitUntilOrderGetStatus(orderId, pickedState, null);
                 paymentHelper.makePaid(orderId);
+                //paymentHelper.makePayment(orderId, PaymentMethodEnum.TPNET);
                 this.waitAndReturnProductsReadyToGiveaway(orderId);
                 this.giveAway(orderId, true);
-                this.waitUntilOrderGetStatus(orderId, States.ON_DELIVERY, null);
+                waitUntilOrderGetStatus(orderId,States.ON_DELIVERY,null);
                 this.deliver(orderId, true);
                 break;
             default:
@@ -392,7 +383,7 @@ public class OrderClient extends BaseMagPortalClient {
     @SneakyThrows
     @Step("Wait until order comes to statuses. USE null for payment ignore")
     public void waitUntilOrderGetStatus(
-            String orderId, States expectedOrderStatus, PaymentStatusEnum expectedPaymentStatus) {
+            String orderId, States expectedOrderStatus, PaymentStatus expectedPaymentStatus) {
         long currentTimeMillis = System.currentTimeMillis();
         Response<OnlineOrderData> r = null;
         while (System.currentTimeMillis() - currentTimeMillis < waitTimeoutInSeconds * 1000) {
@@ -428,29 +419,6 @@ public class OrderClient extends BaseMagPortalClient {
                     r.asJson().getPaymentStatus(),
                     is(expectedPaymentStatus.toString()));
         }
-    }
-
-    @SneakyThrows
-    @Step("Wait until Order can be cancelled")
-    public OrderData waitUntilOrderCanBeCancelled(String orderId) {
-        long currentTimeMillis = System.currentTimeMillis();
-        Response<OnlineOrderData> r = null;
-        while (System.currentTimeMillis() - currentTimeMillis < waitTimeoutInSeconds * 1000) {
-            r = getOnlineOrder(orderId);
-            String status = r.asJson().getStatus();
-            if (r.isSuccessful() &&
-                    (status.equals(CONFIRMED.getApiVal()) || status.equals(ALLOWED_FOR_PICKING.getApiVal()))) {
-                Log.info("waitUntilOrderIsConfirmed() has executed for " +
-                        (System.currentTimeMillis() - currentTimeMillis) / 1000 + " seconds");
-                return r.asJson();
-            }
-            Thread.sleep(3000);
-        }
-        assertThat("Could not wait for the order to be confirmed. Timeout=" + waitTimeoutInSeconds
-                        + ". " +
-                        "Response error:" + r.toString(),
-                r.isSuccessful());
-        return null;
     }
 
     @SneakyThrows
@@ -707,6 +675,7 @@ public class OrderClient extends BaseMagPortalClient {
         AppointmentPayload payload = new AppointmentPayload();
 
         stores.add(orderData.getShopId());
+        payload.setStores(stores);
 
         if (orderData.getDeliveryData() != null) {
             DeliveryData deliveryData = orderData.getDeliveryData();
@@ -717,8 +686,7 @@ public class OrderClient extends BaseMagPortalClient {
             for (OrderProductData product : orderData.getProducts()) {
                 lmCodes.add(product.getLmCode());
             }
-            payload.setStores(stores.stream().distinct().collect(Collectors.toList()));
-            payload.setLmCodes(lmCodes.stream().distinct().collect(Collectors.toList()));
+            payload.setLmCodes(lmCodes);
             payload.setDate(ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT));
         }
 

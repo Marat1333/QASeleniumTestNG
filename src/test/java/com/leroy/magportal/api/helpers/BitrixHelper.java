@@ -3,7 +3,7 @@ package com.leroy.magportal.api.helpers;
 import static com.leroy.magportal.api.constants.PaymentMethodEnum.API;
 import static com.leroy.magportal.api.constants.PaymentMethodEnum.CARD;
 import static com.leroy.magportal.api.constants.PaymentMethodEnum.TPNET;
-import static com.leroy.magportal.ui.constants.TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
+import static com.leroy.magportal.ui.constants.TestDataConstants.*;
 
 import com.google.inject.Inject;
 import com.leroy.common_mashups.catalogs.data.product.ProductData;
@@ -21,7 +21,6 @@ import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
 import com.leroy.magportal.api.constants.LmCodeTypeEnum;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
 import com.leroy.magportal.api.constants.PaymentMethodEnum;
-import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.constants.PaymentTypeEnum;
 import com.leroy.magportal.api.data.shops.ShopData;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
@@ -34,6 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.Assert;
 import ru.leroymerlin.qa.core.clients.base.Response;
+import ru.leroymerlin.qa.core.clients.customerorders.enums.PaymentStatus;
 import ru.leroymerlin.qa.core.clients.tunnel.TunnelClient;
 import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionPayload;
 import ru.leroymerlin.qa.core.clients.tunnel.data.BitrixSolutionResponse;
@@ -79,7 +79,7 @@ public class BitrixHelper extends BaseHelper {
     @Step("Creates Online orders of different types")
     public ArrayList<BitrixSolutionResponse> createOnlineOrders(Integer ordersCount,
             OnlineOrderTypeData orderData, Integer productCount, PaymentMethodEnum paymentMethod) {
-        SimpleCustomerData customerData = SIMPLE_CUSTOMER_DATA_1;
+        SimpleCustomerData customerData = CUSTOMER_WITH_SERVICE_CARD;
         customerData.setId(getCustomerId(customerData));
 
         ArrayList<BitrixSolutionResponse> result = new ArrayList<>();
@@ -104,7 +104,7 @@ public class BitrixHelper extends BaseHelper {
                     if (orderData.getPaymentType().equals(PaymentTypeEnum.SBERBANK.getName())) {
                         orderClient.waitUntilOrderGetStatus(response.getSolutionId(),
                                 States.WAITING_FOR_PAYMENT,
-                                PaymentStatusEnum.CONFIRMED);
+                                PaymentStatus.CONFIRMED);
                         paymentHelper.makePayment(response.getSolutionId(), paymentMethod);
                     }
                     orderClient.waitUntilOrderGetStatus(response.getSolutionId(),

@@ -95,7 +95,7 @@ public class SplitPickingModalStep1 extends SplitPickingModal {
     }
 
     @Step("Изменить кол-во товара для сборки у {index}-ого")
-    public SplitPickingModalStep1 editWantToMoveQuantity(int index, int value) throws Exception {
+    public SplitPickingModalStep1 editWantToMoveQuantity(int index, double value) throws Exception {
         index--;
         anAssert.isTrue(productWidgets.getCount() > index,
                 "Отсутствует " + (index + 1) + " карточка товара");
@@ -173,10 +173,10 @@ public class SplitPickingModalStep1 extends SplitPickingModal {
     public static class SplitProductCardData {
         private String lmCode;
         private String title;
-        private Integer originalAssemblyQuantity;
-        private Integer wantToMoveQuantity;
-        private Integer moveToNewQuantity;
-        private Integer remainInOriginalQuantity;
+        private Double originalAssemblyQuantity;
+        private Double  wantToMoveQuantity;
+        private Double  moveToNewQuantity;
+        private Double  remainInOriginalQuantity;
 
         public SplitProductCardData(PickingProductCardData pickingProductCardData) {
             this.lmCode = pickingProductCardData.getLmCode();
@@ -184,7 +184,7 @@ public class SplitPickingModalStep1 extends SplitPickingModal {
             this.originalAssemblyQuantity = pickingProductCardData.getOrderedQuantity();
             this.wantToMoveQuantity = pickingProductCardData.getOrderedQuantity();
             this.moveToNewQuantity = pickingProductCardData.getOrderedQuantity();
-            this.remainInOriginalQuantity = 0;
+            this.remainInOriginalQuantity = 0.00;
         }
     }
 
@@ -220,7 +220,7 @@ public class SplitPickingModalStep1 extends SplitPickingModal {
             editQuantityFld.fill(val);
         }
 
-        public void editQuantity(Integer val) {
+        public void editQuantity(Double val) {
             editQuantity(String.valueOf(val));
         }
 
@@ -229,10 +229,10 @@ public class SplitPickingModalStep1 extends SplitPickingModal {
             SplitProductCardData splitProductCardData = new SplitProductCardData();
             splitProductCardData.setLmCode(lmCode.getText());
             splitProductCardData.setTitle(title.getText());
-            splitProductCardData.setOriginalAssemblyQuantity(ParserUtil.strToInt(originalAssemblyQuantity.getText()));
-            splitProductCardData.setWantToMoveQuantity(ParserUtil.strToInt(wantToMoveQuantity.getTextIfPresent()));
-            splitProductCardData.setMoveToNewQuantity(ParserUtil.strToInt(moveToNewQuantity.getTextIfPresent()));
-            splitProductCardData.setRemainInOriginalQuantity(ParserUtil.strToInt(remainInOriginalQuantity.getTextIfPresent()));
+            splitProductCardData.setOriginalAssemblyQuantity(ParserUtil.strToDouble(originalAssemblyQuantity.getText()));
+            splitProductCardData.setWantToMoveQuantity(ParserUtil.strToDouble(wantToMoveQuantity.getTextIfPresent()));
+            splitProductCardData.setMoveToNewQuantity(ParserUtil.strToDouble(moveToNewQuantity.getTextIfPresent()));
+            splitProductCardData.setRemainInOriginalQuantity(ParserUtil.strToDouble(remainInOriginalQuantity.getTextIfPresent()));
             return splitProductCardData;
         }
     }

@@ -6,7 +6,6 @@ import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.magmobile.api.data.sales.orders.OrderData;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.clients.PickingTaskClient;
-import com.leroy.magportal.api.constants.PaymentStatusEnum;
 import com.leroy.magportal.api.data.onlineOrders.OrderProductsToGivenAwayData;
 import com.leroy.magportal.api.data.picking.PickingTaskData;
 import com.leroy.magportal.api.helpers.PAOHelper;
@@ -16,6 +15,7 @@ import lombok.SneakyThrows;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
+import ru.leroymerlin.qa.core.clients.customerorders.enums.PaymentStatus;
 
 public class GetToGiveAwayTest extends BaseMagPortalApiTest {
 
@@ -59,7 +59,7 @@ public class GetToGiveAwayTest extends BaseMagPortalApiTest {
         isResponseOk(resp);
         paymentHelper.makePaid(currentOrderId);
         orderClient.waitUntilOrderGetStatus(currentOrderId,
-                States.PICKED, PaymentStatusEnum.PAID);
+                States.PICKED, PaymentStatus.PAID);
         Thread.sleep(15000);//Added for FF delay
         Response<OrderProductsToGivenAwayData> response = orderClient
                 .productsToGivenAway(currentOrderId);
