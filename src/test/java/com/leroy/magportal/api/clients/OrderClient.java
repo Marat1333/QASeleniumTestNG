@@ -20,8 +20,16 @@ import com.leroy.magmobile.api.data.sales.orders.OrderCustomerData;
 import com.leroy.magmobile.api.data.sales.orders.OrderProductData;
 import com.leroy.magmobile.api.data.sales.orders.ResOrderCheckQuantityData;
 import com.leroy.magmobile.api.requests.order.OrderRearrangeRequest;
-import com.leroy.magportal.api.constants.*;
+import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
+import com.leroy.magportal.api.constants.GiveAwayGroups;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
+import com.leroy.magportal.api.constants.OrderChannelEnum;
+import com.leroy.magportal.api.constants.OrderReasonEnum;
+import com.leroy.magportal.api.constants.OrderWorkflowEnum;
+import com.leroy.magportal.api.constants.PaymentMethodEnum;
+import com.leroy.magportal.api.constants.PaymentTypeEnum;
+import com.leroy.magportal.api.constants.UserTasksProject;
+import com.leroy.magportal.api.constants.UserTasksType;
 import com.leroy.magportal.api.data.onlineOrders.CheckQuantityData;
 import com.leroy.magportal.api.data.onlineOrders.DeliveryCustomerData;
 import com.leroy.magportal.api.data.onlineOrders.DeliveryData;
@@ -77,7 +85,7 @@ import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
 import ru.leroymerlin.qa.core.clients.customerorders.enums.PaymentStatus;
 
-public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
+public class OrderClient extends BaseMagPortalClient {
 
     @Inject
     private SearchProductHelper searchProductHelper;
@@ -109,7 +117,6 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         return null;
     }
 
-    @Override
     @Step("Cancel order with id = {orderId}")
     public Response<JsonNode> cancelOrder(String orderId) {
         return makeAction(orderId, OrderWorkflowEnum.CANCEL.getValue(), new OrderWorkflowPayload());
