@@ -12,7 +12,6 @@ import static org.hamcrest.Matchers.not;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.api.StatusCodes;
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.core.api.BaseMashupClient;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.sales.transfer.TransferDataList;
 import com.leroy.magmobile.api.data.sales.transfer.TransferProductOrderData;
@@ -37,7 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class TransferClient extends BaseMashupClient {
+public class TransferClient extends BaseMagMobileClient {
 
     /**
      * ---------- Executable Requests -------------

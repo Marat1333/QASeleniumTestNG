@@ -39,10 +39,11 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class CatalogProductClient extends BaseMashupClient {
 
+    private String mmGateway;
 
-    @Override
     protected void init() {
-        gatewayUrl = EnvConstants.SEARCH_API_HOST;
+        mmGateway = EnvConstants.MAGMOBILE_API_HOST;
+        gatewayUrl = EnvConstants.PRODUCTSEARCH_API_HOST;
         jaegerHost = EnvConstants.PRODUCTSEARCH_JAEGER_HOST;
         jaegerService = EnvConstants.PRODUCTSEARCH_JAEGER_SERVICE;
     }
@@ -144,7 +145,7 @@ public class CatalogProductClient extends BaseMashupClient {
         GetCatalogSupplierRequestObsolete params = new GetCatalogSupplierRequestObsolete()
                 .setLmCode(lmCode)
                 .setShopId(getUserSessionData().getUserShopId());
-        return execute(params, CatalogSupplierDataOld.class);
+        return execute(params, CatalogSupplierDataOld.class, mmGateway);
     }
 
     @Step("Get Product Sales for lmCode={lmCode}")
@@ -166,7 +167,7 @@ public class CatalogProductClient extends BaseMashupClient {
                 .setLmCode(lmCode);
         String shopsAsString = String.join(",", shops);
         params.setShopId(shopsAsString);
-        return execute(params, Object.class);
+        return execute(params, Object.class, mmGateway);
     }
 
     @Step("Get Similar products for lmCode={lmCode}, shopId={shopId}")

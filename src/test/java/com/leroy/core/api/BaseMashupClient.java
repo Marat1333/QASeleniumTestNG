@@ -1,12 +1,17 @@
 package com.leroy.core.api;
 
-import com.leroy.constants.EnvConstants;
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import com.leroy.core.ContextProvider;
 import com.leroy.core.UserSessionData;
 import com.leroy.core.asserts.SoftAssertWrapper;
 import com.leroy.core.configuration.Log;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
+import java.util.Optional;
+import javax.annotation.PostConstruct;
+import javax.ws.rs.ProcessingException;
 import lombok.Setter;
 import ru.leroymerlin.qa.core.clients.base.BaseClient;
 import ru.leroymerlin.qa.core.clients.base.Request;
@@ -14,13 +19,6 @@ import ru.leroymerlin.qa.core.clients.base.RequestBuilder;
 import ru.leroymerlin.qa.core.clients.base.Response;
 import ru.leroymerlin.qa.core.commons.annotations.Dependencies;
 import ru.leroymerlin.qa.core.commons.enums.Application;
-
-import javax.annotation.PostConstruct;
-import javax.ws.rs.ProcessingException;
-import java.util.Optional;
-
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 @Dependencies(bricks = Application.MAGMOBILE)
 public abstract class BaseMashupClient extends BaseClient {
@@ -66,13 +64,6 @@ public abstract class BaseMashupClient extends BaseClient {
         return response;
     }
 
-    @PostConstruct
-    protected void init() {
-        gatewayUrl = EnvConstants.MAIN_API_HOST;
-        jaegerHost = EnvConstants.JAEGER_HOST;
-        jaegerService = EnvConstants.JAEGER_SERVICE;
-    }
-
     // ---------------- VERIFICATIONS --------------- //
 
     public enum ResponseType {
@@ -86,5 +77,8 @@ public abstract class BaseMashupClient extends BaseClient {
     protected void assertThatResponseIsOk(Response<?> response) {
         assertThat(response, successful());
     }
+
+    @PostConstruct
+    protected void init() { }
 
 }

@@ -1,25 +1,26 @@
 package com.leroy.magmobile.api.clients;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.leroy.core.api.BaseMashupClient;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
+
 import com.leroy.core.configuration.Log;
-import com.leroy.magmobile.api.data.print.*;
+import com.leroy.magmobile.api.data.print.PrintDepartmentList;
+import com.leroy.magmobile.api.data.print.PrintDepartments;
+import com.leroy.magmobile.api.data.print.PrintPrinterData;
+import com.leroy.magmobile.api.data.print.PrintTaskProductData;
+import com.leroy.magmobile.api.data.print.PrintTaskProductsList;
+import com.leroy.magmobile.api.data.print.PrintTaskResponseData;
 import com.leroy.magmobile.api.requests.print.PrintDocumentsPrintersRequest;
 import com.leroy.magmobile.api.requests.print.PrintPriceTaskRequest;
 import io.qameta.allure.Step;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.emptyString;
-import static org.hamcrest.Matchers.notNullValue;
-
-public class PrintPriceClient extends BaseMashupClient {
+public class PrintPriceClient extends BaseMagMobileClient {
 
     public Response<PrintDepartmentList> getDepartmentPrinterList() {
         return getDepartmentPrinterList(getUserSessionData().getUserShopId());

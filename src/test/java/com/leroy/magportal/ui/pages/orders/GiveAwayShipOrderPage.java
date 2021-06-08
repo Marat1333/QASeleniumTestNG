@@ -32,6 +32,7 @@ public class GiveAwayShipOrderPage extends OrderCreatedPage {
     @Step("Изменить кол-во сборка для {index}-ого товара")
     public GiveAwayShipOrderPage editToShipQuantity(int index, int val) throws Exception {
         index--;
+        --index;
         productCards.get(index).editQuantity(val);
         return this;
     }

@@ -1,36 +1,37 @@
 package com.leroy.magmobile.api.tests.ruptures;
 
+import static com.leroy.magmobile.api.enums.RupturesSessionStatuses.ACTIVE;
+import static com.leroy.magmobile.api.enums.RupturesSessionStatuses.FINISHED;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.in;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.oneOf;
+
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.inject.Inject;
 import com.leroy.constants.api.ErrorTextConst;
 import com.leroy.constants.api.StatusCodes;
-import com.leroy.magmobile.api.clients.RupturesClient;
 import com.leroy.magmobile.api.data.CommonErrorResponseData;
 import com.leroy.magmobile.api.data.ruptures.ReqRuptureSessionData;
 import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionData;
 import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionDataList;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
 import com.leroy.magmobile.api.requests.ruptures.RupturesSessionsRequest;
-import com.leroy.magmobile.api.tests.BaseProjectApiTest;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
-import static com.leroy.magmobile.api.enums.RupturesSessionStatuses.ACTIVE;
-import static com.leroy.magmobile.api.enums.RupturesSessionStatuses.FINISHED;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-
-public class RuptureSessionSearchTest extends BaseProjectApiTest {
-
-    @Inject
-    private RupturesClient rupturesClient;
+public class RuptureSessionSearchTest extends BaseRuptureTest {
 
     // Test constants
     private LinkedHashMap<Integer, String> ruptureStatuses = new LinkedHashMap<>();

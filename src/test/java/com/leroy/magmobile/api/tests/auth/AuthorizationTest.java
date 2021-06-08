@@ -1,5 +1,12 @@
 package com.leroy.magmobile.api.tests.auth;
 
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.constants.EnvConstants;
@@ -9,11 +16,8 @@ import com.leroy.magmobile.api.data.oauth.Is4TokenData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import com.leroy.umbrella_extension.authorization.AuthClient;
 import org.testng.annotations.Test;
+import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
-
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 
 
 public class AuthorizationTest extends BaseProjectApiTest {
@@ -32,23 +36,24 @@ public class AuthorizationTest extends BaseProjectApiTest {
         Response<Is4TokenData> response = is4AuthClient.sendPostCodeRequest(code);
         assertThat(response, successful());
         tokenData = response.asJson();
-        assertThat("access_token", tokenData.getAccessToken(), not(emptyOrNullString()));
-        assertThat("expires_in", tokenData.getExpiresIn(), greaterThan(1));
-        assertThat("refresh token", tokenData.getRefreshToken(), not(emptyOrNullString()));
-        assertThat("ldap", tokenData.getLdap(), is(EnvConstants.BASIC_USER_LDAP));
-        assertThat("name", tokenData.getName(), not(emptyOrNullString()));
-        assertThat("surname", tokenData.getSurname(), not(emptyOrNullString()));
-        assertThat("title", tokenData.getTitle(), not(emptyOrNullString()));
-        assertThat("userEmail", tokenData.getUserEmail(), not(emptyOrNullString()));
-        assertThat("titleEmail", tokenData.getTitleEmail(), not(emptyOrNullString()));
-        assertThat("shopId", tokenData.getShopId(), is(Integer.parseInt(EnvConstants.BASIC_USER_SHOP_ID)));
-        assertThat("shopName", tokenData.getShopName(), not(emptyOrNullString()));
-        assertThat("department id", tokenData.getDepartmentId(), is(Integer.parseInt(EnvConstants.BASIC_USER_DEPARTMENT_ID)));
-        assertThat("department Name", tokenData.getDepartmentName(), not(emptyOrNullString()));
-        assertThat("store currency", tokenData.getStoreCurrency(), is("RUR"));
-        assertThat("grants", tokenData.getGrants(), notNullValue());
-        assertThat("roles", tokenData.getUserRoles(), notNullValue());
-        assertThat("shop region", tokenData.getShopRegion(), notNullValue());
+        softAssert().isTrue(Strings.isNotNullAndNotEmpty(tokenData.getAccessToken()), "access_token");
+        softAssert().isTrue( tokenData.getExpiresIn() > 1, "expires_in");
+        softAssert().isTrue(Strings.isNotNullAndNotEmpty(tokenData.getRefreshToken()), "refresh token");
+        softAssert().isTrue(tokenData.getLdap().equalsIgnoreCase(EnvConstants.BASIC_USER_LDAP), "ldap");
+        softAssert().isTrue(Strings.isNotNullAndNotEmpty(tokenData.getName()), "name");
+        softAssert().isTrue(Strings.isNotNullAndNotEmpty(tokenData.getSurname()), "surname");
+        softAssert().isTrue(Strings.isNotNullAndNotEmpty(tokenData.getTitle()), "title");
+        softAssert().isTrue(Strings.isNotNullAndNotEmpty(tokenData.getUserEmail()), "userEmail");
+        softAssert().isTrue(Strings.isNotNullAndNotEmpty(tokenData.getTitleEmail()), "titleEmail");
+        softAssert().isTrue(tokenData.getShopId().equals(Integer.parseInt(EnvConstants.BASIC_USER_SHOP_ID)), "shopId");
+        softAssert().isTrue(Strings.isNotNullAndNotEmpty(tokenData.getShopName()), "shopName");
+        softAssert().isTrue(tokenData.getDepartmentId().equals(Integer.parseInt(EnvConstants.BASIC_USER_DEPARTMENT_ID)), "department id");
+        softAssert().isTrue(Strings.isNotNullAndNotEmpty(tokenData.getDepartmentName()), "department Name");
+        softAssert().isTrue(tokenData.getStoreCurrency().equals("RUR"), "store currency");
+        softAssert().isTrue(tokenData.getGrants() != null, "grants");
+        softAssert().isTrue(tokenData.getUserRoles() != null, "roles");
+        softAssert().isTrue(tokenData.getShopRegion() != null, "shop region");
+        softAssert().verifyAll();
     }
 
     @Test(description = "C3159000 Authorization with invalid code")

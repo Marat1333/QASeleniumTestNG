@@ -1,5 +1,9 @@
 package com.leroy.magportal.api.clients;
 
+import static com.leroy.constants.sales.SalesDocumentsConst.States.ALLOWED_FOR_PICKING;
+import static com.leroy.constants.sales.SalesDocumentsConst.States.CONFIRMED;
+import static com.leroy.constants.sales.SalesDocumentsConst.States.PICKED;
+import static com.leroy.constants.sales.SalesDocumentsConst.States.PICKED_WAIT;
 import static com.leroy.core.matchers.IsSuccessful.successful;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -17,6 +21,7 @@ import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.sales.BaseProductOrderData;
 import com.leroy.magmobile.api.data.sales.orders.GiveAwayData;
 import com.leroy.magmobile.api.data.sales.orders.OrderCustomerData;
+import com.leroy.magmobile.api.data.sales.orders.OrderData;
 import com.leroy.magmobile.api.data.sales.orders.OrderProductData;
 import com.leroy.magmobile.api.data.sales.orders.ResOrderCheckQuantityData;
 import com.leroy.magmobile.api.requests.order.OrderRearrangeRequest;
@@ -79,12 +84,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import org.testng.asserts.SoftAssert;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
+public class OrderClient extends BaseMagPortalClient {
 
     @Inject
     private SearchProductHelper searchProductHelper;
@@ -116,7 +122,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         return null;
     }
 
-    @Override
+//    @Override
     @Step("Cancel order with id = {orderId}")
     public Response<JsonNode> cancelOrder(String orderId) {
         return makeAction(orderId, OrderWorkflowEnum.CANCEL.getValue(), new OrderWorkflowPayload());
@@ -269,7 +275,7 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     @Step("Returns available Timeslots for DELIVERY order with id = {orderId}")
     public Response<AppointmentResponseData> getAppointments(String orderId) {
         OnlineOrderData orderData = this.getOnlineOrder(orderId).asJson();
-        TimeslotPayload payload = makeTimeslotPayload(orderData);
+        AppointmentPayload payload = makeAppointmentPayload(orderData);
         AppointmentsRequest req = new AppointmentsRequest();
         req.jsonBody(payload);
         return execute(req, AppointmentResponseData.class);
@@ -326,13 +332,13 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
     @Step("Moves NEW order to specified status")
     public void moveNewOrderToStatus(String orderId, States status) {
         OnlineOrderData orderData = this.getOnlineOrder(orderId).asJson();
-        if (status.equals(States.ALLOWED_FOR_PICKING)) {
-            this.waitUntilOrderGetStatus(orderId, States.ALLOWED_FOR_PICKING, null);
+        if (status.equals(ALLOWED_FOR_PICKING)) {
+            this.waitUntilOrderGetStatus(orderId, ALLOWED_FOR_PICKING, null);
             return;
         }
-        States pickedState = States.PICKED;
+        States pickedState = PICKED;
         if (orderData.getPaymentType().equalsIgnoreCase(PaymentTypeEnum.SBERBANK.getMashName())) {
-            pickedState = States.PICKED_WAIT;
+            pickedState = PICKED_WAIT;
         }
 
         pickingTaskClient.startAllPickings(orderId);
@@ -422,6 +428,29 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
                     r.asJson().getPaymentStatus(),
                     is(expectedPaymentStatus.toString()));
         }
+    }
+
+    @SneakyThrows
+    @Step("Wait until Order can be cancelled")
+    public OrderData waitUntilOrderCanBeCancelled(String orderId) {
+        long currentTimeMillis = System.currentTimeMillis();
+        Response<OnlineOrderData> r = null;
+        while (System.currentTimeMillis() - currentTimeMillis < waitTimeoutInSeconds * 1000) {
+            r = getOnlineOrder(orderId);
+            String status = r.asJson().getStatus();
+            if (r.isSuccessful() &&
+                    (status.equals(CONFIRMED.getApiVal()) || status.equals(ALLOWED_FOR_PICKING.getApiVal()))) {
+                Log.info("waitUntilOrderIsConfirmed() has executed for " +
+                        (System.currentTimeMillis() - currentTimeMillis) / 1000 + " seconds");
+                return r.asJson();
+            }
+            Thread.sleep(3000);
+        }
+        assertThat("Could not wait for the order to be confirmed. Timeout=" + waitTimeoutInSeconds
+                        + ". " +
+                        "Response error:" + r.toString(),
+                r.isSuccessful());
+        return null;
     }
 
     @SneakyThrows
@@ -678,7 +707,6 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         AppointmentPayload payload = new AppointmentPayload();
 
         stores.add(orderData.getShopId());
-        payload.setStores(stores);
 
         if (orderData.getDeliveryData() != null) {
             DeliveryData deliveryData = orderData.getDeliveryData();
@@ -689,7 +717,8 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
             for (OrderProductData product : orderData.getProducts()) {
                 lmCodes.add(product.getLmCode());
             }
-            payload.setLmCodes(lmCodes);
+            payload.setStores(stores.stream().distinct().collect(Collectors.toList()));
+            payload.setLmCodes(lmCodes.stream().distinct().collect(Collectors.toList()));
             payload.setDate(ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT));
         }
 

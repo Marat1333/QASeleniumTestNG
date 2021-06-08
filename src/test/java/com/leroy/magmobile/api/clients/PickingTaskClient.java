@@ -1,13 +1,12 @@
 package com.leroy.magmobile.api.clients;
 
-import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.sales.picking.PickingTaskDataList;
 import com.leroy.magmobile.api.data.sales.picking.PickingTaskFilter;
 import com.leroy.magmobile.api.requests.salesdoc.picking.PickingTasksSearchRequest;
 import io.qameta.allure.Step;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class PickingTaskClient extends BaseMashupClient {
+public class PickingTaskClient extends BaseMagMobileClient {
 
     /**
      * ---------- Executable Requests -------------

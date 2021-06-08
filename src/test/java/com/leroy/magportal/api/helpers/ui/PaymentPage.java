@@ -65,7 +65,9 @@ public class PaymentPage extends BaseWebPage {
         cvc.clearAndFill(cardData.getCvc());
         buttonPayment.click();
         password.clearAndFill(cardData.getPassword());
-        submitBtn.click();
+        if (submitBtn.isVisible()) {
+            submitBtn.click();
+        }
     }
 
     public void assertThatPaymentIsSuccessful() {

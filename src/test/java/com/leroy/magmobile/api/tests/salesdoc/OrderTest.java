@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.customer_accounts.data.PhoneData;
-import com.leroy.common_mashups.helpers.CustomerHelper;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.api.StatusCodes;
 import com.leroy.constants.customer.CustomerConst;
@@ -18,6 +17,7 @@ import com.leroy.core.api.BaseMashupClient;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.OrderClient;
+import com.leroy.magmobile.api.clients.PaoClient;
 import com.leroy.magmobile.api.clients.SalesDocSearchClient;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
@@ -54,7 +54,7 @@ public class OrderTest extends BaseProjectApiTest {
     @Inject
     private OrderClient orderClient;
     @Inject
-    private CustomerHelper customerHelper;
+    private PaoClient paoClient;
 
     private OrderData orderData;
     private List<ProductData> productDataList;
@@ -113,10 +113,10 @@ public class OrderTest extends BaseProjectApiTest {
 
         reqOrderData.getProducts().add(postProductData);
 
-        Response<OrderData> orderResp = orderClient.createOrder(reqOrderData);
-        orderData = orderClient.assertThatIsCreatedAndGetData(orderResp);
+        Response<OrderData> orderResp = paoClient.createOrder(reqOrderData);
+        orderData = paoClient.assertThatIsCreatedAndGetData(orderResp);
 
-        orderClient.assertThatResponseContainsAddedProducts(orderResp,
+        paoClient.assertThatResponseContainsAddedProducts(orderResp,
                 Collections.singletonList(postProductData));
 
         orderData.increasePaymentVersion(); // TODO это правильно или баг?
@@ -136,15 +136,15 @@ public class OrderTest extends BaseProjectApiTest {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
         String validPinCode = paoHelper.getValidPinCode(orderData.getDelivery());
-        Response<JsonNode> response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
+        Response<JsonNode> response = paoClient.setPinCode(orderData.getOrderId(), validPinCode);
         if (response.getStatusCode() == StatusCodes.ST_400_BAD_REQ) {
             validPinCode = paoHelper.getValidPinCode(orderData.getDelivery());
-            response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
+            response = paoClient.setPinCode(orderData.getOrderId(), validPinCode);
         }
-        orderClient.assertThatPinCodeIsSet(response);
+        paoClient.assertThatPinCodeIsSet(response);
         orderData.setPinCode(validPinCode);
         orderData.increasePaymentVersion();
-        orderData.increaseSolutionVersion();
+//        orderData.increaseSolutionVersion();
     }
 
     @Test(description = "C23195027 PUT Confirm Order", priority = 4)
@@ -177,8 +177,8 @@ public class OrderTest extends BaseProjectApiTest {
         giveAwayData.setPoint(SalesDocumentsConst.GiveAwayPoints.PICKUP.getApiVal());
         giveAwayData.setShopId(Integer.valueOf(getUserSessionData().getUserShopId()));
         confirmOrderData.setGiveAway(giveAwayData);
-        Response<OrderData> resp = orderClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
-        orderClient.assertThatIsConfirmed(resp, orderData);
+        Response<OrderData> resp = paoClient.confirmOrder(orderData.getOrderId(), confirmOrderData);
+        paoClient.assertThatIsConfirmed(resp, orderData);
         OrderData confirmResponseData = resp.asJson();
         orderData.setCustomers(confirmResponseData.getCustomers());
     }
@@ -198,7 +198,7 @@ public class OrderTest extends BaseProjectApiTest {
         orderData.setFulfillmentVersion(respData.getFulfillmentVersion());
 
         step("Rearrange Order");
-        Response<JsonNode> resp = orderClient.rearrange(orderData, orderProductData);
+        Response<JsonNode> resp = paoClient.rearrange(orderData, orderProductData);
         orderClient.assertThatRearranged(resp);
         orderData.getProducts().add(orderProductData);
 
@@ -269,13 +269,13 @@ public class OrderTest extends BaseProjectApiTest {
             reqOrderData.getProducts().add(postProductData);
         }
 
-        Response<OrderData> orderResp = orderClient.createOrder(reqOrderData);
-        orderData = orderClient.assertThatIsCreatedAndGetData(orderResp);
+        Response<OrderData> orderResp = paoClient.createOrder(reqOrderData);
+        orderData = paoClient.assertThatIsCreatedAndGetData(orderResp);
 
         step("Remove one product item from Draft Order");
         orderData.getProducts().remove(1);
         orderData.setPriority(SalesDocumentsConst.Priorities.HIGH.getApiVal());
-        Response<OrderData> respPut = orderClient.updateDraftOrder(orderData);
+        Response<OrderData> respPut = paoClient.updateDraftOrder(orderData);
         orderClient.assertThatResponseMatches(respPut, orderData, BaseMashupClient.ResponseType.PUT);
         orderData.setPriority(null);
 
@@ -295,7 +295,7 @@ public class OrderTest extends BaseProjectApiTest {
             throw new IllegalArgumentException("order data hasn't been created");
         step("Change status to Deleted for the order");
         orderClient.assertThatResponseChangeStatusIsOk(
-                orderClient.deleteDraftOrder(orderData.getOrderId()));
+                paoClient.deleteDraftOrder(orderData.getOrderId()));
     }
 
 }

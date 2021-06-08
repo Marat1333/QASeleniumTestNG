@@ -1,7 +1,15 @@
 package com.leroy.magmobile.api.clients;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
@@ -12,15 +20,11 @@ import com.leroy.magmobile.api.requests.salesdoc.products.SalesDocProductsGet;
 import com.leroy.magmobile.api.requests.salesdoc.products.SalesDocProductsPost;
 import com.leroy.magmobile.api.requests.salesdoc.products.SalesDocProductsPut;
 import io.qameta.allure.Step;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.util.Arrays;
 import java.util.List;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-
-public class SalesDocProductClient extends BaseMashupClient {
+public class SalesDocProductClient extends BaseMagMobileClient {
 
     private Response<SalesDocumentResponseData> response;
 

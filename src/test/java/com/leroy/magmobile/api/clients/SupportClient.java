@@ -1,12 +1,13 @@
 package com.leroy.magmobile.api.clients;
 
-import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.support.SupportTicketData;
 import com.leroy.magmobile.api.requests.support.SupportTicketRequest;
 import io.qameta.allure.Step;
+import java.nio.file.Path;
+import lombok.SneakyThrows;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class SupportClient extends BaseMashupClient {
+public class SupportClient extends BaseMagMobileClient {
 
     /**
      * ---------- Executable Requests -------------
@@ -16,6 +17,15 @@ public class SupportClient extends BaseMashupClient {
     public Response<SupportTicketData> createSupportTicket(SupportTicketData supportTicketData) {
         return execute(new SupportTicketRequest().jsonBody(supportTicketData),
                 SupportTicketData.class);
+    }
+
+    @SneakyThrows
+    @Step("Create support ticket with attachment")
+    public Response<SupportTicketData> createSupportTicket(SupportTicketData supportTicketData, Path path) {
+        SupportTicketRequest req = new SupportTicketRequest();
+        req.jsonBody(supportTicketData);
+        req.fileBody(path);
+        return execute(req, SupportTicketData.class);
     }
 
 }

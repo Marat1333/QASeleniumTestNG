@@ -13,7 +13,7 @@ import org.testng.annotations.Guice;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 @Guice(modules = {Module.class})
-public abstract class BaseMagPortalApiTest extends BaseTest {
+public class BaseMagPortalApiTest extends BaseTest {
 
     @Inject
     private AuthClient authClient;
@@ -31,7 +31,7 @@ public abstract class BaseMagPortalApiTest extends BaseTest {
     }
 
     protected String getAccessToken() {
-        return authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP,
+        return authClient.getAccessToken(EnvConstants.BASIC_USER_LDAP,//TODO update on MP ClientId WITH secret
                 EnvConstants.BASIC_USER_PASS);
     }
 

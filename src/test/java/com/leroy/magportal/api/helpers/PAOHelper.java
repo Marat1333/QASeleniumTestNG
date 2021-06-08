@@ -25,6 +25,7 @@ import com.leroy.core.ContextProvider;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.EstimateClient;
+import com.leroy.magmobile.api.clients.PaoClient;
 import com.leroy.magmobile.api.clients.SalesDocSearchClient;
 import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
@@ -67,6 +68,8 @@ public class PAOHelper extends BaseHelper {
     private EstimateClient estimateClient;
     @Inject
     private OrderClient orderClient;
+    @Inject
+    private PaoClient paoClient;
     @Inject
     private SalesDocSearchClient salesDocSearchClient;
     @Inject
@@ -185,9 +188,9 @@ public class PAOHelper extends BaseHelper {
         reqOrderData.setProducts(orderProducts);
         reqOrderData.setWithDelivery(isDelivery);
 
-        Response<OrderData> orderResp = orderClient.createOrder(reqOrderData);
+        Response<OrderData> orderResp = paoClient.createOrder(reqOrderData);
 //        return orderClient.assertThatIsCreatedAndGetData(orderResp);//TODO recover when issue with PAO Order_POST fixed
-        OrderData orderData = orderClient.assertThatIsCreatedAndGetData(orderResp);
+        OrderData orderData = paoClient.assertThatIsCreatedAndGetData(orderResp);
         orderData.setDelivery(isDelivery);
         return orderData;
     }
@@ -201,15 +204,15 @@ public class PAOHelper extends BaseHelper {
 
         // Установка ПИН кода
         String validPinCode = getValidPinCode(orderData.getDelivery());
-        Response<JsonNode> response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
+        Response<JsonNode> response = paoClient.setPinCode(orderData.getOrderId(), validPinCode);
         if (response.getStatusCode() == StatusCodes.ST_409_CONFLICT) {
-            response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
+            response = paoClient.setPinCode(orderData.getOrderId(), validPinCode);
         }
         if (response.getStatusCode() == StatusCodes.ST_400_BAD_REQ) {
             validPinCode = getValidPinCode(orderData.getDelivery());
-            response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
+            response = paoClient.setPinCode(orderData.getOrderId(), validPinCode);
         }
-        orderClient.assertThatPinCodeIsSet(response);
+        paoClient.assertThatPinCodeIsSet(response);
         orderData.setPinCode(validPinCode);
         orderData.increasePaymentVersion();
 
@@ -219,7 +222,7 @@ public class PAOHelper extends BaseHelper {
         orderCustomerData.setFirstName(ParserUtil.parseFirstName(customerData.getName()));
         orderCustomerData.setLastName(ParserUtil.parseLastName(customerData.getName()));
         orderCustomerData.setRoles(Collections.singletonList(CustomerConst.Role.RECEIVER.name()));
-        orderCustomerData.setType(CustomerConst.Type.PERSON.name());
+        orderCustomerData.setType(customerData.getType() == null ? CustomerConst.Type.PERSON.name() : customerData.getType());
         orderCustomerData.setPhone(new PhoneData(customerData.getPhoneNumber()));
 
         OrderData confirmOrderData = new OrderData();
@@ -237,9 +240,9 @@ public class PAOHelper extends BaseHelper {
 
         confirmOrderData.setGiveAway(makeGiveAwayData(giveAwayPoint));
 
-        Response<OrderData> resp = orderClient
+        Response<OrderData> resp = paoClient
                 .confirmOrder(orderData.getOrderId(), confirmOrderData);
-        orderClient.assertThatIsConfirmed(resp, orderData);
+        paoClient.assertThatIsConfirmed(resp, orderData);
         if (isWaitForAllowedForPicking) {
             orderClient.waitUntilOrderGetStatus(orderData.getOrderId(),
                     SalesDocumentsConst.States.ALLOWED_FOR_PICKING, null);

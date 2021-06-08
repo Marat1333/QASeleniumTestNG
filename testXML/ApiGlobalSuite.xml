@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="API Global Suite">
+
+    <suite-files>
+        <suite-file path="product_search/ApiGlobalProductSearch.xml"/>
+        <suite-file path="mobile/api/ApiGlobalMagMobileSuite.xml"/>
+        <suite-file path="portal/api/ApiGlobalMagPortalSuite.xml"/>
+    </suite-files>
+
+</suite>

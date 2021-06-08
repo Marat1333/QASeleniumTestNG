@@ -1,6 +1,5 @@
 package com.leroy.magmobile.api.clients;
 
-import com.leroy.core.api.BaseMashupClient;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.supply_plan.Card.SupplyCardData;
 import com.leroy.magmobile.api.data.supply_plan.Details.ShipmentData;
@@ -14,14 +13,13 @@ import com.leroy.magmobile.api.requests.supply_plan.GetSupplyPlanTotal;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyDailyShipmentInfo;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyDetailsCardInfo;
 import io.qameta.allure.Step;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class SupplyPlanClient extends BaseMashupClient {
+public class SupplyPlanClient extends BaseMagMobileClient {
 
     @Step("Get shipments")
     public Response<ShipmentDataList> getShipments(GetSupplyPlanDetails params) {

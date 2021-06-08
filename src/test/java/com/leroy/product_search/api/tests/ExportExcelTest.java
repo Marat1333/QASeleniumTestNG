@@ -19,7 +19,7 @@ import org.testng.annotations.Test;
 public class ExportExcelTest extends BaseCatalogTest {
 
     private String buildUri(String resource, Map<String, String> queryParamsMap) {
-        String result = EnvConstants.SEARCH_API_HOST + resource + "?";
+        String result = EnvConstants.PRODUCTSEARCH_API_HOST + resource + "?";
         StringBuilder queryParamBuilder = new StringBuilder();
         for (Map.Entry<String, String> entry : queryParamsMap.entrySet()) {
             queryParamBuilder.append(entry.getKey()).append(entry.getValue()).append("&");

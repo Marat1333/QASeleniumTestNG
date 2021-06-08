@@ -10,13 +10,12 @@ import com.leroy.magmobile.api.data.sales.transfer.TransferProductOrderData;
 import com.leroy.magmobile.api.data.sales.transfer.TransferRunRespData;
 import com.leroy.magmobile.api.data.sales.transfer.TransferSalesDocData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class SalesDocTransferTest extends BaseProjectApiTest {
 
@@ -39,7 +38,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
         productLmCodes = searchProductHelper.getProductLmCodes(2);
     }
 
-    @Test(description = "C3248457 SalesDoc transfer create POST")
+    @Test(description = "C3248457 SalesDoc transfer create POST", priority = 1)
     public void testSalesDocTransferCreatePOST() {
         // Prepare Test Data
         String productLmCode = productLmCodes.get(0);
@@ -60,7 +59,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
         transferSalesDocData = transferClient.assertThatIsCreatedAndGetData(resp, postSalesDocData);
     }
 
-    @Test(description = "C3248482 SalesDoc transfer update PUT - change quantity")
+    @Test(description = "C3248482 SalesDoc transfer update PUT - change quantity", priority = 2)
     public void testUpdateTransfer() {
         if (transferSalesDocData == null) {
             throw new IllegalArgumentException("Transfer SalesDoc hasn't been created");
@@ -71,7 +70,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
         transferClient.assertThatResponseMatches(resp, transferSalesDocData, BaseMashupClient.ResponseType.PUT);
     }
 
-    @Test(description = "C3248458 SalesDoc transfer add Product")
+    @Test(description = "C3248458 SalesDoc transfer add Product", priority = 3)
     public void testSalesDocTransferAddProduct() {
         if (transferSalesDocData == null) {
             throw new IllegalArgumentException("Transfer SalesDoc hasn't been created");
@@ -101,7 +100,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
         transferClient.assertThatResponseIsValid(resp);
     }
 
-    @Test(description = "C3248455 SalesDoc transfers GET")
+    @Test(description = "C3248455 SalesDoc transfers GET", priority = 4)
     public void testGET() {
         if (transferSalesDocData == null) {
             throw new IllegalArgumentException("Transfer SalesDoc hasn't been created");
@@ -110,7 +109,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
         transferClient.assertThatResponseMatches(resp, transferSalesDocData);
     }
 
-    @Test(description = "C3248469 SalesDoc transfer DELETE")
+    @Test(description = "C3248469 SalesDoc transfer DELETE", priority = 5)
     public void testDelete() {
         if (transferSalesDocData == null) {
             throw new IllegalArgumentException("Transfer SalesDoc hasn't been created");
@@ -123,14 +122,14 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
         transferClient.assertThatDocumentIsNotExist(getResp);
     }
 
-    @Test(description = "C3248459 SalesDoc transfer run PUT")
+    @Test(description = "C3248459 SalesDoc transfer run PUT", priority = 6)
     public void testTransferRun() {
         testSalesDocTransferCreatePOST();
         Response<TransferRunRespData> resp = transferClient.run(transferSalesDocData);
         transferClient.assertThatIsRun(resp, transferSalesDocData);
     }
 
-    @Test(description = "C3248460 SalesDoc transfer status GET")
+    @Test(description = "C3248460 SalesDoc transfer status GET", priority = 7)
     public void testTransferStatus() throws Exception {
         if (transferSalesDocData == null) {
             throw new IllegalArgumentException("Transfer SalesDoc hasn't been created");

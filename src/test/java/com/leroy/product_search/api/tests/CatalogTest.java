@@ -47,7 +47,6 @@ public class CatalogTest extends BaseCatalogTest {
     @Inject
     private CatalogProductClient catalogProductClient;
 
-    private String lmCode;
     private final String lmProductWithReviews = "10073940";
     private final String lmProductWithSalesHistory = "10073940";
 

@@ -12,9 +12,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
@@ -36,17 +34,10 @@ import java.util.List;
 import java.util.Map;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class CartClient extends BaseMashupClient {
+public class CartClient extends BasePaoClient {
 
     public enum RequestType {
         UPDATE, GET;
-    }
-
-    @Override
-    protected void init() {
-        gatewayUrl = EnvConstants.PAO_API_HOST;
-        jaegerHost = EnvConstants.PAO_JAEGER_HOST;
-        jaegerService = EnvConstants.PAO_JAEGER_SERVICE;
     }
     /**
      * ---------- Executable Requests -------------

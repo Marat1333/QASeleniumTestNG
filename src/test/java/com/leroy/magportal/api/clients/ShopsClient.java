@@ -7,7 +7,7 @@ import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasSize;
 
 import com.leroy.constants.EnvConstants;
-import com.leroy.core.api.BaseMashupClient;
+import com.leroy.magmobile.api.clients.BasePaoClient;
 import com.leroy.magportal.api.constants.ShopProductsEnum;
 import com.leroy.magportal.api.data.shops.ShopData;
 import com.leroy.magportal.api.data.shops.StoreData;
@@ -20,14 +20,14 @@ import java.util.stream.Collectors;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class ShopsClient extends BaseMashupClient {
+public class ShopsClient extends BasePaoClient {
 
     private String oldUrl;
 
     @Override
     protected void init() {
         gatewayUrl = EnvConstants.SHOPS_API_HOST;
-        oldUrl = EnvConstants.MAIN_API_HOST;
+        oldUrl = EnvConstants.MAGPORTAL_API_HOST;
         jaegerHost = EnvConstants.PAO_JAEGER_HOST;
         jaegerService = EnvConstants.PAO_JAEGER_SERVICE;
     }

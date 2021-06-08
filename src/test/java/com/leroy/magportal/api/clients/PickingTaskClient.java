@@ -10,7 +10,6 @@ import static org.hamcrest.Matchers.hasSize;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst.PickingStatus;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
-import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magportal.api.constants.PickingReasonEnum;
 import com.leroy.magportal.api.constants.PickingTaskWorkflowEnum;
 import com.leroy.magportal.api.data.onlineOrders.OrderProductDataPayload;
@@ -36,14 +35,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class PickingTaskClient extends BaseMashupClient {
+public class PickingTaskClient extends BaseMagPortalClient {
 
-    private String secondUrl;
+    private String mpGateway;
 
     @Override
     protected void init() {
-        gatewayUrl = EnvConstants.MAIN_API_HOST;
-        secondUrl = EnvConstants.PICK_API_HOST;
+        mpGateway = EnvConstants.MAGPORTAL_API_HOST;
+        gatewayUrl = EnvConstants.PICK_API_HOST;
         jaegerHost = EnvConstants.PICK_JAEGER_HOST;
         jaegerService = EnvConstants.PICK_JAEGER_SERVICE;
     }
@@ -54,21 +53,21 @@ public class PickingTaskClient extends BaseMashupClient {
         req.setOrderId(orderId);
         req.setPageNumber(1);
         req.setPageSize(5);
-        return execute(req, PickingTaskDataList.class, secondUrl);
+        return execute(req, PickingTaskDataList.class);
     }
 
     @Step("Get picking task")
     public Response<PickingTaskData> getPickingTask(String taskId) {
         PickingTaskGetRequest req = new PickingTaskGetRequest();
         req.setTaskId(taskId);
-        return execute(req, PickingTaskData.class, secondUrl);
+        return execute(req, PickingTaskData.class);
     }
 
     @Step("Get picking tasks for {orderId}")
     public Response<OrdersPickingTasksDataList> getPickingTasks(String orderId) {
         OrdersPickingTasksGetRequest req = new OrdersPickingTasksGetRequest();
         req.setOrderId(orderId);
-        return execute(req, OrdersPickingTasksDataList.class, secondUrl);
+        return execute(req, OrdersPickingTasksDataList.class);
     }
 
     @Step("Get Products Additional Info for {lmCodes} for user's shopId")
@@ -83,7 +82,7 @@ public class PickingTaskClient extends BaseMashupClient {
         PickingTaskGetAdditionalProductsInfo req = new PickingTaskGetAdditionalProductsInfo();
         req.setLmCodes(String.join(",", lmCodes));
         req.setShopId(shopId);
-        return execute(req, Object.class, secondUrl);
+        return execute(req, Object.class);
     }
 
     @Step("Start Picking of task for OrderId= {OrderId}")
@@ -147,7 +146,7 @@ public class PickingTaskClient extends BaseMashupClient {
     @Step("Get Pickings locations' for shop ={shopId}")
     public Response<StorageLocationData> getStorageLocation(String shopId) {
         return execute(new PickingLocationGetRequest().setShopId(shopId),
-                StorageLocationData.class, secondUrl);
+                StorageLocationData.class);
     }
 
     @Step("Complete Picking of task = {taskId}")
@@ -163,7 +162,7 @@ public class PickingTaskClient extends BaseMashupClient {
         return execute(new PickingWorkflowRequest()
                 .setPickingTaskId(taskId)
                 .setLdapHeader(getUserSessionData().getUserLdap())
-                .jsonBody(payload), PickingTaskData.class);
+                .jsonBody(payload), PickingTaskData.class, mpGateway);
     }
 
     private PickingTaskWorkflowPayload makeWorkflowPayload(String taskId, Boolean isFull) {
