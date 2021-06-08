@@ -18,7 +18,7 @@ public class SplitPickingModalStep2 extends SplitPickingModal {
     @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[contains(@class, 'Select__container')]", metaName = "Выпадающий список с выбором отдела")
     PuzComboBox departmentSelector;
 
-    @WebFindBy(id = "textAreaId", metaName = "Поле Комментарий")
+    @WebFindBy(xpath = "//textarea[@data-testid='textAreaId']", metaName = "Поле Комментарий")
     TextArea commentFld;
 
     @WebFindBy(xpath = MODAL_DIV_XPATH + "//div[contains(@class, 'SplitModal__footer')]//button", metaName = "Кнопка Создать сборку")
