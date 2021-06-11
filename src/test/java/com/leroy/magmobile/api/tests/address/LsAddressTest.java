@@ -68,6 +68,9 @@ public class LsAddressTest extends BaseProjectApiTest {
         if (requiredStand) {
             step("Create new stands");
             standDataList = lsAddressHelper.createDefaultStands(alleyData);
+            standDataList.setAlleyCode(alleyData.getCode());
+            standDataList.setAlleyType(alleyData.getType());
+            standDataList.setEmail(RandomStringUtils.randomAlphanumeric(5) + "@mail.com");
 
             step("Get first stand from list");
             standData = lsAddressHelper.getStandFromList(0, alleyData.getId());
@@ -237,13 +240,11 @@ public class LsAddressTest extends BaseProjectApiTest {
 
         step("Prepare test data");
         cellData = cellDataList.getItems().get(0);
-        String lmCode = searchProductHelper.getProductLmCode();
-        int quantity = 2;
 
         step("Prepare request body to add product");
         ReqCellProductData reqCellProductData = new ReqCellProductData();
-        reqCellProductData.setLmCode(lmCode);
-        reqCellProductData.setQuantity(quantity);
+        reqCellProductData.setLmCode(searchProductHelper.getProductLmCode());
+        reqCellProductData.setQuantity(2);
 
         ReqCellProductDataList postData = new ReqCellProductDataList();
         postData.setItems(Collections.singletonList(reqCellProductData));
@@ -343,7 +344,6 @@ public class LsAddressTest extends BaseProjectApiTest {
         String[] lmCodes = cellProductDataList.getItems().stream()
                 .map((s) -> s.getLmCode()).toArray(size -> new String[size]);
 
-
         step("Prepare a post data for request");
         ProductBatchData postData = new ProductBatchData();
         postData.setCellId(cellId);
@@ -357,6 +357,15 @@ public class LsAddressTest extends BaseProjectApiTest {
         step("Send get request and check data");
         Response<CellProductDataList> getResponse = lsAddressClient.getCellProducts(cellId);
         lsAddressClient.assertThatDataMatches(getResponse, cellProductDataList);
+    }
+
+    @Test(description = "C3316404 lsAddress POST Report PDF")
+    public void testReportPDF() {
+        prepareDefaultData(true, true);
+
+        step("Send pdf to email");
+        Response<JsonNode> response = lsAddressClient.pdfReport(standDataList);
+        lsAddressClient.assertThatReportPdfIsSuccessful(response);
     }
 
 
@@ -385,7 +394,6 @@ public class LsAddressTest extends BaseProjectApiTest {
         step("Send request to get scheme and check data");
         Response<SchemeData> resp = lsAddressClient.getScheme();
         lsAddressClient.assertThatGetScheme(resp);
-
     }
 
     @Test(description = "C3316287 lsAddress PUT scheme")
@@ -393,7 +401,6 @@ public class LsAddressTest extends BaseProjectApiTest {
         step("Send request to update scheme and check data");
         Response<JsonNode> resp = lsAddressClient.putScheme((int) (Math.random() * 3));
         lsAddressClient.assertThatSchemeIsUpdated(resp);
-
     }
 
 }
