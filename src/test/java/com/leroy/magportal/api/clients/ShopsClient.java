@@ -1,11 +1,6 @@
 package com.leroy.magportal.api.clients;
 
 
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.hasSize;
-
 import com.leroy.constants.EnvConstants;
 import com.leroy.magmobile.api.clients.BasePaoClient;
 import com.leroy.magportal.api.constants.ShopProductsEnum;
@@ -15,10 +10,16 @@ import com.leroy.magportal.api.requests.shop.GetShopsRequest;
 import com.leroy.magportal.api.requests.shop.GetStoreRequest;
 import com.leroy.magportal.api.requests.shop.GetStoriesRequest;
 import io.qameta.allure.Step;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.hasSize;
 
 public class ShopsClient extends BasePaoClient {
 
@@ -90,6 +91,7 @@ public class ShopsClient extends BasePaoClient {
         softAssert().verifyAll();
     }
 
+    @Step("Verifies Get Shop's ❔")
     public void assertGetShopsResult(Response<?> response) {
         assertThat("Get Stores request was failed", response, successful());
         List<ShopData> dataList = response.asJsonList(ShopData.class);
@@ -101,6 +103,7 @@ public class ShopsClient extends BasePaoClient {
         softAssert().verifyAll();
     }
 
+    @Step("Verifies Get Store's ❔")
     public void assertGetStoreResult(Response<?> response, Integer storeId) {
         assertThat("Get Store request was failed", response, successful());
         ShopData store = response.asJson(ShopData.class);
@@ -109,6 +112,7 @@ public class ShopsClient extends BasePaoClient {
         softAssert().verifyAll();
     }
 
+    @Step("Verifies Shop's Data ❔")
     private void softAssertShopData(ShopData shopData) {
         int id = shopData.getId();
         String desc = String.format("StoreId: %s, No value for field: ", id);

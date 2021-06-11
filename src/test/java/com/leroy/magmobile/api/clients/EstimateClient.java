@@ -1,14 +1,5 @@
 package com.leroy.magmobile.api.clients;
 
-import static com.leroy.core.matchers.Matchers.isNumber;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
@@ -16,18 +7,15 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateCustome
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.SendEmailData;
-import com.leroy.magmobile.api.requests.salesdoc.estimate.EstimateChangeStatusPut;
-import com.leroy.magmobile.api.requests.salesdoc.estimate.EstimateGet;
-import com.leroy.magmobile.api.requests.salesdoc.estimate.EstimatePost;
-import com.leroy.magmobile.api.requests.salesdoc.estimate.EstimatePut;
-import com.leroy.magmobile.api.requests.salesdoc.estimate.EstimateSendEmailRequest;
+import com.leroy.magmobile.api.requests.salesdoc.estimate.*;
 import io.qameta.allure.Step;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import ru.leroymerlin.qa.core.clients.base.Response;
+
+import java.util.*;
+
+import static com.leroy.core.matchers.Matchers.isNumber;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 public class EstimateClient extends BasePaoClient {
 
@@ -61,11 +49,13 @@ public class EstimateClient extends BasePaoClient {
                 .jsonBody(estimateData), EstimateData.class);
     }
 
+    @Step("Create Estimate without Customer Data ❔")
     public Response<EstimateData> sendRequestCreate(EstimateProductOrderData productOrderData) {
         return sendRequestCreate(null,
                 Collections.singletonList(productOrderData));
     }
 
+    @Step("Create Estimate ❔")
     public Response<EstimateData> sendRequestCreate(
             EstimateCustomerData customerData, EstimateProductOrderData productOrderData) {
         return sendRequestCreate(Collections.singletonList(customerData),
@@ -84,6 +74,7 @@ public class EstimateClient extends BasePaoClient {
                 .jsonBody(estimateData), EstimateData.class);
     }
 
+    @Step("Update Estimate ❔")
     public Response<EstimateData> sendRequestUpdate(String estimateId,
                                                     EstimateProductOrderData productOrderData) {
         return sendRequestUpdate(estimateId, Collections.singletonList(productOrderData));
@@ -197,6 +188,7 @@ public class EstimateClient extends BasePaoClient {
         return this;
     }
 
+    @Step("Check that Response body matches expectedData ❔")
     public EstimateClient assertThatGetResponseMatches(
             Response<EstimateData> resp, EstimateData expectedData) {
         return assertThatGetResponseMatches(resp, expectedData, ResponseType.GET);

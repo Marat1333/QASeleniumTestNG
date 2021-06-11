@@ -1,20 +1,11 @@
 package com.leroy.magportal.api.helpers;
 
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.common_mashups.catalogs.data.CatalogSearchFilter;
 import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.customer_accounts.clients.CustomerClient;
-import com.leroy.common_mashups.customer_accounts.data.CustomerData;
-import com.leroy.common_mashups.customer_accounts.data.CustomerListData;
-import com.leroy.common_mashups.customer_accounts.data.CustomerResponseBodyData;
-import com.leroy.common_mashups.customer_accounts.data.CustomerSearchFilters;
-import com.leroy.common_mashups.customer_accounts.data.PhoneData;
+import com.leroy.common_mashups.customer_accounts.data.*;
 import com.leroy.common_mashups.helpers.CustomerHelper;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.api.StatusCodes;
@@ -35,11 +26,7 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderDat
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateCustomerData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
-import com.leroy.magmobile.api.data.sales.orders.GiveAwayData;
-import com.leroy.magmobile.api.data.sales.orders.OrderCustomerData;
-import com.leroy.magmobile.api.data.sales.orders.OrderData;
-import com.leroy.magmobile.api.data.sales.orders.ReqOrderData;
-import com.leroy.magmobile.api.data.sales.orders.ReqOrderProductData;
+import com.leroy.magmobile.api.data.sales.orders.*;
 import com.leroy.magportal.api.clients.OrderClient;
 import com.leroy.magportal.api.data.timeslot.TimeslotData;
 import com.leroy.magportal.api.data.timeslot.TimeslotResponseData;
@@ -48,13 +35,15 @@ import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import com.leroy.utils.ParserUtil;
 import com.leroy.utils.RandomUtil;
 import io.qameta.allure.Step;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
 import ru.leroymerlin.qa.core.clients.base.Response;
+
+import java.time.LocalDateTime;
+import java.util.*;
+
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
 
 public class PAOHelper extends BaseHelper {
 
@@ -310,11 +299,13 @@ public class PAOHelper extends BaseHelper {
         return estimateId;
     }
 
+    @Step("API: Создаем подтвержденную Смету ❔")
     public String createConfirmedEstimateAndGetId(EstimateProductOrderData product,
             CustomerData customerData) {
         return createConfirmedEstimateAndGetId(Collections.singletonList(product), customerData);
     }
 
+    @Step("API: Получить валидный Пин❔")
     public String getValidPinCode(boolean isDelivery) {
         int tryCount = 10;
         for (int i = 0; i < tryCount; i++) {
@@ -368,18 +359,22 @@ public class PAOHelper extends BaseHelper {
         return estimateDataResponse.asJson().getEstimateId();
     }
 
+    @Step("API: Создать драфт сметы и получить номер корзины ❔")
     public String createDraftEstimateAndGetCartId(CustomerData customerData, int productCount) {
         return createDraftEstimateAndGetCartId(customerData, null, productCount);
     }
 
+    @Step("API: Создать драфт сметы и получить номер корзины ❔")
     public String createDraftEstimateAndGetCartId(List<String> lmCodes) {
         return createDraftEstimateAndGetCartId(null, lmCodes, 1);
     }
 
+    @Step("API: Создать драфт сметы и получить номер корзины ❔")
     public String createDraftEstimateAndGetCartId(int productCount) {
         return createDraftEstimateAndGetCartId(null, null, productCount);
     }
 
+    @Step("API: Создать драфт сметы и получить номер корзины ❔")
     public String createDraftEstimateAndGetCartId() {
         return createDraftEstimateAndGetCartId(1);
     }
@@ -398,10 +393,12 @@ public class PAOHelper extends BaseHelper {
         return createConfirmedEstimateAndGetCartId(null, lmCodes);
     }
 
+    @Step("API: Создаем подтвержденную Смету ❔")
     public String createConfirmedEstimateAndGetCartId() {
         return createConfirmedEstimateAndGetCartId(searchProductHelper.getProductLmCodes(1));
     }
 
+    @Step("API: Получить последний таймслот ❔")
     public TimeslotData getLatestTimeslot(Response<TimeslotResponseData> response) {
         assertThatResponseIsOk(response);
         List<TimeslotData> responseData = response.asJson().getData();

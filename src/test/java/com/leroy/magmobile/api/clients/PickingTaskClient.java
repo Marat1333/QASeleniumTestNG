@@ -20,6 +20,7 @@ public class PickingTaskClient extends BaseMagMobileClient {
         return execute(req, PickingTaskDataList.class);
     }
 
+    @Step("Search for tasks ❔")
     public Response<PickingTaskDataList> searchForTasks(PickingTaskFilter filter) {
         return searchForTasks(filter, 1, 10);
     }

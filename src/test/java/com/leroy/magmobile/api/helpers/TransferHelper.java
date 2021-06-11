@@ -1,22 +1,22 @@
 package com.leroy.magmobile.api.helpers;
 
 
-import static com.leroy.core.matchers.Matchers.successful;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
-
 import com.google.inject.Inject;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.TransferClient;
-import com.leroy.magmobile.api.data.sales.transfer.TransferProductOrderData;
-import com.leroy.magmobile.api.data.sales.transfer.TransferRunRespData;
-import com.leroy.magmobile.api.data.sales.transfer.TransferSalesDocData;
-import com.leroy.magmobile.api.data.sales.transfer.TransferSearchProductData;
-import com.leroy.magmobile.api.data.sales.transfer.TransferSearchProductDataList;
+import com.leroy.magmobile.api.data.sales.transfer.*;
 import com.leroy.magportal.api.helpers.BaseHelper;
 import io.qameta.allure.Step;
+import lombok.Data;
+import lombok.experimental.Accessors;
+import org.testng.Assert;
+import ru.leroymerlin.qa.core.clients.base.Response;
+import ru.leroymerlin.qa.core.clients.fulfillment.data.internaltransfer.FulfillmentInternalTransferClient;
+import ru.leroymerlin.qa.core.clients.fulfillment.data.internaltransfer.SimulateTaskResponse;
+
+import javax.net.ssl.*;
+import javax.xml.soap.*;
 import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.time.ZonedDateTime;
@@ -24,27 +24,11 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import javax.xml.soap.MessageFactory;
-import javax.xml.soap.MimeHeaders;
-import javax.xml.soap.SOAPBody;
-import javax.xml.soap.SOAPConnection;
-import javax.xml.soap.SOAPConnectionFactory;
-import javax.xml.soap.SOAPElement;
-import javax.xml.soap.SOAPEnvelope;
-import javax.xml.soap.SOAPMessage;
-import javax.xml.soap.SOAPPart;
-import lombok.Data;
-import lombok.experimental.Accessors;
-import org.testng.Assert;
-import ru.leroymerlin.qa.core.clients.base.Response;
-import ru.leroymerlin.qa.core.clients.fulfillment.data.internaltransfer.FulfillmentInternalTransferClient;
-import ru.leroymerlin.qa.core.clients.fulfillment.data.internaltransfer.SimulateTaskResponse;
+
+import static com.leroy.core.matchers.Matchers.successful;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
 
 public class TransferHelper extends BaseHelper {
 
@@ -200,6 +184,7 @@ public class TransferHelper extends BaseHelper {
         return resp.asJson();
     }
 
+    @Step("API: Создаем заявку на отзыв ❔")
     public TransferSalesDocData createDraftTransferTask(
             TransferProductOrderData productData,
             SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
@@ -217,6 +202,7 @@ public class TransferHelper extends BaseHelper {
         return resp.asJson();
     }
 
+    @Step("API: Создаем подтвержденную заявку на отзыв ❔")
     public TransferRunRespData createConfirmedTransferTask(
             TransferProductOrderData productData,
             SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
@@ -246,6 +232,7 @@ public class TransferHelper extends BaseHelper {
         return result;
     }
 
+    @Step("Поиск товаров доступных для отзыва со склада ❔")
     public List<TransferSearchProductData> searchForProductsForTransfer() {
         return searchForProductsForTransfer(new SearchFilters());
     }
