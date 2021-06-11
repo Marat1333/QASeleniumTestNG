@@ -12,11 +12,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.sales.BaseProductOrderData;
 import com.leroy.magmobile.api.data.sales.orders.GiveAwayData;
 import com.leroy.magmobile.api.data.sales.orders.OrderCustomerData;
+import com.leroy.magmobile.api.data.sales.orders.OrderData;
 import com.leroy.magmobile.api.data.sales.orders.OrderProductData;
 import com.leroy.magmobile.api.data.sales.orders.ResOrderCheckQuantityData;
 import com.leroy.magmobile.api.requests.order.OrderRearrangeRequest;
@@ -447,6 +449,31 @@ public class OrderClient extends BaseMagPortalClient {
             }
             Thread.sleep(3000);
         }
+        return null;
+    }
+
+    @SneakyThrows
+    @Step("Wait until Order can be cancelled")
+    public OrderData waitUntilOrderCanBeCancelled(String orderId) {
+        long currentTimeMillis = System.currentTimeMillis();
+        Response<OnlineOrderData> r = null;
+        while (System.currentTimeMillis() - currentTimeMillis < waitTimeoutInSeconds * 1000) {
+            r = getOnlineOrder(orderId);
+            String status = r.asJson().getStatus();
+            if (r.isSuccessful() &&
+                    (status.equals(SalesDocumentsConst.States.CONFIRMED.getApiVal()) ||
+                            status.equals(
+                                    SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal()))) {
+                Log.info("waitUntilOrderIsConfirmed() has executed for " +
+                        (System.currentTimeMillis() - currentTimeMillis) / 1000 + " seconds");
+                return r.asJson();
+            }
+            Thread.sleep(3000);
+        }
+        assertThat("Could not wait for the order to be confirmed. Timeout=" + waitTimeoutInSeconds
+                        + ". " +
+                        "Response error:" + r.toString(),
+                r.isSuccessful());
         return null;
     }
 

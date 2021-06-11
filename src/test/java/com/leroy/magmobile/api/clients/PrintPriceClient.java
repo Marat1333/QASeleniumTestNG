@@ -1,24 +1,28 @@
 package com.leroy.magmobile.api.clients;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
+
 import com.leroy.core.configuration.Log;
-import com.leroy.magmobile.api.data.print.*;
+import com.leroy.magmobile.api.data.print.PrintDepartmentList;
+import com.leroy.magmobile.api.data.print.PrintDepartments;
+import com.leroy.magmobile.api.data.print.PrintPrinterData;
+import com.leroy.magmobile.api.data.print.PrintTaskProductData;
+import com.leroy.magmobile.api.data.print.PrintTaskProductsList;
+import com.leroy.magmobile.api.data.print.PrintTaskResponseData;
 import com.leroy.magmobile.api.requests.print.PrintDocumentsPrintersRequest;
 import com.leroy.magmobile.api.requests.print.PrintPriceTaskRequest;
 import io.qameta.allure.Step;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class PrintPriceClient extends BaseMagMobileClient {
 
-    @Step("Get department printers info ❔")
+    @Step("Get department printers list for user's Shop")
     public Response<PrintDepartmentList> getDepartmentPrinterList() {
         return getDepartmentPrinterList(getUserSessionData().getUserShopId());
     }
@@ -30,13 +34,13 @@ public class PrintPriceClient extends BaseMagMobileClient {
         return execute(req, PrintDepartmentList.class);
     }
 
-    @Step("Get random printer name ❔")
+    @Step("Get first printer name")
     public String getRandomPrinterName() throws IllegalAccessException {
         List<String> printersName = getPrinterNamesList();
         return printersName.get(0);
     }
 
-    @Step("Get Printer Names ❔")
+    @Step("Get Printer Names List")
     public List<String> getPrinterNamesList() throws IllegalAccessException {
         List<String> printersName = new ArrayList<>();
         PrintDepartments departmentsList = getDepartmentPrinterList().asJson().getDepartments().get(0);
@@ -54,7 +58,7 @@ public class PrintPriceClient extends BaseMagMobileClient {
         return printersName;
     }
 
-    @Step("Send printer task ❔")
+    @Step("Send printer task")
     public Response<PrintTaskResponseData> sendPrintTask(
             String printerName, PrintTaskProductData printProductData) {
         return sendPrintTask(printerName, Collections.singletonList(printProductData));

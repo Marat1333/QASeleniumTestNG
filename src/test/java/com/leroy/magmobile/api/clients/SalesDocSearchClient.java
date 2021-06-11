@@ -45,7 +45,7 @@ public class SalesDocSearchClient extends BasePaoClient {
         return execute(req, SalesDocumentListResponse.class);
     }
 
-    @Step("Search for documents with filters ❔")
+    @Step("Search for documents with filters")
     public Response<SalesDocumentListResponse> searchForDocuments(Filters filters) {
         return searchForDocuments(filters, null, null);
     }
@@ -67,7 +67,7 @@ public class SalesDocSearchClient extends BasePaoClient {
         return searchForDocuments(null, shopId, null, startFrom, pageSize);
     }
 
-    @Step("Search for documents by shopId={shopId} ❔")
+    @Step("Search for documents by shopId={shopId}")
     public Response<SalesDocumentListResponse> searchForDocumentsByShopId(String shopId) {
         return searchForDocumentsByShopId(shopId, null, null);
     }
@@ -77,7 +77,7 @@ public class SalesDocSearchClient extends BasePaoClient {
         return searchForDocuments(null, null, docType, startFrom, pageSize);
     }
 
-    @Step("Search for documents by docType={docType} ❔")
+    @Step("Search for documents by docType={docType}")
     public Response<SalesDocumentListResponse> searchForDocumentsByDocType(String docType) {
         return searchForDocumentsByDocType(docType, null, null);
     }

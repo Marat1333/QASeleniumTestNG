@@ -13,12 +13,11 @@ import com.leroy.magmobile.api.requests.supply_plan.GetSupplyPlanTotal;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyDailyShipmentInfo;
 import com.leroy.magmobile.ui.pages.work.supply_plan.data.SupplyDetailsCardInfo;
 import io.qameta.allure.Step;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class SupplyPlanClient extends BaseMagMobileClient {
 
@@ -91,7 +90,7 @@ public class SupplyPlanClient extends BaseMagMobileClient {
         return null;
     }
 
-    @Step("Get first founded today shipment ❔")
+    @Step("Get first founded today shipment info")
     public SupplyDailyShipmentInfo getTodayShipment() {
         LocalDate date = LocalDate.now();
         for (int i = 1; i < 16; i++) {
@@ -104,7 +103,7 @@ public class SupplyPlanClient extends BaseMagMobileClient {
         return null;
     }
 
-    @Step("Get first founded not today shipment ❔")
+    @Step("Get first founded not today shipment info")
     public SupplyDailyShipmentInfo getNotTodayShipment() {
         LocalDate date = LocalDate.now();
         for (int i = 1; i < 16; i++) {
@@ -119,7 +118,7 @@ public class SupplyPlanClient extends BaseMagMobileClient {
         return null;
     }
 
-    @Step("Get first founded multi shipment ❔")
+    @Step("Get first founded multi shipment info")
     public SupplyDetailsCardInfo getMultiShipmentSupply() {
         List<ShipmentData> weekShipments;
         for (int i = 1; i < 16; i++) {
@@ -138,7 +137,7 @@ public class SupplyPlanClient extends BaseMagMobileClient {
         return null;
     }
 
-    @Step("Get first founded supply with extra products ❔")
+    @Step("Get first founded supply with extra products")
     public SupplyDetailsCardInfo getSupplyWithExtraProducts() {
         List<ShipmentData> weekShipments;
         for (int i = 1; i < 16; i++) {
@@ -158,7 +157,7 @@ public class SupplyPlanClient extends BaseMagMobileClient {
         return null;
     }
 
-    @Step("Get first founded week shipment ❔")
+    @Step("Get first founded week shipment dates list")
     public List<ShipmentData> getWeekShipments(String departmentId) {
         LocalDate date = LocalDate.now();
         List<ShipmentDataList> responses = new ArrayList<>();

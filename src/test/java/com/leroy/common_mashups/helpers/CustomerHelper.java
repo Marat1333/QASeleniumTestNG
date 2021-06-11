@@ -69,7 +69,9 @@ public class CustomerHelper extends BaseHelper {
         assertThat("GetAnyCustomer Method. Count of customers", customers,
                 hasSize(greaterThan(0)));
         return customers.get(0);
-    }    @Step("Try to find phone number which is connected to no one customer")
+    }
+
+    @Step("Try to find phone number which is connected to no one customer")
     public String findUnusedPhoneNumber() {
         int attemptsCount = 10;
 

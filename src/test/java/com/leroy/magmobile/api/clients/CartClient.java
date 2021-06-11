@@ -1,21 +1,38 @@
 package com.leroy.magmobile.api.clients;
 
+import static com.leroy.core.matchers.Matchers.isNumber;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
-import com.leroy.magmobile.api.requests.salesdoc.cart.*;
+import com.leroy.magmobile.api.requests.salesdoc.cart.CartChangeStatusRequest;
+import com.leroy.magmobile.api.requests.salesdoc.cart.CartConfirmQuantityRequest;
+import com.leroy.magmobile.api.requests.salesdoc.cart.CartConsolidateProductsRequest;
+import com.leroy.magmobile.api.requests.salesdoc.cart.CartDiscountRequest;
+import com.leroy.magmobile.api.requests.salesdoc.cart.CartGet;
+import com.leroy.magmobile.api.requests.salesdoc.cart.CartItemsRequest;
+import com.leroy.magmobile.api.requests.salesdoc.cart.CartPOST;
+import com.leroy.magmobile.api.requests.salesdoc.cart.CartUpdateRequest;
 import com.leroy.magmobile.api.requests.salesdoc.discount.GetSalesDocDiscount;
 import io.qameta.allure.Step;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import ru.leroymerlin.qa.core.clients.base.Response;
-
-import java.util.*;
-
-import static com.leroy.core.matchers.Matchers.isNumber;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 
 public class CartClient extends BasePaoClient {
 
@@ -41,7 +58,7 @@ public class CartClient extends BasePaoClient {
                 .jsonBody(cartData), CartData.class);
     }
 
-    @Step("Create Cart with Product Order Data ❔")
+    @Step("Create Cart with Product {productOrderData}")
     public Response<CartData> createCartRequest(
             CartProductOrderData productOrderData) {
         return createCartRequest(Collections.singletonList(productOrderData));
@@ -218,7 +235,7 @@ public class CartClient extends BasePaoClient {
         return this;
     }
 
-    @Step("Check that Response Matches ❔")
+    @Step("Check that Carts are matched")
     public CartData assertThatResponseMatches(Response<CartData> resp, CartData expectedData) {
         return assertThatResponseMatches(resp, RequestType.GET, expectedData);
     }

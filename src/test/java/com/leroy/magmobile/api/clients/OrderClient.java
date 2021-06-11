@@ -1,20 +1,29 @@
 package com.leroy.magmobile.api.clients;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.oneOf;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.configuration.Log;
-import com.leroy.magmobile.api.data.sales.orders.*;
+import com.leroy.magmobile.api.data.sales.orders.OrderCustomerData;
+import com.leroy.magmobile.api.data.sales.orders.OrderData;
+import com.leroy.magmobile.api.data.sales.orders.OrderProductData;
+import com.leroy.magmobile.api.data.sales.orders.ReqOrderData;
+import com.leroy.magmobile.api.data.sales.orders.ReqOrderProductData;
+import com.leroy.magmobile.api.data.sales.orders.ResOrderCheckQuantityData;
+import com.leroy.magmobile.api.data.sales.orders.ResOrderProductCheckQuantityData;
 import com.leroy.magmobile.api.requests.order.OrderCheckQuantityRequest;
 import com.leroy.magmobile.api.requests.order.OrderGet;
 import com.leroy.magmobile.api.requests.order.OrderWorkflowPut;
 import io.qameta.allure.Step;
+import java.util.List;
 import org.json.simple.JSONObject;
 import ru.leroymerlin.qa.core.clients.base.Response;
-
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 
 public class OrderClient extends BaseMagMobileClient {
 
@@ -56,12 +65,12 @@ public class OrderClient extends BaseMagMobileClient {
         assertThatResponseIsOk(resp);
     }
 
-    @Step("Check that response is matches ❔")
+    @Step("Check that orders are matched")
     public void assertThatResponseMatches(Response<OrderData> resp, OrderData expectedData) {
         assertThatResponseMatches(resp, expectedData, ResponseType.GET, true);
     }
 
-    @Step("Check that response is matches ❔")
+    @Step("Check that orders are matched")
     public void assertThatResponseMatches(Response<OrderData> resp, OrderData expectedData,
             ResponseType responseType) {
         assertThatResponseMatches(resp, expectedData, responseType, true);
@@ -221,7 +230,7 @@ public class OrderClient extends BaseMagMobileClient {
         return null;
     }
 
-    @Step("Wait until order is confirmed ❔")
+    @Step("Wait until order got status {expectedStatus}")
     public OrderData waitUntilOrderHasStatusAndReturnOrderData(
             String orderId, String expectedStatus) throws Exception {
         return waitUntilOrderHasStatusAndReturnOrderData(orderId, expectedStatus, true);
