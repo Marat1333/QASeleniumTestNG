@@ -26,7 +26,8 @@ public class BaseProjectApiTest extends BaseTest {
         UserSessionData userSessionData = new UserSessionData();
         userSessionData.setUserLdap(EnvConstants.BASIC_USER_LDAP);
         userSessionData.setUserShopId(EnvConstants.SHOP_WITH_NEW_INTERFACE);
-        userSessionData.setRegionId(shopsHelper.getRegionIdByShopId(Integer.parseInt(EnvConstants.BASIC_USER_SHOP_ID)).toString());
+        userSessionData.setRegionId(shopsHelper.getRegionIdByShopId(
+                Integer.parseInt(EnvConstants.BASIC_USER_SHOP_ID)).toString());
         userSessionData.setUserDepartmentId("1");
         if (isNeedAccessToken()) {
             userSessionData.setAccessToken(getAccessToken());

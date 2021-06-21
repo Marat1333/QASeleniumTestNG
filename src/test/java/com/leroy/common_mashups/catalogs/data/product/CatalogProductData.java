@@ -74,6 +74,6 @@ public class CatalogProductData {
     @Data
     private static class Inventory {
         private Integer totalQuantity;
-        private List<Object> source;
+        private List<?> source;
     }
 }

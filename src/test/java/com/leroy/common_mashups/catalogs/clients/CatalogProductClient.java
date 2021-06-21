@@ -41,6 +41,7 @@ public class CatalogProductClient extends BaseMashupClient {
 
     private String mmGateway;
 
+    @Override
     protected void init() {
         mmGateway = EnvConstants.MAGMOBILE_API_HOST;
         gatewayUrl = EnvConstants.PRODUCTSEARCH_API_HOST;

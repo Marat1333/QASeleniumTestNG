@@ -27,6 +27,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class CustomerClient extends BaseMashupClient {
 
+    @Override
     protected void init() {
         gatewayUrl = EnvConstants.CLIENTS_API_HOST;
         jaegerHost = EnvConstants.CLIENTS_JAEGER_HOST;

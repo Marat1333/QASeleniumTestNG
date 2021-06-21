@@ -9,5 +9,4 @@ public class GetCatalogSupplierSearchRequest extends CommonSearchRequestBuilder<
     public GetCatalogSupplierSearchRequest setQuery(String value) {
         return queryParam("query", value);
     }
-//TODO
 }
