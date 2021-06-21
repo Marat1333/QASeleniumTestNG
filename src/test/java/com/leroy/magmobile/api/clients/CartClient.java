@@ -12,9 +12,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
@@ -36,17 +34,10 @@ import java.util.List;
 import java.util.Map;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class CartClient extends BaseMashupClient {
+public class CartClient extends BasePaoClient {
 
     public enum RequestType {
         UPDATE, GET;
-    }
-
-    @Override
-    protected void init() {
-        gatewayUrl = EnvConstants.PAO_API_HOST;
-        jaegerHost = EnvConstants.PAO_JAEGER_HOST;
-        jaegerService = EnvConstants.PAO_JAEGER_SERVICE;
     }
     /**
      * ---------- Executable Requests -------------
@@ -67,6 +58,7 @@ public class CartClient extends BaseMashupClient {
                 .jsonBody(cartData), CartData.class);
     }
 
+    @Step("Create Cart with Product {productOrderData}")
     public Response<CartData> createCartRequest(
             CartProductOrderData productOrderData) {
         return createCartRequest(Collections.singletonList(productOrderData));
@@ -139,6 +131,7 @@ public class CartClient extends BaseMashupClient {
         return execute(req, CartData.class);
     }
 
+    @Step("Add Discount")
     public Response<CartData> addDiscount(String cartId, int documentVersion, CartProductOrderData productData) {
         return addDiscount(cartId, documentVersion, Collections.singletonList(productData));
     }
@@ -202,6 +195,7 @@ public class CartClient extends BaseMashupClient {
         return data;
     }
 
+    @Step("Check that Cart is created and short check is False")
     public CartData assertThatIsCreatedAndGetData(Response<CartData> response) {
         return assertThatIsCreatedAndGetData(response, false);
     }
@@ -241,6 +235,7 @@ public class CartClient extends BaseMashupClient {
         return this;
     }
 
+    @Step("Check that Carts are matched")
     public CartData assertThatResponseMatches(Response<CartData> resp, CartData expectedData) {
         return assertThatResponseMatches(resp, RequestType.GET, expectedData);
     }

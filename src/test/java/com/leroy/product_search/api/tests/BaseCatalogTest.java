@@ -39,7 +39,7 @@ public class BaseCatalogTest extends BaseMagPortalApiTest {
             softAssert().isTrue(Strings.isNotNullAndNotEmpty(nearestShop.getName()),
                     data + "No Shop Name provided.");
             softAssert().isTrue(nearestShop.getDistance() >= 0, data + "No Distance provided.");
-            softAssert().isTrue(nearestShop.getPrice() > 0, data + "No Price provided.");
+            softAssert().isTrue(nearestShop.getPrice() != null && nearestShop.getPrice() > 0, data + "No Price provided.");
             softAssert().isTrue(nearestShop.getAvailableStock() != null,
                     data + "No AvailableStock provided.");
         }

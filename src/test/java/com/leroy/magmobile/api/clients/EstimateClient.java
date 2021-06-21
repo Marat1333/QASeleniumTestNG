@@ -10,9 +10,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateCustomerData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
@@ -31,18 +29,11 @@ import java.util.List;
 import java.util.Map;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class EstimateClient extends BaseMashupClient {
+public class EstimateClient extends BasePaoClient {
 
       /**
      * ---------- Executable Requests -------------
      **/
-
-    @Override
-    protected void init() {
-        gatewayUrl = EnvConstants.PAO_API_HOST;
-        jaegerHost = EnvConstants.PAO_JAEGER_HOST;
-        jaegerService = EnvConstants.PAO_JAEGER_SERVICE;
-    }
 
     @Step("Get Estimate info for estimateId={estimateId}")
     public Response<EstimateData> sendRequestGet(String estimateId) {
@@ -70,11 +61,13 @@ public class EstimateClient extends BaseMashupClient {
                 .jsonBody(estimateData), EstimateData.class);
     }
 
+    @Step("Create Estimate")
     public Response<EstimateData> sendRequestCreate(EstimateProductOrderData productOrderData) {
         return sendRequestCreate(null,
                 Collections.singletonList(productOrderData));
     }
 
+    @Step("Create Estimate")
     public Response<EstimateData> sendRequestCreate(
             EstimateCustomerData customerData, EstimateProductOrderData productOrderData) {
         return sendRequestCreate(Collections.singletonList(customerData),
@@ -93,6 +86,7 @@ public class EstimateClient extends BaseMashupClient {
                 .jsonBody(estimateData), EstimateData.class);
     }
 
+    @Step("Update Estimate with id {estimateId}")
     public Response<EstimateData> sendRequestUpdate(String estimateId,
                                                     EstimateProductOrderData productOrderData) {
         return sendRequestUpdate(estimateId, Collections.singletonList(productOrderData));
@@ -206,6 +200,7 @@ public class EstimateClient extends BaseMashupClient {
         return this;
     }
 
+    @Step("Check that Estimates are matched")
     public EstimateClient assertThatGetResponseMatches(
             Response<EstimateData> resp, EstimateData expectedData) {
         return assertThatGetResponseMatches(resp, expectedData, ResponseType.GET);

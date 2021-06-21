@@ -29,7 +29,7 @@ public class CustomerClient extends BaseMashupClient {
 
     @Override
     protected void init() {
-        gatewayUrl = EnvConstants.CLIENT_API_HOST;
+        gatewayUrl = EnvConstants.CLIENTS_API_HOST;
         jaegerHost = EnvConstants.CLIENTS_JAEGER_HOST;
         jaegerService = EnvConstants.CLIENTS_JAEGER_SERVICE;
     }
@@ -162,7 +162,7 @@ public class CustomerClient extends BaseMashupClient {
     @Step("Check that Customer balance not found")
     public void assertThatBalanceNotFound(Response<JsonNode> resp) {
         assertThat(resp.toString(), resp.getStatusCode(), is(StatusCodes.ST_404_NOT_FOUND));
-        assertThat("Error text is wrong", resp.asJson().get("error").asText(),
+        assertThat("Error text is wrong", resp.asJson().get("message").asText(),
                 is("Customer balance not found!"));
 
     }

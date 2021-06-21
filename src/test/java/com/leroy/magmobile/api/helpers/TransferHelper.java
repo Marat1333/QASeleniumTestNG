@@ -200,6 +200,7 @@ public class TransferHelper extends BaseHelper {
         return resp.asJson();
     }
 
+    @Step("API: Создаем Draft заявку на отзыв")
     public TransferSalesDocData createDraftTransferTask(
             TransferProductOrderData productData,
             SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
@@ -217,6 +218,7 @@ public class TransferHelper extends BaseHelper {
         return resp.asJson();
     }
 
+    @Step("API: Создаем подтвержденную заявку на отзыв")
     public TransferRunRespData createConfirmedTransferTask(
             TransferProductOrderData productData,
             SalesDocumentsConst.GiveAwayPoints giveAwayPoints) {
@@ -246,6 +248,7 @@ public class TransferHelper extends BaseHelper {
         return result;
     }
 
+    @Step("Поиск товаров доступных для отзыва со склада")
     public List<TransferSearchProductData> searchForProductsForTransfer() {
         return searchForProductsForTransfer(new SearchFilters());
     }

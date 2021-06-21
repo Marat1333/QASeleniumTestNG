@@ -14,6 +14,7 @@ import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.core.UserSessionData;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.OrderClient;
+import com.leroy.magmobile.api.clients.PaoClient;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
@@ -50,6 +51,8 @@ public class OrderSearchTest extends WebBaseSteps {
     private SearchProductHelper searchProductHelper;
     @Inject
     private OrderClient orderClient;
+    @Inject
+    private PaoClient paoClient;
     @Inject
     private CartClient cartClient;
     @Inject
@@ -95,18 +98,18 @@ public class OrderSearchTest extends WebBaseSteps {
 
         reqOrderData.getProducts().add(postProductData);
 
-        Response<OrderData> orderResp = orderClient.createOrder(reqOrderData);
+        Response<OrderData> orderResp = paoClient.createOrder(reqOrderData);
         OrderData orderData = orderResp.asJson();
 
         // Set pin-code
         String validPinCode = paoHelper.getValidPinCode(false);
-        Response<JsonNode> responseSetPinCode = orderClient
+        Response<JsonNode> responseSetPinCode = paoClient
             .setPinCode(orderData.getOrderId(), validPinCode);
         if (responseSetPinCode.getStatusCode() == StatusCodes.ST_400_BAD_REQ) {
             validPinCode = paoHelper.getValidPinCode(false);
-            responseSetPinCode = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
+            responseSetPinCode = paoClient.setPinCode(orderData.getOrderId(), validPinCode);
         }
-        orderClient.assertThatPinCodeIsSet(responseSetPinCode);
+        paoClient.assertThatPinCodeIsSet(responseSetPinCode);
 
         // Confirm order
         String customerFirstName = ParserUtil
@@ -150,9 +153,9 @@ public class OrderSearchTest extends WebBaseSteps {
         giveAwayData.setShopId(Integer.valueOf(userSessionData.getUserShopId()));
         confirmOrderData.setGiveAway(giveAwayData);
 
-        Response<OrderData> respConfirm = orderClient
+        Response<OrderData> respConfirm = paoClient
             .confirmOrder(orderData.getOrderId(), confirmOrderData);
-        orderClient.assertThatIsConfirmed(respConfirm, orderData);
+        paoClient.assertThatIsConfirmed(respConfirm, orderData);
         if (waitUntilIsConfirmed) {
             orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderData.getOrderId(),
                 SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());

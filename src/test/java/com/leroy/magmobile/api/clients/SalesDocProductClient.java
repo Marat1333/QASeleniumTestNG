@@ -1,7 +1,15 @@
 package com.leroy.magmobile.api.clients;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
@@ -12,15 +20,11 @@ import com.leroy.magmobile.api.requests.salesdoc.products.SalesDocProductsGet;
 import com.leroy.magmobile.api.requests.salesdoc.products.SalesDocProductsPost;
 import com.leroy.magmobile.api.requests.salesdoc.products.SalesDocProductsPut;
 import io.qameta.allure.Step;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.util.Arrays;
 import java.util.List;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-
-public class SalesDocProductClient extends BaseMashupClient {
+public class SalesDocProductClient extends BaseMagMobileClient {
 
     private Response<SalesDocumentResponseData> response;
 
@@ -54,6 +58,7 @@ public class SalesDocProductClient extends BaseMashupClient {
         return this;
     }
 
+    @Step("Create Sales Document with products {products} and services {services}")
     public SalesDocProductClient sendRequestCreate(
             List<CartEstimateProductOrderData> products, List<ServiceOrderData> services) {
         SalesDocumentResponseData salesDocumentResponseData = new SalesDocumentResponseData();
@@ -62,6 +67,7 @@ public class SalesDocProductClient extends BaseMashupClient {
         return sendRequestCreate(salesDocumentResponseData);
     }
 
+    @Step("Create Sales Document with products {productOrderDataArray}")
     public SalesDocProductClient sendRequestCreate(
             CartEstimateProductOrderData... productOrderDataArray) {
         SalesDocumentResponseData salesDocumentResponseData = new SalesDocumentResponseData();
@@ -69,6 +75,7 @@ public class SalesDocProductClient extends BaseMashupClient {
         return sendRequestCreate(salesDocumentResponseData);
     }
 
+    @Step("Create Sales Document with services {serviceOrderDataArray}")
     public SalesDocProductClient sendRequestCreate(
             ServiceOrderData... serviceOrderDataArray) {
         SalesDocumentResponseData salesDocumentResponseData = new SalesDocumentResponseData();
@@ -92,6 +99,7 @@ public class SalesDocProductClient extends BaseMashupClient {
         return this;
     }
 
+    @Step("Update Products for Sales Document {fullDocId}")
     public SalesDocProductClient updateSalesDocProducts(String fullDocId,
                                                         CartEstimateProductOrderData... productOrderData) {
         SalesDocumentResponseData salesDocumentResponseData = new SalesDocumentResponseData();
@@ -99,13 +107,14 @@ public class SalesDocProductClient extends BaseMashupClient {
         return updateSalesDocProducts(fullDocId, salesDocumentResponseData);
     }
 
+    @Step("Update Services for Sales Document {fullDocId}")
     public SalesDocProductClient updateSalesDocProducts(String fullDocId,
                                                         ServiceOrderData... serviceOrderData) {
         SalesDocumentResponseData salesDocumentResponseData = new SalesDocumentResponseData();
         salesDocumentResponseData.setServices(Arrays.asList(serviceOrderData));
         return updateSalesDocProducts(fullDocId, salesDocumentResponseData);
     }
-
+    @Step("Update Products and Services for Sales Document {fullDocId}")
     public SalesDocProductClient updateSalesDocProducts(String fullDocId,
                                                         List<CartEstimateProductOrderData> products, List<ServiceOrderData> services) {
         SalesDocumentResponseData salesDocumentResponseData = new SalesDocumentResponseData();

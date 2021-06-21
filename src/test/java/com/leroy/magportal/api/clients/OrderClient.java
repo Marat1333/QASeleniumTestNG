@@ -12,16 +12,26 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.leroy.common_mashups.catalogs.data.product.ProductData;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
+import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.constants.sales.SalesDocumentsConst.States;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.sales.BaseProductOrderData;
 import com.leroy.magmobile.api.data.sales.orders.GiveAwayData;
 import com.leroy.magmobile.api.data.sales.orders.OrderCustomerData;
+import com.leroy.magmobile.api.data.sales.orders.OrderData;
 import com.leroy.magmobile.api.data.sales.orders.OrderProductData;
 import com.leroy.magmobile.api.data.sales.orders.ResOrderCheckQuantityData;
 import com.leroy.magmobile.api.requests.order.OrderRearrangeRequest;
-import com.leroy.magportal.api.constants.*;
+import com.leroy.magportal.api.constants.DeliveryServiceTypeEnum;
+import com.leroy.magportal.api.constants.GiveAwayGroups;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
+import com.leroy.magportal.api.constants.OrderChannelEnum;
+import com.leroy.magportal.api.constants.OrderReasonEnum;
+import com.leroy.magportal.api.constants.OrderWorkflowEnum;
+import com.leroy.magportal.api.constants.PaymentMethodEnum;
+import com.leroy.magportal.api.constants.PaymentTypeEnum;
+import com.leroy.magportal.api.constants.UserTasksProject;
+import com.leroy.magportal.api.constants.UserTasksType;
 import com.leroy.magportal.api.data.onlineOrders.CheckQuantityData;
 import com.leroy.magportal.api.data.onlineOrders.DeliveryCustomerData;
 import com.leroy.magportal.api.data.onlineOrders.DeliveryData;
@@ -77,7 +87,7 @@ import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
 import ru.leroymerlin.qa.core.clients.customerorders.enums.PaymentStatus;
 
-public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
+public class OrderClient extends BaseMagPortalClient {
 
     @Inject
     private SearchProductHelper searchProductHelper;
@@ -109,7 +119,6 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
         return null;
     }
 
-    @Override
     @Step("Cancel order with id = {orderId}")
     public Response<JsonNode> cancelOrder(String orderId) {
         return makeAction(orderId, OrderWorkflowEnum.CANCEL.getValue(), new OrderWorkflowPayload());
@@ -440,6 +449,31 @@ public class OrderClient extends com.leroy.magmobile.api.clients.OrderClient {
             }
             Thread.sleep(3000);
         }
+        return null;
+    }
+
+    @SneakyThrows
+    @Step("Wait until Order can be cancelled")
+    public OrderData waitUntilOrderCanBeCancelled(String orderId) {
+        long currentTimeMillis = System.currentTimeMillis();
+        Response<OnlineOrderData> r = null;
+        while (System.currentTimeMillis() - currentTimeMillis < waitTimeoutInSeconds * 1000) {
+            r = getOnlineOrder(orderId);
+            String status = r.asJson().getStatus();
+            if (r.isSuccessful() &&
+                    (status.equals(SalesDocumentsConst.States.CONFIRMED.getApiVal()) ||
+                            status.equals(
+                                    SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal()))) {
+                Log.info("waitUntilOrderIsConfirmed() has executed for " +
+                        (System.currentTimeMillis() - currentTimeMillis) / 1000 + " seconds");
+                return r.asJson();
+            }
+            Thread.sleep(3000);
+        }
+        assertThat("Could not wait for the order to be confirmed. Timeout=" + waitTimeoutInSeconds
+                        + ". " +
+                        "Response error:" + r.toString(),
+                r.isSuccessful());
         return null;
     }
 

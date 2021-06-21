@@ -12,7 +12,6 @@ import static org.hamcrest.Matchers.not;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.api.StatusCodes;
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.core.api.BaseMashupClient;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.data.sales.transfer.TransferDataList;
 import com.leroy.magmobile.api.data.sales.transfer.TransferProductOrderData;
@@ -37,7 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class TransferClient extends BaseMashupClient {
+public class TransferClient extends BaseMagMobileClient {
 
     /**
      * ---------- Executable Requests -------------
@@ -67,6 +66,7 @@ public class TransferClient extends BaseMashupClient {
         return execute(params, TransferSalesDocData.class);
     }
 
+    @Step("Add products for task with id = {taskId}")
     public Response<TransferSalesDocData> sendRequestAddProducts(
             String taskId, TransferProductOrderData productData) {
         return sendRequestAddProducts(taskId, Collections.singletonList(productData));
@@ -80,6 +80,7 @@ public class TransferClient extends BaseMashupClient {
         return execute(request, TransferSalesDocData.class);
     }
 
+    @Step("Run transfer task with id = {taskId}")
     public Response<TransferRunRespData> run(TransferSalesDocData transferSalesDocData) {
         return run(transferSalesDocData.getTaskId(), transferSalesDocData.getPointOfGiveAway(),
                 transferSalesDocData.getDateOfGiveAway());
@@ -246,6 +247,7 @@ public class TransferClient extends BaseMashupClient {
         assertThat("code", actualData.getCode(), is(1));
     }
 
+    @Step("Check that TransferSalesDocs are matched")
     public void assertThatResponseMatches(Response<TransferSalesDocData> resp, TransferSalesDocData expectedData) {
         assertThatResponseMatches(resp, expectedData, ResponseType.GET);
     }

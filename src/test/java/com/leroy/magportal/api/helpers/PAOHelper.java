@@ -25,6 +25,7 @@ import com.leroy.core.ContextProvider;
 import com.leroy.core.configuration.Log;
 import com.leroy.magmobile.api.clients.CartClient;
 import com.leroy.magmobile.api.clients.EstimateClient;
+import com.leroy.magmobile.api.clients.PaoClient;
 import com.leroy.magmobile.api.clients.SalesDocSearchClient;
 import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
@@ -67,6 +68,8 @@ public class PAOHelper extends BaseHelper {
     private EstimateClient estimateClient;
     @Inject
     private OrderClient orderClient;
+    @Inject
+    private PaoClient paoClient;
     @Inject
     private SalesDocSearchClient salesDocSearchClient;
     @Inject
@@ -185,9 +188,9 @@ public class PAOHelper extends BaseHelper {
         reqOrderData.setProducts(orderProducts);
         reqOrderData.setWithDelivery(isDelivery);
 
-        Response<OrderData> orderResp = orderClient.createOrder(reqOrderData);
+        Response<OrderData> orderResp = paoClient.createOrder(reqOrderData);
 //        return orderClient.assertThatIsCreatedAndGetData(orderResp);//TODO recover when issue with PAO Order_POST fixed
-        OrderData orderData = orderClient.assertThatIsCreatedAndGetData(orderResp);
+        OrderData orderData = paoClient.assertThatIsCreatedAndGetData(orderResp);
         orderData.setDelivery(isDelivery);
         return orderData;
     }
@@ -201,15 +204,15 @@ public class PAOHelper extends BaseHelper {
 
         // Установка ПИН кода
         String validPinCode = getValidPinCode(orderData.getDelivery());
-        Response<JsonNode> response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
+        Response<JsonNode> response = paoClient.setPinCode(orderData.getOrderId(), validPinCode);
         if (response.getStatusCode() == StatusCodes.ST_409_CONFLICT) {
-            response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
+            response = paoClient.setPinCode(orderData.getOrderId(), validPinCode);
         }
         if (response.getStatusCode() == StatusCodes.ST_400_BAD_REQ) {
             validPinCode = getValidPinCode(orderData.getDelivery());
-            response = orderClient.setPinCode(orderData.getOrderId(), validPinCode);
+            response = paoClient.setPinCode(orderData.getOrderId(), validPinCode);
         }
-        orderClient.assertThatPinCodeIsSet(response);
+        paoClient.assertThatPinCodeIsSet(response);
         orderData.setPinCode(validPinCode);
         orderData.increasePaymentVersion();
 
@@ -237,9 +240,9 @@ public class PAOHelper extends BaseHelper {
 
         confirmOrderData.setGiveAway(makeGiveAwayData(giveAwayPoint));
 
-        Response<OrderData> resp = orderClient
+        Response<OrderData> resp = paoClient
                 .confirmOrder(orderData.getOrderId(), confirmOrderData);
-        orderClient.assertThatIsConfirmed(resp, orderData);
+        paoClient.assertThatIsConfirmed(resp, orderData);
         if (isWaitForAllowedForPicking) {
             orderClient.waitUntilOrderGetStatus(orderData.getOrderId(),
                     SalesDocumentsConst.States.ALLOWED_FOR_PICKING, null);
@@ -307,11 +310,13 @@ public class PAOHelper extends BaseHelper {
         return estimateId;
     }
 
+    @Step("API: Создаем подтвержденную Смету")
     public String createConfirmedEstimateAndGetId(EstimateProductOrderData product,
             CustomerData customerData) {
         return createConfirmedEstimateAndGetId(Collections.singletonList(product), customerData);
     }
 
+    @Step("API: Получить валидный Пин")
     public String getValidPinCode(boolean isDelivery) {
         int tryCount = 10;
         for (int i = 0; i < tryCount; i++) {
@@ -365,18 +370,22 @@ public class PAOHelper extends BaseHelper {
         return estimateDataResponse.asJson().getEstimateId();
     }
 
+    @Step("API: Создать драфт сметы для клиента {customerData} с количеством продуктов {productCount}")
     public String createDraftEstimateAndGetCartId(CustomerData customerData, int productCount) {
         return createDraftEstimateAndGetCartId(customerData, null, productCount);
     }
 
+    @Step("API: Создать драфт сметы с продуктами {lmCodes}")
     public String createDraftEstimateAndGetCartId(List<String> lmCodes) {
         return createDraftEstimateAndGetCartId(null, lmCodes, 1);
     }
 
+    @Step("API: Создать драфт сметы с количеством продуктов {productCount}")
     public String createDraftEstimateAndGetCartId(int productCount) {
         return createDraftEstimateAndGetCartId(null, null, productCount);
     }
 
+    @Step("API: Создать драфт сметы")
     public String createDraftEstimateAndGetCartId() {
         return createDraftEstimateAndGetCartId(1);
     }
@@ -395,16 +404,19 @@ public class PAOHelper extends BaseHelper {
         return createConfirmedEstimateAndGetCartId(null, lmCodes);
     }
 
+    @Step("API: Создаем подтвержденную Смету")
     public String createConfirmedEstimateAndGetCartId() {
         return createConfirmedEstimateAndGetCartId(searchProductHelper.getProductLmCodes(1));
     }
 
+    @Step("API: Получить последний таймслот")
     public TimeslotData getLatestTimeslot(Response<TimeslotResponseData> response) {
         assertThatResponseIsOk(response);
         List<TimeslotData> responseData = response.asJson().getData();
         return responseData.get(responseData.size() - 1);
     }
 
+    @Step("API: Получить id причины скидки")
     public int getDiscountReasonId() {
         Response<SalesDocDiscountData> req = cartClient.getDiscountReasons();
         assertThatResponseIsOk(req);

@@ -1,22 +1,56 @@
 package com.leroy.magmobile.api.clients;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
-import com.leroy.core.api.BaseMashupClient;
-import com.leroy.magmobile.api.data.address.*;
-import com.leroy.magmobile.api.data.address.cellproducts.*;
+import com.leroy.magmobile.api.data.address.AlleyData;
+import com.leroy.magmobile.api.data.address.AlleyDataItems;
+import com.leroy.magmobile.api.data.address.CellData;
+import com.leroy.magmobile.api.data.address.CellDataList;
+import com.leroy.magmobile.api.data.address.SchemeData;
+import com.leroy.magmobile.api.data.address.StandData;
+import com.leroy.magmobile.api.data.address.StandDataList;
+import com.leroy.magmobile.api.data.address.cellproducts.CellProductData;
+import com.leroy.magmobile.api.data.address.cellproducts.CellProductDataList;
+import com.leroy.magmobile.api.data.address.cellproducts.ProductBatchData;
+import com.leroy.magmobile.api.data.address.cellproducts.ProductCellData;
+import com.leroy.magmobile.api.data.address.cellproducts.ProductCellDataList;
+import com.leroy.magmobile.api.data.address.cellproducts.ReqCellProductData;
+import com.leroy.magmobile.api.data.address.cellproducts.ReqCellProductDataList;
 import com.leroy.magmobile.api.helpers.LsAddressHelper;
-import com.leroy.magmobile.api.requests.address.*;
+import com.leroy.magmobile.api.requests.address.LsAddressAlleysDeleteRequest;
+import com.leroy.magmobile.api.requests.address.LsAddressAlleysPostRequest;
+import com.leroy.magmobile.api.requests.address.LsAddressAlleysPutRequest;
+import com.leroy.magmobile.api.requests.address.LsAddressAlleysRequest;
+import com.leroy.magmobile.api.requests.address.LsAddressCellProductsBatchDelete;
+import com.leroy.magmobile.api.requests.address.LsAddressCellProductsDelete;
+import com.leroy.magmobile.api.requests.address.LsAddressCellProductsMove;
+import com.leroy.magmobile.api.requests.address.LsAddressCellProductsPostRequest;
+import com.leroy.magmobile.api.requests.address.LsAddressCellProductsPut;
+import com.leroy.magmobile.api.requests.address.LsAddressCellProductsRequest;
+import com.leroy.magmobile.api.requests.address.LsAddressCellSearchRequest;
+import com.leroy.magmobile.api.requests.address.LsAddressCellsDeleteRequest;
+import com.leroy.magmobile.api.requests.address.LsAddressCellsPostRequest;
+import com.leroy.magmobile.api.requests.address.LsAddressCellsPutRequest;
+import com.leroy.magmobile.api.requests.address.LsAddressCellsRequest;
+import com.leroy.magmobile.api.requests.address.LsAddressReportPostRequest;
+import com.leroy.magmobile.api.requests.address.LsAddressSchemePutRequest;
+import com.leroy.magmobile.api.requests.address.LsAddressSchemeRequest;
+import com.leroy.magmobile.api.requests.address.LsAddressStandsPostRequest;
+import com.leroy.magmobile.api.requests.address.LsAddressStandsRequest;
 import io.qameta.allure.Step;
+import java.util.List;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-
-public class LsAddressClient extends BaseMashupClient {
+public class LsAddressClient extends BaseMagMobileClient {
 
     @Inject
     private LsAddressHelper lsAddressHelper;
@@ -233,6 +267,7 @@ public class LsAddressClient extends BaseMashupClient {
         softAssert().verifyAll();
     }
 
+    @Step("Check that alley list is ok")
     public void assertThatGetAlleyList(Response<AlleyDataItems> resp) {
         assertThatResponseIsOk(resp);
         List<AlleyData> items = resp.asJson().getItems();
@@ -378,6 +413,7 @@ public class LsAddressClient extends BaseMashupClient {
         softAssert().verifyAll();
     }
 
+    @Step("Check that CellDataLists are matched")
     public void assertThatDataMatches(Response<CellDataList> resp, CellDataList expectedData) {
         assertThatDataMatches(resp, expectedData, ResponseType.GET);
     }

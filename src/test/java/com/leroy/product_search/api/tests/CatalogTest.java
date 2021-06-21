@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
@@ -27,12 +28,12 @@ import com.leroy.common_mashups.catalogs.data.product.reviews.ReviewData;
 import com.leroy.common_mashups.catalogs.data.supply.CatalogSupplierDataOld;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst;
-import com.leroy.core.UserSessionData;
 import com.leroy.magmobile.api.data.shops.ShopData;
 import com.leroy.magmobile.api.data.user.UserData;
 import java.util.List;
 import java.util.Random;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.http.annotation.Obsolete;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.base.TestCase;
@@ -46,19 +47,19 @@ public class CatalogTest extends BaseCatalogTest {
     @Inject
     private CatalogProductClient catalogProductClient;
 
-    private String lmCode;
     private final String lmProductWithReviews = "10073940";
     private final String lmProductWithSalesHistory = "10073940";
 
-    @Override
-    protected UserSessionData initTestClassUserSessionDataTemplate() {
-        UserSessionData userSessionData = super.initTestClassUserSessionDataTemplate();
-        userSessionData.setUserShopId("32");
-        return super.initTestClassUserSessionDataTemplate();
-    }
+//    @Override//TODO It's NOT working anymore
+//    protected UserSessionData initTestClassUserSessionDataTemplate() {
+//        UserSessionData userSessionData = super.initTestClassUserSessionDataTemplate();
+//        userSessionData.setUserShopId("32");
+//        return super.initTestClassUserSessionDataTemplate();
+//    }
 
     @BeforeClass
     private void setUp() {
+        getUserSessionData().setUserShopId("32");
         lmCode = searchProductHelper.getRandomProduct().getLmCode();
     }
 
@@ -67,7 +68,7 @@ public class CatalogTest extends BaseCatalogTest {
         Response<?> response = catalogProductClient.getNomenclature();
         isResponseOk(response);
         List<NomenclatureData> nomenclatureData = response.asJsonList(NomenclatureData.class);
-        assertThat("count of departments", nomenclatureData.size(), equalTo(15)); //15 отделов
+        assertThat("count of departments", nomenclatureData.size(), greaterThanOrEqualTo(15)); //15 отделов
     }
 
     @Test(description = "C3172856 get catalog product", groups = "productSearch")
@@ -93,7 +94,8 @@ public class CatalogTest extends BaseCatalogTest {
 
     @Test(description = "C23195048 GET info about sales history", groups = "productSearch")
     public void testCatalogProductSales() {
-        Response<?> salesHistoryResponse = catalogProductClient.getProductSales(lmProductWithSalesHistory);
+        Response<?> salesHistoryResponse = catalogProductClient.getProductSales(lmProductWithSalesHistory,
+                getUserSessionData().getUserShopId());
         isResponseOk(salesHistoryResponse);
         List<SalesHistoryData> salesHistoryData = salesHistoryResponse.asJsonList(SalesHistoryData.class);
         assertThat("Count of items", salesHistoryData.size(), greaterThan(0));
@@ -108,6 +110,7 @@ public class CatalogTest extends BaseCatalogTest {
     }
 
     @Test(description = "C3161101 catalog shops - get remains info by lm code", groups = "productSearch")
+    @Obsolete
     public void testCatalogShops() {
         String[] shops = {"32", "5", "69"};
         Response<?> catalogShopsResponse = catalogProductClient.getProductShopsPriceAndQuantity(

@@ -1,27 +1,50 @@
 package com.leroy.magmobile.api.clients;
 
+import static com.leroy.constants.api.ErrorTextConst.SESSION_NOT_FOUND;
+import static com.leroy.constants.api.ErrorTextConst.SESSION_NOT_FOUND_OR_ALREADY_FINISHED;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasItemInArray;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.constants.EnvConstants;
-import com.leroy.core.api.BaseMashupClient;
-import com.leroy.magmobile.api.data.ruptures.*;
+import com.leroy.magmobile.api.data.ruptures.ActionData;
+import com.leroy.magmobile.api.data.ruptures.ReqRuptureBulkSessionData;
+import com.leroy.magmobile.api.data.ruptures.ReqRuptureSessionData;
+import com.leroy.magmobile.api.data.ruptures.ReqRuptureSessionWithActionsData;
+import com.leroy.magmobile.api.data.ruptures.ResActionData;
+import com.leroy.magmobile.api.data.ruptures.ResActionDataList;
+import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionData;
+import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionDataList;
+import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
+import com.leroy.magmobile.api.data.ruptures.RuptureProductDataList;
+import com.leroy.magmobile.api.data.ruptures.RuptureSessionGroupData;
 import com.leroy.magmobile.api.enums.CorrectionAccessLevels;
 import com.leroy.magmobile.api.enums.RupturesSessionStatuses;
-import com.leroy.magmobile.api.requests.ruptures.*;
+import com.leroy.magmobile.api.requests.ruptures.RupturesBulkSessionCreateRequest;
+import com.leroy.magmobile.api.requests.ruptures.RupturesBulkSessionProductAddRequest;
+import com.leroy.magmobile.api.requests.ruptures.RupturesCorrectionAccessCheckRequest;
+import com.leroy.magmobile.api.requests.ruptures.RupturesSessionCreateRequest;
+import com.leroy.magmobile.api.requests.ruptures.RupturesSessionDeleteRequest;
+import com.leroy.magmobile.api.requests.ruptures.RupturesSessionFinishRequest;
+import com.leroy.magmobile.api.requests.ruptures.RupturesSessionGroupsRequest;
+import com.leroy.magmobile.api.requests.ruptures.RupturesSessionProductActionRequest;
+import com.leroy.magmobile.api.requests.ruptures.RupturesSessionProductAddRequest;
+import com.leroy.magmobile.api.requests.ruptures.RupturesSessionProductDeleteRequest;
+import com.leroy.magmobile.api.requests.ruptures.RupturesSessionProductsRequest;
+import com.leroy.magmobile.api.requests.ruptures.RupturesSessionsRequest;
 import io.qameta.allure.Step;
-import org.jetbrains.annotations.NotNull;
-import ru.leroymerlin.qa.core.clients.base.Response;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.jetbrains.annotations.NotNull;
+import ru.leroymerlin.qa.core.clients.base.Response;
 
-import static com.leroy.constants.api.ErrorTextConst.SESSION_NOT_FOUND;
-import static com.leroy.constants.api.ErrorTextConst.SESSION_NOT_FOUND_OR_ALREADY_FINISHED;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-
-public class RupturesClient extends BaseMashupClient {
+public class RupturesClient extends BaseMagMobileClient {
 
     @Override
     protected void init() {
@@ -123,18 +146,22 @@ public class RupturesClient extends BaseMashupClient {
         return execute(req, RuptureProductDataList.class);
     }
 
+    @Step("Получить товары")
     public Response<RuptureProductDataList> getProducts(Object sessionId) {
         return getProducts(sessionId, null, null, null, null, null);
     }
 
+    @Step("Получить товары для action {action}")
     public Response<RuptureProductDataList> getProductsWithAction(Integer sessionId, Boolean actionState, Integer action) {
         return getProducts(sessionId, actionState, action, null, null, null);
     }
 
+    @Step("Получить товары со статусом продукта {productState}")
     public Response<RuptureProductDataList> getProductsWithProductState(Integer sessionId, Integer... productState) {
         return getProducts(sessionId, null, null, productState, null, null);
     }
 
+    @Step("Получить товары c пагинацией")
     public Response<RuptureProductDataList> getProductsWithPagination(Integer sessionId, Integer startFrom, Integer pageSize) {
         return getProducts(sessionId, null, null, null, startFrom, pageSize);
     }
@@ -153,17 +180,20 @@ public class RupturesClient extends BaseMashupClient {
         return execute(req, ResRuptureSessionDataList.class);
     }
 
+    @Step("Получить список сессий")
     public Response<ResRuptureSessionDataList> getSessions() {
         RupturesSessionsRequest req = getSessionsDefaultRequest();
         return getSessions(req);
     }
 
+    @Step("Получить список сессий")
     public Response<ResRuptureSessionDataList> getSessions(int pageSize) {
         RupturesSessionsRequest req = getSessionsDefaultRequest();
         req.setPageSize(pageSize);
         return getSessions(req);
     }
 
+    @Step("Получить список сессий")
     public Response<ResRuptureSessionDataList> getSessions(int startFrom, int pageSize) {
         RupturesSessionsRequest req = getSessionsDefaultRequest();
         req.setStartFrom(startFrom);
@@ -171,6 +201,7 @@ public class RupturesClient extends BaseMashupClient {
         return getSessions(req);
     }
 
+    @Step("Получить список сессий со статусом {status}")
     public Response<ResRuptureSessionDataList> getSessions(RupturesSessionStatuses status, int pageSize) {
         RupturesSessionsRequest req = getSessionsDefaultRequest();
         req.setStatus(status.getName());

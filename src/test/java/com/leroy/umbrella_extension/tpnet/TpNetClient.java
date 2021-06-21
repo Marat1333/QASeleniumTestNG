@@ -144,6 +144,6 @@ public class TpNetClient extends BaseClient {
 
     @PostConstruct
     private void init() {
-        gatewayUrl  = EnvConstants.RABBIT_API_HOST;
+        gatewayUrl  = EnvConstants.RABBIT_UI_HOST;
     }
 }

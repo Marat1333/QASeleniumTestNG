@@ -28,7 +28,7 @@ import com.leroy.common_mashups.catalogs.requests.GetNomenclatureRequest;
 import com.leroy.common_mashups.catalogs.requests.PostCatalogProductReviewCreate;
 import com.leroy.common_mashups.catalogs.requests.obsolete.GetCatalogProduct;
 import com.leroy.common_mashups.catalogs.requests.obsolete.GetCatalogShops;
-import com.leroy.common_mashups.catalogs.requests.obsolete.GetCatalogSupplierRequest;
+import com.leroy.common_mashups.catalogs.requests.obsolete.GetCatalogSupplierRequestObsolete;
 import com.leroy.constants.EnvConstants;
 import com.leroy.constants.sales.SalesDocumentsConst.GiveAwayPoints;
 import com.leroy.core.api.BaseMashupClient;
@@ -39,10 +39,12 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class CatalogProductClient extends BaseMashupClient {
 
+    private String mmGateway;
 
     @Override
     protected void init() {
-        gatewayUrl = EnvConstants.SEARCH_API_HOST;
+        mmGateway = EnvConstants.MAGMOBILE_API_HOST;
+        gatewayUrl = EnvConstants.PRODUCTSEARCH_API_HOST;
         jaegerHost = EnvConstants.PRODUCTSEARCH_JAEGER_HOST;
         jaegerService = EnvConstants.PRODUCTSEARCH_JAEGER_SERVICE;
     }
@@ -141,10 +143,10 @@ public class CatalogProductClient extends BaseMashupClient {
 
     @Step("Get Supply Info for lmCode={lmCode}")
     public Response<CatalogSupplierDataOld> getSupplyInfo(String lmCode) {
-        GetCatalogSupplierRequest params = new GetCatalogSupplierRequest()
+        GetCatalogSupplierRequestObsolete params = new GetCatalogSupplierRequestObsolete()
                 .setLmCode(lmCode)
                 .setShopId(getUserSessionData().getUserShopId());
-        return execute(params, CatalogSupplierDataOld.class);
+        return execute(params, CatalogSupplierDataOld.class, mmGateway);
     }
 
     @Step("Get Product Sales for lmCode={lmCode}")
@@ -166,7 +168,7 @@ public class CatalogProductClient extends BaseMashupClient {
                 .setLmCode(lmCode);
         String shopsAsString = String.join(",", shops);
         params.setShopId(shopsAsString);
-        return execute(params, Object.class);
+        return execute(params, Object.class, mmGateway);
     }
 
     @Step("Get Similar products for lmCode={lmCode}, shopId={shopId}")

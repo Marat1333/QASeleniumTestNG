@@ -1,7 +1,5 @@
 package com.leroy.magmobile.api.clients;
 
-import com.leroy.constants.EnvConstants;
-import com.leroy.core.api.BaseMashupClient;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.requests.salesdoc.search.SalesDocSearchV3Get;
 import io.qameta.allure.Step;
@@ -9,14 +7,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class SalesDocSearchClient extends BaseMashupClient {
-
-    @Override
-    protected void init() {
-        gatewayUrl = EnvConstants.PAO_API_HOST;
-        jaegerHost = EnvConstants.PAO_JAEGER_HOST;
-        jaegerService = EnvConstants.PAO_JAEGER_SERVICE;
-    }
+public class SalesDocSearchClient extends BasePaoClient {
 
     @Data
     @Accessors(chain = true)
@@ -54,6 +45,7 @@ public class SalesDocSearchClient extends BaseMashupClient {
         return execute(req, SalesDocumentListResponse.class);
     }
 
+    @Step("Search for documents with filters")
     public Response<SalesDocumentListResponse> searchForDocuments(Filters filters) {
         return searchForDocuments(filters, null, null);
     }
@@ -75,6 +67,7 @@ public class SalesDocSearchClient extends BaseMashupClient {
         return searchForDocuments(null, shopId, null, startFrom, pageSize);
     }
 
+    @Step("Search for documents by shopId={shopId}")
     public Response<SalesDocumentListResponse> searchForDocumentsByShopId(String shopId) {
         return searchForDocumentsByShopId(shopId, null, null);
     }
@@ -84,6 +77,7 @@ public class SalesDocSearchClient extends BaseMashupClient {
         return searchForDocuments(null, null, docType, startFrom, pageSize);
     }
 
+    @Step("Search for documents by docType={docType}")
     public Response<SalesDocumentListResponse> searchForDocumentsByDocType(String docType) {
         return searchForDocumentsByDocType(docType, null, null);
     }
