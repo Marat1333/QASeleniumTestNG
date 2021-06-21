@@ -79,6 +79,6 @@ public abstract class BaseMashupClient extends BaseClient {
     }
 
     @PostConstruct
-    protected void init() { }
+    protected abstract void init();
 
 }

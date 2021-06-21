@@ -19,6 +19,7 @@ public class SupportClient extends BaseMagMobileClient {
                 SupportTicketData.class);
     }
 
+    //TODO Not working until QA Core issue not fixed. + Need to extend with attach several files and IOException processing.
     @SneakyThrows
     @Step("Create support ticket with attachment")
     public Response<SupportTicketData> createSupportTicket(SupportTicketData supportTicketData, Path path) {
@@ -27,5 +28,4 @@ public class SupportClient extends BaseMagMobileClient {
         req.fileBody(path);
         return execute(req, SupportTicketData.class);
     }
-
 }
