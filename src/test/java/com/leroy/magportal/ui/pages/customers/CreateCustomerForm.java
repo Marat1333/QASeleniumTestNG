@@ -97,7 +97,7 @@ public class CreateCustomerForm extends MagPortalBasePage {
     @WebFindBy(xpath = "//button[contains(@id, 'emails') and contains(@id, '_work')]", clazz = Button.class)
     ElementList<Button> emailWorkOptionButtons;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'row') and descendant::label[text()='Email']]//button[descendant::span[text()='Основной']]",
+    @WebFindBy(xpath = "//div[contains(@class, 'lmui-View-row') and descendant::label[text()='Email']]//button[descendant::span[text()='Основной']]",
             clazz = PuzCheckBox.class, metaName = "Чек боксы email'ов 'Основной'")
     ElementList<PuzCheckBox> emailMainCheckBoxes;
 
@@ -245,14 +245,12 @@ public class CreateCustomerForm extends MagPortalBasePage {
 
     @Step("Нажмите 'Добавить еще телефон'")
     public CreateCustomerForm clickAddPhoneButton() {
-        addPhoneMoreBtn.scrollTo();
         addPhoneMoreBtn.click();
         return this;
     }
 
     @Step("Нажмите 'Добавить еще email'")
     public CreateCustomerForm clickAddEmailButton() {
-        addMoreEmailBtn.scrollTo();
         addMoreEmailBtn.click();
         return this;
     }
@@ -401,7 +399,7 @@ public class CreateCustomerForm extends MagPortalBasePage {
     public CreateCustomerForm shouldErrorTooltipUnderPhoneFldHasValidText() throws Exception {
         shouldControlsHighlightedInRed(Collections.singletonList(PageControls.PhoneFld));
         anAssert.isEquals(phoneTooltipErrorLabels.get(0).getText(),
-                "Введи телефон в формате +7 XXX XXX-XX-XX",
+                "Введи номер телефона в формате +7 ХХХ ХХX-ХХ-ХХ.",
                 "Неверное сообщение об ошибке введенных данных в поле Телефон");
         return this;
     }

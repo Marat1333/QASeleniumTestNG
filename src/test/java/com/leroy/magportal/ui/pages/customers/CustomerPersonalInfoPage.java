@@ -85,7 +85,7 @@ public class CustomerPersonalInfoPage extends MagPortalBasePage {
                 "Имя " + index + "-ого клиента неверно из списка 'Мои недавние клиенты'");
         String expectedPhone = phone.length() != 10 ? phone : String.format("+7 %s %s-%s-%s",
                 phone.substring(0, 3), phone.substring(3, 6), phone.substring(6, 8), phone.substring(8, 10));
-        softAssert.isEquals(customerElem.findChildElement("./div[3]/span").getText(), expectedPhone,
+        softAssert.isEquals(customerElem.findChildElement("./div[3]/span").getText().replaceAll("[ -]", ""), expectedPhone,
                 "Телефон " + index + "-ого клиента должно быть %s из списка 'Мои недавние клиенты'");
         softAssert.verifyAll();
         return this;

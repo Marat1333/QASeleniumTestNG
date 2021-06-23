@@ -95,16 +95,16 @@ public class SearchProductPage extends MagPortalBasePage {
     @WebFindBy(xpath = "//div[contains(@class, 'history')]//div[contains(@class, 'optionText')]//span[2]")
     ElementList<Element> searchHistoryMatchesElements;
 
-    @WebFindBy(xpath = "//button[@id='MyShop']")
+    @WebFindBy(xpath = "//button[@data-testid='MyShop']")
     Button myShopFilterBtn;
 
-    @WebFindBy(xpath = "//button[@id='MyShop']/ancestor::div[4]/following-sibling::div[1]")
+    @WebFindBy(xpath = "//button[@data-testid='MyShop']/ancestor::div[4]/following-sibling::div[1]")
     Element myShopContainer;
 
-    @WebFindBy(xpath = "//button[@id='AllGamma']")
+    @WebFindBy(xpath = "//button[@data-testid='AllGamma']")
     Button allGammaFilterBtn;
 
-    @WebFindBy(xpath = "//button[@id='MyShop']/ancestor::div[4]/following-sibling::div[2]")
+    @WebFindBy(xpath = "//button[@data-testid='MyShop']/ancestor::div[4]/following-sibling::div[2]")
     Element allGammaContainer;
 
     @WebFindBy(xpath = "//div[contains(@class, 'active')]//span[text()=\"Каталог товаров\"]" +

@@ -34,7 +34,7 @@ public class DiscountModal extends MagPortalBasePage {
             metaName = "Выпадающий список 'Причина скидки'")
     PuzComboBox discountReasonCmbBox;
 
-    @WebFindBy(id = "percentageInput", metaName = "Поле % скидка")
+    @WebFindBy(xpath = "//input[@name='percentage']", metaName = "Поле % скидка")
     EditBox percentageDiscountFld;
 
     @WebFindBy(id = "discountAmountInput", metaName = "Поле разовая скидка")

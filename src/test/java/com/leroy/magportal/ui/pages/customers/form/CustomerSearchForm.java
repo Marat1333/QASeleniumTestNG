@@ -1,18 +1,25 @@
 package com.leroy.magportal.ui.pages.customers.form;
 
 import com.leroy.core.annotations.WebFindBy;
+import com.leroy.core.web_elements.general.Button;
 import com.leroy.core.web_elements.general.EditBox;
 import com.leroy.core.web_elements.general.Element;
 import com.leroy.core.web_elements.general.ElementList;
+import com.leroy.magmobile.ui.pages.sales.product_card.modal.SalesHistoryUnitsModalPage;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
 import com.leroy.magportal.ui.pages.cart_estimate.CartEstimatePage;
 import com.leroy.magportal.ui.pages.cart_estimate.widget.CustomerPuzWidget;
 import com.leroy.magportal.ui.pages.common.MagPortalBasePage;
 import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
 import com.leroy.magportal.ui.webelements.commonelements.PuzComboBox;
+import com.leroy.magportal.ui.webelements.commonelements.PuzSelectControl;
 import io.qameta.allure.Step;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import lombok.SneakyThrows;
+import org.openqa.selenium.By;
 
 public class CustomerSearchForm extends MagPortalBasePage {
 
@@ -32,31 +39,43 @@ public class CustomerSearchForm extends MagPortalBasePage {
             metaName = "Кнопка-опция 'Юр. лица'")
     Element legalPersonBtn;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'Common-Filter__select')]", metaName = "Контрол выбора типа поиска")
-    PuzComboBox searchTypeComboBox;
+    @WebFindBy(xpath = "//span[contains(text(), 'Телефон')]/ancestor::button", metaName = "Кнопка открытия выбора поиска")
+    Button searchTypeOpenBtn;
 
-    @WebFindBy(xpath = "//input[@name='phone']", metaName = "Поле для ввода телефона клиента")
+    @WebFindBy(xpath = "//div[contains(@class, 'lmui-SearchString__desktop-options-dropdown')]//button", metaName = "Контроль выбора типа поиска")
+    ElementList<Element> searchTypeComboBox;
+
+    //TODO Поправить на нормальный поиск локатора, как только его сделают. Было: //input[@name='phone']
+    @WebFindBy(xpath = "(//div[contains(@class, 'lmui-SearchString__desktop-input')])[2]//input", metaName = "Поле для ввода телефона клиента")
     EditBox customerPhoneSearchFld;
-    @WebFindBy(xpath = "//input[@name='card']", metaName = "Поле для ввода номера карты клиента")
+
+    //TODO Поправить на нормальный поиск локатора, как только его сделают. Было: //input[@name='card']
+    @WebFindBy(xpath = "(//div[contains(@class, 'lmui-SearchString__desktop-input')])[2]//input", metaName = "Поле для ввода номера карты клиента")
     EditBox customerCardSearchFld;
-    @WebFindBy(xpath = "//input[@name='email']", metaName = "Поле для ввода email клиента")
+
+    //TODO Поправить на нормальный поиск локатора, как только его сделают. Было: //input[@name='email']
+    @WebFindBy(xpath = "(//div[contains(@class, 'lmui-SearchString__desktop-input')])[2]//input", metaName = "Поле для ввода email клиента")
     EditBox customerEmailSearchFld;
-    @WebFindBy(xpath = "//div[contains(@class, 'CustomerControl-SearchMode__menu')]//button[descendant::span[text()='Создать клиента']]",
+
+    @WebFindBy(xpath = "(//button[descendant::span[text()='Создать клиента']])[2]",
             metaName = "Кнопка 'Создать клиента'")
     Element createCustomerBtn;
 
-    @WebFindBy(xpath = "//div[substring(@class, string-length(@class) - 19) = 'SearchResultListItem']")
+    //TODO Первая часть xpath - костыльное решение, должно быть исправлено после внесения изменений в магпортал
+    @WebFindBy(xpath = "(//div[contains(@class, 'lmui-SearchString__desktop-input')])[1]//div[substring(@class, string-length(@class) - 19) = 'SearchResultListItem']")
     ElementList<Element> customerSearchItems;
 
     @WebFindBy(xpath = "//div[contains(@class, 'CustomerControl-ViewCard__action-btn')]",
             metaName = "Кнопка '...' для раскрытия меню с действиями над клиентом")
     Element customerActionBtn;
 
-    @WebFindBy(id = "editCustomerButton", metaName = "Опция 'Редактировать данные клиента'")
+    @WebFindBy(xpath = "(//div[contains(@class, 'CustomerControl')]//button)[1]", metaName = "Опция 'Редактировать данные клиента'")
     Element editCustomerOptionBtn;
-    @WebFindBy(id = "searchCustomerButton", metaName = "Опция 'Выбрать другого клиента'")
+
+    @WebFindBy(xpath = "(//div[contains(@class, 'CustomerControl')]//button)[2]", metaName = "Опция 'Выбрать другого клиента'")
     Element searchCustomerOptionBtn;
-    @WebFindBy(id = "clearCustomerButton", metaName = "Опция 'Удалить клиента'")
+
+    @WebFindBy(xpath = "(//div[contains(@class, 'CustomerControl')]//button)[3]", metaName = "Опция 'Удалить клиента'")
     Element clearCustomerOptionBtn;
 
     // When Customer is selected
@@ -83,26 +102,23 @@ public class CustomerSearchForm extends MagPortalBasePage {
 
     @Step("Действия с клиентом: Редактировать данные клиента")
     public CreateCustomerForm clickOptionEditCustomer() {
-        customerActionBtn.click();
         editCustomerOptionBtn.click();
         return new CreateCustomerForm();
     }
 
     @Step("Действия с клиентом: Выбрать другого клиента")
     public void clickOptionSelectAnotherCustomer() {
-        customerActionBtn.click();
         searchCustomerOptionBtn.click();
     }
 
     @Step("Действия с клиентом: Удалить клиента")
     public void clickOptionRemoveCustomer() {
-        customerActionBtn.click();
         clearCustomerOptionBtn.click();
     }
 
     @Step("Выбираем '{value}' тип поиска клиента")
     public void selectSearchType(String value) throws Exception {
-        searchTypeComboBox.selectOption(value);
+        searchTypeComboBox.findElemByText(value, true).click();
     }
 
     private void enterTextInSearchCustomerField(EditBox inputBox, String value) {
@@ -153,7 +169,11 @@ public class CustomerSearchForm extends MagPortalBasePage {
     @Step("Выбираем клиента по email {email}")
     public void selectCustomerByEmail(String email) throws Exception {
         enterEmailInSearchCustomerField(email);
-        anAssert.isFalse(customerPhoneSearchFld.isVisible(),
+        int foundCustomerAccount = customerSearchItems.getCount();
+        if (foundCustomerAccount == 0)
+            customerPhoneSearchFld.waitForInvisibility(short_timeout);
+        customerSearchItems.get(0).click();
+        anAssert.isTrue(foundCustomerAccount > 0 || !customerPhoneSearchFld.isVisible(),
                 "Клиент с email " + email + " не удалось выбрать");
     }
 
@@ -177,11 +197,14 @@ public class CustomerSearchForm extends MagPortalBasePage {
         return this;
     }
 
-    @Step("Проверить, что в выпдающем списке корректные опции")
+    @Step("Проверить, что в выпадающем списке корректные опции")
     public CustomerSearchForm shouldSearchTypeOptionsAreCorrected() throws Exception {
-        anAssert.isEquals(searchTypeComboBox.getOptionList(),
-                Arrays.asList(CartEstimatePage.SearchType.PHONE, CartEstimatePage.SearchType.CARD, CartEstimatePage.SearchType.EMAIL),
-                "Ожидались другие опции выбора типа поиска");
+        searchTypeOpenBtn.click();
+        List<String> optionsList = searchTypeComboBox.getTextList().stream().map((e) -> e.replaceAll("[/\n>]", "")).collect(Collectors.toList());
+        
+        anAssert.isEquals(optionsList,
+            Arrays.asList(CartEstimatePage.SearchType.PHONE, CartEstimatePage.SearchType.CARD, CartEstimatePage.SearchType.EMAIL),
+            "Ожидались другие опции выбора типа поиска");
         return this;
     }
 

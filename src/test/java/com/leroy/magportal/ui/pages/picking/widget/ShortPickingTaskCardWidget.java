@@ -8,6 +8,7 @@ import com.leroy.magportal.ui.constants.picking.PickingConst;
 import com.leroy.magportal.ui.models.picking.ShortPickingTaskData;
 import com.leroy.magportal.ui.webelements.CardWebWidget;
 import com.leroy.utils.ParserUtil;
+import lombok.SneakyThrows;
 import org.openqa.selenium.WebDriver;
 
 import java.util.ArrayList;
@@ -19,17 +20,17 @@ public class ShortPickingTaskCardWidget extends CardWebWidget<ShortPickingTaskDa
         super(driver, customLocator);
     }
 
-    private final static String HEADER_XPATH = ".//div[contains(@class, 'Picking-PickingListItem__header')]";
-    @WebFindBy(xpath = HEADER_XPATH + "/div[1]/span[1]")
-    Element number;
+    private final static String HEADER_XPATH = ".//div[contains(@class, 'lmui-View-between')]";
+    @WebFindBy(xpath = HEADER_XPATH + "[2]/div[1]/div[1]//span")
+    ElementList<Element> number;
 
-    @WebFindBy(xpath = HEADER_XPATH + "/div[1]/span[2]")
+    @WebFindBy(xpath = HEADER_XPATH + "[2]/div[1]/div[2]//span[1]")
     Element assemblyType;
 
-    @WebFindBy(xpath = HEADER_XPATH + "/div[2]/span[1]")
+    @WebFindBy(xpath = HEADER_XPATH + "[2]/div[2]/div/div[1]//span[1]")
     Element maxSize;
 
-    @WebFindBy(xpath = HEADER_XPATH + "/div[2]/span[3]")
+    @WebFindBy(xpath = HEADER_XPATH + "[2]/div[2]/div/div[2]//span[1]")
     Element weight;
 
     @WebFindBy(xpath = ".//span[contains(@class, 'Status-container')]")
@@ -60,7 +61,7 @@ public class ShortPickingTaskCardWidget extends CardWebWidget<ShortPickingTaskDa
     @Override
     public ShortPickingTaskData collectDataFromPage() throws Exception {
         ShortPickingTaskData pickingTaskData = new ShortPickingTaskData();
-        pickingTaskData.setNumber(number.getText());
+        pickingTaskData.setNumber(getNumber());
         pickingTaskData.setAssemblyType(getAssemblyType());
         pickingTaskData.setMaxSize(ParserUtil.strToDouble(maxSize.getText(), "."));
         pickingTaskData.setWeight(ParserUtil.strToDouble(weight.getText(), "."));
@@ -80,5 +81,9 @@ public class ShortPickingTaskCardWidget extends CardWebWidget<ShortPickingTaskDa
                 pickingTaskData.setClient(collectorOrClient.replaceAll("Клиент:", "").trim());
         }
         return pickingTaskData;
+    }
+
+    private String getNumber() throws Exception {
+        return String.join(" ", number.getTextList());
     }
 }

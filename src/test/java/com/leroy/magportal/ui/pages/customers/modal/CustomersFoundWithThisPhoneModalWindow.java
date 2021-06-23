@@ -13,7 +13,7 @@ public class CustomersFoundWithThisPhoneModalWindow extends BaseWidget {
         super(driver, locator);
     }
 
-    @WebFindBy(text = "Найдены клиенты с этим телефоном")
+    @WebFindBy(text = "Найдены клиенты с таким телефоном")
     public Element customersFoundWithThisPhoneLbl;
 
     @WebFindBy(text = "Ты можешь перейти к существующему клиенту или вернуться к созданию нового.")

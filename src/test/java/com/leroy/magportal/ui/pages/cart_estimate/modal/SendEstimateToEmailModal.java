@@ -12,17 +12,18 @@ public class SendEstimateToEmailModal extends MagPortalBasePage {
 
     private static final String MODAL_WINDOW_XPATH = "//div[contains(@class, 'Common-ConfirmModal__modal__container')]";
     private static final String MODAL_BACKDROP_XPATH = "//div[contains(@class, 'Modal-backdrop')]";
+    private static final String MODAL_EMAIL_FIELD = "(" + MODAL_WINDOW_XPATH + "//input[@data-testid='lmui-Input-input'])";
 
     @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//button[contains(@class, 'exitBtn')]", metaName = "Кнопка крестик (закрыть)")
     Button closeBtn;
 
-    @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//input[@id='emails[0]']", metaName = "Поле 'email' 1")
+    @WebFindBy(xpath = MODAL_EMAIL_FIELD + "[1]", metaName = "Поле 'email' 1")
     EditBox email1Fld;
 
-    @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//input[@id='emails[1]']", metaName = "Поле 'email' 2")
+    @WebFindBy(xpath = MODAL_EMAIL_FIELD + "[2]", metaName = "Поле 'email' 2")
     EditBox email2Fld;
 
-    @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//input[@id='emails[2]']", metaName = "Поле 'email' 3")
+    @WebFindBy(xpath = MODAL_EMAIL_FIELD + "[3]", metaName = "Поле 'email' 3")
     EditBox email3Fld;
 
     @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//div[contains(@class, 'Bordered__tooltipContainer')]//span",
@@ -33,7 +34,7 @@ public class SendEstimateToEmailModal extends MagPortalBasePage {
             metaName = "Кнопка 'Добавить еще email'")
     Button addOneMoreEmailBtn;
 
-    @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//textarea[@id='textAreaId']", metaName = "Поле комментарий")
+    @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//textarea[@data-testid='textAreaId']", metaName = "Поле комментарий")
     TextArea commentFld;
 
     @WebFindBy(xpath = MODAL_WINDOW_XPATH + "//button[contains(@class, 'Common-ConfirmModal__modal__okButton')]",

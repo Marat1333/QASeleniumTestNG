@@ -778,7 +778,7 @@ public class EstimateTest extends BasePAOTest {
         estimatePage.selectCustomerByPhone(customerData.getPhoneNumber());
 
         // Step 1, 2
-        step("Нажмите на '...' справа в карточке клиента и Выберите параметр Редактировать данные клиента");
+        step("Нажмите на кнопку редактирования данных клиента");
         CreateCustomerForm createCustomerForm = estimatePage.clickOptionEditCustomer();
 
         // Step 3

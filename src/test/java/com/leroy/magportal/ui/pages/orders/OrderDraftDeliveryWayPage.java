@@ -59,7 +59,7 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
             metaName = "Ошибка-подсказка у поля PIN код")
     Element pinCodeErrorTooltip;
 
-    @WebFindBy(id = "textAreaId", metaName = "Поле 'Комментарий'")
+    @WebFindBy(xpath = "//textarea[@data-testid='textAreaId']", metaName = "Поле 'Комментарий'")
     TextArea commentFld;
 
     @WebFindBy(xpath = "//button[descendant::span[text()='Подтвердить заказ']]", metaName = "Кнопка 'Подтвердить заказ'")

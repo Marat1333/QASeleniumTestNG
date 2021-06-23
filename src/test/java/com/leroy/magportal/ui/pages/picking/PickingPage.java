@@ -66,7 +66,7 @@ public class PickingPage extends LeftDocumentListPage<ShortPickingTaskCardWidget
             metaName = "Кнопка Обновить список документов")
     private Button refreshDocumentListBtn;
 
-    @WebFindBy(xpath = "//div[substring(@class, string-length(@class) - string-length('Picking-PickingListItem') +1) = 'Picking-PickingListItem' or contains(@class, 'Picking-PickingListItem__active')  or contains(@class, 'Picking-PickingListItem highPriority')]",
+    @WebFindBy(xpath = "//div[contains(@class, 'lm-picking-Picking-PickingList__items')]/div",
             clazz = ShortPickingTaskCardWidget.class)
     private CardWebWidgetList<ShortPickingTaskCardWidget, ShortPickingTaskData> documentCardList;
 
@@ -82,7 +82,7 @@ public class PickingPage extends LeftDocumentListPage<ShortPickingTaskCardWidget
             metaName = "Ссылка на заказ (последние 4 цифры заказа)")
     Element orderLink;
 
-    @WebFindBy(xpath = "//div[" + PICKING_VIEW_HEADER + "]/span[2]",
+    @WebFindBy(xpath = "//div[" + PICKING_VIEW_HEADER + "]/div[2]/span",
             metaName = "Тип сборки")
     Element assemblyType;
 
