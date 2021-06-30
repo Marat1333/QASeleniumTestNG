@@ -59,10 +59,12 @@ timestamps {
                     dir('auto-tests') {
                         if(env.ALLURE_TEST_OPS){
                             withAllureUpload(serverId: 'allure-server', projectId: '3', results: [[path: 'target/allure-results']], name: env.AllURE_RUN_NAME) {
+                                sh "echo TEST_OPS"
                                 sh(getMvnStrRun())
                             }
                         //Костыль для поддержки и ТестРейла, и Аллюра, после отказа от ТестРейла удалить
                         } else {
+                            sh "echo TEST_RAIL"
                             sh(getMvnStrRun())
                         }
                     }
