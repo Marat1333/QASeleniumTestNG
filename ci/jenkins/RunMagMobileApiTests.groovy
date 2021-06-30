@@ -62,7 +62,6 @@ timestamps {
             }
 
             try {
-                {
                     dir('auto-tests') {
                         if (env.ALLURE_TEST_OPS == "true") {
                             withAllureUpload(serverId: 'allure-server', projectId: '13', results: [[path: 'target/allure-results']], name: env.AllURE_RUN_NAME) {
@@ -73,7 +72,6 @@ timestamps {
                             sh(getMvnStrRun())
                         }
                     }
-                }
             } finally {
                 stage('Generate Allure Reports') {
                     allure([
