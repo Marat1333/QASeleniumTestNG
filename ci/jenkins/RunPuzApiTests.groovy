@@ -3,6 +3,10 @@ TELEGRAM_REPORTS_CHAT = '-1001343153150'
 
 env.TELEGRAM_CHAT = env.TELEGRAM_CHAT.replaceFirst(/^(.*?)\(.*\)/, '$1')
 
+if(env.ALLURE_TEST_OPS){
+    env.RUN = null
+}
+
 def telegramMessage(message) {
     if (env.TELEGRAM_CHAT) {
         sh """
@@ -53,11 +57,9 @@ timestamps {
                     dir('auto-tests') {
                         if(env.ALLURE_TEST_OPS){
                             withAllureUpload(serverId: 'allure-server', projectId: '3', results: [[path: 'target/allure-results']], name: env.RUN) {
-                                sh "echo TestOps"
                                 sh(getMvnStrRun())
                             }
                         } else {
-                            sh "echo Local"
                             sh(getMvnStrRun())
                         }
                     }
