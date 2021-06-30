@@ -51,7 +51,9 @@ timestamps {
             try {
                 docker.image('maven:3.6.3-jdk-8-openj9').inside("-v android-maven-cache:/root/.m2 --privileged") {
                     dir('auto-tests') {
-                        sh(getMvnStrRun())
+                        withAllureUpload(serverId: 'allure-server', projectId: '3', results: [[path: 'allure-results']]) {
+                            sh(getMvnStrRun())
+                        }
                     }
                 }
             } finally {
