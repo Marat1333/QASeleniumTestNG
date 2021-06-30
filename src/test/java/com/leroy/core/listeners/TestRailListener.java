@@ -29,7 +29,7 @@ public class TestRailListener extends Listener {
         super.onStart(arg0);
         STEPS_INFO = new HashMap<>();
         String planName = System.getProperty("mPlan");
-        String runName = System.getProperty("mRun");
+        String runName = "";
         String sSuiteId = System.getProperty("mSuite");
         String sProjectId = System.getProperty("mProject");
         if (!Strings.isNullOrEmpty(sSuiteId) && !Strings.isNullOrEmpty(sProjectId)) {
