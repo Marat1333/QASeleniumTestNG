@@ -43,7 +43,7 @@ GString getMvnStrRun() {
 
 timestamps {
     node("dockerhost") {
-        stage('Run UI Tests') {
+        stage('Run UI auto tests') {
 
             checkout(
                     [$class                           : 'GitSCM',
