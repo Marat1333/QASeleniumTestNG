@@ -53,9 +53,11 @@ timestamps {
                     dir('auto-tests') {
                         if(env.ALLURE_TEST_OPS){
                             withAllureUpload(serverId: 'allure-server', projectId: '3', results: [[path: 'target/allure-results']], name: env.RUN) {
+                                sh "echo TestOps"
                                 sh(getMvnStrRun())
                             }
                         } else {
+                            sh "echo Local"
                             sh(getMvnStrRun())
                         }
                     }
