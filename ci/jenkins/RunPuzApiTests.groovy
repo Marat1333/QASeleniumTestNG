@@ -3,14 +3,14 @@ TELEGRAM_REPORTS_CHAT = '-1001343153150'
 
 env.TELEGRAM_CHAT = env.TELEGRAM_CHAT.replaceFirst(/^(.*?)\(.*\)/, '$1')
 
-//Костыль для поддержки и ТестРейла, и Аллюра, после отказа от ТестРейла удалить
+//Костыль для поддержки и ТестРейла, и Аллюра, после отказа от ТестРейла - удалить
 env.AllURE_RUN_NAME = env.RUN
 if(env.ALLURE_TEST_OPS){
     env.RUN = ""
 }
 
 def telegramMessage(message) {
-    if (env.TELEGRAM_CHAT == "true") {
+    if (env.TELEGRAM_CHAT) {
         sh """
            curl -X POST ${TELEGRAM_BOT_URL}/sendMessage \
                 -d parse_mode=Markdown \
@@ -42,7 +42,7 @@ GString getMvnStrRun() {
 
 timestamps {
     node("dockerhost") {
-        stage('Run API auto tests') {
+        stage('Run API Tests') {
 
             checkout(
                     [$class                           : 'GitSCM',
@@ -58,10 +58,10 @@ timestamps {
                 docker.image('maven:3.6.3-jdk-8-openj9').inside("-v android-maven-cache:/root/.m2 --privileged") {
                     dir('auto-tests') {
                         if(env.ALLURE_TEST_OPS == "true"){
-                            withAllureUpload(serverId: 'allure-server', projectId: '3', results: [[path: 'target/allure-results']], name: env.AllURE_RUN_NAME) {
+                            withAllureUpload(serverId: 'allure-server', projectId: '11', results: [[path: 'target/allure-results']], name: env.AllURE_RUN_NAME) {
                                 sh(getMvnStrRun())
                             }
-                        //Костыль для поддержки и ТестРейла, и Аллюра, после отказа от ТестРейла удалить
+                        //Костыль для поддержки и ТестРейла, и Аллюра, после отказа от ТестРейла - удалить
                         } else {
                             sh(getMvnStrRun())
                         }
@@ -79,6 +79,7 @@ timestamps {
                 }
             }
         }
+
 
         stage('Send notification') {
             telegramMessage("Маг Портал API Тесты завершены. Test run: ${env.AllURE_RUN_NAME} \n " +
