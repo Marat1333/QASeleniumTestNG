@@ -57,7 +57,7 @@ timestamps {
             try {
                 docker.image('maven:3.6.3-jdk-8-openj9').inside("-v android-maven-cache:/root/.m2 --privileged") {
                     dir('auto-tests') {
-                        if(env.ALLURE_TEST_OPS == true){
+                        if(env.ALLURE_TEST_OPS == "true"){
                             withAllureUpload(serverId: 'allure-server', projectId: '3', results: [[path: 'target/allure-results']], name: env.AllURE_RUN_NAME) {
                                 sh "echo TEST_OPS = " + env.ALLURE_TEST_OPS
                                 sh(getMvnStrRun())
