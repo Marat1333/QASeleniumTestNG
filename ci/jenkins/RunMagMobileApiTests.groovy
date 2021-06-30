@@ -53,11 +53,18 @@ timestamps {
                      userRemoteConfigs                : [[credentialsId: 'jenkins-gitlab', url: 'https://gitlab.lmru.adeo.com/lego-front/auto-tests.git']]
                     ])
 
+            agent {
+                docker {
+                    reuseNode true
+                    image 'maven:3.6.3-jdk-8-openj9'
+                    args '-v $HOME/.m2:/root/.m2'
+                }
+            }
 
             try {
-                docker.image('maven:3.6.3-jdk-8-openj9').inside("-v android-maven-cache:/root/.m2 --privileged") {
+                {
                     dir('auto-tests') {
-                        if(env.ALLURE_TEST_OPS == "true"){
+                        if (env.ALLURE_TEST_OPS == "true") {
                             withAllureUpload(serverId: 'allure-server', projectId: '13', results: [[path: 'target/allure-results']], name: env.AllURE_RUN_NAME) {
                                 sh(getMvnStrRun())
                             }
