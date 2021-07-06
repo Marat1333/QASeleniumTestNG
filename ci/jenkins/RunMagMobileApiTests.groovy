@@ -55,10 +55,10 @@ timestamps {
 
 
             try {
-                docker.image('maven:3.6.3-jdk-8-openj9').inside("-v android-maven-cache:/root/.m2 --privileged") {
+                docker.image('maven:3.6.3-jdk-8-openj9').inside("-v $HOME/.m2:/root/.m2") {
                     dir('auto-tests') {
                         if(env.ALLURE_TEST_OPS == "true"){
-                            withAllureUpload(serverId: 'allure-server', projectId: '11', results: [[path: 'target/allure-results']], name: env.AllURE_RUN_NAME) {
+                            withAllureUpload(serverId: 'allure-server', projectId: '13', results: [[path: 'target/allure-results']], name: env.AllURE_RUN_NAME) {
                                 sh(getMvnStrRun())
                             }
                             //Костыль для поддержки и ТестРейла, и Аллюра, после отказа от ТестРейла - удалить
