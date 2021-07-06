@@ -5,7 +5,7 @@ env.TELEGRAM_CHAT = env.TELEGRAM_CHAT.replaceFirst(/^(.*?)\(.*\)/, '$1')
 
 //Костыль для поддержки и ТестРейла, и Аллюра, после отказа от ТестРейла - удалить
 env.AllURE_RUN_NAME = env.RUN
-if (env.ALLURE_TEST_OPS) {
+if (env.ALLURE_TEST_OPS == "true") {
     env.RUN = ""
 }
 
@@ -53,18 +53,12 @@ timestamps {
                      userRemoteConfigs                : [[credentialsId: 'jenkins-gitlab', url: 'https://gitlab.lmru.adeo.com/lego-front/auto-tests.git']]
                     ])
 
-            agent {
-                docker {
-                    reuseNode true
-                    image 'maven:3.6.3-jdk-8-openj9'
-                    args '-v $HOME/.m2:/root/.m2'
-                }
-            }
 
             try {
+                docker.image('maven:3.6.3-jdk-8-openj9').inside("-v android-maven-cache:/root/.m2 --privileged") {
                     dir('auto-tests') {
-                        if (env.ALLURE_TEST_OPS == "true") {
-                            withAllureUpload(serverId: 'allure-server', projectId: '13', results: [[path: 'target/allure-results']], name: env.AllURE_RUN_NAME) {
+                        if(env.ALLURE_TEST_OPS == "true"){
+                            withAllureUpload(serverId: 'allure-server', projectId: '11', results: [[path: 'target/allure-results']], name: env.AllURE_RUN_NAME) {
                                 sh(getMvnStrRun())
                             }
                             //Костыль для поддержки и ТестРейла, и Аллюра, после отказа от ТестРейла - удалить
@@ -72,6 +66,7 @@ timestamps {
                             sh(getMvnStrRun())
                         }
                     }
+                }
             } finally {
                 stage('Generate Allure Reports') {
                     allure([
