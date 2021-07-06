@@ -91,7 +91,7 @@ public class EnvConstants {
         String env = getEnvironment();
         Log.info("Running tests in environment: " + env + "\n");
         Properties localProperties = new Properties();
-        if (env.contains("anybranch")) {
+        if (env.contains("anybranch") || env.contains("internal")) {
             try {
                 FileReader reader = new FileReader(System.getProperty("user.dir")
                         + String.format("/src/main/resources/propertyFiles/%s.properties", env));
