@@ -5,7 +5,7 @@ env.TELEGRAM_CHAT = env.TELEGRAM_CHAT.replaceFirst(/^(.*?)\(.*\)/, '$1')
 
 //Костыль для поддержки и ТестРейла, и Аллюра, после отказа от ТестРейла - удалить
 env.AllURE_RUN_NAME = env.RUN
-if(env.ALLURE_TEST_OPS){
+if(env.ALLURE_TEST_OPS == "true"){
     env.RUN = ""
 }
 
