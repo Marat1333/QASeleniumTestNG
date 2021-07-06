@@ -1,7 +1,13 @@
 TELEGRAM_BOT_URL = 'https://api.telegram.org/bot596012234:AAGAaYCfc2nDS3BAr2J7l0PRTgzOoBqGqy4'
+TELEGRAM_REPORTS_CHAT = '-1001343153150'
 
 env.TELEGRAM_CHAT = env.TELEGRAM_CHAT.replaceFirst(/^(.*?)\(.*\)/, '$1')
-env.RUN = env.RUN.replaceFirst('_', '-')
+
+//Костыль для поддержки и ТестРейла, и Аллюра, после отказа от ТестРейла - удалить
+env.AllURE_RUN_NAME = env.RUN
+if(env.ALLURE_TEST_OPS == "true"){
+    env.RUN = ""
+}
 
 def telegramMessage(message) {
     if (env.TELEGRAM_CHAT) {
@@ -9,6 +15,14 @@ def telegramMessage(message) {
            curl -X POST ${TELEGRAM_BOT_URL}/sendMessage \
                 -d parse_mode=Markdown \
                 -d chat_id=${env.TELEGRAM_CHAT} \
+                -d text="${message}"
+        """
+    }
+    if (env.SEND_TO_REPORTS_CHAT == "true") {
+        sh """
+           curl -X POST ${TELEGRAM_BOT_URL}/sendMessage \
+                -d parse_mode=Markdown \
+                -d chat_id=${TELEGRAM_REPORTS_CHAT} \
                 -d text="${message}"
         """
     }
@@ -43,7 +57,14 @@ timestamps {
             try {
                 docker.image('maven:3.6.3-jdk-8-openj9').inside("-v android-maven-cache:/root/.m2 --privileged") {
                     dir('auto-tests') {
-                        sh(getMvnStrRun())
+                        if(env.ALLURE_TEST_OPS == "true"){
+                            withAllureUpload(serverId: 'allure-server', projectId: '37', results: [[path: 'target/allure-results']], name: env.AllURE_RUN_NAME) {
+                                sh(getMvnStrRun())
+                            }
+                            //Костыль для поддержки и ТестРейла, и Аллюра, после отказа от ТестРейла - удалить
+                        } else {
+                            sh(getMvnStrRun())
+                        }
                     }
                 }
             } finally {
