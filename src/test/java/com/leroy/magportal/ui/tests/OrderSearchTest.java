@@ -406,29 +406,34 @@ public class OrderSearchTest extends WebBaseSteps {
 
         // Step 5
         step("Нажать крестик в фильтре");
-        ordersPage.clearDateCreationsFilters();
-        ordersPage.shouldCreationDateFilterIs(null, null);
+        ordersPage.openFilterWidget()
+                .clearDateCreationsFilters();
+        ordersPage.shouldCreationDateFilterIs(null, null)
+                .closeFilters();
 
         // Step 6
         step("В фильтре 'Дата' выставить дату = От - сегодня, До - вчера, нажать кнопку 'Показать заказы'");
         fromDate = LocalDate.now();
         toDate = LocalDate.now().minusDays(1);
-        ordersPage.selectDateCreationsFilters(fromDate, toDate);
-        ordersPage.shouldCreationDateFilterIs(toDate, fromDate);
-        ordersPage.clickApplyFilters();
+        ordersPage.openFilterWidget()
+                .selectDateCreationsFilters(fromDate, toDate)
+                .shouldCreationDateFilterIs(toDate, fromDate)
+                .clickApplyFilters();
         ordersPage.shouldDocumentListFilteredByDates(toDate, fromDate);
 
         // Step 7
         step("Выставить в фильтре 'Дата' диапазон = неделя, нажать кнопку 'Показать заказы'");
         fromDate = LocalDate.now().minusDays(3);
         toDate = LocalDate.now().plusDays(4);
-        ordersPage.selectDateCreationsFilters(fromDate, toDate)
-            .clickApplyFilters();
+        ordersPage.openFilterWidget()
+                .selectDateCreationsFilters(fromDate, toDate)
+                .clickApplyFilters();
         ordersPage.shouldDocumentListFilteredByDates(fromDate, toDate);
 
         // Step 8
         step("Нажать на кнопку 'Очистить фильтры'(изображена метла), нажать 'Показать заказы'");
-        ordersPage.clearFiltersAndSubmit();
+        ordersPage.openFilterWidget()
+                .clearFiltersAndSubmit();
         ordersPage.shouldDocumentCountIs(ordersCountBefore);
     }
 
