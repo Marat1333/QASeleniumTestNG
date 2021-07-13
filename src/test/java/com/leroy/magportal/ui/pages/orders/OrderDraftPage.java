@@ -44,7 +44,7 @@ public abstract class OrderDraftPage extends OrderHeaderPage {
             metaName = "Текст с количеством и весом товара")
     Element countAndWeightProductLbl;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'OrderCreate__footer')]//div[contains(@class, 'Estimate-price')]",
+    @WebFindBy(xpath = "//div[contains(@class, 'OrderCreate__footer')]//span[@data-testid='lmui-Price']",
             metaName = "Итого стоимость заказа")
     Element orderTotalPrice;
 
