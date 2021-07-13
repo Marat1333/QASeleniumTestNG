@@ -26,19 +26,21 @@ public class PickingContentPage extends PickingPage {
 
     // Bottom area
 
-    @WebFindBy(xpath = "//div[contains(@class, 'Picking-InfoCard') and not(ancestor::div[contains(@class, 'hidden')])]//button", metaName = "Кнопка 'Начать сборку'")
+    @WebFindBy(xpath = "//button[descendant::span[contains(text(), 'Начать сборку')] and not(ancestor::div[contains(@class, 'hidden')])]", metaName = "Кнопка 'Начать сборку'")
     Button startAssemblyBtn;
 
-    @WebFindBy(xpath = "//button[descendant::span[contains(text(), 'Завершить')] and not(ancestor::div[contains(@class, 'hidden')])]", metaName = "Кнопка 'Завершить'")
+    @WebFindBy(xpath = "//button[descendant::span[contains(text(), 'Разместить')] and not(ancestor::div[contains(@class, 'hidden')])]", metaName = "Кнопка 'Разместить'")
     Button finishAssemblyBtn;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'Picking-InfoCard') and not(ancestor::div[contains(@class, 'hidden')])]//div[contains(@class, 'popover')]//button",
+    @WebFindBy(xpath = "//button[descendant::span[contains(text(), 'Изменить размещение')] and not(ancestor::div[contains(@class, 'hidden')])]",
             metaName = "Кнопка 'Редактировать сборку'")
     Button editAssemblyBtn;
 
-    @WebFindBy(xpath = "//button[descendant::span[text()='РАЗДЕЛИТЬ'] and not(ancestor::div[contains(@class, 'hidden')])]", metaName = "Кнопка 'Разделить' в нижней области")
+    @WebFindBy(xpath = "//button[descendant::span[contains(text(), 'Разделить')] and not(ancestor::div[contains(@class, 'hidden')])]", metaName = "Кнопка 'Разделить' в нижней области")
     Button splitAssemblyBtn;
 
+    @WebFindBy(xpath = "//button[descendant::span[contains(text(), 'Поставить на паузу')] and not(ancestor::div[contains(@class, 'hidden')])]", metaName = "Кнопка 'Поставить на паузу'")
+    Button pauseAssemblyBtn;
     @Override
     public void waitForPageIsLoaded() {
         productCards.waitUntilAtLeastOneElementIsPresent();
@@ -82,8 +84,8 @@ public class PickingContentPage extends PickingPage {
     public PickingContentPage clickStartAssemblyButton() {
         startAssemblyBtn.click();
         waitForSpinnerAppearAndDisappear();
-        anAssert.isTrue(finishAssemblyBtn.waitForVisibility(3), "Кнопка Завершить не отображается");
-        anAssert.isFalse(finishAssemblyBtn.isEnabled(), "Кнопка Завершить активна");
+        anAssert.isTrue(pauseAssemblyBtn.waitForVisibility(3), "Кнопка Поставить на паузу не отображается");
+        anAssert.isFalse(finishAssemblyBtn.waitForVisibility(1), "Кнопка Разместить активна");
         return this;
     }
 
