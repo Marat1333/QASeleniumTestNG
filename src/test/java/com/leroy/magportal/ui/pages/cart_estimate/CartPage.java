@@ -122,7 +122,7 @@ public class CartPage extends CartEstimatePage {
     @Step("Проверить, что страница Корзины отображается корректно после нажатия на кнопку 'Создать корзину'")
     public void verificationAfterClickCreateNewCartButton() {
         softAssert.areElementsVisible(searchProductFld);
-        softAssert.isElementTextEqual(cartNumber, "№ —");
+        softAssert.isElementTextEqual(cartNumber, "—");
         softAssert.verifyAll();
     }
 
