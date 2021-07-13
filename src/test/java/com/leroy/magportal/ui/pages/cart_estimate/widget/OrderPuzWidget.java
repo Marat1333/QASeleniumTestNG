@@ -30,15 +30,18 @@ public class OrderPuzWidget extends CardWebWidget<OrderWebData> {
 
     private final String FOOTER_INFO_XPATH = "//div[contains(@class, 'SalesDoc-ViewFooter__info')]";
 
-    Element countAndWeightProductLbl;
     Element totalPriceValue;
+    Element footerQuantity;
+    Element footerTotalWeight;
 
     private void initFooterElements() {
         String footerXpath = E("//div[contains(@class, 'View__footer')]").isPresent() ?
                 FOOTER_INFO_XPATH : getXpath() + FOOTER_INFO_XPATH;
-        countAndWeightProductLbl = E(footerXpath + "/span[1]",
-                "Информация о кол-ве товаров и их общем весе");
-        totalPriceValue = E(footerXpath + "/div[@role='presentation']",
+        footerQuantity = E("//span[@data-testid='footerQuantity']",
+                "Информация о кол-ве товаров");
+        footerTotalWeight = E("//span[@data-testid='footerTotalWeight']",
+                "Информация о весе товаров");
+        totalPriceValue = E(footerXpath + "//span[@data-testid='lmui-Price']",
                 "Значение суммы итого");
     }
 
@@ -63,14 +66,9 @@ public class OrderPuzWidget extends CardWebWidget<OrderWebData> {
         OrderWebData orderWebData = new OrderWebData();
         orderWebData.setProductCardDataList(products.getDataList());
 
-        String text = countAndWeightProductLbl.getText();
-        String[] productCountAndWeight = text.split("•");
-        Assert.assertEquals(productCountAndWeight.length, 2,
-                "Что-то изменилось в метке содержащей информацию о кол-ве и весе товара = " + text);
-
         orderWebData.setTotalPrice(ParserUtil.strToDouble(totalPriceValue.getText()));
-        orderWebData.setTotalWeight(ParserUtil.strToWeight(productCountAndWeight[1]));
-        orderWebData.setProductCount(ParserUtil.strToInt(productCountAndWeight[0]));
+        orderWebData.setTotalWeight(ParserUtil.strToWeight(footerTotalWeight.getText()));
+        orderWebData.setProductCount(ParserUtil.strToInt(footerQuantity.getText()));
 
         return orderWebData;
     }
