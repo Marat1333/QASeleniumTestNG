@@ -33,8 +33,8 @@ public class PickingContentPage extends PickingPage {
     Button placeAssemblyBtn;
 
     @WebFindBy(xpath = "//button[descendant::span[contains(text(), 'Изменить размещение')] and not(ancestor::div[contains(@class, 'hidden')])]",
-            metaName = "Кнопка 'Редактировать сборку'")
-    Button editAssemblyBtn;
+            metaName = "Кнопка 'Изменить размещение'")
+    Button editPlacedAssemblyBtn;
 
     @WebFindBy(xpath = "//button[descendant::span[contains(text(), 'Разделить')] and not(ancestor::div[contains(@class, 'hidden')])]", metaName = "Кнопка 'Разделить' в нижней области")
     Button splitAssemblyBtn;
@@ -73,7 +73,7 @@ public class PickingContentPage extends PickingPage {
 
     @Step("Нажать кнопку редактирования сборки")
     public PickingContentPage clickEditAssemblyButton() {
-        editAssemblyBtn.click();
+        editPlacedAssemblyBtn.click();
         waitForSpinnerAppearAndDisappear();
         anAssert.isElementVisible(selectAllChkBox);
         anAssert.isElementVisible(splitAssemblyBtn);
@@ -85,13 +85,13 @@ public class PickingContentPage extends PickingPage {
         startAssemblyBtn.click();
         waitForSpinnerAppearAndDisappear();
         anAssert.isTrue(pauseAssemblyBtn.waitForVisibility(3), "Кнопка Поставить на паузу не отображается");
-        anAssert.isFalse(finishAssemblyBtn.waitForVisibility(1), "Кнопка Разместить активна");
+        anAssert.isFalse(placeAssemblyBtn.waitForVisibility(1), "Кнопка Разместить активна");
         return this;
     }
 
     @Step("Нажать кнопку 'Завершить сборку'")
     public PickingContentPage clickFinishAssemblyButton() {
-        finishAssemblyBtn.click();
+        placeAssemblyBtn.click();
         waitForSpinnerAppearAndDisappear();
         return this;
     }
@@ -169,7 +169,7 @@ public class PickingContentPage extends PickingPage {
 
     @Step("Проверить, что счетчик на кнопке Завершить равен ({one}/{all})")
     public PickingContentPage shouldFinishButtonCountIs(int one, int all) throws Exception {
-        String text = finishAssemblyBtn.getText();
+        String text = placeAssemblyBtn.getText();
         String[] actualCount = StringUtils.substringBetween(text, "(", ")").split("/");
         anAssert.isEquals(actualCount.length, 2,
                 "На кнопке Завершить не отображается счетчик (или отображается некорректно)");
@@ -181,7 +181,7 @@ public class PickingContentPage extends PickingPage {
 
     @Step("Проверить, активна ли кнопка завершить")
     public PickingContentPage checkIfFinishButtonIsEnabled(boolean shouldBeEnabled) {
-        anAssert.isFalse(finishAssemblyBtn.isEnabled() ^ shouldBeEnabled,
+        anAssert.isFalse(placeAssemblyBtn.isEnabled() ^ shouldBeEnabled,
                 "Неверное состояние кнопки Завершить. Актуальное значение: isEnabled = " + !shouldBeEnabled);
         return this;
     }
