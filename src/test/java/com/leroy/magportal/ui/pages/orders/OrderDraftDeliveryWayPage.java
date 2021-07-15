@@ -28,7 +28,7 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
         boolean clientAdded;
     }
 
-    @WebFindBy(xpath = "//button[descendant::span[text()='Самовывоз']]", metaName = "Кнопка-опция 'Самовывоз'")
+    @WebFindBy(xpath = "//button[descendant::span[text()='Самовывоз']]", metaName = "Кнопка-опция 'Самовывоз'") //button[descendant::span[contains(text(), 'Самовывоз')]]
     Button pickupBtn;
 
     @WebFindBy(xpath = "//button[descendant::span[text()='Доставка']]", metaName = "Кнопка-опция 'Доставка'")
@@ -176,6 +176,7 @@ public class OrderDraftDeliveryWayPage extends OrderDraftPage {
 
     @Step("Проверить, что страница 'Оформление заказа' отображается корректно")
     public OrderDraftDeliveryWayPage verifyRequiredElements(PageState pageState) {
+        waitForSpinnerAppearAndDisappear();
         softAssert.areElementsVisible(pickupBtn, deliveryBtn, nameSurnameFld, phoneFld, emailFld,
                 pinCodeFld, commentFld, confirmOrderBtn);
         softAssert.verifyAll();

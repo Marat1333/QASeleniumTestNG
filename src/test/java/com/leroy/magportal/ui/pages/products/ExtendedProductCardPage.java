@@ -38,10 +38,10 @@ public class ExtendedProductCardPage extends ProductCardPage {
         PRICES_AND_STOCKS_IN_OTHER_SHOPS
     }
 
-    @WebFindBy(xpath = "//button[@id='ANALOG']")
+    @WebFindBy(xpath = "//button[@data-testid='ANALOG']", metaName = "Аналогичные товары")
     Button similarProducts;
 
-    @WebFindBy(xpath = "//button[@id='COMPLEMENT']")
+    @WebFindBy(xpath = "//button[@data-testid='COMPLEMENT']", metaName = "Сопутствующие товары")
     Button complementProducts;
 
     @WebFindBy(xpath = "//div[contains(@class,'active')]//div[contains(@class, 'BarViewProductCard__container')]",
@@ -339,5 +339,10 @@ public class ExtendedProductCardPage extends ProductCardPage {
         softAssert.isEquals(ParserUtil.replaceSpecialSymbols(data.getSupPhone()), supplierInfo.get(2).getText(), "Телефон");
         softAssert.isEquals(data.getSupContactName(), supplierInfo.get(3).getText(), "Имя представителя");
         softAssert.isEquals(data.getSupEmail(), supplierInfo.get(4).getText(), "Email");
+    }
+
+    //Есть некоторые ситуации в карточке товара, когда для возрата на предыдущую страницу требуется 2 раза произвести navigateBack()
+    public boolean doubleNavigateBack() throws InterruptedException {
+        return navigateBack() && navigateBack();
     }
 }

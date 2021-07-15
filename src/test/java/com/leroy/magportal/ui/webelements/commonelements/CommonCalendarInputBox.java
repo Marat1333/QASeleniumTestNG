@@ -27,8 +27,8 @@ public abstract class CommonCalendarInputBox extends BaseWidget {
     @WebFindBy(xpath = ".//input[2]")
     EditBox secondInputFld;
 
-    @WebFindBy(id = "DatePicker--clearIcon", metaName = "Иконка 'крестик' для очистки")
-    Element cleatBtn;
+    @WebFindBy(xpath = ".//button[@data-testid='clearIcon']", metaName = "Иконка 'крестик' для очистки")
+    Element clearBtn;
 
     @WebFindBy(xpath = calendarContainerXpath + "//span[contains(@class,'DatePicker__captionMonth')]")
     Element firstSelectedMonthLabel;
@@ -90,7 +90,7 @@ public abstract class CommonCalendarInputBox extends BaseWidget {
      */
     public void clear() {
         open();
-        cleatBtn.click();
+        clearBtn.click();
     }
 
     /**
