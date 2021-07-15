@@ -30,7 +30,7 @@ public class PickingContentPage extends PickingPage {
     Button startAssemblyBtn;
 
     @WebFindBy(xpath = "//button[descendant::span[contains(text(), 'Разместить')] and not(ancestor::div[contains(@class, 'hidden')])]", metaName = "Кнопка 'Разместить'")
-    Button finishAssemblyBtn;
+    Button placeAssemblyBtn;
 
     @WebFindBy(xpath = "//button[descendant::span[contains(text(), 'Изменить размещение')] and not(ancestor::div[contains(@class, 'hidden')])]",
             metaName = "Кнопка 'Редактировать сборку'")
