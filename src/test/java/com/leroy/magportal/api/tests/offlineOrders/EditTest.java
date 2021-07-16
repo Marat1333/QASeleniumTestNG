@@ -11,6 +11,8 @@ import com.leroy.magportal.api.constants.LmCodeTypeEnum;
 import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
 import java.util.List;
+
+import io.qameta.allure.TmsLink;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -64,6 +66,7 @@ public class EditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425605 Offline: Edit Allowed For Picking Order", priority = 1)
+    @TmsLink("2002")
     public void testEditAllowedForPicking() {
         currentCount = 9.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, currentCount);
@@ -71,6 +74,7 @@ public class EditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425606 Offline: Add Product to Allowed For Picking Order", priority = 2)
+    @TmsLink("2003")
     public void testAddProductAllowedForPicking() {
         currentProductsCount = 5;
         Response<?> response = orderClient.rearrange(currentOrderId, 2, null);
@@ -79,6 +83,7 @@ public class EditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425607 Offline: Edit And Add Product to Allowed For Picking Order", priority = 3)
+    @TmsLink("2004")
     public void testEditAndAddProductAllowedForPicking() {
         currentProductsCount = 7;
         currentCount = 8.0;
@@ -88,6 +93,7 @@ public class EditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425609 Offline: Add Product to Paid Order (Negative)", priority = 4)
+    @TmsLink("2006")
     public void testAddProductPickedPaid() {
         currentStatus = States.PICKED;
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
@@ -99,6 +105,7 @@ public class EditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425608 Offline: Edit Picked Paid Order", priority = 5)
+    @TmsLink("2005")
     public void testEditPickedPaid() {
         currentCount = 7.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, currentCount);
@@ -106,6 +113,7 @@ public class EditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425610 Offline: Edit Add Product to Paid Order (Negative)", priority = 6)
+    @TmsLink("2007")
     public void testEditAndAddProductPickedPaid() {
         Response<?> response = orderClient.rearrange(currentOrderId, 2, 1.0);
         assertThat("It's possible to ADD product into payed Order", !response.isSuccessful());
@@ -115,6 +123,7 @@ public class EditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425611 Offline: Edit Dimensional Product Allowed For Picking Order", priority = 7)
+    @TmsLink("2008")
     public void testEditDimensionalProduct() throws Exception {
         makeDimensionalOrder();
         currentCount = 6.66;
@@ -123,6 +132,7 @@ public class EditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425612 Offline: Edit Dimensional Product: Paid Order", priority = 8)
+    @TmsLink("2009")
     public void testEditDimensionalProductPaid() {
         currentStatus = States.PICKED;
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
@@ -132,6 +142,7 @@ public class EditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425613 Offline: Cancel order by Edit Dimensional Product: Paid Order", priority = 9)
+    @TmsLink("2010")
     public void testCancelByEditDimensionalProductPaid() {
         currentCount = 10.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, 0.0);
@@ -139,6 +150,7 @@ public class EditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425614 Offline: Cancel order by Edit with New Product Added", priority = 10)
+    @TmsLink("2011")
     public void testCancelByEditWithNewProduct() throws Exception {
         makeDimensionalOrder();
         orderClient.editOrder(currentOrderId, 1, null);

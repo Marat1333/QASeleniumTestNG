@@ -20,6 +20,8 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.qameta.allure.TmsLink;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -48,6 +50,7 @@ public class SearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C22782949 No results msg")
+    @TmsLink("1344")
     public void testNotFoundResults() throws Exception {
         final String SEARCH_PHRASE = "asdf123";
 
@@ -68,6 +71,7 @@ public class SearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C22782951 Pagination")
+    @TmsLink("1345")
     public void testPagination() throws Exception {
         final String DEPT_ID = "007";
         final String SUB_DEPT_ID = "730";
@@ -118,6 +122,7 @@ public class SearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C23384708 search by criterions")
+    @TmsLink("1330")
     public void testSearchByCriterions() throws Exception {
         String lmCode = "10008698";
         String searchContext = "штора";
@@ -178,6 +183,7 @@ public class SearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C22782935 Clear field 'x'")
+    @TmsLink("1329")
     public void testClearTextInputByClearBtn() throws Exception {
         String searchPhrase = "123";
 
@@ -215,6 +221,7 @@ public class SearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C23384732 nomenclature filters and navigation")
+    @TmsLink("1334")
     public void testNomenclature() throws Exception {
         String dept = "011";
         String subDept = "1115";
@@ -314,6 +321,7 @@ public class SearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C23384733 sorting")
+    @TmsLink("1351")
     public void testSorting() throws Exception {
         GetCatalogProductSearchRequest defaultSort = new GetCatalogProductSearchRequest()
                 .setDepartmentId("5")
@@ -370,6 +378,7 @@ public class SearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C23384739 searchHistory")
+    @TmsLink("1346")
     public void testSearchHistory() throws Exception {
         String searchCriterion = "qqqq";
         int notesQuantity = 11;
@@ -388,6 +397,7 @@ public class SearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C22782963 Supplier")
+    @TmsLink("1335")
     public void testSupplierFilter() throws Exception {
         final String FIRST_SUPPLIER_CODE = "1001123001";
         final String FIRST_SUPPLIER_NAME = "ООО Бард-Спб";
@@ -432,6 +442,7 @@ public class SearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C22782965 AVS")
+    @TmsLink("1336")
     public void testAvsFilter() throws Exception {
         LocalDate avsDate = LocalDate.of(2021, 4, 30);
 
@@ -508,6 +519,7 @@ public class SearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C23384959 search by my shop filters group")
+    @TmsLink("1340")
     public void testMyShopFiltersGroupSearch() throws Exception {
 
         GetCatalogProductSearchRequest myShopFiltersParam = new GetCatalogProductSearchRequest()
@@ -598,6 +610,7 @@ public class SearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C23384960 search by all gamma filters group")
+    @TmsLink("1341")
     public void testAllGammaFiltersGroupSearch() throws Exception {
 
         GetCatalogProductSearchRequest ctmParam = new GetCatalogProductSearchRequest()
@@ -683,6 +696,7 @@ public class SearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C23384975 switching between My shop frame and All gamma frame")
+    @TmsLink("1342")
     public void testSwitchMyShopToAllGamma() throws Exception {
         LocalDate avsDate = LocalDate.of(2020, 4, 9);
         LocalDate allGammaAvsDate = LocalDate.of(2020, 3, 2);
@@ -762,6 +776,7 @@ public class SearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C22782968 Clear filters")
+    @TmsLink("1339")
     public void testClearFilters() throws Exception {
         GetCatalogProductSearchRequest myShopDefaultParams = new GetCatalogProductSearchRequest()
                 .setShopId(EnvConstants.BASIC_USER_SHOP_ID)
@@ -897,6 +912,7 @@ public class SearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C23385397 search without submit")
+    @TmsLink("1331")
     public void testSearchWithoutSubmit() throws Exception {
         String byNameLikeParam = "1";
         String deptId = EnvConstants.BASIC_USER_DEPARTMENT_ID;
@@ -960,6 +976,7 @@ public class SearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C23385398 search without changes", enabled = false)
+    @TmsLink("1332")
     public void testSearchWithoutChanges() throws Exception {
         //Pre-conditions
         SearchProductPage searchProductPage = loginAndGoTo(SearchProductPage.class);
@@ -975,6 +992,7 @@ public class SearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C23388802 search by browser url input", enabled = false)
+    @TmsLink("1347")
     public void testSearchByUrl() throws Exception {
         LocalDate avsDate = LocalDate.of(2020, 4, 9);
         final String FIRST_SUPPLIER_CODE = "1001123001";
@@ -1041,6 +1059,7 @@ public class SearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C23388851 navigate to product card")
+    @TmsLink("1343")
     public void testNavigateToProductCard() throws Exception {
         GetCatalogProductSearchRequest lmCodeByShopParam = new GetCatalogProductSearchRequest()
                 .setDepartmentId(getUserSessionData().getUserDepartmentId())
@@ -1098,6 +1117,7 @@ public class SearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C23388805 navigation forward and back")
+    @TmsLink("1348")
     public void testBrowserNavigation() throws Exception {
         String searchPhrase = "ротбанд";
         String chosenDepartmentId = "001";
@@ -1183,6 +1203,7 @@ public class SearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C22782967 Counter of used filters")
+    @TmsLink("1338")
     public void testUsedFilterCounter() throws Exception {
         LocalDate avsDate = LocalDate.of(2020, 4, 9);
         final String FIRST_SUPPLIER_CODE = "1001123001";

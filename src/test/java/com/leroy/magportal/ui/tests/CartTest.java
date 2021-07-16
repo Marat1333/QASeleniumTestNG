@@ -16,6 +16,8 @@ import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
 import io.qameta.allure.Step;
 import java.time.LocalDate;
 import java.util.Random;
+
+import io.qameta.allure.TmsLink;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 import org.testng.util.Strings;
@@ -32,6 +34,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797240 New cart creation", groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("1171")
     public void testNewCartCreation() throws Exception {
         SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
         String lmCode = productList.get(0).getLmCode();
@@ -55,6 +58,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797241 Search items by LM code, name, barcode", groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("1172")
     public void testSearchItemsByLmCodeByNameByBarcode() throws Exception {
         ProductData productData1 = productList.get(0);
         ProductData productData2 = productList.get(1);
@@ -95,6 +99,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797243 Add current item to cart", groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("1173")
     public void testAddCurrentItemToCart() throws Exception {
         if (isStartFromScratch()) {
             String lmCode1 = productList.get(0).getLmCode();
@@ -114,6 +119,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C23406349 Copy existing product to cart", groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("1174")
     public void testCopyExistingProductToCart() throws Exception {
         if (isStartFromScratch()) {
             String lmCode1 = productList.get(0).getLmCode();
@@ -137,6 +143,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797244 Item quantity editing", groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("1175")
     public void testItemQuantityEditing() throws Exception {
         int newQuantity = 3;
         if (isStartFromScratch()) {
@@ -178,6 +185,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797249 Delete item from cart", groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("1178")
     public void testDeleteItemFromCart() throws Exception {
         // Pre-condition
         ProductData testProduct1 = productList.get(0);
@@ -200,6 +208,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797250 Delete last item from cart", groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("1179")
     public void testDeleteLastItemFromCart() throws Exception {
         // Pre-condition
         ProductData testProduct1 = productList.get(0);
@@ -230,6 +239,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797258 Search customer (by telephone, service card number, email, barcode scanning)")
+    @TmsLink("1185")
     public void testSearchClientByPhoneNumberInEstimate() throws Exception {
         SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
 
@@ -250,6 +260,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797337 Edit customer data", groups = NEED_ACCESS_TOKEN_GROUP)
+    @TmsLink("1187")
     public void testEditCustomerDataInCart() throws Exception {
         SimpleCustomerData customerData = createCustomerByApi();
         step("Выполнение предусловий: авторизуемся, заходим на страницу корзины, выбираем пользователя");
@@ -285,6 +296,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797260 Change customer")
+    @TmsLink("1188")
     public void testChangeCustomerToAnotherOneInCart() throws Exception {
         SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
         SimpleCustomerData customer2 = TestDataConstants.SIMPLE_CUSTOMER_DATA_2;
@@ -310,6 +322,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797247 Add AVS, Топ EM items (sufficient stock)")
+    @TmsLink("1176")
     public void testAddAVSOrTopEMItemsSufficientStock() throws Exception {
         // Test data
         boolean oddDay = LocalDate.now().getDayOfMonth() % 2 == 1;
@@ -327,6 +340,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797248 Add AVS, Топ EM items (insufficient stock)")
+    @TmsLink("1177")
     public void testAddAVSOrTopEMItemsInsufficientStock() throws Exception {
         // Test data
         boolean oddDay = false;//LocalDate.now().getDayOfMonth() % 2 == 1;
@@ -353,6 +367,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797254 Create discount", groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("1181")
     public void testCreateDiscount() throws Exception {
         // Pre-condition
         ProductData testProduct1 = productList.get(0);
@@ -391,6 +406,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797256 Edit discount", groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("1182")
     public void testEditDiscount() throws Exception {
         // Test data
         ProductData testProduct1 = productList.get(0);
@@ -433,6 +449,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797255 Delete discount", groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("1183")
     public void testDeleteDiscount() throws Exception {
         // Test data
         ProductData testProduct1 = productList.get(0);

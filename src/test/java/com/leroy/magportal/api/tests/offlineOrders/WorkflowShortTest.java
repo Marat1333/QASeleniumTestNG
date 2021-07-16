@@ -10,6 +10,7 @@ import com.leroy.magportal.api.data.picking.PickingTaskData;
 import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.api.helpers.PaymentHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
+import io.qameta.allure.TmsLink;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -40,6 +41,7 @@ public class WorkflowShortTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425604 OFFLINE: Start Picking the Order")
+    @TmsLink("1990")
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);
@@ -48,6 +50,7 @@ public class WorkflowShortTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23425604 OFFLINE: Complete Picking the Order", dependsOnMethods = {
             "testStartPicking"})
+    //TODO Отсутствует кейс в аллюре
     public void testCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, true);
@@ -56,6 +59,7 @@ public class WorkflowShortTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23425604 OFFLINE: Give away the Order", dependsOnMethods = {
             "testCompletePicking"})
+    //TODO Отсутствует кейс в аллюре
     public void testGiveAway() {
         paymentHelper.makePaid(currentOrderId);
         orderClient.waitUntilOrderGetStatus(currentOrderId,

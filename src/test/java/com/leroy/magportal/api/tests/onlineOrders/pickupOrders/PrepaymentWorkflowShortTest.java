@@ -11,6 +11,7 @@ import com.leroy.magportal.api.data.picking.PickingTaskData;
 import com.leroy.magportal.api.helpers.OnlineOrderHelper;
 import com.leroy.magportal.api.helpers.PaymentHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
+import io.qameta.allure.TmsLink;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -42,6 +43,7 @@ public class PrepaymentWorkflowShortTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425615 PICKUP PREPAYMENT: Start Picking the Order")
+    @TmsLink("1881")
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);
@@ -50,6 +52,7 @@ public class PrepaymentWorkflowShortTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23425615 PICKUP PREPAYMENT: Complete Picking the Order", dependsOnMethods = {
             "testStartPicking"})
+    @TmsLink("1881")
     public void testCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, true);
@@ -58,6 +61,7 @@ public class PrepaymentWorkflowShortTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23425615 PICKUP PREPAYMENT: Give away the Order", dependsOnMethods = {
             "testCompletePicking"})
+    @TmsLink("1881")
     public void testGiveAway() {
         paymentHelper.makePaid(currentOrderId);
         orderClient.waitUntilOrderGetStatus(currentOrderId,

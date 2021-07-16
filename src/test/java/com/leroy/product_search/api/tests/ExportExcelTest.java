@@ -14,6 +14,8 @@ import com.leroy.utils.file_manager.excel.ExcelWorkBook;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.qameta.allure.TmsLink;
 import org.testng.annotations.Test;
 
 public class ExportExcelTest extends BaseCatalogTest {
@@ -96,6 +98,7 @@ public class ExportExcelTest extends BaseCatalogTest {
     }
 
     @Test(description = "C23416271 Excel output", groups = "productSearch")
+    @TmsLink("2139")
     public void testExcelDownload() throws Exception {
         FileManager fileManager = new FileManager();
         String resource = "/v1/products";

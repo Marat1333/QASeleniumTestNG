@@ -14,6 +14,7 @@ import com.leroy.magportal.api.helpers.OnlineOrderHelper;
 import com.leroy.magportal.api.helpers.PaymentHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
 import io.qameta.allure.Step;
+import io.qameta.allure.TmsLink;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -47,6 +48,7 @@ public class EntranceWorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438339 ALLOWED_FOR_PICKING -> PICKING_IN_PROCESS", priority = 1)
+    @TmsLink("1796")
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);
@@ -55,6 +57,7 @@ public class EntranceWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438340 PICKING_IN_PROGRESS -> PAUSE_PICKING (pause-picking)", dependsOnMethods = {
             "testStartPicking"}, priority = 2)
+    @TmsLink("1797")
     public void testPausePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .pausePicking(currentTaskId);
@@ -63,6 +66,7 @@ public class EntranceWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438341 PAUSE_PICKING -> PICKING_IN_PROCESS (unpause-picking)", dependsOnMethods = {
             "testPausePicking"}, priority = 3)
+    @TmsLink("1798")
     public void testResumePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .resumePicking(currentTaskId);
@@ -71,6 +75,7 @@ public class EntranceWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438342 PICKING_IN_PROGRESS -> PARTIALLY_PICKED", dependsOnMethods = {
             "testStartPicking"}, priority = 4)
+    @TmsLink("1799")
     public void testPartiallyCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, false);
@@ -78,6 +83,7 @@ public class EntranceWorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438343 PARTIALLY_PICKED: NEW Storage Location", priority = 5)
+    @TmsLink("1800")
     public void testNewStorageLocation() {
         currentLocationsCount = 3;
         Response<PickingTaskData> response = pickingTaskClient
@@ -87,6 +93,7 @@ public class EntranceWorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438344 PARTIALLY_PICKED: Updated Storage Location", priority = 6)
+    @TmsLink("1801")
     public void testUpdateStorageLocation() {
         currentLocationsCount = 1;
         Response<PickingTaskData> response = pickingTaskClient
@@ -97,6 +104,7 @@ public class EntranceWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438345 PARTIALLY_PICKED -> PICKED_WAIT", dependsOnMethods = {
             "testStartPicking"}, priority = 7)
+    @TmsLink("1802")
     public void testCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, true);
@@ -105,6 +113,7 @@ public class EntranceWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438346 PICKED_WAIT -> PICKED", dependsOnMethods = {
             "testCompletePicking"}, priority = 8)
+    @TmsLink("1803")
     public void testPicked() {
         paymentHelper.makePaid(currentOrderId);
         orderClient.waitUntilOrderGetStatus(currentOrderId, States.PICKED, PaymentStatus.PAID);
@@ -113,6 +122,7 @@ public class EntranceWorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438347 PICKED: UPDATE Storage Location", priority = 9)
+    @TmsLink("1804")
     public void testUpdateStorageLocationPicked() {
         currentLocationsCount = 5;
         Response<PickingTaskData> response = pickingTaskClient
@@ -123,6 +133,7 @@ public class EntranceWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438348 PICKED -> PARTIALLY_SHIPPED", dependsOnMethods = {
             "testPicked"}, priority = 10)
+    @TmsLink("1805")
     public void testPartiallyShipped() {
         Response<JsonNode> response = orderClient.giveAway(currentOrderId, false);
         orderClient.assertWorkflowResult(response, currentOrderId, States.PARTIALLY_SHIPPED);
@@ -130,6 +141,7 @@ public class EntranceWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438349 PARTIALLY_SHIPPED -> SHIPPED", dependsOnMethods = {
             "testPicked"}, priority = 11)
+    @TmsLink("1806")
     public void testShipped() {
         Response<JsonNode> response = orderClient.giveAway(currentOrderId, true);
         orderClient.assertWorkflowResult(response, currentOrderId, States.SHIPPED);
@@ -137,6 +149,7 @@ public class EntranceWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438350 SHIPPED -> PARTIALLY_DELIVERED", dependsOnMethods = {
             "testShipped"}, priority = 12)
+    @TmsLink("1807")
     public void testPartiallyDeliver() {
         orderClient.waitUntilOrderGetStatus(currentOrderId,
                 States.ON_DELIVERY, PaymentStatus.PAID);
@@ -145,6 +158,7 @@ public class EntranceWorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438351 SHIPPED -> NO DELIVERED", priority = 13)
+    @TmsLink("1808")
     public void testNothingDelivered() {
         setUp();
         orderClient.moveNewOrderToStatus(currentOrderId, States.GIVEN_AWAY);
@@ -154,6 +168,7 @@ public class EntranceWorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438352 SHIPPED -> DELIVERED", priority = 14)
+    @TmsLink("1809")
     public void testDelivered() {
         setUp();
         orderClient.moveNewOrderToStatus(currentOrderId, States.GIVEN_AWAY);
@@ -162,6 +177,7 @@ public class EntranceWorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438399 GET Order", priority = 15)
+    @TmsLink("1810")
     public void testGetOrder() {
         Response<OnlineOrderData> response = orderClient.getOnlineOrder(currentOrderId);
         orderClient.assertGetOrderResult(response, currentOrderType);

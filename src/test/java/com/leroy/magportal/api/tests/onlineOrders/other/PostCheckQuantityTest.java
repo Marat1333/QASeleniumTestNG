@@ -15,6 +15,8 @@ import io.qameta.allure.Step;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.qameta.allure.TmsLink;
 import org.testng.annotations.Test;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -30,6 +32,7 @@ public class PostCheckQuantityTest extends BaseMagPortalApiTest {
     private LocalDateTime gateAwayDate;
 
     @Test(description = "C23440815 Check Quantity One LmCode a few hours forward", priority = 1)
+    @TmsLink("1925")
     public void testCheckQuantityOneLmCode() {
         lmCodes = searchProductHelper.getProductLmCodes(1);
         gateAwayDate = LocalDateTime.now().plusHours(12);
@@ -39,6 +42,7 @@ public class PostCheckQuantityTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23440816 Check Quantity Several LmCodes Today dimensional count", priority = 2)
+    @TmsLink("1926")
     public void testCheckQuantitySeveralLmCodesToday() {
         gateAwayDate = LocalDateTime.now();
         lmCodes = searchProductHelper.getProductLmCodes(10);
@@ -48,6 +52,7 @@ public class PostCheckQuantityTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23440817 Check Quantity Week Forward", priority = 3)
+    @TmsLink("8313")
     public void testCheckQuantityWeekForward() {
         gateAwayDate = LocalDateTime.now().plusDays(7);
         Response<ResOrderCheckQuantityData> response = orderClient

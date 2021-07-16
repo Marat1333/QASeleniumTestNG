@@ -9,6 +9,7 @@ import com.leroy.magportal.api.constants.OnlineOrderTypeConst;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
 import com.leroy.magportal.api.helpers.OnlineOrderHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
+import io.qameta.allure.TmsLink;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -64,6 +65,7 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425629 Door: Edit Allowed For Picking Order", priority = 1)
+    @TmsLink("1826")
     public void testEditAllowedForPicking() {
         currentCount = 9.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, currentCount);
@@ -71,6 +73,7 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425630 Door: Add Product to Allowed For Picking Order (Negative)", priority = 2)
+    @TmsLink("1827")
     public void testAddProductAllowedForPicking() {
         Response<?> response = orderClient.rearrange(currentOrderId, 2, null);
         assertThat("It's possible to ADD product into payed Order", !response.isSuccessful());
@@ -80,6 +83,7 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425631 Door: Edit And Add Product to Allowed For Picking Order (Negative)", priority = 3)
+    @TmsLink("1828")
     public void testEditAndAddProductAllowedForPicking() {
         Response<?> response = orderClient.rearrange(currentOrderId, 2, 1.0);
         assertThat("It's possible to ADD product into payed Order", !response.isSuccessful());
@@ -89,6 +93,7 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425632 Door: Edit Picked Paid Order", priority = 4)
+    @TmsLink("1829")
     public void testEditPickedPaid() {
         currentCount = 7.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, currentCount);
@@ -96,6 +101,7 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425633 Door: Add Product to Paid Order (Negative)", priority = 5)
+    @TmsLink("1830")
     public void testAddProductPickedPaid() {
         currentStatus = States.PICKED;
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
@@ -107,6 +113,7 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425634 Door: Edit Add Product to Paid Order (Negative)", priority = 6)
+    @TmsLink("1831")
     public void testEditAndAddProductPickedPaid() {
         Response<?> response = orderClient.rearrange(currentOrderId, 2, 1.0);
         assertThat("It's possible to ADD product into payed Order", !response.isSuccessful());
@@ -116,6 +123,7 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425635 Door: Edit Dimensional Product Allowed For Picking Order", priority = 7)
+    @TmsLink("1832")
     public void testEditDimensionalProduct() {
         makeDimensionalOrder();
         currentCount = 6.66;
@@ -124,6 +132,7 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425636 Door: Edit Dimensional Product: Paid Order", priority = 8)
+    @TmsLink("1833")
     public void testEditDimensionalProductPaid() {
         currentStatus = States.PICKED;
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
@@ -133,6 +142,7 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425637 Door: Cancel order by Edit Dimensional Product: Paid Order", priority = 9)
+    @TmsLink("1834")
     public void testCancelByEditDimensionalProductPaid() {
         currentCount = 10.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, 0.0);
@@ -140,6 +150,7 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425638 Door: Cancel order by Edit with New Product Added", priority = 10)
+    @TmsLink("1835")
     public void testCancelByEditWithNewProduct() {
         makeDimensionalOrder();
         orderClient.editOrder(currentOrderId, 1, null);

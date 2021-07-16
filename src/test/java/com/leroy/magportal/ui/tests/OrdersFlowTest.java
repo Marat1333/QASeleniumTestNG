@@ -30,6 +30,8 @@ import com.leroy.magportal.ui.pages.picking.PickingContentPage;
 import com.leroy.magportal.ui.pages.picking.PickingPage;
 
 import java.util.List;
+
+import io.qameta.allure.TmsLink;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -122,6 +124,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
 
     @Test(description = "C23416311 Заказы.Оффлайн.Самовывоз.Переход из статуса Готов к сборке в статус Собран", groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("1081")
     public void testMoveFromReadyPickingToPicked() throws Exception {
         initCreateOrder(1);
 
@@ -181,12 +184,14 @@ public class OrdersFlowTest extends BasePAOTest {
 
 
     @Test(description = "C22829618 Заказы.Оффлайн.Самовывоз. Полная выдача", groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("1009")
     public void testOrderOfflinePickup() throws Exception {
         testOrderOffline(SalesDocumentsConst.GiveAwayPoints.PICKUP);
     }
 
 
     @Test(description = "C23437677 Заказы. Oффлайн. Доставка.", groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("1080")
     public void testOrderOfflineDelivery() throws Exception {
         testOrderOffline(SalesDocumentsConst.GiveAwayPoints.DELIVERY);
     }
@@ -275,6 +280,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
 
     @Test(description = "C23438407 Заказы. статус \"Собран\". Отображение полей на вкладке \"Контроль\". Контроль не пройден", groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("1066")
     public void testControlTabPickedNonControlled() throws Exception {
           initCreateOrder(1,SalesDocumentsConst.GiveAwayPoints.PICKUP, SalesDocumentsConst.States.PICKED);
 
@@ -313,6 +319,7 @@ public class OrdersFlowTest extends BasePAOTest {
     }
 
     @Test(description = "C22829617 Заказы. Процесс обработки заказа. Онлайн. Доставка. Предоплата", groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("1008")
     public void testOrderFlowOnlinePrepaymentDelivery() throws Exception {
         orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.DELIVERY_TO_DOOR).getSolutionId();
         System.out.print(orderId);
@@ -447,6 +454,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
 
     @Test(description = "C22829616 Заказы. Процесс обработки заказа. Онлайн. Предоплата. Самовывоз", groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("1007")
     public void testOrderFlowOnlinePrepaymentPickUp() throws Exception {
         orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.PICKUP_PREPAYMENT).getSolutionId();
         System.out.print(orderId);
@@ -553,6 +561,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
 
     @Test(description = "C23425890 Orders Процесс обработки заказа. Онлайн. Предоплата. Полная  доставка. Возврат после доставки", groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("1022")
     public void testFullDeliveryRefund() throws Exception {
         // Step 1:
         step("Создать заказ Онлайн с Предоплатой");
@@ -616,6 +625,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
 
     @Test(description = "C23751064 Orders Процесс обработки заказа. Онлайн. Предоплата. Частичная доставка", groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("1029")
     public void testPartialDelivery() throws Exception {
         // Step 1:
         step("Создать заказ Онлайн с Предоплатой");
