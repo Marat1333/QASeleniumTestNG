@@ -9,7 +9,7 @@ import com.leroy.magportal.api.constants.OnlineOrderTypeConst;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
 import com.leroy.magportal.api.helpers.OnlineOrderHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -66,7 +66,7 @@ public class PrepaymentEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425616 PrePayment: Edit Allowed For Picking Order", priority = 1)
-    @TmsLink("1915")
+    @AllureId("1915")
     public void testEditAllowedForPicking() {
         currentCount = 9.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, currentCount);
@@ -74,7 +74,7 @@ public class PrepaymentEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425617 PrePayment: Add Product to Allowed For Picking Order (Negative)", priority = 2)
-    @TmsLink("1916")
+    @AllureId("1916")
     public void testAddProductAllowedForPicking() {
         Response<?> response = orderClient.rearrange(currentOrderId, 2, null);
         assertThat("It's possible to ADD product into payed Order", !response.isSuccessful());
@@ -84,7 +84,7 @@ public class PrepaymentEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425618 PrePayment: Edit And Add Product to Allowed For Picking Order (Negative)", priority = 3)
-    @TmsLink("1917")
+    @AllureId("1917")
     public void testEditAndAddProductAllowedForPicking() {
         Response<?> response = orderClient.rearrange(currentOrderId, 2, 1.0);
         assertThat("It's possible to ADD product into payed Order", !response.isSuccessful());
@@ -95,7 +95,7 @@ public class PrepaymentEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425619 PrePayment: Edit Picked Paid Order", priority = 4)
-    @TmsLink("1918")
+    @AllureId("1918")
     public void testAddProductPickedPaid() {
         currentStatus = States.PICKED;
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
@@ -107,7 +107,7 @@ public class PrepaymentEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425620 PrePayment: Add Product to Paid Order (Negative)", priority = 5)
-    @TmsLink("1919")
+    @AllureId("1919")
     public void testEditPickedPaid() {
         currentCount = 7.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, currentCount);
@@ -115,7 +115,7 @@ public class PrepaymentEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425621 PrePayment: Edit Add Product to Paid Order (Negative)", priority = 6)
-    @TmsLink("1920")
+    @AllureId("1920")
     public void testEditAndAddProductPickedPaid() {
         Response<?> response = orderClient.rearrange(currentOrderId, 2, 1.0);
         assertThat("It's possible to ADD product into payed Order", !response.isSuccessful());
@@ -125,7 +125,7 @@ public class PrepaymentEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425622 PrePayment: Edit Dimensional Product Allowed For Picking Order", priority = 7)
-    @TmsLink("1921")
+    @AllureId("1921")
     public void testEditDimensionalProduct() {
         makeDimensionalOrder();
         currentCount = 6.66;
@@ -134,7 +134,7 @@ public class PrepaymentEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425623 PrePayment: Edit Dimensional Product: Paid Order", priority = 8)
-    @TmsLink("1922")
+    @AllureId("1922")
     public void testEditDimensionalProductPaid() {
         currentStatus = States.PICKED;
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
@@ -144,7 +144,7 @@ public class PrepaymentEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425624 PrePayment: Cancel order by Edit Dimensional Product: Paid Order", priority = 9)
-    @TmsLink("1923")
+    @AllureId("1923")
     public void testCancelByEditDimensionalProductPaid() {
         currentCount = 10.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, 0.0);
@@ -152,7 +152,7 @@ public class PrepaymentEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425625 PrePayment: Cancel order by Edit with New Product Added", priority = 10)
-    @TmsLink("1924")
+    @AllureId("1924")
     public void testCancelByEditWithNewProduct() {
         makeDimensionalOrder();
         orderClient.editOrder(currentOrderId, 1, null);

@@ -14,7 +14,7 @@ import com.leroy.magportal.api.helpers.OnlineOrderHelper;
 import com.leroy.magportal.api.helpers.PaymentHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
 import io.qameta.allure.Step;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -48,7 +48,7 @@ public class PrepaymentWorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438367 ALLOWED_FOR_PICKING -> PICKING_IN_PROCESS", priority = 1)
-    @TmsLink("1893")
+    @AllureId("1893")
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);
@@ -58,7 +58,7 @@ public class PrepaymentWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438368 PICKING_IN_PROGRESS -> PAUSE_PICKING (pause-picking)", dependsOnMethods = {
             "testStartPicking"}, priority = 2)
-    @TmsLink("1894")
+    @AllureId("1894")
     public void testPausePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .pausePicking(currentTaskId);
@@ -67,7 +67,7 @@ public class PrepaymentWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438369 PAUSE_PICKING -> PICKING_IN_PROCESS (unpause-picking)", dependsOnMethods = {
             "testPausePicking"}, priority = 3)
-    @TmsLink("1895")
+    @AllureId("1895")
     public void testResumePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .resumePicking(currentTaskId);
@@ -77,7 +77,7 @@ public class PrepaymentWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438370 PICKING_IN_PROGRESS -> PARTIALLY_PICKED", dependsOnMethods = {
             "testStartPicking"}, priority = 4)
-    @TmsLink("1896")
+    @AllureId("1896")
     public void testPartiallyCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, false);
@@ -85,7 +85,7 @@ public class PrepaymentWorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438371 PARTIALLY_PICKED: NEW Storage Location", priority = 5)
-    @TmsLink("1897")
+    @AllureId("1897")
     public void testNewStorageLocation() {
         currentLocationsCount = 3;
         Response<PickingTaskData> response = pickingTaskClient
@@ -95,7 +95,7 @@ public class PrepaymentWorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438372 PARTIALLY_PICKED: Updated Storage Location", priority = 6)
-    @TmsLink("1898")
+    @AllureId("1898")
     public void testUpdateStorageLocation() {
         currentLocationsCount = 1;
         Response<PickingTaskData> response = pickingTaskClient
@@ -105,7 +105,7 @@ public class PrepaymentWorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438373 PARTIALLY_PICKED -> PICKED_WAIT", priority = 7)
-    @TmsLink("1899")
+    @AllureId("1899")
     public void testPickedWait() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, true);
@@ -113,7 +113,7 @@ public class PrepaymentWorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438374 PARTIALLY_PICKED -> PICKED", priority = 8)
-    @TmsLink("1900")
+    @AllureId("1900")
     public void testPicked() {
         paymentHelper.makePaid(currentOrderId);
         orderClient.waitUntilOrderGetStatus(currentOrderId, States.PICKED, PaymentStatus.PAID);
@@ -122,7 +122,7 @@ public class PrepaymentWorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438375 PICKED: UPDATE Storage Location", priority = 9)
-    @TmsLink("1901")
+    @AllureId("1901")
     public void testUpdateStorageLocationPicked() {
         currentLocationsCount = 5;
         Response<PickingTaskData> response = pickingTaskClient
@@ -133,7 +133,7 @@ public class PrepaymentWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438376 PICKED -> PARTIALLY_GIVEN_AWAY", dependsOnMethods = {
             "testPicked"}, priority = 10)
-    @TmsLink("1902")
+    @AllureId("1902")
     public void testPartiallyGivenAway() {
         Response<JsonNode> response = orderClient.giveAway(currentOrderId, false);
         orderClient.assertWorkflowResult(response, currentOrderId, States.PARTIALLY_GIVEN_AWAY);
@@ -141,14 +141,14 @@ public class PrepaymentWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438377 PARTIALLY_GIVEN_AWAY -> GIVEN_AWAY", dependsOnMethods = {
             "testPicked"}, priority = 11)
-    @TmsLink("1903")
+    @AllureId("1903")
     public void testGivenAway() {
         Response<JsonNode> response = orderClient.giveAway(currentOrderId, true);
         orderClient.assertWorkflowResult(response, currentOrderId, States.GIVEN_AWAY);
     }
 
     @Test(description = "C23438402 GET Order", priority = 12)
-    @TmsLink("1904")
+    @AllureId("1904")
     public void testGetOrder() {
         Response<OnlineOrderData> response = orderClient.getOnlineOrder(currentOrderId);
         orderClient.assertGetOrderResult(response, OnlineOrderTypeConst.PICKUP_PREPAYMENT);

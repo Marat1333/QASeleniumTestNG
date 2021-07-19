@@ -4,7 +4,7 @@ import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magportal.ui.constants.picking.PickingConst;
 import com.leroy.magportal.ui.pages.picking.mobile.PickingDocListMobilePage;
 import com.leroy.magportal.ui.tests.BaseMockMagPortalUiTest;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -29,7 +29,7 @@ public class PickingFilteringMobileTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23438168 Сборка. Фильтрация по Типу сборки")
-    @TmsLink("1204")
+    @AllureId("1204")
     public void testFiltersByAssemblyType() throws Exception {
 
         // Step 1
@@ -60,7 +60,7 @@ public class PickingFilteringMobileTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23438169 Сборка. Фильтрация по Статусу сборки")
-    @TmsLink("1205")
+    @AllureId("1205")
     public void testFiltersByStatus() throws Exception {
 
         // Step 1
@@ -110,7 +110,7 @@ public class PickingFilteringMobileTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23438170 Сборка. Фильтрация по отделам")
-    @TmsLink("1206")
+    @AllureId("1206")
     public void testFiltersByDepartments() throws Exception {
 
         // Step 1
@@ -153,7 +153,7 @@ public class PickingFilteringMobileTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23438171 Сборка. Фильтрация с чек боксом 'Мои'")
-    @TmsLink("1207")
+    @AllureId("1207")
     public void testFilterMy() throws Exception {
         // Step 1
         step("Открыть страницу со Сборкой");
@@ -188,7 +188,7 @@ public class PickingFilteringMobileTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23438174 Сборка. Поиск по номеру заказа")
-    @TmsLink("1210")
+    @AllureId("1210")
     public void testSearchForPickingByOrderNumber() throws Exception {
         // Step 1
         step("Открыть страницу со Сборкой");
@@ -201,7 +201,7 @@ public class PickingFilteringMobileTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23438910 Сборка. Фильтрация по Схеме продажи")
-    @TmsLink("1211")
+    @AllureId("1211")
     public void testFilteringBySalesScheme() throws Exception {
         // Step 1
         step("Открыть страницу со Сборкой");

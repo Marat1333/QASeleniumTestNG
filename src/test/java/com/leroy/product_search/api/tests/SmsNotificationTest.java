@@ -11,7 +11,7 @@ import com.leroy.magmobile.api.data.notification.NotificationCustomerData;
 import com.leroy.magmobile.api.data.notification.SmsNotificationData;
 import com.leroy.magmobile.api.data.sales.BaseProductOrderData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -32,7 +32,7 @@ public class SmsNotificationTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3175887 SMS post", groups = "productSearch")
-    @TmsLink("3457")
+    @AllureId("3457")
     public void testCreateNotification() {
         // Get test data:
         ProductData product = searchProductHelper.getProducts(1).get(0);
@@ -60,7 +60,7 @@ public class SmsNotificationTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3175886 SMS get", groups = "productSearch")
-    @TmsLink("3456")
+    @AllureId("3456")
     public void testGetNotification() {
         Response<SmsNotificationData> resp = smsNotificationClient.getNotification(
                 smsNotificationData.getProduct().getLmCode());

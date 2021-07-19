@@ -10,7 +10,7 @@ import com.leroy.magmobile.ui.pages.work.withdrawal_from_rm.OrderDetailsPage;
 import com.leroy.magmobile.ui.pages.work.withdrawal_from_rm.OrderPage;
 import com.leroy.magmobile.ui.pages.work.withdrawal_from_rm.OrdersListPage;
 import com.leroy.magmobile.ui.pages.work.withdrawal_from_rm.SubmittedWithdrawalOrderPage;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 
@@ -22,7 +22,7 @@ public class WithdrawalFromRMTest extends AppBaseSteps {
 
     @Smoke
     @Test(description = "C3132493 Создание заявки на Отзыв RM из раздела Работа", groups = OLD_SHOP_GROUP)
-    @TmsLink("2671")
+    @AllureId("2671")
     public void testC3132493() throws Exception {
         // Pre-condition
         MainProductAndServicesPage mainProductAndServicesPage = loginSelectShopAndGoTo(

@@ -19,7 +19,7 @@ import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import java.util.List;
 
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.Test;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -38,7 +38,7 @@ public class SalesDocSearchTest extends BaseProjectApiTest {
     private final int MAX_COUNT_BACKEND = 4;
 
     @Test(description = "C3164797 Search by shopId")
-    @TmsLink("3254")
+    @AllureId("3254")
     public void testSearchByShopId() {
         String testShop = "5";
         Response<SalesDocumentListResponse> resp = salesDocSearchClient.searchForDocumentsByShopId(testShop, 1, PAGE_SIZE);
@@ -50,7 +50,7 @@ public class SalesDocSearchTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3164798 Search by docType")
-    @TmsLink("3255")
+    @AllureId("3255")
     public void testSearchByDocType() {
         int startFrom = 1;
 
@@ -93,7 +93,7 @@ public class SalesDocSearchTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3164799 Search by docId")
-    @TmsLink("3256")
+    @AllureId("3256")
     public void testSearchByDocId() {
         String testDocId = "1524";
         Response<SalesDocumentListResponse> resp = salesDocSearchClient.searchForDocumentsByDocId(testDocId);

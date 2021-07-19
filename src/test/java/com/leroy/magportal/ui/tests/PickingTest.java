@@ -28,7 +28,7 @@ import com.leroy.utils.ParserUtil;
 import java.util.Collections;
 import java.util.List;
 
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
@@ -93,7 +93,7 @@ public class PickingTest extends BasePAOTest {
     }
 
     @Test(description = "C23408356 Сплит сборки (зона сборки Торговый зал)", groups = NEED_PRODUCTS_GROUP)
-    @TmsLink("1255")
+    @AllureId("1255")
     public void testSplitAssemblyShoppingRoom() throws Exception {
         initCreateOrder(1);
         // Test data
@@ -172,7 +172,7 @@ public class PickingTest extends BasePAOTest {
     }
 
     @Test(description = "C23408338 Сплит сборки (зона сборки СС)", groups = NEED_PRODUCTS_GROUP)
-    @TmsLink("1256")
+    @AllureId("1256")
     public void testSplitAssemblySS() throws Exception {
         initCreateOrder(1);
         // Test data
@@ -263,7 +263,7 @@ public class PickingTest extends BasePAOTest {
     }
 
     @Test(description = "C23408355 Сплит сборки (зона сборки Склад)", enabled = false)
-    @TmsLink("1257")
+    @AllureId("1257")
     // TODO нужны в наличии товары ТОП ЕМ с наличием на складе
     public void testSplitAssemblyStock() throws Exception {
         initCreateOrder(1);
@@ -308,7 +308,7 @@ public class PickingTest extends BasePAOTest {
     }
 
     @Test(description = "C23408737 Сплит сборки с несколькими товарами", groups = NEED_PRODUCTS_GROUP)
-    @TmsLink("1259")
+    @AllureId("1259")
     public void testSplitAssemblyWithDifferentProducts() throws Exception {
         initCreateOrder(2);
         // Test data
@@ -414,7 +414,7 @@ public class PickingTest extends BasePAOTest {
     }
 
     @Test(description = "C23438198 Частичная сборка заказа", groups = NEED_PRODUCTS_GROUP)
-    @TmsLink("1261")
+    @AllureId("1261")
     public void testPartialOrderAssembly() throws Exception {
         initCreateOrder(3);
 
@@ -501,7 +501,7 @@ public class PickingTest extends BasePAOTest {
     }
 
     @Test(description = "C23408358 Сплит сборки с изменением количества товара", groups = NEED_PRODUCTS_GROUP)
-    @TmsLink("1258")
+    @AllureId("1258")
     public void testSplitAssemblyWithChangingProductQuantity() throws Exception {
         if (isStartFromScratch()) {
             testPartialOrderAssembly();

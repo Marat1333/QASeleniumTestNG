@@ -4,14 +4,14 @@ import com.leroy.core.annotations.Smoke;
 import com.leroy.magmobile.ui.AppBaseSteps;
 import com.leroy.magmobile.ui.pages.support.ComplainPage;
 import com.leroy.magmobile.ui.pages.support.SupportPage;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.Test;
 
 public class SupportTest extends AppBaseSteps {
 
     @Smoke
     @Test(description = "C3201017 Создание тикета из приложения (пожаловаться)")
-    @TmsLink("2729")
+    @AllureId("2729")
     public void testC3201017() throws Exception {
         // Step #1
         step("Зайдите в раздел Поддержка");

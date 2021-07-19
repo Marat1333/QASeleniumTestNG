@@ -58,7 +58,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import lombok.Data;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterClass;
@@ -130,7 +130,7 @@ public class TransferTest extends AppBaseSteps {
 
     @Smoke
     @Test(description = "C3268357 Создание отзыва с RM клиенту")
-    @TmsLink("2762")
+    @AllureId("2762")
     public void testCreateTransferFromRMToClient() throws Exception {
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
         // Pre-condition
@@ -289,7 +289,7 @@ public class TransferTest extends AppBaseSteps {
 
     @Smoke
     @Test(description = "C3268358 Создание отзыва с RM для пополнения торгового зала")
-    @TmsLink("2763")
+    @AllureId("2763")
     public void testCreateTransferFromRMToShopRoom() throws Exception {
         // Pre-condition
         WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
@@ -428,7 +428,7 @@ public class TransferTest extends AppBaseSteps {
     }
 
     @Test(description = "C3268361 Редактирование заявки в статусе Черновик")
-    @TmsLink("2765")
+    @AllureId("2765")
     public void testEditTransferInDraftStatus() throws Exception {
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
         CustomTransferProduct product = products.get(5);
@@ -524,7 +524,7 @@ public class TransferTest extends AppBaseSteps {
     }
 
     @Test(description = "C3268363 Удаление товара из заявки", enabled = false)
-    @TmsLink("2767")
+    @AllureId("2767")
     public void testRemoveProductFromTransferTask() throws Exception {
         TransferOrderStep1Page transferOrderStep1Page;
         CustomTransferProduct product1 = products.get(6);
@@ -575,7 +575,7 @@ public class TransferTest extends AppBaseSteps {
     }
 
     @Test(description = "C3268364 Удаление последнего товара из заявки", enabled = false)
-    @TmsLink("2677")
+    @AllureId("2677")
     public void testRemoveLastProductFromTransferTask() throws Exception {
         TransferOrderStep1Page transferOrderStep1Page;
         CustomTransferProduct product1 = products.get(8);
@@ -616,7 +616,7 @@ public class TransferTest extends AppBaseSteps {
 
     @Smoke
     @Test(description = "C3268365 Изменение количества товара")
-    @TmsLink("2769")
+    @AllureId("2769")
     public void testChangeProductQuantityInTransferTask() throws Exception {
         TransferOrderStep1Page transferOrderStep1Page;
         CustomTransferProduct product1 = products.get(9);
@@ -659,7 +659,7 @@ public class TransferTest extends AppBaseSteps {
     }
 
     @Test(description = "C3268366 Изменение количества товара в поиске товаров", enabled = false)
-    @TmsLink("2770")
+    @AllureId("2770")
     public void testChangeProductQuantityWhenSearchProductsOnStock() throws Exception {
         // Pre-condition
         WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
@@ -691,7 +691,7 @@ public class TransferTest extends AppBaseSteps {
 
     @Smoke
     @Test(description = "C3268367 Добавление товара в заявку из поиска")
-    @TmsLink("2771")
+    @AllureId("2771")
     public void testAddProductFromSearch() throws Exception {
         TransferOrderStep1Page transferOrderStep1Page;
         CustomTransferProduct product1 = products.get(10);
@@ -750,7 +750,7 @@ public class TransferTest extends AppBaseSteps {
     }
 
     @Test(description = "C3268368 Редактирование параметров заявки", enabled = false)
-    @TmsLink("2772")
+    @AllureId("2772")
     public void testEditParametersTransferTask() throws Exception {
         TransferOrderStep1Page transferOrderStep1Page;
         CustomTransferProduct product1 = products.get(11);
@@ -816,7 +816,7 @@ public class TransferTest extends AppBaseSteps {
     }
 
     @Test(description = "C3268369 Поиск товара (по ЛМ коду и штрих коду)", enabled = false)
-    @TmsLink("2773")
+    @AllureId("2773")
     public void testSearchForProductsForTransferTask() throws Exception {
         TransferSearchProductData productData = transferHelper.searchForProductsForTransfer().get(0);
         WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
@@ -831,7 +831,7 @@ public class TransferTest extends AppBaseSteps {
     }
 
     @Test(description = "C3268371 Фильтрация списка заявок")
-    @TmsLink("2775")
+    @AllureId("2775")
     public void testFilterTransferTasks() throws Exception {
         WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
         TransferRequestsPage transferRequestsPage = workPage.goToTransferProductFromStock();
@@ -860,7 +860,7 @@ public class TransferTest extends AppBaseSteps {
     }
 
     @Test(description = "C3268372 Расчет количества товара на простом калькуляторе")
-    @TmsLink("2776")
+    @AllureId("2776")
     public void testCalculateProductCountOnCalculator() throws Exception {
         WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
         AddProduct35Page<TransferSearchPage> addProduct35Page = workPage.goToTransferProductFromStock()
@@ -871,7 +871,7 @@ public class TransferTest extends AppBaseSteps {
     }
 
     @Test(description = "C3268374 Отзыв товара на моно-палете", enabled = false)
-    @TmsLink("2778")
+    @AllureId("2778")
     public void testTransferProductOnMonoPallet() throws Exception {
         step("Выполнение предусловий:");
         TransferSearchProductData productData = transferHelper.searchForProductsForTransfer(
@@ -927,7 +927,7 @@ public class TransferTest extends AppBaseSteps {
     }
 
     @Test(description = "C3268376 Удаление заявки в статусе Черновик")
-    @TmsLink("2780")
+    @AllureId("2780")
     public void testRemoveDraftTransferTask() throws Exception {
         // Pre-condition
         TransferOrderStep1Page transferOrderStep1Page;
@@ -960,7 +960,7 @@ public class TransferTest extends AppBaseSteps {
     }
 
     @Test(description = "C3268373 Обновление списка заявок (pull to refresh)")
-    @TmsLink("2777")
+    @AllureId("2777")
     public void testPullRefresh() throws Exception {
         // Pre-condition
         CustomTransferProduct product1 = products.get(13);

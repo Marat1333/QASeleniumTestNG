@@ -12,7 +12,7 @@ import com.leroy.magmobile.api.data.ruptures.ReqRuptureSessionData;
 import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionData;
 import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionDataList;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -43,7 +43,7 @@ public class RupturesDeleteSessionTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285343 DELETE active rupture session")
-    @TmsLink("3358")
+    @AllureId("3358")
     public void testDeleteActiveRuptureSession() {
         setUp(false);
 
@@ -61,7 +61,7 @@ public class RupturesDeleteSessionTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285341 DELETE a previously deleted rupture session")
-    @TmsLink("3360")
+    @AllureId("3360")
     public void testDeletePreviouslyDeletedRuptureSession() {
         if (sessionId == null) {
             setUp(false);
@@ -76,7 +76,7 @@ public class RupturesDeleteSessionTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3233587 DELETE finished ruptures session")
-    @TmsLink("3359")
+    @AllureId("3359")
     public void testDeleteFinishedRuptureSession() {
         setUp(true);
 
@@ -94,7 +94,7 @@ public class RupturesDeleteSessionTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285342 DELETE a not existing session")
-    @TmsLink("3361")
+    @AllureId("3361")
     public void testDeleteNotExistingSession() {
 
         step("Пробуем удалить несуществующую сессию");
@@ -103,7 +103,7 @@ public class RupturesDeleteSessionTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409769 DELETE rupture session mashup validation")
-    @TmsLink("3362")
+    @AllureId("3362")
     public void testDeleteSessionMashupValidation() {
         Response<JsonNode> resp = rupturesClient.deleteSession("");
         assertThat("Response code", resp.getStatusCode(), equalTo(StatusCodes.ST_400_BAD_REQ));

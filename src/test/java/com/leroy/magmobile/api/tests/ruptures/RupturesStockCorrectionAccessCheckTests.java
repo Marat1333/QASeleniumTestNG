@@ -2,14 +2,14 @@ package com.leroy.magmobile.api.tests.ruptures;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.magmobile.api.enums.CorrectionAccessLevels;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
 public class RupturesStockCorrectionAccessCheckTests extends BaseRuptureTest{
 
     @Test(description = "C23718169 User have access to all departments")
-    @TmsLink("3368")
+    @AllureId("3368")
     public void testUserHaveAccessToAllDepartments() {
         CorrectionAccessLevels accessLevel = CorrectionAccessLevels.ALL_DEPARTMENTS;
 
@@ -21,7 +21,7 @@ public class RupturesStockCorrectionAccessCheckTests extends BaseRuptureTest{
     }
 
     @Test(description = "C23718195 User have access to one department")
-    @TmsLink("3369")
+    @AllureId("3369")
     public void testUserHaveAccessToOneDepartment() {
         CorrectionAccessLevels accessLevel = CorrectionAccessLevels.ONE_DEPARTMENT;
 
@@ -33,7 +33,7 @@ public class RupturesStockCorrectionAccessCheckTests extends BaseRuptureTest{
     }
 
     @Test(description = "C23718170 User do not have access in shop")
-    @TmsLink("3370")
+    @AllureId("3370")
     public void testUserDoesNotHaveAccess() {
         CorrectionAccessLevels accessLevel = CorrectionAccessLevels.NO_ONE_DEPARTMENT;
 
@@ -45,7 +45,7 @@ public class RupturesStockCorrectionAccessCheckTests extends BaseRuptureTest{
     }
 
     @Test(description = "C23718171 User not existed in system")
-    @TmsLink("3371")
+    @AllureId("3371")
     public void testUserDoesNotExistInSystem() {
         CorrectionAccessLevels accessLevel = CorrectionAccessLevels.UNKNOWN_USER;
 

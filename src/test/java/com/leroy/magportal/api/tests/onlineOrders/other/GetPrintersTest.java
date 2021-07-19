@@ -13,7 +13,7 @@ import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
 import io.qameta.allure.Step;
 import java.util.List;
 
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -27,7 +27,7 @@ public class GetPrintersTest extends BaseMagPortalApiTest {
     private Integer shopId;
 
     @Test(description = "C23749381 Get Printers for Default Shop")
-    @TmsLink("1957")
+    @AllureId("1957")
     public void testGetPrintersDefaultShop() {
         shopId = Integer.parseInt(getUserSessionData().getUserShopId());
         Response<PrinterData> response = orderClient.getPrinters(shopId);
@@ -35,7 +35,7 @@ public class GetPrintersTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23749382 Get Printers for Random Shop")
-    @TmsLink("1958")
+    @AllureId("1958")
     public void testGetPrintersRandomShop() {
         shopId = shopsHelper.getRandomShopId();
         Response<PrinterData> response = orderClient.getPrinters(shopId);
@@ -43,7 +43,7 @@ public class GetPrintersTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23749383 Get Printers No Shop")
-    @TmsLink("1959")
+    @AllureId("1959")
     public void testGetPrintersNoShop() {
         shopId = 0;
         Response<PrinterData> response = orderClient.getPrinters(shopId);

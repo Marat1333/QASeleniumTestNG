@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.leroy.magportal.api.clients.ShopsClient;
 import com.leroy.magportal.api.data.shops.ShopData;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -14,7 +14,7 @@ public class ShopsTest extends BaseMagPortalApiTest {
     private ShopsClient shopsClient;
 
     @Test(description = "C3182981 Get Shops List V1")
-    @TmsLink("2089")
+    @AllureId("2089")
     public void testGetShops() {
 
         Response<ShopData> response = shopsClient.getShops();

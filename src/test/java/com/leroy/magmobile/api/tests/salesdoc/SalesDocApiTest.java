@@ -10,7 +10,7 @@ import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import java.util.Collections;
 import java.util.Random;
 
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.Test;
 
 public class SalesDocApiTest extends BaseProjectApiTest {
@@ -28,7 +28,7 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3232445 SalesDoc add product")
-    @TmsLink("3239")
+    @AllureId("3239")
     public void testSalesDocAddProduct() {
         // Prepare request data
         CartEstimateProductOrderData productOrderData = new CartEstimateProductOrderData(
@@ -45,7 +45,7 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3232446 SalesDoc add services")
-    @TmsLink("3240")
+    @AllureId("3240")
     public void testSalesDocAddService() {
         // Prepare request data
         ServiceOrderData serviceOrderData = new ServiceOrderData(
@@ -65,7 +65,7 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3232448 SalesDoc product GET")
-    @TmsLink("3242")
+    @AllureId("3242")
     public void testSalesDocProductGET() {
         if (salesDocument == null)
             throw new IllegalArgumentException("SalesDoc hasn't been created");
@@ -75,13 +75,13 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C22898131 SalesDoc service GET")
-    @TmsLink("3243")
+    @AllureId("3243")
     public void testSalesDocServiceGET() throws Exception {
         testSalesDocProductGET();
     }
 
     @Test(description = "C22897826 SalesDoc UPDATE quantity for the same product")
-    @TmsLink("3245")
+    @AllureId("3245")
     public void testSalesDocUpdateQuantityForTheSameProduct() {
         if (salesDocument == null)
             throw new IllegalArgumentException("SalesDoc hasn't been created");
@@ -95,7 +95,7 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C22898166 SalesDoc UPDATE price for the same service")
-    @TmsLink("3246")
+    @AllureId("3246")
     public void testSalesDocUpdatePriceForTheSameService() {
         if (salesDocument == null)
             throw new IllegalArgumentException("SalesDoc hasn't been created");
@@ -111,7 +111,7 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C22898134 SalesDoc UPDATE parameter - Cancel (For document with Products)")
-    @TmsLink("3248")
+    @AllureId("3248")
     public void testSalesDocUpdateParameterCancelWithProduct() {
         if (salesDocument == null)
             throw new IllegalArgumentException("SalesDoc hasn't been created");
@@ -120,7 +120,7 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C22898394 SalesDoc UPDATE parameter - Cancel (For document with Services)")
-    @TmsLink("3249")
+    @AllureId("3249")
     public void testSalesDocUpdateParameterCancelWithServices() {
         testSalesDocUpdateParameterCancelWithProduct();
     }

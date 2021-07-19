@@ -11,7 +11,7 @@ import com.leroy.magportal.ui.pages.orders.OrderCreatedContentPage;
 import com.leroy.magportal.ui.pages.orders.OrderCreatedInfoPage;
 import com.leroy.magportal.ui.pages.orders.OrderHeaderPage;
 import com.leroy.magportal.ui.tests.BaseMockMagPortalUiTest;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.mbtest.javabank.http.predicates.PredicateType;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -69,7 +69,7 @@ public class SizOrderTest extends BaseMockMagPortalUiTest {
     // ------------------- TEST CASES ------------------------------- //
 
     @Test(description = "C23399998 Признаки ТК в листинге, на вкладке заказа")
-    @TmsLink("1057")
+    @AllureId("1057")
     public void testTKSignsOnOrderTab() throws Exception {
         String orderTK = "201003130724";
         String orderKK = "201003130726";
@@ -130,7 +130,7 @@ public class SizOrderTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23426982 Статус 'В доставке'")
-    @TmsLink("1062")
+    @AllureId("1062")
     public void testStatusInDelivery() throws Exception {
         String orderWaitingForPayment = "234269820000";
         String orderAllowedForPicking = "234269820001";
@@ -180,7 +180,7 @@ public class SizOrderTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23399960 Конечный статус 'Доставлен'")
-    @TmsLink("1058")
+    @AllureId("1058")
     public void testStatusDelivered() throws Exception {
         String orderDelivered = "233999600000";
 
@@ -195,7 +195,7 @@ public class SizOrderTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23399961 Конечный статус 'Частичная доставка'")
-    @TmsLink("1059")
+    @AllureId("1059")
     public void testStatusPartiallyDelivered() throws Exception {
         String orderId = "233999610000";
 
@@ -210,7 +210,7 @@ public class SizOrderTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23399963 Статус 'Доставлен без сборки'")
-    @TmsLink("1061")
+    @AllureId("1061")
     public void testStatusDeliveredWithoutPicking() throws Exception {
         String orderId = "233999630000";
 
@@ -225,7 +225,7 @@ public class SizOrderTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23399962 Конечный статус 'Отказ при доставке'")
-    @TmsLink("1060")
+    @AllureId("1060")
     public void testStatusCancelledOnDelivery() throws Exception {
         String orderId = "233999620000";
 

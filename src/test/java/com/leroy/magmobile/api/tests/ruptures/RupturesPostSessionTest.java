@@ -5,7 +5,7 @@ import com.leroy.magmobile.api.data.ruptures.ActionData;
 import com.leroy.magmobile.api.data.ruptures.ReqRuptureSessionData;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductDataList;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -15,7 +15,7 @@ import java.util.Collections;
 public class RupturesPostSessionTest extends BaseRuptureTest {
 
     @Test(description = "C3233579 Create  standard session")
-    @TmsLink("3322")
+    @AllureId("3322")
     public void testCreateRuptureSessionProduct() {
         ActionData action1 = new ActionData();
         action1.setAction(0);

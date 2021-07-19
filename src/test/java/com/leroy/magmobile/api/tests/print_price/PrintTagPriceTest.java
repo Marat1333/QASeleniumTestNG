@@ -20,7 +20,7 @@ import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -82,7 +82,7 @@ public class PrintTagPriceTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23190526 get printers list", priority = 1)
-    @TmsLink("3478")
+    @AllureId("3478")
     public void testGetPrintersList() {
         Response<PrintDepartmentList> resp = printPriceClient.getDepartmentPrinterList();
         assertThat(resp, successful());
@@ -91,7 +91,7 @@ public class PrintTagPriceTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23190528 post print task (few products)", priority = 2, enabled = false)
-    @TmsLink("3480")
+    @AllureId("3480")
     // Тест выключен, т.к. (предположительно) ценники реально печатаются
     public void testSendPrintTaskFewProduct() {
         List<PrintPrinterData> dept5 = printDepartmentsList.getDept5();
@@ -101,7 +101,7 @@ public class PrintTagPriceTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23190527 post print task (1 product)", priority = 3, enabled = false)
-    @TmsLink("3479")
+    @AllureId("3479")
     // Тест выключен, т.к. (предположительно) ценники реально печатаются
     public void testSendPrintTaskOneProduct() {
         List<PrintPrinterData> dept5 = printDepartmentsList.getDept5();

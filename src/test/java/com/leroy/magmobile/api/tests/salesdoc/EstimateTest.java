@@ -15,7 +15,7 @@ import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import java.util.Collections;
 import java.util.Random;
 
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -34,7 +34,7 @@ public class EstimateTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3311701 POST estimate product - HP")
-    @TmsLink("3062")
+    @AllureId("3062")
     public void testCreateEstimate() {
         // Prepare request data
         EstimateProductOrderData productOrderData = new EstimateProductOrderData(
@@ -53,7 +53,7 @@ public class EstimateTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23194973 Estimate - Send Email")
-    @TmsLink("3075")
+    @AllureId("3075")
     public void testEstimateSendEmail() {
         if (estimateData == null)
             throw new IllegalArgumentException("estimate data hasn't been created");
@@ -66,7 +66,7 @@ public class EstimateTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3311703 GET estimate product")
-    @TmsLink("3063")
+    @AllureId("3063")
     public void testGetEstimate() {
         if (estimateData == null)
             throw new IllegalArgumentException("estimate data hasn't been created");
@@ -75,7 +75,7 @@ public class EstimateTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3311707 Update Estimate - change quantity")
-    @TmsLink("3065")
+    @AllureId("3065")
     public void testUpdateEstimate() {
         if (estimateData == null)
             throw new IllegalArgumentException("estimate data hasn't been created");
@@ -96,7 +96,7 @@ public class EstimateTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C22732369 PUT estimates/changeStatus DRAFT -> DELETED")
-    @TmsLink("3073")
+    @AllureId("3073")
     public void testDeleteEstimate() {
         if (estimateData == null)
             throw new IllegalArgumentException("estimate data hasn't been created");

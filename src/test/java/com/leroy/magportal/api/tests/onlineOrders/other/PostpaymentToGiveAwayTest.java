@@ -11,7 +11,7 @@ import com.leroy.magportal.api.data.picking.PickingTaskData;
 import com.leroy.magportal.api.helpers.OnlineOrderHelper;
 import com.leroy.magportal.api.helpers.PaymentHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import lombok.SneakyThrows;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -43,7 +43,7 @@ public class PostpaymentToGiveAwayTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23748043 Pickup: GiveAway for Start Picking")
-    @TmsLink("1946")
+    @AllureId("1946")
     public void testStartPickingGiveAway() {
         Response<?> resp = pickingTaskClient.startPicking(currentTaskId);
         isResponseOk(resp);
@@ -55,7 +55,7 @@ public class PostpaymentToGiveAwayTest extends BaseMagPortalApiTest {
     @SneakyThrows
     @Test(description = "C23748046 Pickup: GiveAway for Picked", dependsOnMethods = {
             "testStartPickingGiveAway"})
-    @TmsLink("1947")
+    @AllureId("1947")
     public void testPickedGiveAway() {
         Response<?> resp = pickingTaskClient.completePicking(currentTaskId, true);
         paymentHelper.makePaid(currentOrderId);
@@ -70,7 +70,7 @@ public class PostpaymentToGiveAwayTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23748044 Pickup: GiveAway Products for Partially GiveAway", dependsOnMethods = {
             "testPickedGiveAway"})
-    @TmsLink("1948")
+    @AllureId("1948")
     public void testPartiallyGiveAway() {
         Response<?> resp = orderClient.giveAway(currentOrderId, false);
         isResponseOk(resp);
@@ -81,7 +81,7 @@ public class PostpaymentToGiveAwayTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23748045 Pickup: GiveAway Products for GiveAway", dependsOnMethods = {
             "testPickedGiveAway"})
-    @TmsLink("1949")
+    @AllureId("1949")
     public void testGiveAway() {
         Response<?> resp = orderClient.giveAway(currentOrderId, true);
         isResponseOk(resp);

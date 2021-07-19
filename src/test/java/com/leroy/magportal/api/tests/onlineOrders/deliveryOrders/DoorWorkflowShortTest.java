@@ -11,7 +11,7 @@ import com.leroy.magportal.api.data.picking.PickingTaskData;
 import com.leroy.magportal.api.helpers.OnlineOrderHelper;
 import com.leroy.magportal.api.helpers.PaymentHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -43,7 +43,7 @@ public class DoorWorkflowShortTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425626 Door Delivery: ALLOWED_FOR_PICKING -> PICKING_IN_PROGRESS")
-    @TmsLink("1778")
+    @AllureId("1778")
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);
@@ -52,7 +52,7 @@ public class DoorWorkflowShortTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23425626 Door Delivery: PICKING_IN_PROGRESS -> PICKED", dependsOnMethods = {
             "testStartPicking"})
-    @TmsLink("1778")
+    @AllureId("1778")
     public void testCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, true);
@@ -61,7 +61,7 @@ public class DoorWorkflowShortTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23425626 Door Delivery: ALLOWED_FOR_GIVEAWAY -> ON_SHIPMENT", dependsOnMethods = {
             "testCompletePicking"})
-    @TmsLink("1778")
+    @AllureId("1778")
     public void testShipped() {
         paymentHelper.makePaid(currentOrderId);
         orderClient.waitUntilOrderGetStatus(currentOrderId,
@@ -72,7 +72,7 @@ public class DoorWorkflowShortTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23425626 Door Delivery: ON_SHIPMENT -> DELIVERED", dependsOnMethods = {
             "testShipped"})
-    @TmsLink("1778")
+    @AllureId("1778")
     public void testDeliver() {
         orderClient.waitUntilOrderGetStatus(currentOrderId,
                 States.ON_DELIVERY, null);

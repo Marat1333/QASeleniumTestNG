@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.Test;
@@ -45,7 +45,7 @@ public class EstimateTest extends BasePAOTest {
     private final String VALIDATION_EMAIL_ERROR_TEXT = "Введи email в формате username@example.ru";
 
     @Test(description = "C3302188 Create estimate", groups = NEED_PRODUCTS_GROUP)
-    @TmsLink("1085")
+    @AllureId("1085")
     public void testCreateEstimate() throws Exception {
         String testProductLmCode = productList.get(0).getLmCode();
         EstimatePage estimatePage = loginAndGoTo(EstimatePage.class);
@@ -92,7 +92,7 @@ public class EstimateTest extends BasePAOTest {
     }
 
     @Test(description = "C3302208 Search product by lm code", groups = NEED_PRODUCTS_GROUP)
-    @TmsLink("1086")
+    @AllureId("1086")
     public void testSearchProductByLmCodeInEstimate() throws Exception {
         ProductData testProduct = productList.get(0);
         EstimatePage estimatePage = loginAndGoTo(EstimatePage.class);
@@ -128,7 +128,7 @@ public class EstimateTest extends BasePAOTest {
     }
 
     @Test(description = "C3302209 Search product by barcode", groups = NEED_PRODUCTS_GROUP)
-    @TmsLink("1087")
+    @AllureId("1087")
     public void testSearchProductByBarcodeInEstimate() throws Exception {
         ProductData testProduct = productList.get(0);
         EstimatePage estimatePage = isStartFromScratch() ? loginAndGoTo(EstimatePage.class) :
@@ -165,7 +165,7 @@ public class EstimateTest extends BasePAOTest {
     }
 
     @Test(description = "C3302211 Add new product to estimate", groups = NEED_PRODUCTS_GROUP)
-    @TmsLink("1089")
+    @AllureId("1089")
     public void testAddNewProductToEstimate() throws Exception {
         // Pre-condition
         ProductData testProduct1 = productList.get(0);
@@ -202,7 +202,7 @@ public class EstimateTest extends BasePAOTest {
     }
 
     @Test(description = "C3302212 Copy existing product to estimate", groups = NEED_PRODUCTS_GROUP)
-    @TmsLink("1090")
+    @AllureId("1090")
     public void testCopyExistingProductToEstimate() throws Exception {
         // Pre-condition
         ProductData testProduct1 = productList.get(0);
@@ -228,7 +228,7 @@ public class EstimateTest extends BasePAOTest {
     }
 
     @Test(description = "C3302213 Change quantity of product", groups = NEED_PRODUCTS_GROUP)
-    @TmsLink("1091")
+    @AllureId("1091")
     public void testChangeQuantityOfProductInEstimate() throws Exception {
         // Pre-condition
         int newQuantity = 5;
@@ -277,7 +277,7 @@ public class EstimateTest extends BasePAOTest {
     }
 
     @Test(description = "C3302216 Ordered quantity of product more than existing", groups = NEED_PRODUCTS_GROUP)
-    @TmsLink("1094")
+    @AllureId("1094")
     public void testOrderedQuantityOfProductMoreThanExisting() throws Exception {
         // Pre-condition
         ProductData testProduct1 = productList.get(0);
@@ -303,7 +303,7 @@ public class EstimateTest extends BasePAOTest {
     }
 
     @Test(description = "C3302214 Remove product from estimate", groups = NEED_PRODUCTS_GROUP)
-    @TmsLink("1092")
+    @AllureId("1092")
     public void testRemoveProductFromEstimate() throws Exception {
         // Pre-condition
         ProductData testProduct1 = productList.get(0);
@@ -327,7 +327,7 @@ public class EstimateTest extends BasePAOTest {
     }
 
     @Test(description = "C3302215 Remove last product from estimate", groups = NEED_PRODUCTS_GROUP)
-    @TmsLink("1093")
+    @AllureId("1093")
     public void testRemoveLastProductFromEstimate() throws Exception {
         // Pre-condition
         ProductData testProduct1 = productList.get(0);
@@ -357,7 +357,7 @@ public class EstimateTest extends BasePAOTest {
     // Client for Estimate
 
     @Test(description = "C3302189 Search client by phone number")
-    @TmsLink("1114")
+    @AllureId("1114")
     public void testSearchClientByPhoneNumberInEstimate() throws Exception {
         SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
 
@@ -382,7 +382,7 @@ public class EstimateTest extends BasePAOTest {
     }
 
     @Test(description = "C3302190 Search client by email")
-    @TmsLink("1115")
+    @AllureId("1115")
     public void testSearchClientByEmailInEstimate() throws Exception {
         SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_2;
 
@@ -412,7 +412,7 @@ public class EstimateTest extends BasePAOTest {
     }
 
     @Test(description = "C3302191 Search client by service card")
-    @TmsLink("1116")
+    @AllureId("1116")
     public void testSearchClientByServiceCardInEstimate() throws Exception {
         // Test data
         SimpleCustomerData customerData = TestDataConstants.CUSTOMER_WITH_SERVICE_CARD;
@@ -447,7 +447,7 @@ public class EstimateTest extends BasePAOTest {
     }
 
     @Test(description = "C3302195 Change client to another one")
-    @TmsLink("1118")
+    @AllureId("1118")
     public void testChangeClientToAnotherOne() throws Exception {
         SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
         SimpleCustomerData customer2 = TestDataConstants.SIMPLE_CUSTOMER_DATA_2;
@@ -476,7 +476,7 @@ public class EstimateTest extends BasePAOTest {
     }
 
     @Test(description = "C3302194 Add new client to estimate")
-    @TmsLink("1117")
+    @AllureId("1117")
     public void testAddNewClientToEstimate() throws Exception {
         String unusedPhoneNumber = customerHelper.findUnusedPhoneNumber();
 
@@ -527,7 +527,7 @@ public class EstimateTest extends BasePAOTest {
     }
 
     @Test(description = "C3302197 Change parameters of client", groups = NEED_ACCESS_TOKEN_GROUP)
-    @TmsLink("1120")
+    @AllureId("1120")
     public void testChangeParametersOfClient() throws Exception {
         SimpleCustomerData customerData = createCustomerByApi();
         step("Выполнение предусловий: авторизуемся, заходим на страницу сметы, выбираем пользователя");
@@ -565,7 +565,7 @@ public class EstimateTest extends BasePAOTest {
     }
 
     @Test(description = "C3302196 Validation: Estimate without client", groups = NEED_PRODUCTS_GROUP)
-    @TmsLink("1119")
+    @AllureId("1119")
     public void testValidateCreationEstimateWithoutClient() throws Exception {
         step("Выполнение предусловий: авторизуемся, заходим на страницу сметы");
         String testProductLmCode = productList.get(0).getLmCode();
@@ -609,21 +609,21 @@ public class EstimateTest extends BasePAOTest {
     }
 
     @Test(description = "C23389036 Удаление сметы в статусе Черновик", groups = NEED_ACCESS_TOKEN_GROUP)
-    @TmsLink("1103")
+    @AllureId("1103")
     public void testRemoveDraftEstimate() throws Exception {
         String estimateId = paoHelper.createDraftEstimateAndGetCartId();
         testRemoveEstimate(estimateId);
     }
 
     @Test(description = "C23398452 Удаление сметы в статусе Создан", groups = NEED_ACCESS_TOKEN_GROUP)
-    @TmsLink("1104")
+    @AllureId("1104")
     public void testRemoveConfirmedEstimate() throws Exception {
         String estimateId = paoHelper.createConfirmedEstimateAndGetCartId();
         testRemoveEstimate(estimateId);
     }
 
     @Test(description = "C22797239 Convert estimate to cart", groups = {NEED_ACCESS_TOKEN_GROUP, NEED_PRODUCTS_GROUP})
-    @TmsLink("1170")
+    @AllureId("1170")
     public void testConvertEstimateToCart() throws Exception {
         String estimateId;
         EstimatePage estimatePage;
@@ -679,7 +679,7 @@ public class EstimateTest extends BasePAOTest {
     // Search
 
     @Test(description = "C3302186 Search of documents", groups = NEED_ACCESS_TOKEN_GROUP)
-    @TmsLink("1084")
+    @AllureId("1084")
     public void testSearchDocumentEstimate() throws Exception {
         step("Выполнение предусловий");
         String estimateId = paoHelper.createDraftEstimateAndGetCartId();
@@ -710,7 +710,7 @@ public class EstimateTest extends BasePAOTest {
     // Estimate sending
 
     @Test(description = "C3302200 Auto filling email address from client profile", groups = NEED_PRODUCTS_GROUP)
-    @TmsLink("1107")
+    @AllureId("1107")
     public void testAutoFillingEmailFromClientProfile() throws Exception {
         // Test Data
         ProductData testProduct1 = productList.get(0);
@@ -747,7 +747,7 @@ public class EstimateTest extends BasePAOTest {
     }
 
     @Test(description = "C3302201 Send email to several email addresses", groups = NEED_PRODUCTS_GROUP)
-    @TmsLink("1108")
+    @AllureId("1108")
     public void testSendEmailToSeveralEmailAddresses() throws Exception {
         // Test Data
         ProductData testProduct1 = productList.get(0);
@@ -786,7 +786,7 @@ public class EstimateTest extends BasePAOTest {
     }
 
     @Test(description = "C3302202 Change email (exist in client profile)", groups = NEED_ACCESS_TOKEN_GROUP)
-    @TmsLink("1109")
+    @AllureId("1109")
     public void testChangeEmailInClientProfile() throws Exception {
         // Test Data
         SimpleCustomerData customerData = createCustomerByApi();
@@ -825,7 +825,7 @@ public class EstimateTest extends BasePAOTest {
     }
 
     @Test(description = "C3302204 Send email from final screen", groups = NEED_PRODUCTS_GROUP)
-    @TmsLink("1110")
+    @AllureId("1110")
     public void testSendEmailFromFinalScreen() throws Exception {
         // Test Data
         ProductData testProduct1 = productList.get(0);
@@ -870,7 +870,7 @@ public class EstimateTest extends BasePAOTest {
     }
 
     @Test(description = "C3302206 Validate email format", groups = NEED_PRODUCTS_GROUP)
-    @TmsLink("1112")
+    @AllureId("1112")
     public void testValidateEmailFormat() throws Exception {
         // Test Data
         ProductData testProduct1 = productList.get(0);
@@ -912,7 +912,7 @@ public class EstimateTest extends BasePAOTest {
     }
 
     @Test(description = "C3302207 Validation: Send email without email address", groups = NEED_PRODUCTS_GROUP)
-    @TmsLink("1113")
+    @AllureId("1113")
     public void testValidationSendEmailWithEmptyEmail() throws Exception {
         // Test Data
         ProductData testProduct1 = productList.get(0);

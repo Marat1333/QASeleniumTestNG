@@ -41,7 +41,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
@@ -166,7 +166,7 @@ public class OrderSearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C22829624 Ордерс. Фильтрация по статусу заказа")
-    @TmsLink("1030")
+    @AllureId("1030")
     @Ignore("Надо обновить шаги тест кейса и переделать его")
     public void testOrderFilterByStatus() throws Exception {
         // Step 1
@@ -211,7 +211,7 @@ public class OrderSearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C22893768 Ордерс. Фильтрация по Способу получения")
-    @TmsLink("1032")
+    @AllureId("1032")
     public void testOrderFilterByDeliveryType() throws Exception {
         // Step 1
         step("Открыть страницу с Заказами");
@@ -243,7 +243,7 @@ public class OrderSearchTest extends WebBaseSteps {
 
     @Issue("PUZ2-2092")
     @Test(description = "C22893769 Ордерс. Фильтрация по Номеру заказа и Номеру телефона")
-    @TmsLink("1033")
+    @AllureId("1033")
     public void testOrderFilterByDocNumberAndPhoneNumber() throws Exception {
         // Pre-conditions
         SimpleCustomerData customerData = new SimpleCustomerData();
@@ -378,7 +378,7 @@ public class OrderSearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C22893767 Ордерс. Фильтрация по Дате")
-    @TmsLink("1031")
+    @AllureId("1031")
     public void testOrderFilterByDate() throws Exception {
         // Step 1
         step("Открыть страницу с Заказами");

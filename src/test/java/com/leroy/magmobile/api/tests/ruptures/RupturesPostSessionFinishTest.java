@@ -9,7 +9,7 @@ import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionData;
 import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionDataList;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
 import io.qameta.allure.Step;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -45,7 +45,7 @@ public class RupturesPostSessionFinishTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3233585 PUT ruptures session finish")
-    @TmsLink("3353")
+    @AllureId("3353")
     public void testFinishRuptureSession() {
         setUp();
         step("Завершаем сессию");
@@ -64,7 +64,7 @@ public class RupturesPostSessionFinishTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285352 PUT ruptures session finish for finished session")
-    @TmsLink("3354")
+    @AllureId("3354")
     public void testFinishFinishedRuptureSession() {
         if (sessionId == null) {
             setUp();
@@ -79,7 +79,7 @@ public class RupturesPostSessionFinishTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285353 PUT ruptures session finish for deleted session")
-    @TmsLink("3355")
+    @AllureId("3355")
     public void testFinishDeletedRuptureSession() {
         if (sessionId == null) {
             setUp();
@@ -94,7 +94,7 @@ public class RupturesPostSessionFinishTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285354 PUT ruptures session finish for a not existing session")
-    @TmsLink("3356")
+    @AllureId("3356")
     public void testPutRupturesSessionFinishForNotExistingSession() {
         int notExistingSession = Integer.MAX_VALUE;
 
@@ -104,7 +104,7 @@ public class RupturesPostSessionFinishTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409768 PUT ruptures session finish mashup validation")
-    @TmsLink("3357")
+    @AllureId("3357")
     public void testPutRupturesSessionFinishMashupValidation() {
         Response<JsonNode> resp = rupturesClient.finishSession("");
         assertThat("Response code", resp.getStatusCode(), equalTo(StatusCodes.ST_400_BAD_REQ));

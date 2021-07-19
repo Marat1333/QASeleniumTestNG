@@ -12,7 +12,7 @@ import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
 import java.util.List;
 
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -49,7 +49,7 @@ public class SetPinCodeTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23441744 Set Invalid PinCode", priority = 1)
-    @TmsLink("2016")
+    @AllureId("2016")
     public void testSetInvalidPinCode() {
         currentPinCode = "1test";
         Response<?> response = paoClient
@@ -58,7 +58,7 @@ public class SetPinCodeTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23441740 First Set PinCode for Pickup Order", priority = 2)
-    @TmsLink("2012")
+    @AllureId("2012")
     public void testSetPinCodePickupFirst() {
         currentPinCode = paoHelper.getValidPinCode(currentOrderData.getDelivery());
         Response<?> response = paoClient
@@ -67,7 +67,7 @@ public class SetPinCodeTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23441741 Second Set PinCode for Pickup Order", priority = 3)
-    @TmsLink("2013")
+    @AllureId("2013")
     public void testSetPinCodePickupSecond() {
         currentPinCode = paoHelper.getValidPinCode(currentOrderData.getDelivery());
         Response<?> response = paoClient
@@ -76,7 +76,7 @@ public class SetPinCodeTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23441742 Set PinCode Duplicate for Delivery Order", priority = 4)
-    @TmsLink("2014")
+    @AllureId("2014")
     public void testSetPinCodeDeliveryDuplicate() {
         createOfflineDeliveryOrder();
         Response<?> response = paoClient
@@ -85,7 +85,7 @@ public class SetPinCodeTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23441743 Set PinCode for Delivery Order", priority = 5)
-    @TmsLink("2015")
+    @AllureId("2015")
     public void testSetPinCodeDeliveryFirst() {
         currentPinCode = paoHelper.getValidPinCode(currentOrderData.getDelivery());
         Response<?> response = paoClient

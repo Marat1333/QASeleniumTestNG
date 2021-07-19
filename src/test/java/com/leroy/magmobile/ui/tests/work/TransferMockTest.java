@@ -19,7 +19,7 @@ import com.leroy.magmobile.ui.pages.work.transfer.data.DetailedTransferTaskData;
 import com.leroy.magmobile.ui.pages.work.transfer.data.TransferProductData;
 import com.leroy.magmobile.ui.pages.work.transfer.modal.TransferActionWithProductCardModal;
 import com.leroy.magmobile.ui.tests.BaseUiMagMobMockTest;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -36,7 +36,7 @@ public class TransferMockTest extends BaseUiMagMobMockTest {
     }
 
     @Test(description = "C22782861 Создание отзыва с RM клиенту (юр.лицо)")
-    @TmsLink("2781")
+    @AllureId("2781")
     public void testCreateTransferFromRMToLegalClient() throws Exception {
         MagLegalCustomerData legalCustomerData = TestDataConstants.LEGAL_ENTITY_2;
 
@@ -103,7 +103,7 @@ public class TransferMockTest extends BaseUiMagMobMockTest {
     }
 
     @Test(description = "C3268360 Создание отзыва с RM из карточки товара")
-    @TmsLink("2764")
+    @AllureId("2764")
     public void testCreateTransferTaskFromProductCard() throws Exception {
         // Pre-condition
         step("Выполнение предусловий теста");
@@ -170,7 +170,7 @@ public class TransferMockTest extends BaseUiMagMobMockTest {
     }
 
     @Test(description = "C3268363 Удаление товара из заявки")
-    @TmsLink("2767")
+    @AllureId("2767")
     public void testRemoveProductFromTransferTask() throws Exception {
         String productTitle2 = "Блок газобетонный Ytong D500 625х250х100 мм";
 
@@ -204,7 +204,7 @@ public class TransferMockTest extends BaseUiMagMobMockTest {
     }
 
     @Test(description = "C3268364 Удаление последнего товара из заявки")
-    @TmsLink("2768")
+    @AllureId("2768")
     public void testRemoveLastProductFromTransferTask() throws Exception {
         String productTitle = "Смесь универсальная Каменный цветок М150, 25 кг";
 
@@ -232,7 +232,7 @@ public class TransferMockTest extends BaseUiMagMobMockTest {
     }
 
     @Test(description = "C3268366 Изменение количества товара в поиске товаров")
-    @TmsLink("2770")
+    @AllureId("2770")
     public void testChangeProductQuantityWhenSearchProductsOnStock() throws Exception {
         // Pre-condition
         WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
@@ -263,7 +263,7 @@ public class TransferMockTest extends BaseUiMagMobMockTest {
     }
 
     @Test(description = "C3268369 Поиск товара (по ЛМ коду и штрих коду)")
-    @TmsLink("2773")
+    @AllureId("2773")
     public void testSearchForProductsForTransferTask() throws Exception {
         String lmCode = "32683690";
         TransferProductData transferProductData = new TransferProductData();
@@ -284,7 +284,7 @@ public class TransferMockTest extends BaseUiMagMobMockTest {
     }
 
     @Test(description = "C3268374 Отзыв товара на моно-палете")
-    @TmsLink("2778")
+    @AllureId("2778")
     public void testTransferProductOnMonoPallet() throws Exception {
         String lmCode = "32683740";
 
@@ -338,7 +338,7 @@ public class TransferMockTest extends BaseUiMagMobMockTest {
     }
 
     @Test(description = "C3268376 Удаление заявки в статусе Черновик")
-    @TmsLink("2780")
+    @AllureId("2780")
     public void testRemoveDraftTransferTask() throws Exception {
         String productTitle = "Воронка 125x90 мм цвет красный";
 

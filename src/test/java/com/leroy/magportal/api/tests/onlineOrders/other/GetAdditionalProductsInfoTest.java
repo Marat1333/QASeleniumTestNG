@@ -15,7 +15,7 @@ import io.qameta.allure.Step;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.Test;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -32,7 +32,7 @@ public class GetAdditionalProductsInfoTest extends BaseMagPortalApiTest {
     private final String shopId = "13";
 
     @Test(description = "C23440819 Get Products Additional Info", priority = 1)
-    @TmsLink("1928")
+    @AllureId("1928")
     public void testGetProductsAdditionalInfo() {
         lmCodes = searchProductHelper.getProductLmCodes(1);
         Response<?> response = orderClient.getProductsAdditionalInfo(lmCodes);
@@ -40,7 +40,7 @@ public class GetAdditionalProductsInfoTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23440820 Get Products Additional Info Several LmCodes", priority = 2)
-    @TmsLink("1929")
+    @AllureId("1929")
     public void testGetProductsAdditionalInfoSeveralLmCodes() {
         lmCodes = searchProductHelper.getProductLmCodes(10);
         Response<?> response = orderClient.getProductsAdditionalInfo(lmCodes);
@@ -50,7 +50,7 @@ public class GetAdditionalProductsInfoTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23440821 Get Products Additional Info for non-default Shop", dependsOnMethods = {
             "testGetProductsAdditionalInfoSeveralLmCodes"})
-    @TmsLink("1930")
+    @AllureId("1930")
     public void testGetProductsAdditionalInfoDiffShop() {
         Response<?> response = orderClient.getProductsAdditionalInfo(lmCodes, shopId);
         assertStorageResult(response);

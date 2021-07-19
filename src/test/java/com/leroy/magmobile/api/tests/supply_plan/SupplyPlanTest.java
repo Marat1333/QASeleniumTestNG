@@ -39,7 +39,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -139,7 +139,7 @@ public class SupplyPlanTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23184440 one date")
-    @TmsLink("3473")
+    @AllureId("3473")
     public void testGetTotalPalletPerDay() {
         LocalDate date = LocalDate.of(2020, 1, 10);
 
@@ -159,7 +159,7 @@ public class SupplyPlanTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23184439 few dates")
-    @TmsLink("3472")
+    @AllureId("3472")
     public void testGetTotalPalletPerFewDays() {
         LocalDate testDate = LocalDate.of(2020, 1, 10);
         LocalDate testDate1 = LocalDate.of(2020, 1, 20);
@@ -183,7 +183,7 @@ public class SupplyPlanTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23184830 search by name")
-    @TmsLink("3476")
+    @AllureId("3476")
     public void testGetSupplierByName() {
         String supplierName = "сен-гобен";
 
@@ -202,7 +202,7 @@ public class SupplyPlanTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23184832 search by code")
-    @TmsLink("3477")
+    @AllureId("3477")
     public void testGetSupplierByCode() {
         String supplierCode = "10003";
 
@@ -221,7 +221,7 @@ public class SupplyPlanTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23184833 get shipments by date")
-    @TmsLink("3464")
+    @AllureId("3464")
     public void testGetShipmentsByDate() {
         LocalDate testDate = LocalDate.of(2020, 1, 10);
 
@@ -241,7 +241,7 @@ public class SupplyPlanTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23184834 get shipments by supplier (one date)")
-    @TmsLink("3465")
+    @AllureId("3465")
     public void testGetShipmentsBySupplier() {
         LocalDate testDate = LocalDate.of(2020, 3, 31);
 
@@ -264,7 +264,7 @@ public class SupplyPlanTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23184835 get shipments by supplier (week)")
-    @TmsLink("3466")
+    @AllureId("3466")
     public void testGetShipmentsBySupplierFewDays() {
         LocalDate testDate = LocalDate.of(2020, 3, 31);
         List<LocalDate> daysList = getCalendarDatesFromBeginDate(6, testDate);
@@ -288,7 +288,7 @@ public class SupplyPlanTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23185243 isFullReceived flag correct")
-    @TmsLink("3467")
+    @AllureId("3467")
     public void testVerifyIsFullReceivedFlag() {
         LocalDate testDate = LocalDate.of(2020, 3, 31);
         List<LocalDate> daysList = getCalendarDatesFromBeginDate(6, testDate);
@@ -318,7 +318,7 @@ public class SupplyPlanTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23185314 shipments sorted by date & time")
-    @TmsLink("3468")
+    @AllureId("3468")
     public void testVerifySortByDateAndTime() {
         LocalDate testDate = LocalDate.of(2020, 3, 31);
         List<LocalDate> daysList = getCalendarDatesFromBeginDate(6, testDate);
@@ -337,7 +337,7 @@ public class SupplyPlanTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23185309 Warehouse - shop card")
-    @TmsLink("3469")
+    @AllureId("3469")
     public void testGetShopCard() {
         String supplier = "5";
         String documentNumber = "1114743188";
@@ -364,7 +364,7 @@ public class SupplyPlanTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23185310 isFullReceived flag correct")
-    @TmsLink("3470")
+    @AllureId("3470")
     public void testVerifyIsFullReceivedFlagInCard() {
         String supplier = "5";
         String documentNumber = "1114743188";
@@ -409,7 +409,7 @@ public class SupplyPlanTest extends BaseProjectApiTest {
 
     @Issue("Need to Create Minor BUG")
     @Test(description = "C23185311 shipments sort by secRecDate", enabled = false)
-    @TmsLink("3471")
+    @AllureId("3471")
     public void testVerifySortBySecRecDate() {
         String warehouse = "922";
         String documentNumber = "1101831359";

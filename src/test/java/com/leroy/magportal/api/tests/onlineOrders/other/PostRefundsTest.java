@@ -17,7 +17,7 @@ import io.qameta.allure.Step;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import lombok.SneakyThrows;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -44,7 +44,7 @@ public class PostRefundsTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23720602 Pickup: Refund One Product One Item Pickup", priority = 1)
-    @TmsLink("1931")
+    @AllureId("1931")
     public void testRefundOneProductOneItemPickup() {
         setLmCodes(true);
         Response<?> response = orderClient.postRefund(currentOrderId, lmCodes, 1.0, null);
@@ -52,14 +52,14 @@ public class PostRefundsTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23720603 Pickup: Refund One Product All Items", priority = 2)
-    @TmsLink("1932")
+    @AllureId("1932")
     public void testRefundOneProductAllItemsPickup() {
         Response<?> response = orderClient.postRefund(currentOrderId, lmCodes, 9.0, null);
         assertRefundResult(response, 2);
     }
 
     @Test(description = "C23720604 Pickup: Refund All Products All Items", priority = 3)
-    @TmsLink("1933")
+    @AllureId("1933")
     public void testRefundAllProductsAllItemsPickup() {
         prepareNewOrder(false);
         setLmCodes(false);
@@ -68,7 +68,7 @@ public class PostRefundsTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23720605 Pickup: Refund Dimensional Products", priority = 4)
-    @TmsLink("1934")
+    @AllureId("1934")
     public void testRefundDimensionalProductsPickup() {
         prepareNewOrder(true);
         setLmCodes(false);
@@ -77,7 +77,7 @@ public class PostRefundsTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23720606 Delivery: Refund Part of Delivery price", priority = 5)
-    @TmsLink("1935")
+    @AllureId("1935")
     public void testRefundPartDelivery() {
         currentOrderType = OnlineOrderTypeConst.DELIVERY_TO_ENTRANCE;
         prepareNewOrder(false);
@@ -87,7 +87,7 @@ public class PostRefundsTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23720607 Delivery: Refund One Product One Item and Part Delivery", priority = 6)
-    @TmsLink("1936")
+    @AllureId("1936")
     public void testRefundOneProductOneItemPartDelivery() {
         setLmCodes(true);
         Response<?> response = orderClient.postRefund(currentOrderId, lmCodes, 1.0, 1.0);
@@ -95,14 +95,14 @@ public class PostRefundsTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23720608 Delivery: Refund One Product All Items and All Delivery", priority = 7)
-    @TmsLink("1937")
+    @AllureId("1937")
     public void testRefundOneProductAllItemsAllDelivery() {
         Response<?> response = orderClient.postRefund(currentOrderId, lmCodes, 9.0, 0.0);
         assertRefundResult(response, 3);
     }
 
     @Test(description = "C23720609 Delivery: Refund All Products All Items", priority = 8)
-    @TmsLink("1938")
+    @AllureId("1938")
     public void testRefundAllProductsAllItemsDelivery() {
         prepareNewOrder(false);
         setLmCodes(false);
@@ -111,7 +111,7 @@ public class PostRefundsTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23720610 Delivery: Dimensional Product", priority = 9)
-    @TmsLink("1939")
+    @AllureId("1939")
     public void testRefundDimensionalProductsDelivery() {
         prepareNewOrder(true);
         setLmCodes(false);
@@ -120,7 +120,7 @@ public class PostRefundsTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23720611 PostPayment: Try to refund (Negative)", priority = 10)
-    @TmsLink("1940")
+    @AllureId("1940")
     public void testRefundPostPayment() {
         currentOrderType = OnlineOrderTypeConst.PICKUP_POSTPAYMENT;
         prepareNewOrder(false);

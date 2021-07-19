@@ -13,7 +13,7 @@ import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.api.helpers.PaymentHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
 import io.qameta.allure.Step;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -44,7 +44,7 @@ public class WorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438388 ALLOWED_FOR_PICKING -> PICKING_IN_PROCESS", priority = 1)
-    @TmsLink("1991")
+    @AllureId("1991")
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);
@@ -53,7 +53,7 @@ public class WorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438389 PICKING_IN_PROGRESS -> PAUSE_PICKING (pause-picking)", dependsOnMethods = {
             "testStartPicking"}, priority = 2)
-    @TmsLink("1992")
+    @AllureId("1992")
     public void testPausePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .pausePicking(currentTaskId);
@@ -62,7 +62,7 @@ public class WorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438390 PAUSE_PICKING -> PICKING_IN_PROCESS (unpause-picking)", dependsOnMethods = {
             "testPausePicking"}, priority = 3)
-    @TmsLink("1993")
+    @AllureId("1993")
     public void testResumePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .resumePicking(currentTaskId);
@@ -71,7 +71,7 @@ public class WorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438391 PICKING_IN_PROGRESS -> PARTIALLY_PICKED", dependsOnMethods = {
             "testStartPicking"}, priority = 4)
-    @TmsLink("1994")
+    @AllureId("1994")
     public void testPartiallyCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, false);
@@ -79,7 +79,7 @@ public class WorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438392 PARTIALLY_PICKED: NEW Storage Location", priority = 5)
-    @TmsLink("1995")
+    @AllureId("1995")
     public void testNewStorageLocation() {
         currentLocationsCount = 3;
         Response<PickingTaskData> response = pickingTaskClient
@@ -89,7 +89,7 @@ public class WorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438393 PARTIALLY_PICKED: Updated Storage Location", priority = 6)
-    @TmsLink("1996")
+    @AllureId("1996")
     public void testUpdateStorageLocation() {
         currentLocationsCount = 1;
         Response<PickingTaskData> response = pickingTaskClient
@@ -99,7 +99,7 @@ public class WorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438394 PARTIALLY_PICKED -> PICKED", priority = 7)
-    @TmsLink("1997")
+    @AllureId("1997")
     public void testPicked() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, true);
@@ -107,7 +107,7 @@ public class WorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438395 PICKED: UPDATE Storage Location", priority = 8)
-    @TmsLink("1998")
+    @AllureId("1998")
     public void testUpdateStorageLocationPicked() {
         currentLocationsCount = 5;
         Response<PickingTaskData> response = pickingTaskClient
@@ -118,7 +118,7 @@ public class WorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438396 PICKED -> PARTIALLY_GIVEN_AWAY", dependsOnMethods = {
             "testPicked"}, priority = 9)
-    @TmsLink("1999")
+    @AllureId("1999")
     public void testPartiallyGivenAway() {
         paymentHelper.makePaid(currentOrderId);
         Response<JsonNode> response = orderClient.giveAway(currentOrderId, false);
@@ -127,14 +127,14 @@ public class WorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438397 PARTIALLY_GIVEN_AWAY -> GIVEN_AWAY", dependsOnMethods = {
             "testPicked"}, priority = 10)
-    @TmsLink("2000")
+    @AllureId("2000")
     public void testGivenAway() {
         Response<JsonNode> response = orderClient.giveAway(currentOrderId, true);
         orderClient.assertWorkflowResult(response, currentOrderId, States.GIVEN_AWAY);
     }
 
     @Test(description = "C23438403 GET Order", priority = 15)
-    @TmsLink("2001")
+    @AllureId("2001")
     public void testGetOrder() {
         Response<OnlineOrderData> response = orderClient.getOnlineOrder(currentOrderId);
         orderClient.assertGetOrderResult(response, null);

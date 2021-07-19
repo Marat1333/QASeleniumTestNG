@@ -24,7 +24,7 @@ import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Step;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -81,7 +81,7 @@ public class EstimateTest extends SalesBaseTest {
 
     @Smoke
     @Test(description = "C22797068 Создать смету с экрана Документы продажи")
-    @TmsLink("2960")
+    @AllureId("2960")
     public void testCreatingEstimateFromSalesDocumentsScreen() throws Exception {
         // Test data
         String lmCode = getAnyLmCodeProductWithoutSpecificOptions();
@@ -160,7 +160,7 @@ public class EstimateTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797074 Посмотреть подробнее о товаре", groups = NEED_ACCESS_TOKEN_GROUP)
-    @TmsLink("2966")
+    @AllureId("2966")
     public void testViewProductDetailsFromEstimateScreen() throws Exception {
         startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 1), false);
 
@@ -185,7 +185,7 @@ public class EstimateTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797073 Изменить количество добавленного товара", groups = NEED_ACCESS_TOKEN_GROUP)
-    @TmsLink("2965")
+    @AllureId("2965")
     public void testChangeProductQuantityFromEstimateScreen() throws Exception {
         startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 1), false);
 
@@ -226,7 +226,7 @@ public class EstimateTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797078 Преобразовать смету в корзину", groups = NEED_ACCESS_TOKEN_GROUP)
-    @TmsLink("2978")
+    @AllureId("2978")
     public void testTransformEstimateToBasket() throws Exception {
         startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 1), true);
 
@@ -271,7 +271,7 @@ public class EstimateTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797070 Добавить существующий товар еще раз (из поиска)", groups = NEED_ACCESS_TOKEN_GROUP)
-    @TmsLink("2962")
+    @AllureId("2962")
     public void testAddProductIntoEstimateAgain() throws Exception {
         startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 1), false);
 
@@ -312,7 +312,7 @@ public class EstimateTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797071 Удалить товар из сметы", groups = NEED_ACCESS_TOKEN_GROUP)
-    @TmsLink("2963")
+    @AllureId("2963")
     public void testRemoveProductFromEstimate() throws Exception {
         startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 2), false);
 
@@ -347,7 +347,7 @@ public class EstimateTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797072 Удалить последний товар из сметы", groups = NEED_ACCESS_TOKEN_GROUP)
-    @TmsLink("2964")
+    @AllureId("2964")
     public void testRemoveLastProductFromEstimate() throws Exception {
         startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 1), false);
 
@@ -372,7 +372,7 @@ public class EstimateTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797075 Выбрать другого клиента для сметы", groups = NEED_ACCESS_TOKEN_GROUP)
-    @TmsLink("2967")
+    @AllureId("2967")
     public void testEditCustomerInEstimate() throws Exception {
         startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 1), false);
 
@@ -404,7 +404,7 @@ public class EstimateTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797076 Изменить контактные данные клиента", groups = NEED_ACCESS_TOKEN_GROUP)
-    @TmsLink("2968")
+    @AllureId("2968")
     public void testChangeCustomerContactDetailsInEstimate() throws Exception {
         step("Pre-condition: Создаем смету");
         CustomerData customerData = new CustomerData();
@@ -442,7 +442,7 @@ public class EstimateTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797082 Добавление товара в смету в статусе Создан", groups = NEED_ACCESS_TOKEN_GROUP)
-    @TmsLink("2971")
+    @AllureId("2971")
     public void testAddProductInConfirmedEstimate() throws Exception {
         startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 1), true);
 
@@ -489,7 +489,7 @@ public class EstimateTest extends SalesBaseTest {
 
     @Test(description = "C22797077 Отправить смету на почту (с экрана успеха или из сметы в статусе Создан)",
             groups = NEED_ACCESS_TOKEN_GROUP)
-    @TmsLink("2969")
+    @AllureId("2969")
     public void testSendEstimateByEmail() throws Exception {
         String estimateDraftId = paoHelper.createDraftEstimateAndGetCartId(productLmCodes.subList(0, 1));
         startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 1), true);
@@ -548,7 +548,7 @@ public class EstimateTest extends SalesBaseTest {
 
     @Test(description = "C22797084 Изменение товара в смету в статусе Создан",
             groups = NEED_ACCESS_TOKEN_GROUP)
-    @TmsLink("2972")
+    @AllureId("2972")
     public void testChangeProductInConfirmedEstimate() throws Exception {
         startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 1), true);
 
@@ -592,7 +592,7 @@ public class EstimateTest extends SalesBaseTest {
 
     @Test(description = "C22797085 Изменение контактных данных клиента в смете в статусе Создан",
             groups = NEED_ACCESS_TOKEN_GROUP)
-    @TmsLink("2973")
+    @AllureId("2973")
     public void testChangeCustomerContactsInConfirmedEstimate() throws Exception {
         step("Pre-condition: Создаем смету в статусе создан");
         CustomerData customerData = new CustomerData();
@@ -653,7 +653,7 @@ public class EstimateTest extends SalesBaseTest {
 
     @Test(description = "C22797086 Удаление товара из сметы в статусе Создан",
             groups = NEED_ACCESS_TOKEN_GROUP)
-    @TmsLink("2974")
+    @AllureId("2974")
     public void testRemoveProductFromConfirmedEstimate() throws Exception {
         startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 2), true);
 
@@ -693,7 +693,7 @@ public class EstimateTest extends SalesBaseTest {
 
     @Test(description = "C22797088 Добавление товара в смету в количестве большем, чем доступно для продажи",
             groups = NEED_ACCESS_TOKEN_GROUP)
-    @TmsLink("2976")
+    @AllureId("2976")
     public void testAddProductInEstimateMoreThanAvailable() throws Exception {
         startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 1), false);
 
@@ -734,7 +734,7 @@ public class EstimateTest extends SalesBaseTest {
 
     @Test(description = "C22797110 Добавить существующий товар еще раз (из модалки действий с товаром)",
             groups = NEED_ACCESS_TOKEN_GROUP)
-    @TmsLink("2977")
+    @AllureId("2977")
     public void testAddProductInEstimateFromActionWithProductsModal() throws Exception {
         startFromScreenWithCreatedEstimate(productLmCodes.subList(0, 1), false);
 

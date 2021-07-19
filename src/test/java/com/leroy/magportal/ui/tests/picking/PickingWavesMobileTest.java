@@ -3,7 +3,7 @@ package com.leroy.magportal.ui.tests.picking;
 import com.leroy.magportal.ui.pages.picking.mobile.PickingDocListMobilePage;
 import com.leroy.magportal.ui.pages.picking.mobile.PickingWaveMobilePage;
 import com.leroy.magportal.ui.tests.BaseMockMagPortalUiTest;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
@@ -11,7 +11,7 @@ import java.util.Collections;
 public class PickingWavesMobileTest extends BaseMockMagPortalUiTest {
 
     @Test(description = "C23415580 Добавление сборок в волну")
-    @TmsLink("1192")
+    @AllureId("1192")
     public void testAddPickingIntoWave() throws Exception {
         setUpMockForTestCase();
 
@@ -58,7 +58,7 @@ public class PickingWavesMobileTest extends BaseMockMagPortalUiTest {
 
 
     @Test(description = "C23423641 Завершение волны сборок (все сборки собраны полностью)")
-    @TmsLink("1195")
+    @AllureId("1195")
     public void testFinishPickingWave() throws Exception {
         setUpMockForTestCase();
 

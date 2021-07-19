@@ -11,7 +11,7 @@ import com.leroy.magportal.api.data.picking.PickingTaskData;
 import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.api.helpers.PaymentHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import lombok.SneakyThrows;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -44,7 +44,7 @@ public class GetToGiveAwayTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23748034 GivenAway Products for Start Picking")
-    @TmsLink("2017")
+    @AllureId("2017")
     public void testStartPickingGivenAway() {
         Response<PickingTaskData> resp = pickingTaskClient.startPicking(currentTaskId);
         isResponseOk(resp);
@@ -56,7 +56,7 @@ public class GetToGiveAwayTest extends BaseMagPortalApiTest {
     @SneakyThrows
     @Test(description = "C23748035 GivenAway Products for Complete Picking", dependsOnMethods = {
             "testStartPickingGivenAway"})
-    @TmsLink("2018")
+    @AllureId("2018")
     public void testPickedGivenAway() {
         Response<PickingTaskData> resp = pickingTaskClient.completePicking(currentTaskId, true);
         isResponseOk(resp);
@@ -71,7 +71,7 @@ public class GetToGiveAwayTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23748036 GiveAway Products for Partially GiveAway", dependsOnMethods = {
             "testPickedGivenAway"})
-    @TmsLink("2019")
+    @AllureId("2019")
     public void testPartiallyGiveAway() {
         Response<JsonNode> resp = orderClient.giveAway(currentOrderId, false);
         isResponseOk(resp);
@@ -82,7 +82,7 @@ public class GetToGiveAwayTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23748037 GiveAway Products for GiveAway", dependsOnMethods = {
             "testPickedGivenAway"})
-    @TmsLink("2020")
+    @AllureId("2020")
     public void testGiveAway() {
         Response<JsonNode> resp = orderClient.giveAway(currentOrderId, true);
         isResponseOk(resp);

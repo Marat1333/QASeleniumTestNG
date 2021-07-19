@@ -44,7 +44,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -291,7 +291,7 @@ public class SalesBaseTest extends AppBaseSteps {
 
     @Smoke
     @Test(description = "C3201029 Создание документа продажи", groups = OLD_SHOP_GROUP)
-    @TmsLink("2937")
+    @AllureId("2937")
     public void testCreateDocumentSales() throws Exception {
         // Step #1
         step("На главном экране выберите раздел Документы продажи");

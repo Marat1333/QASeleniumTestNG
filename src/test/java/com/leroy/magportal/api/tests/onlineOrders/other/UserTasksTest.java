@@ -16,7 +16,7 @@ import com.leroy.magportal.api.data.userTasks.UserTasksDataList;
 import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
 import io.qameta.allure.Step;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.util.Strings;
@@ -43,14 +43,14 @@ public class UserTasksTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23749151 Get User Tasks for New Order", priority = 1)
-    @TmsLink("1950")
+    @AllureId("1950")
     public void testGetUserTasksNewOrder() {
         Response<UserTasksDataList> resp = orderClient.getUserTasks(currentOrderId);
         assertGetUserTasksResult(resp, false);
     }
 
     @Test(description = "C23749152 Post Logistic User Task for New Order", priority = 2)
-    @TmsLink("1951")
+    @AllureId("1951")
     public void testPostLogisticUserTasksNewOrder() {
         currentText = "C23749152 TEST Logistic";
         Response<UserTasksData> resp = orderClient.postUserTasks(currentOrderId, LOGISTIC_COMMENT,
@@ -60,7 +60,7 @@ public class UserTasksTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23749153 Post Executable User Task", priority = 3)
-    @TmsLink("1952")
+    @AllureId("1952")
     public void testPostExecutableUserTasks() {
         currentText = "C23749153 TEST Execute";
         Response<UserTasksData> resp = orderClient
@@ -70,14 +70,14 @@ public class UserTasksTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23749154 Put Executable User Task", priority = 4)
-    @TmsLink("1953")
+    @AllureId("1953")
     public void testPutExecutableUserTasks() {
         Response<UserTasksData> resp = orderClient.putUserTasks(currentOrderId, currentTaskId);
         assertPostUserTasksResult(resp, COMMENT, false);
     }
 
     @Test(description = "C23749155 Put Logistic User Task (NEGATIVE)", priority = 5)
-    @TmsLink("1954")
+    @AllureId("1954")
     public void testPutLogisticUserTasks() {
         Response<UserTasksDataList> resp = orderClient.getUserTasks(currentOrderId);
         assertThat("PUT User Tasks request has PASSED for Logistic UserTask.",
@@ -85,7 +85,7 @@ public class UserTasksTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23749156 Get Several User Tasks", priority = 6)
-    @TmsLink("1955")
+    @AllureId("1955")
     public void testGetSeveralUserTasks() {
         orderClient.postUserTasks(currentOrderId, COMMENT, currentText);
         tasksCount += 1;
@@ -94,7 +94,7 @@ public class UserTasksTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23749157 Get Several User Tasks for Cancelled Order", priority = 7)
-    @TmsLink("1956")
+    @AllureId("1956")
     public void testGetSeveralUserTasksCancelledOrder() {
         orderClient.cancelOrder(currentOrderId);
         Response<UserTasksDataList> resp = orderClient.getUserTasks(currentOrderId);

@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -202,7 +202,7 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285462 GET ruptures groups for new session with groups")
-    @TmsLink("3319")
+    @AllureId("3319")
     public void testGetRupturesGroupsWithGroups() {
         createSessionWithAllActions();
 
@@ -245,7 +245,7 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409187 GET ruptures groups for existing session with 1 group")
-    @TmsLink("3321")
+    @AllureId("3321")
     public void testGetRupturesGroupsWith1Group() {
         createSessionWithOneActionAndSeveralProducts();
 
@@ -288,7 +288,7 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3233581 GET rupture groups for new session without groups")
-    @TmsLink("3318")
+    @AllureId("3318")
     public void testGetRuptureGroupsWithoutGroups() {
         createSessionWithProductWithoutActions();
 
@@ -299,7 +299,7 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285464 GET ruptures groups for non existing session")
-    @TmsLink("3320")
+    @AllureId("3320")
     public void testGetRupturesGroupsForNonExistingSession() {
         Response<RuptureSessionGroupData> resp = rupturesClient.getGroups(Integer.MAX_VALUE);
         isResponseOk(resp);

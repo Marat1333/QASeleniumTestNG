@@ -23,7 +23,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -47,7 +47,7 @@ public class TimeslotTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23426854 Get Timeslot for Several Products", priority = 1)
-    @TmsLink("1986")
+    @AllureId("1986")
     public void testGetTimeslotSeveralProducts() {
         Response<TimeslotResponseData> response = orderClient.getTimeslots(currentOrderId);
         assertTimeslotResult(response);
@@ -56,7 +56,7 @@ public class TimeslotTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23426856 Update Timeslot", dependsOnMethods = {
             "testGetTimeslotSeveralProducts"}, priority = 2)
-    @TmsLink("1988")
+    @AllureId("1988")
     public void testUpdateTimeslot() {
         Response<?> response = orderClient.updateTimeslot(currentOrderId, timeslotData);
         assertTimeslotUpdateResult(response);
@@ -65,7 +65,7 @@ public class TimeslotTest extends BaseMagPortalApiTest {
     @Issue("PUZ2-2705")
     @Test(description = "C23426857 Update Timeslot for PAID", dependsOnMethods = {
             "testGetTimeslotSeveralProducts"}, priority = 3)
-    @TmsLink("1989")
+    @AllureId("1989")
     public void testUpdateTimeslotPaid() {
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
         Response<?> response = orderClient.updateTimeslot(currentOrderId, timeslotData);
@@ -73,7 +73,7 @@ public class TimeslotTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23426855 Get Timeslot for One Product", priority = 4)
-    @TmsLink("1987")
+    @AllureId("1987")
     public void testGetTimeslotOneProduct() {
         makeDimensionalOrder();
         Response<TimeslotResponseData> response = orderClient.getTimeslots(currentOrderId);

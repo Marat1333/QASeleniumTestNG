@@ -25,7 +25,7 @@ import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
 import io.qameta.allure.Step;
 import java.util.List;
 
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -52,7 +52,7 @@ public class DeliveryAppointmentTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425904 Get Appointment for Several Products", priority = 1)
-    @TmsLink("1770")
+    @AllureId("1770")
     public void testGetAppointmentSeveralProducts() {
         Response<AppointmentResponseData> response = orderClient.getAppointments(currentOrderId);
         assertAppointmentResult(response);
@@ -61,7 +61,7 @@ public class DeliveryAppointmentTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23426801 Update Appointment", dependsOnMethods = {
             "testGetAppointmentSeveralProducts"}, priority = 2)
-    @TmsLink("1772")
+    @AllureId("1772")
     public void testUpdateAppointment() {
         assignAppointment(true);
         Response<JsonNode> response = orderClient
@@ -71,7 +71,7 @@ public class DeliveryAppointmentTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23426802 Update Appointment for PAID order", dependsOnMethods = {
             "testGetAppointmentSeveralProducts"}, priority = 3)
-    @TmsLink("1775")
+    @AllureId("1775")
     public void testUpdateAppointmentPaid() {
         assignAppointment(false);
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
@@ -81,7 +81,7 @@ public class DeliveryAppointmentTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425905 Get Appointment for One Product", priority = 4)
-    @TmsLink("1771")
+    @AllureId("1771")
     public void testGetAppointmentOneProduct() {
         makeDimensionalOrder();
         Response<AppointmentResponseData> response = orderClient.getAppointments(currentOrderId);
@@ -91,7 +91,7 @@ public class DeliveryAppointmentTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23426804 Update Delivery Data", dependsOnMethods = {
             "testGetAppointmentOneProduct"}, priority = 5)
-    @TmsLink("1773")
+    @AllureId("1773")
     public void testUpdateDeliveryData() {
         makeDeliveryData("intercom", "entrance", "FullName", "89152537253");
         Response<?> response = orderClient.updateDeliveryData(currentOrderId, deliveryData);
@@ -100,7 +100,7 @@ public class DeliveryAppointmentTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23426803 Update Appointment and Delivery Data", dependsOnMethods = {
             "testGetAppointmentOneProduct"}, priority = 6)
-    @TmsLink("1774")
+    @AllureId("1774")
     public void testUpdateDeliveryDataAndAppointment() {
         makeDeliveryData("intercom", null, "FullName", null);
         assignAppointment(false);
@@ -112,7 +112,7 @@ public class DeliveryAppointmentTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23426805 Update Delivery Data for PAID order", dependsOnMethods = {
             "testGetAppointmentOneProduct"}, priority = 7)
-    @TmsLink("1776")
+    @AllureId("1776")
     public void testUpdateDeliveryDataPaid() {
         makeDeliveryData(null, "1234", null, null);
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
@@ -122,7 +122,7 @@ public class DeliveryAppointmentTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23426847 Update Appointment and Delivery Data for PAID order", dependsOnMethods = {
             "testGetAppointmentOneProduct"}, priority = 8)
-    @TmsLink("1777")
+    @AllureId("1777")
     public void testUpdateDeliveryDataAndAppointmentPaid() {
         makeDeliveryData(null, null, null, "89152537253");
         assignAppointment(true);

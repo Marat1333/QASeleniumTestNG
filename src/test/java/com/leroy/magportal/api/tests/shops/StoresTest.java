@@ -5,7 +5,7 @@ import com.leroy.magportal.api.clients.ShopsClient;
 import com.leroy.magportal.api.data.shops.StoreData;
 import com.leroy.magportal.api.helpers.ShopsHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -17,14 +17,14 @@ public class StoresTest extends BaseMagPortalApiTest {
     private ShopsHelper shopsHelper;
 
     @Test(description = "C23749488 Get Stores")
-    @TmsLink("2090")
+    @AllureId("2090")
     public void testGetStores() {
         Response<StoreData> response = shopsClient.getStories();
         shopsClient.assertGetShopsResult(response);
     }
 
     @Test(description = "C23749489 Get Stores For Region")
-    @TmsLink("2091")
+    @AllureId("2091")
     public void testGetStoresForRegion() {
         int regionId = shopsHelper.getRandomRegionId();
         Response<StoreData> response = shopsClient.getStories(regionId);
@@ -32,7 +32,7 @@ public class StoresTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23749490 Get Store")
-    @TmsLink("2092")
+    @AllureId("2092")
     public void testGetStore() {
         int shopId = Integer.parseInt(getUserSessionData().getUserShopId());
         Response<StoreData> response = shopsClient.getStore(shopId);
@@ -40,7 +40,7 @@ public class StoresTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23749491 Get Random Store")
-    @TmsLink("2093")
+    @AllureId("2093")
     public void testGetRandomStore() {
         int shopId = shopsHelper.getRandomShopId();
         Response<StoreData> response = shopsClient.getStore(shopId);

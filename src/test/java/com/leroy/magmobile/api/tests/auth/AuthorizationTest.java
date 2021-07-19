@@ -15,7 +15,7 @@ import com.leroy.magmobile.api.clients.Is4AuthClient;
 import com.leroy.magmobile.api.data.oauth.Is4TokenData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import com.leroy.umbrella_extension.authorization.AuthClient;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.Test;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -32,7 +32,7 @@ public class AuthorizationTest extends BaseProjectApiTest {
     private Is4TokenData tokenData;
 
     @Test(description = "C3137640 Authorization with valid credentials")
-    @TmsLink("3048")
+    @AllureId("3048")
     public void testAuthorizationWithValidCredentials() {
         String code = authClient.authAndGetCode(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
         Response<Is4TokenData> response = is4AuthClient.sendPostCodeRequest(code);
@@ -59,7 +59,7 @@ public class AuthorizationTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3159000 Authorization with invalid code")
-    @TmsLink("3049")
+    @AllureId("3049")
     public void testAuthorizationWithInvalidCode() {
         Response<Is4TokenData> response = is4AuthClient
                 .sendPostCodeRequest("a2e508c1-bdbd-4d4d-8a5d-d88155812f64");
@@ -70,7 +70,7 @@ public class AuthorizationTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3255565 Refresh token - happy path")
-    @TmsLink("3050")
+    @AllureId("3050")
     public void testRefreshTokenHappyPath() {
         if (tokenData == null)
             throw new IllegalArgumentException("Token hasn't been created");
@@ -83,7 +83,7 @@ public class AuthorizationTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3255566 Refresh with invalid token")
-    @TmsLink("3051")
+    @AllureId("3051")
     public void testRefreshInvalidToken() {
         Response<Is4TokenData> response = is4AuthClient
                 .sendPostRefreshRequest("a2e508c1-bdbd-4d4d-8a5d-d88155812f64");

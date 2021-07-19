@@ -11,7 +11,7 @@ import com.leroy.magmobile.api.requests.salesdoc.search.SalesDocSearchV3Get;
 import com.leroy.magmobile.ui.pages.customers.*;
 import com.leroy.magmobile.ui.pages.customers.data.PhoneUiData;
 import com.leroy.magmobile.ui.tests.BaseUiMagMobMockTest;
-import io.qameta.allure.TmsLink;
+import io.qameta.allure.AllureId;
 import org.mbtest.javabank.http.predicates.PredicateType;
 import org.testng.annotations.Test;
 
@@ -28,7 +28,7 @@ public class CustomerMockTest extends BaseUiMagMobMockTest {
     }
 
     @Test(description = "C3201019 Редактирование данных клиента (физ. лицо)")
-    @TmsLink("2733")
+    @AllureId("2733")
     public void testEditCustomer() throws Exception {
         String customerNumber = "1288687";
         String existedClientPhone = "+73201019000";
@@ -83,7 +83,7 @@ public class CustomerMockTest extends BaseUiMagMobMockTest {
     }
 
     @Test(description = "C22762927 Просмотр данных клиента (юр. лицо)")
-    @TmsLink("2738")
+    @AllureId("2738")
     public void testViewLegalClientData() throws Exception {
         // Test data
         String orgName = "Рога и копыта";
