@@ -12,6 +12,7 @@ import com.leroy.magmobile.api.clients.TransferClient;
 import com.leroy.magmobile.api.data.sales.transfer.TransferSearchProductData;
 import com.leroy.magmobile.api.data.sales.transfer.TransferSearchProductDataList;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+import io.qameta.allure.TmsLink;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -21,6 +22,7 @@ public class TransferProductSearchTest extends BaseProjectApiTest {
     private TransferClient transferClient;
 
     @Test(description = "C3255521 Transfer product search GET")
+    @TmsLink("3277")
     public void testTransferProductSearchGet() {
         Response<TransferSearchProductDataList> resp = transferClient.searchForTransferProducts(
                 SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR);

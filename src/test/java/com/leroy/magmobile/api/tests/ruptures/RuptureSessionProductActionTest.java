@@ -11,6 +11,8 @@ import io.qameta.allure.Step;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+
+import io.qameta.allure.TmsLink;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -52,6 +54,7 @@ public class RuptureSessionProductActionTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3233584 PUT rupture action true")
+    @TmsLink("3342")
     public void testPutRuptureActionTrue() {
         setUp(false, false);
         RuptureProductData ruptureProductData = ruptureProductDataListBody.getItems().get(0);
@@ -72,6 +75,7 @@ public class RuptureSessionProductActionTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285466 PUT rupture action false")
+    @TmsLink("3343")
     public void testPutRuptureActionFalse() {
         setUp(true, false);
         RuptureProductData ruptureProductData = getCurrentRuptureProduct();
@@ -92,6 +96,7 @@ public class RuptureSessionProductActionTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285467 PUT ruptures action for not existed product")
+    @TmsLink("3344")
     public void testPutRuptureActionForNotExistedProduct() {
         setUp(false, false);
 
@@ -110,6 +115,7 @@ public class RuptureSessionProductActionTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409762 PUT rupture action add not included actions")
+    @TmsLink("3345")
     public void testPutRuptureActionAddNotIncludeActions() {
         setUp(false, true);
 
@@ -145,6 +151,7 @@ public class RuptureSessionProductActionTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409763 PUT rupture action remove one action")
+    @TmsLink("3346")
     public void testPutRuptureActionRemoveActions() {
         setUp(true, false);
 
@@ -165,6 +172,7 @@ public class RuptureSessionProductActionTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409765 PUT rupture action for finished session")
+    @TmsLink("3347")
     public void testPutRuptureActionForFinishedSession() {
         setUp(true, false);
 

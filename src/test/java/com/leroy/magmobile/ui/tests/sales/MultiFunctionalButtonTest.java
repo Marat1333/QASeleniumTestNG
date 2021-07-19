@@ -15,6 +15,7 @@ import com.leroy.magmobile.ui.pages.work.StockProductCardPage;
 import com.leroy.magmobile.ui.pages.work.StockProductsPage;
 import com.leroy.magmobile.ui.pages.work.modal.QuantityProductsForWithdrawalModalPage;
 import com.leroy.magmobile.ui.pages.work.withdrawal_from_rm.OrderPage;
+import io.qameta.allure.TmsLink;
 import org.apache.commons.lang.RandomStringUtils;
 import org.testng.annotations.Test;
 
@@ -23,21 +24,25 @@ import java.util.Random;
 public class MultiFunctionalButtonTest extends SalesBaseTest {
 
     @Test(description = "C3201023 Создание документа продажи", groups = OLD_SHOP_GROUP)
+    @TmsLink("3027")
     public void testC3201023() throws Exception {
         testCreateSalesDocument(getAnyLmCodeProductWithoutSpecificOptions(), ProductTypes.NORMAL);
     }
 
     @Test(description = "C22846947 Создание документа продажи с товаром AVS", groups = OLD_SHOP_GROUP)
+    @TmsLink("3028")
     public void testC22846947() throws Exception {
         testCreateSalesDocument(getAnyLmCodeProductWithAvs(), ProductTypes.AVS);
     }
 
     @Test(description = "C22846948 Создание документа продажи с товаром Топ-EM", groups = OLD_SHOP_GROUP)
+    @TmsLink("3029")
     public void testC22846948() throws Exception {
         testCreateSalesDocument(getAnyLmCodeProductWithTopEM(), ProductTypes.TOP_EM);
     }
 
     @Test(description = "C3201049 Создание документа продажи из карточки услуги")
+    @TmsLink("3030")
     public void testC3201049() throws Exception {
         // Pre-condition
         String lmCode = getAnyLmCodeOfService();
@@ -102,6 +107,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
     }
 
     @Test(description = "C3201024 Добавление в существующий документ продажи", groups = OLD_SHOP_GROUP)
+    @TmsLink("3031")
     public void testC3201024() throws Exception {
         // Pre-condition
         // - Имеются документы продажи в статусе черновик
@@ -133,6 +139,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
     }
 
     @Test(description = "C22744177 Создание заявки на Отзыв RM", groups = OLD_SHOP_GROUP)
+    @TmsLink("2670")
     public void testCreateOrderForWithdrawalFromRM() throws Exception {
         // Pre-condition
         String lmCode = getAnyLmCodeProductIsAvailableForWithdrawalFromRM();
@@ -185,6 +192,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
     }
 
     @Test(description = "C22847027 35 магазин - создание заказа")
+    @TmsLink("3032")
     public void test35ShopCreatingOrder() throws Exception {
         // Pre-condition
         String lmCode = getAnyLmCodeProductWithoutSpecificOptions();

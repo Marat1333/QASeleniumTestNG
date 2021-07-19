@@ -12,6 +12,8 @@ import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductDataList;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.qameta.allure.TmsLink;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -56,6 +58,7 @@ public class RupturesDeleteProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3233586 DELETE ruptures product")
+    @TmsLink("3348")
     public void testDeleteRupturesProduct() {
         removedProductLmCode = ruptureProductDataListBody.getItems().get(0).getLmCode();
         step("Удаляем товар из сессии");
@@ -69,6 +72,7 @@ public class RupturesDeleteProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3293173 DELETE ruptures product for deleted product")
+    @TmsLink("3349")
     public void testDeleteRupturesProductForDeletedProduct() {
         if (removedProductLmCode == null) {
             removedProductLmCode = ruptureProductDataListBody.getItems().get(0).getLmCode();
@@ -88,6 +92,7 @@ public class RupturesDeleteProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3298403 DELETE ruptures product from finished session")
+    @TmsLink("3350")
     public void testDeleteRupturesProductFromFinishedSession() {
         step("Завершаем сессию");
         Response<JsonNode> respFinishSession = rupturesClient.finishSession(sessionId);
@@ -105,6 +110,7 @@ public class RupturesDeleteProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409766 DELETE ruptures product mashup validation")
+    @TmsLink("3351")
     public void testDeleteRupturesProductMashupValidation() {
 
         step("Отправляем запрос на удаление без параметров");
@@ -120,6 +126,7 @@ public class RupturesDeleteProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409767 DELETE ruptures product for not existing session")
+    @TmsLink("3352")
     public void testDeleteRupturesProductForNotExistingSession() {
 
         step("Отправляем запрос на удаление товара из несуществующей сессии");

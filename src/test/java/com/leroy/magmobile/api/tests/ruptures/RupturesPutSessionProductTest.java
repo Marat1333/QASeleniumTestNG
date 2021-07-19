@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+
+import io.qameta.allure.TmsLink;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -59,6 +61,7 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3233582 PUT ruptures product - Add new product")
+    @TmsLink("3323")
     public void testUpdateRuptureSessionProduct() {
         ActionData action1 = new ActionData();
         action1.setAction(2);
@@ -82,6 +85,7 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285581 PUT ruptures product to finished session")
+    @TmsLink("3324")
     public void testPutRupturesProductToFinishedSession() {
         step("Завершаем сессию");
         Response<JsonNode> respFinishSession = rupturesClient.finishSession(sessionId);
@@ -105,6 +109,7 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285582 PUT ruptures product to deleted session")
+    @TmsLink("3325")
     public void testPutRupturesProductToDeletedSession() {
         step("Пытаемся изменить товар в несуществующей сессии");
         ActionData action1 = ActionData.returnRandomData();
@@ -121,6 +126,7 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409188 PUT ruptures product - Change existing product")
+    @TmsLink("3326")
     public void testPutRupturesProductChangeExistingProduct() {
         RuptureProductData productData = ruptureProductDataListBody.getItems().get(0);
         // Меняем shelfCount

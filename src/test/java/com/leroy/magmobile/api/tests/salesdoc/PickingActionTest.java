@@ -11,6 +11,7 @@ import com.leroy.magmobile.api.data.sales.picking.PickingTaskDataList;
 import com.leroy.magmobile.api.data.sales.picking.PickingTaskFilter;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import io.qameta.allure.Issue;
+import io.qameta.allure.TmsLink;
 import org.testng.annotations.Test;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -22,6 +23,7 @@ public class PickingActionTest extends BaseProjectApiTest {
 
     @Issue("Backend contains broken tasks")
     @Test(description = "C23195055 Picking search without filters", enabled = false)//TODO enable when data fixed
+    @TmsLink("3481")
     public void testPickingSearchWithoutFilters() {
         int pageSize = 14;
         Response<PickingTaskDataList> resp = pickingTaskClient.searchForTasks(new PickingTaskFilter(), 1, pageSize);

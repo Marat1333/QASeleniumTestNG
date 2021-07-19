@@ -38,6 +38,8 @@ import io.qameta.allure.Step;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+
+import io.qameta.allure.TmsLink;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeGroups;
@@ -166,6 +168,7 @@ public class OrderTest extends SalesBaseTest {
 
     @Smoke
     @Test(description = "C22797112 Создать заказ из корзины с одним заказом")
+    @TmsLink("2997")
     public void testCreateOrderFromCartWithOneOrder() throws Exception {
         startFromScreenWithCreatedCart();
 
@@ -208,6 +211,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797113 Создать последовательно заказы из корзины с двумя заказами")
+    @TmsLink("2998")
     public void testCreateOrdersFromCartWithTwoOrders() throws Exception {
         startFromScreenWithCreatedCart(findProductsForSeveralOrdersInCart());
 
@@ -245,6 +249,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797121 Ввод существующего пин кода")
+    @TmsLink("3005")
     public void testEnterExistedPinCode() throws Exception {
         startFromScreenWithOrderDraft(true);
         ProcessOrder35Page processOrder35Page = new ProcessOrder35Page();
@@ -262,6 +267,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22888112 Смена типа получения товара при заполненном пинкоде в неподтвержденном заказе")
+    @TmsLink("3022")
     public void testChangeDeliveryTypeWhenPINCodeIsFilledInDraftOrder() throws Exception {
         // Pre-condition
         if (isStartFromScratch()) {
@@ -284,6 +290,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22888113 Валидация формата пинкода для разных типов получения товара")
+    @TmsLink("3023")
     public void testValidationPinCodeForDifferentDeliveryTypes() throws Exception {
         // Pre-condition
         if (isStartFromScratch()) {
@@ -313,6 +320,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797114 Подтвердить заказ на самовывоз сегодня")
+    @TmsLink("2999")
     public void testConfirmOrderAsPickupToday() throws Exception {
         // Test Data
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
@@ -347,6 +355,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797115 Подтвердить заказ на доставку на завтра")
+    @TmsLink("3000")
     public void testConfirmOrderAsDeliveryTomorrow() throws Exception {
         // Test Data
         MagCustomerData customerData = TestDataConstants.CUSTOMER_WITH_SERVICE_CARD;
@@ -416,6 +425,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797116 Подтвердить заказ на самовывоз через 14 дней")
+    @TmsLink("3001")
     public void testConfirmOrderAsPickupAfter14Days() throws Exception {
         // Test Data
         MagLegalCustomerData legalCustomerData = TestDataConstants.LEGAL_ENTITY_1;
@@ -456,6 +466,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797117 Подтвердить заказ на доставку через 15 дней")
+    @TmsLink("3002")
     public void testConfirmOrderAsDeliveryAfter15Days() throws Exception {
         // Test Data
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
@@ -531,6 +542,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797118 Создать заказ из корзины со скидкой")
+    @TmsLink("3003")
     public void testCreateOrderFromCartWithDiscount() throws Exception {
         // Pre-condition + step 1
         startFromScreenWithOrderDraftWithDiscount();
@@ -585,6 +597,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797119 Создать заказ из корзины с авторской сборкой")
+    @TmsLink("3004")
     public void testCreateOrderFromCartWithAuthorAssembly() throws Exception {
         // Test data
         MagLegalCustomerData legalCustomerData = TestDataConstants.LEGAL_ENTITY_2;
@@ -633,6 +646,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797122 Создание заказа из корзины, преобразованной из сметы", groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("3006")
     public void testCreateOrderFromTransformedCart() throws Exception {
         step("Pre-condition: Создаем смету, преобразуем в корзину");
         String estimateId = paoHelper.createConfirmedEstimateAndGetCartId(lmCodes.subList(0, 1));
@@ -672,6 +686,7 @@ public class OrderTest extends SalesBaseTest {
 
     @Test(description = "C22808291 Добавить товар в неподтвержденный заказ (количества товара достаточно)",
             groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("3007")
     public void testAddProductInNotConfirmedOrderWhenProductHasAvailableStock() throws Exception {
         startFromScreenWithOrderDraft(
                 Collections.singletonList(lmCodes.get(0)), null, true);
@@ -698,6 +713,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22808292 Добавить товар в неподтвержденный заказ (количества товара недостаточно)")
+    @TmsLink("3008")
     public void testAddProductInNotConfirmedOrderWhenProductHasNotAvailableStock() throws Exception {
         // Pre-conditions
         CatalogSearchFilter filter = new CatalogSearchFilter();
@@ -734,6 +750,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22808293 Изменить количество товара в неподтвержденном заказе")
+    @TmsLink("3009")
     public void testChangeProductQuantityInNotConfirmedOrder() throws Exception {
         // Pre-conditions
         startFromScreenWithOrderDraft(true);
@@ -762,6 +779,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22808294 Добавить Топ ЕМ или AVS товар в неподтвержденный заказ")
+    @TmsLink("3010")
     public void testAddTopEmOrAvsProductInNotConfirmedOrder() throws Exception {
         // Pre-conditions
         startFromScreenWithOrderDraft(true);
@@ -790,6 +808,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22808295 Удалить товар из неподтвержденного заказа", groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("3011")
     public void testRemoveProductFromNotConfirmedOrder() throws Exception {
         // Pre-conditions
         startFromScreenWithOrderDraft(lmCodes.subList(0, 3), null, true);
@@ -810,6 +829,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22808296 Добавить товар в неподтвержденный заказ (из модалки действий с товаром)")
+    @TmsLink("3012")
     public void testAddProductInNotConfirmedOrderFromActionWithProductModal() throws Exception {
         startFromScreenWithOrderDraft(true);
         stepClickCartIconWhenProcessOrder(false);
@@ -830,6 +850,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22847244 Удалить последний товар из неподтвержденного заказа")
+    @TmsLink("3020")
     public void testRemoveLastProductFromNotConfirmedOrder() throws Exception {
         // Pre-conditions
         startFromScreenWithOrderDraft(true);
@@ -848,6 +869,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22847242 Удалить неподтвержденный заказ")
+    @TmsLink("3018")
     public void testRemoveNotConfirmedOrder() throws Exception {
         startFromScreenWithOrderDraft(true);
 
@@ -857,6 +879,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22847029 Добавить товар в подтвержденный заказ", groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("3013")
     public void testAddProductInConfirmedOrder() throws Exception {
         startFromScreenWithConfirmedOrder(lmCodes.subList(0, 1));
 
@@ -887,6 +910,7 @@ public class OrderTest extends SalesBaseTest {
 
     @Issue("NEW_BUG")
     @Test(description = "C22847030 Изменить количество товара в подтвержденном заказе")
+    @TmsLink("3014")
     public void testChangeQuantityProductInConfirmedOrder() throws Exception {
         startFromScreenWithConfirmedOrder();
         anAssert().isTrue(salesDocumentData.getOrderAppDataList().get(0)
@@ -923,6 +947,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22847031 Удалить товар из подтвержденного заказа", groups = NEED_PRODUCTS_GROUP)
+    @TmsLink("3015")
     public void testRemoveProductFromConfirmedOrder() throws Exception {
         startFromScreenWithConfirmedOrder(lmCodes.subList(0, 2));
 
@@ -948,6 +973,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22847032 Изменить параметры подтвержденного заказа (тип получения, получателя или комментарий)")
+    @TmsLink("3016")
     public void testChangeParametersConfirmedOrder() throws Exception {
         startFromScreenWithConfirmedOrder();
 
@@ -984,6 +1010,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22847245 Удалить последний товар из подтвержденного заказа")
+    @TmsLink("3021")
     public void testRemoveLastProductFromConfirmedOrder() throws Exception {
         startFromScreenWithConfirmedOrder();
 
@@ -1005,6 +1032,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22847243 Отменить подтвержденный заказ")
+    @TmsLink("3019")
     public void testCancelConfirmedOrder() throws Exception {
         startFromScreenWithConfirmedOrder();
 

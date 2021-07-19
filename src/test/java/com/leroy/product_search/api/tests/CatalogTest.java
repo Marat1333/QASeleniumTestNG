@@ -66,6 +66,7 @@ public class CatalogTest extends BaseCatalogTest {
     }
 
     @Test(description = "C23195046 GET nomenclature", groups = "productSearch")
+    @TmsLink("3172")
     public void testNomenclature() {
         Response<?> response = catalogProductClient.getNomenclature();
         isResponseOk(response);
@@ -74,6 +75,7 @@ public class CatalogTest extends BaseCatalogTest {
     }
 
     @Test(description = "C3172856 get catalog product", groups = "productSearch")
+    @TmsLink("3155")
     public void testCatalogProduct() {
         Response<ProductData> catalogProductDataResponse = catalogProductClient.getProduct(lmCode,
                 SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR, CatalogProductClient.Extend.builder().inventory(true)
@@ -85,6 +87,7 @@ public class CatalogTest extends BaseCatalogTest {
     }
 
     @Test(description = "C23195047 GET reviews by lmCode", groups = "productSearch")
+    @TmsLink("3173")
     public void testCatalogProductReviews() {
         Response<CatalogReviewsOfProductList> reviewsOfProductResponse = catalogProductClient.getProductReviews(
                 lmProductWithReviews, 1, 3);
@@ -95,6 +98,7 @@ public class CatalogTest extends BaseCatalogTest {
     }
 
     @Test(description = "C23195048 GET info about sales history", groups = "productSearch")
+    @TmsLink("3174")
     public void testCatalogProductSales() {
         Response<?> salesHistoryResponse = catalogProductClient.getProductSales(lmProductWithSalesHistory,
                 getUserSessionData().getUserShopId());
@@ -112,6 +116,7 @@ public class CatalogTest extends BaseCatalogTest {
     }
 
     @Test(description = "C3161101 catalog shops - get remains info by lm code", groups = "productSearch")
+    @TmsLink("3154")
     @Obsolete
     public void testCatalogShops() {
         String[] shops = {"32", "5", "69"};
@@ -127,6 +132,7 @@ public class CatalogTest extends BaseCatalogTest {
     }
 
     @Test(description = "C3254678 GET catalog/supplier", groups = "productSearch")
+    @TmsLink("3163")
     public void testCatalogSupplier() {
         Response<CatalogSupplierDataOld> response = catalogProductClient.getSupplyInfo(lmCode);
         isResponseOk(response);
@@ -137,6 +143,7 @@ public class CatalogTest extends BaseCatalogTest {
     }
 
     @Test(description = "C23195049 POST product review default values", groups = "productSearch")
+    @TmsLink("3175")
     public void testSendReview() {
         UserData userData = new UserData();
         userData.setLdap(getUserSessionData().getUserLdap());
@@ -160,6 +167,7 @@ public class CatalogTest extends BaseCatalogTest {
     }
 
     @Test(description = "C23416163 GET /catalog/complementary-products", groups = "productSearch")
+    @TmsLink("3176")
     public void testComplementaryProducts() {
         Response<CatalogComplementaryProductsDataV2> response = catalogProductClient.getComplementaryProducts(
                 searchProductHelper.getRandomProduct().getLmCode());
@@ -225,6 +233,7 @@ public class CatalogTest extends BaseCatalogTest {
     })
     @Test(description = "C23718705 GET Catalog Similar Products", groups = "productSearch")
     @TmsLink("2028")
+    @TmsLink("3162")
     public void testCatalogSimilarProductsV1() {
         Response<CatalogSimilarProductsDataV1> response = catalogProductClient
             .getSimilarProductsV1(lmCode);

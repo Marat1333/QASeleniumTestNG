@@ -12,6 +12,7 @@ import com.leroy.magmobile.api.data.kladr.KladrItemDataList;
 import com.leroy.magmobile.api.data.shops.ShopData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import com.leroy.magportal.api.clients.ShopsClient;
+import io.qameta.allure.TmsLink;
 import org.testng.annotations.Test;
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -24,12 +25,14 @@ public class ShopKladrTest extends BaseProjectApiTest {
     private ShopsClient shopsClient;
 
     @Test(description = "C23195091 GET shops")
+    @TmsLink("3376")
     public void testGetShops() {
         Response<ShopData> resp = shopKladrClient.getShops();
         shopsClient.assertGetShopsResult(resp);
     }
 
     @Test(description = "C3165821 Kladr gets a city that exists")
+    @TmsLink("3372")
     public void testKladrGetsExistedCity() {
         int limit = 12;
         Response<KladrItemDataList> resp = shopKladrClient.getKladrByCity("2900000000000", 12);
