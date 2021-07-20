@@ -4,6 +4,7 @@ import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magportal.ui.constants.picking.PickingConst;
 import com.leroy.magportal.ui.pages.picking.mobile.PickingDocListMobilePage;
 import com.leroy.magportal.ui.tests.BaseMockMagPortalUiTest;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -28,6 +29,7 @@ public class PickingFilteringMobileTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23438168 Сборка. Фильтрация по Типу сборки")
+    @AllureId("1204")
     public void testFiltersByAssemblyType() throws Exception {
 
         // Step 1
@@ -58,6 +60,7 @@ public class PickingFilteringMobileTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23438169 Сборка. Фильтрация по Статусу сборки")
+    @AllureId("1205")
     public void testFiltersByStatus() throws Exception {
 
         // Step 1
@@ -107,6 +110,7 @@ public class PickingFilteringMobileTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23438170 Сборка. Фильтрация по отделам")
+    @AllureId("1206")
     public void testFiltersByDepartments() throws Exception {
 
         // Step 1
@@ -149,6 +153,7 @@ public class PickingFilteringMobileTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23438171 Сборка. Фильтрация с чек боксом 'Мои'")
+    @AllureId("1207")
     public void testFilterMy() throws Exception {
         // Step 1
         step("Открыть страницу со Сборкой");
@@ -183,6 +188,7 @@ public class PickingFilteringMobileTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23438174 Сборка. Поиск по номеру заказа")
+    @AllureId("1210")
     public void testSearchForPickingByOrderNumber() throws Exception {
         // Step 1
         step("Открыть страницу со Сборкой");
@@ -194,7 +200,8 @@ public class PickingFilteringMobileTest extends BaseMockMagPortalUiTest {
                 .shouldDocumentListIs(Collections.singletonList("0001 *8174"));
     }
 
-    @Test(description = "C23438175 Сборка. Фильтрация по Схеме продажи")
+    @Test(description = "C23438910 Сборка. Фильтрация по Схеме продажи")
+    @AllureId("1211")
     public void testFilteringBySalesScheme() throws Exception {
         // Step 1
         step("Открыть страницу со Сборкой");

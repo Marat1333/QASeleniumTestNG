@@ -39,11 +39,13 @@ public class TestRailListener extends Listener {
                 //long SUITE_ID = 258L;
                 //long PROJECT_ID = 10L;
                 try {
-                    if (Strings.isNotNullAndNotEmpty(planName) && Strings.isNotNullAndNotEmpty(runName)) {
-                        runId = TestRailClient.findOrCreateNewPlanRun(planName, runName, projectId, suiteId);
-                    } else if (Strings.isNotNullAndNotEmpty(runName)) {
-                        runId = TestRailClient.findOrCreateNewRun(runName, projectId, suiteId);
-                    }
+
+                    //TODO Выключено подключение к тестрейлу
+//                    if (Strings.isNotNullAndNotEmpty(planName) && Strings.isNotNullAndNotEmpty(runName)) {
+//                        runId = TestRailClient.findOrCreateNewPlanRun(planName, runName, projectId, suiteId);
+//                    } else if (Strings.isNotNullAndNotEmpty(runName)) {
+//                        runId = TestRailClient.findOrCreateNewRun(runName, projectId, suiteId);
+//                    }
                 } catch (Exception err) {
                     Log.error(err.getMessage());
                 }

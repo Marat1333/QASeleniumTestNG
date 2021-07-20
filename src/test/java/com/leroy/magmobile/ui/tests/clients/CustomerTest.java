@@ -32,6 +32,7 @@ import com.leroy.magmobile.ui.pages.sales.orders.order.OrderSearchPage;
 import com.leroy.magmobile.ui.pages.sales.orders.order.ProcessOrder35Page;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.utils.RandomUtil;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -61,6 +62,7 @@ public class CustomerTest extends AppBaseSteps {
 
     @Smoke
     @Test(description = "C3201018 Создание клиента (физ. лицо)")
+    @AllureId("2732")
     public void testCreateCustomer() throws Exception {
         MainCustomerPage mainCustomerPage = loginAndGoTo(MainCustomerPage.class);
 
@@ -109,6 +111,7 @@ public class CustomerTest extends AppBaseSteps {
     }
 
     /*@Test(description = "C22782860 Просмотр документов клиента (юр.лицо)")
+    @AllureId("3035")
     public void testViewLegalClientInformation() throws Exception {
         step("Выполнение preconditions");
         MagLegalCustomerData customerData = TestDataConstants.LEGAL_ENTITY_1;
@@ -185,6 +188,7 @@ public class CustomerTest extends AppBaseSteps {
 
     @Smoke
     @Test(description = "C3201020 Поиск клиента по телефону (физ. лицо)")
+    @AllureId("2734")
     public void testSearchForIndividualCustomerByPhone() throws Exception {
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
 
@@ -202,6 +206,7 @@ public class CustomerTest extends AppBaseSteps {
     }
 
     @Test(description = "C3201021 Поиск клиента по email (физ. лицо)")
+    @AllureId("2735")
     public void testSearchForClientByEmail() throws Exception {
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
 
@@ -219,6 +224,7 @@ public class CustomerTest extends AppBaseSteps {
     }
 
     @Test(description = "C22907529 Поиск клиента (юр. лицо) по номеру договора")
+    @AllureId("2740")
     public void testSearchForLegalClientByContractNumber() throws Exception {
         MagLegalCustomerData customerData = TestDataConstants.LEGAL_ENTITY_1;
 
@@ -236,6 +242,7 @@ public class CustomerTest extends AppBaseSteps {
     }
 
     @Test(description = "C3201063 Проверка списка недавно просмотренных клиентов")
+    @AllureId("2737")
     public void testListOfRecentlyViewedClients() throws Exception {
         MagCustomerData customerData1 = TestDataConstants.CUSTOMER_DATA_1;
         MagCustomerData customerData2 = TestDataConstants.CUSTOMER_DATA_2;
@@ -270,6 +277,7 @@ public class CustomerTest extends AppBaseSteps {
 
     @Smoke
     @Test(description = "C22782859 Просмотр документов клиента (физ.лицо)")
+    @AllureId("3034")
     public void testViewIndividualClientInformation() throws Exception {
         step("Выполнение preconditions");
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
@@ -344,6 +352,7 @@ public class CustomerTest extends AppBaseSteps {
     }
 
     @Test(description = "C22797105 Создание сметы с карточки клиента")
+    @AllureId("3036")
     public void testCreateEstimateFromClientPage() throws Exception {
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
         String lmCode = searchProductHelper.getProducts(1, false, false).get(0).getLmCode();
@@ -399,6 +408,7 @@ public class CustomerTest extends AppBaseSteps {
     }
 
     @Test(description = "C22797106 Создание корзины с карточки клиента")
+    @AllureId("3037")
     public void testCreateCartFromClientPage() throws Exception {
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
         String lmCode = searchProductHelper.getProducts(1, false, false).get(0).getLmCode();
@@ -441,6 +451,7 @@ public class CustomerTest extends AppBaseSteps {
     }
 
     @Test(description = "C22797108 Создание заказа из корзины, созданной из карточки клиента")
+    @AllureId("3038")
     public void testCreateOrderFromClientPage() throws Exception {
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
 

@@ -19,6 +19,8 @@ import com.leroy.magportal.ui.tests.BasePAOTest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import io.qameta.allure.AllureId;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
@@ -62,6 +64,7 @@ public class EstimatePrintTest extends BasePAOTest {
     }
 
     @Test(description = "C23393377 Печать сметы с одним товаром", groups = NEED_PRODUCTS_GROUP)
+    @AllureId("1122")
     public void testPrintEstimateWithOneProduct() throws Exception {
         // Test Data
         ProductData testProduct1 = productList.get(0);
@@ -102,6 +105,7 @@ public class EstimatePrintTest extends BasePAOTest {
     }
 
     @Test(description = "C23393381 Печать сметы с разными категориями (мерами)")
+    @AllureId("1125")
     public void testPrintEstimateWithDifferentCategories() throws Exception {
         // Test Data
         String[] lmCodes = {"12395900", "11490674", "12344695", "12346092", "12599030"};
@@ -144,6 +148,7 @@ public class EstimatePrintTest extends BasePAOTest {
     }
 
     @Test(description = "C3302226 Печать сметы в статусе Создан", groups = NEED_PRODUCTS_GROUP)
+    @AllureId("1121")
     public void testPrintEstimateWhenConfirmed() throws Exception {
         // Test Data
         ProductData testProduct1 = productList.get(0);
@@ -180,6 +185,7 @@ public class EstimatePrintTest extends BasePAOTest {
 
     @Test(description = "C23398086 Печать сметы физ. лицо", groups = {NEED_PRODUCTS_GROUP,
             NEED_ACCESS_TOKEN_GROUP})
+    @AllureId("1126")
     public void testPrintEstimateWithIndividualPerson() throws Exception {
         // Test Data
         ProductData testProduct1 = productList.get(0);
@@ -263,6 +269,7 @@ public class EstimatePrintTest extends BasePAOTest {
     }
 
     @Test(description = "C23393379 Печать сметы 50 товаров")
+    @AllureId("1123")
     public void testPrintEstimateWith50Products() throws Exception {
         // Test Data
         SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
@@ -306,6 +313,7 @@ public class EstimatePrintTest extends BasePAOTest {
     }
 
     @Test(description = "C23393380 Печать сметы с доставкой", groups = NEED_PRODUCTS_GROUP)
+    @AllureId("1124")
     public void testPrintEstimateWithDelivery() throws Exception {
         // Test Data
         Double deliveryPrice = 1000.0;

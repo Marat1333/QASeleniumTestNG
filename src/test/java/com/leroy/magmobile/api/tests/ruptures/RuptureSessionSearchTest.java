@@ -27,6 +27,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import io.qameta.allure.AllureId;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -85,6 +87,7 @@ public class RuptureSessionSearchTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285388 GET ruptures sessions status active")
+    @AllureId("3311")
     public void testSearchForActiveRuptureSessions() {
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(ACTIVE, 10);
         isResponseOk(resp);
@@ -97,6 +100,7 @@ public class RuptureSessionSearchTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285383 GET ruptures sessions status finished")
+    @AllureId("3312")
     public void testSearchForFinishedRuptureSessions() {
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(FINISHED, 10);
         isResponseOk(resp);
@@ -109,6 +113,7 @@ public class RuptureSessionSearchTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285389 GET ruptures sessions pagination first page")
+    @AllureId("3313")
     public void testSearchForRuptureSessionsPaginationFirstPage() {
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(1, 4);
         isResponseOk(resp);
@@ -127,6 +132,7 @@ public class RuptureSessionSearchTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285384 GET ruptures sessions pagination second page")
+    @AllureId("3314")
     public void testSearchForRuptureSessionsPaginationSecondPage() {
         int startFrom = 5;
         int pageSize = 4;
@@ -145,6 +151,7 @@ public class RuptureSessionSearchTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3233580 GET ruptures sessions only shop and department")
+    @AllureId("3310")
     public void testSearchForRuptureSessionsWithoutSpecificFilters() {
         int expectedTotalCount = 11;
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(20);
@@ -170,6 +177,7 @@ public class RuptureSessionSearchTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285386 GET ruptures sessions without shopid header (check definition validation)")
+    @AllureId("3316")
     public void testGetRupturesSessionsWithoutShopidHeaderCheckValidation() {
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(
                 new RupturesSessionsRequest()
@@ -183,6 +191,7 @@ public class RuptureSessionSearchTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23440582 GET ruptures sessions without departmentId param (check definition validation)")
+    @AllureId("3315")
     public void testGetRupturesSessionsWithoutParamsCheckValidation() {
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(
                 new RupturesSessionsRequest()
@@ -196,6 +205,7 @@ public class RuptureSessionSearchTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285387 GET ruptures sessions wrong shop and wrong department")
+    @AllureId("3317")
     public void testGetRupturesSessionsWrongShopAndWrongDepartment() {
         Response<ResRuptureSessionDataList> resp = rupturesClient.getSessions(
                 new RupturesSessionsRequest()

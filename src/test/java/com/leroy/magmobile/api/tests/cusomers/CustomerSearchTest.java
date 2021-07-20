@@ -16,6 +16,7 @@ import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
+//TODO Тесты отсутствуют в аллюре
 public class CustomerSearchTest extends BaseProjectApiTest {
 
     @Inject

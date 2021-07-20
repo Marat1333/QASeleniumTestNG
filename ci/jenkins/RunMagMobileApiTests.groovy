@@ -3,11 +3,6 @@ TELEGRAM_REPORTS_CHAT = '-1001343153150'
 
 env.TELEGRAM_CHAT = env.TELEGRAM_CHAT.replaceFirst(/^(.*?)\(.*\)/, '$1')
 
-//Костыль для поддержки и ТестРейла, и Аллюра, после отказа от ТестРейла - удалить
-env.AllURE_RUN_NAME = env.RUN
-if (env.ALLURE_TEST_OPS == "true") {
-    env.RUN = ""
-}
 
 def telegramMessage(message) {
     if (env.TELEGRAM_CHAT) {
@@ -34,8 +29,8 @@ GString getMvnStrRun() {
             "-DrunWithIssues=${env.RUN_CASE_WITH_ISSUE} " +
             "-DxmlPath=testXML/mobile/api/${env.SUITE_XML} " +
             "-DthreadCount=${env.THREAD_COUNT} " +
-            "-DmRun=${env.RUN} " +
-            "-Denv=${env.ENVIROMENT} " +
+            "-DmRun=\"${env.RUN}\" " +
+            "-Denv=${env.ENVIRONMENT} " +
             "-DmSuite=29833 -DmProject=10 "
 
 }
@@ -57,12 +52,7 @@ timestamps {
             try {
                 docker.image('maven:3.6.3-jdk-8-openj9').inside("-v $HOME/.m2:/root/.m2") {
                     dir('auto-tests') {
-                        if(env.ALLURE_TEST_OPS == "true"){
-                            withAllureUpload(serverId: 'allure-server', projectId: '13', results: [[path: 'target/allure-results']], name: env.AllURE_RUN_NAME) {
-                                sh(getMvnStrRun())
-                            }
-                            //Костыль для поддержки и ТестРейла, и Аллюра, после отказа от ТестРейла - удалить
-                        } else {
+                        withAllureUpload(serverId: 'allure-server', projectId: '13', results: [[path: 'target/allure-results']], name: env.RUN) {
                             sh(getMvnStrRun())
                         }
                     }
@@ -81,7 +71,7 @@ timestamps {
         }
 
         stage('Send notification') {
-            telegramMessage("Маг Мобайл API Тесты завершены. Test run: ${env.AllURE_RUN_NAME} \n " +
+            telegramMessage("Маг Мобайл API Тесты завершены. Test run: ${env.RUN} \n " +
                     "[Allure report](" + env.BUILD_URL + "allure)")
         }
     }

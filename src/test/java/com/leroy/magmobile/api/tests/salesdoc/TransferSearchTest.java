@@ -18,6 +18,7 @@ import com.leroy.magmobile.api.data.sales.transfer.TransferSalesDocData;
 import com.leroy.magmobile.api.data.sales.transfer.TransferSearchFilters;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import io.qameta.allure.Issue;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
@@ -50,6 +51,7 @@ public class TransferSearchTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3272534 SalesDoc transfers GET with default params")
+    @AllureId("3287")
     public void testTransferTaskSearchWithDefaultParams() {
         TransferSearchFilters filters = new TransferSearchFilters();
         Response<TransferDataList> resp = transferClient.searchForTasks(filters);
@@ -58,6 +60,7 @@ public class TransferSearchTest extends BaseProjectApiTest {
 
     @Issue("BACKEND_ISSUE")
     @Test(description = "C3272535 SalesDoc transfers GET with status NEW")
+    @AllureId("3288")
     public void testTransferTaskSearchByStatusNew() {
         TransferSearchFilters filters = new TransferSearchFilters();
         filters.setStatus(SalesDocumentsConst.States.TRANSFER_NEW.getApiVal());
@@ -66,6 +69,7 @@ public class TransferSearchTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3272536 SalesDoc transfers GET with status=CONFIRMED")
+    @AllureId("3289")
     public void testTransferTaskSearchByStatusConfirmed() {
         TransferSearchFilters filters = new TransferSearchFilters();
         filters.setStatus(SalesDocumentsConst.States.CONFIRMED.getApiVal());

@@ -12,6 +12,7 @@ import com.leroy.magportal.api.data.picking.PickingTaskData;
 import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
 import io.qameta.allure.Step;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.util.Strings;
@@ -37,12 +38,14 @@ public class GetPickingTasksTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438532 Get Picking Task")
+    @AllureId("1980")
     public void testGetPickingTask() {
         Response<PickingTaskData> response = pickingTaskClient.getPickingTask(currentTaskId);
         assertGetPickingTaskResult(response);
     }
 
     @Test(description = "C23438533 Get Orders' Picking Tasks")
+    @AllureId("1981")
     public void testGetOrdersPickingTask() {
         Response<OrdersPickingTasksDataList> response = pickingTaskClient
                 .getPickingTasks(currentOrderId);

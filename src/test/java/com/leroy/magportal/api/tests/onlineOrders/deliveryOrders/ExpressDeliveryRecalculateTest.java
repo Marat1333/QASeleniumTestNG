@@ -9,6 +9,7 @@ import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeDat
 import com.leroy.magportal.api.data.onlineOrders.OrderDeliveryRecalculateResponseData;
 import com.leroy.magportal.api.helpers.OnlineOrderHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
@@ -34,6 +35,7 @@ public class ExpressDeliveryRecalculateTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425655 Express: Delivery ReCalc: One product", priority = 1)
+    @AllureId("1863")
     public void testDeliveryRecalcOneProduct() {
         Response<OrderDeliveryRecalculateResponseData> response = orderClient
                 .deliveryRecalculate(currentOrderId, 1, 5.0);
@@ -41,6 +43,7 @@ public class ExpressDeliveryRecalculateTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425656 Express: Delivery ReCalc: All products", priority = 2)
+    @AllureId("1864")
     public void testDeliveryRecalcAllProducts() {
         Response<OrderDeliveryRecalculateResponseData> response = orderClient
                 .deliveryRecalculate(currentOrderId, currentProductsCount, 5.0);
@@ -48,6 +51,7 @@ public class ExpressDeliveryRecalculateTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425657 Express: Delivery ReCalc: Dimensional product", priority = 3)
+    @AllureId("1865")
     public void testDeliveryRecalcDimensionalProduct() {
         makeDimensionalOrder();
         Response<OrderDeliveryRecalculateResponseData> response = orderClient
@@ -56,6 +60,7 @@ public class ExpressDeliveryRecalculateTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425658 Express: Delivery ReCalc: One product exceed count", priority = 4)
+    @AllureId("1866")
     public void testDeliveryRecalcOneProductExceedCount() {
         Response<OrderDeliveryRecalculateResponseData> response = orderClient
                 .deliveryRecalculate(currentOrderId, 1, 50.0);
@@ -63,6 +68,7 @@ public class ExpressDeliveryRecalculateTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425661 Express: Delivery ReCalc: No products (Negative)", priority = 5)
+    @AllureId("1867")
     public void testDeliveryRecalcNoProducts() {
         Response<OrderDeliveryRecalculateResponseData> response = orderClient
                 .deliveryRecalculate(currentOrderId, 0, 5.0);

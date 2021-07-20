@@ -17,6 +17,7 @@ import com.leroy.magmobile.ui.pages.sales.orders.cart.modal.ChangeProductModal;
 import com.leroy.magmobile.ui.pages.sales.product_card.modal.SaleTypeModalPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.utils.ParserUtil;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
 
@@ -41,6 +42,7 @@ public class CartTest extends SalesBaseTest {
 
     @Smoke
     @Test(description = "C22797089 Создать корзину с экрана Документы продажи", groups = NEED_PRODUCTS_GROUP)
+    @AllureId("2979")
     public void testCreateBasketFromSalesDocumentsScreen() throws Exception {
         // Test data
         String lmCode = productLmCodes.get(0);
@@ -84,6 +86,7 @@ public class CartTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797090 Добавить новый товар в корзину", groups = {NEED_ACCESS_TOKEN_GROUP, NEED_PRODUCTS_GROUP})
+    @AllureId("2980")
     public void testAddNewProductIntoBasket() throws Exception {
         // Test data
         String lmCode = productLmCodes.get(1);
@@ -118,6 +121,7 @@ public class CartTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797091 Добавить существующий товар из поиска", groups = NEED_ACCESS_TOKEN_GROUP)
+    @AllureId("2981")
     public void testAddTheSameProductIntoBasketFromSearch() throws Exception {
         step("Pre-condition: Создание корзины");
         startFromScreenWithCreatedCart();
@@ -151,6 +155,7 @@ public class CartTest extends SalesBaseTest {
 
     @Test(description = "C22797092 Изменить количество товара (товар остается в том же заказе)",
             groups = {NEED_ACCESS_TOKEN_GROUP, NEED_PRODUCTS_GROUP})
+    @AllureId("2982")
     public void testChangeQuantityProductInCartWhenProductCountIsAvailable() throws Exception {
         // Test data
         List<String> lmCodes = productLmCodes.subList(0, 1);
@@ -186,6 +191,7 @@ public class CartTest extends SalesBaseTest {
 
     @Test(description = "C22797094 Изменить количество товара (товар переносится в другой заказ)",
             groups = {NEED_ACCESS_TOKEN_GROUP, NEED_PRODUCTS_GROUP})
+    @AllureId("2983")
     public void testChangeQuantityProductInCartWhenCountOfProductMoreThanAvailable() throws Exception {
         // Test data
         List<String> lmCodes = productLmCodes.subList(0, 1);
@@ -250,6 +256,7 @@ public class CartTest extends SalesBaseTest {
 
     @Test(description = "C22797095 Добавить товар AVS или Топ ЕМ (количество товара достаточно)",
             groups = NEED_ACCESS_TOKEN_GROUP)
+    @AllureId("2984")
     public void testAddAvsOrTopEmProductIntoBasket() throws Exception {
         // Test data
         boolean oddDay = LocalDate.now().getDayOfMonth() % 2 == 1;
@@ -286,6 +293,7 @@ public class CartTest extends SalesBaseTest {
 
     @Test(description = "C22797096 Добавить товар AVS (количество товара меньше необходимого)",
             groups = NEED_ACCESS_TOKEN_GROUP)
+    @AllureId("2985")
     public void testAddAvsProductIntoBasketLessThanAvailable() throws Exception {
         // Test data
         String lmCode = getAnyLmCodeProductWithAvs(false);
@@ -339,6 +347,7 @@ public class CartTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797098 Удалить товар из корзины", groups = NEED_ACCESS_TOKEN_GROUP)
+    @AllureId("2988")
     public void testRemoveProductFromCart() throws Exception {
         if (!Cart35Page.isThisPage()) {
             String cartDocId = createDraftCart(2);
@@ -377,6 +386,7 @@ public class CartTest extends SalesBaseTest {
 
     @Test(description = "C22797099 Удалить последний товар из корзины",
             groups = NEED_ACCESS_TOKEN_GROUP)
+    @AllureId("2989")
     public void testRemoveTheLastProductFromCart() throws Exception {
         String cartDocNumber = null;
         if (!Cart35Page.isThisPage()) {
@@ -411,6 +421,7 @@ public class CartTest extends SalesBaseTest {
 
     @Test(description = "C22797109 Добавить существующий товар из модалки действий с товаром",
             groups = NEED_ACCESS_TOKEN_GROUP)
+    @AllureId("2995")
     public void testAddProductFromActionWithProductModal() throws Exception {
         int newQuantity = 3;
 
@@ -443,6 +454,7 @@ public class CartTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797101 Создать скидку", groups = NEED_ACCESS_TOKEN_GROUP)
+    @AllureId("2991")
     public void testCreateDiscount() throws Exception {
         startFromScreenWithCreatedCart();
 
@@ -492,6 +504,7 @@ public class CartTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797102 Изменить скидку", groups = NEED_ACCESS_TOKEN_GROUP)
+    @AllureId("2992")
     public void testChangeDiscount() throws Exception {
         startFromScreenWithCreatedCart(true);
 
@@ -545,6 +558,7 @@ public class CartTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797103 Удалить скидку", groups = NEED_ACCESS_TOKEN_GROUP)
+    @AllureId("2993")
     public void testRemoveDiscount() throws Exception {
         startFromScreenWithCreatedCart(true);
 
@@ -571,6 +585,7 @@ public class CartTest extends SalesBaseTest {
     }
 
     @Test(description = "C22847028 Объединение заказов на позднюю дату", groups = NEED_ACCESS_TOKEN_GROUP)
+    @AllureId("2996")
     public void testConsolidateOrders() throws Exception {
         step("Pre-condition: Поиск подходящих товаров и создание корзины с ними");
         List<CartProductOrderData> products = findProductsForSeveralOrdersInCart();

@@ -14,6 +14,8 @@ import com.leroy.magmobile.api.data.sales.DiscountReasonData;
 import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import java.util.List;
+
+import io.qameta.allure.AllureId;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.util.Strings;
@@ -40,6 +42,7 @@ public class SalesDocDiscountTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3254680 SalesDoc GET discounts")
+    @AllureId("3261")
     public void testSalesDocGetDiscounts() {
         Response<SalesDocDiscountData> resp = salesDocProductClient.getSalesDocDiscountByLmCode(productLmCode);
         assertThat(resp, successful());

@@ -21,6 +21,8 @@ import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import com.leroy.magportal.ui.pages.products.SearchProductPage.FilterFrame;
 import java.util.Collections;
 import java.util.List;
+
+import io.qameta.allure.AllureId;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -69,6 +71,7 @@ public class ProductCardTest extends WebBaseSteps {
     }
 
     @Test(description = "C23388813 add Product to cart")
+    @AllureId("1360")
     public void testAddProductToCart() throws Exception {
         String lmCode = getRandomLmCode();
 
@@ -82,6 +85,7 @@ public class ProductCardTest extends WebBaseSteps {
     }
 
     @Test(description = "C23388814 add Product to estimate")
+    @AllureId("1361")
     public void testAddProductToEstimate() throws Exception {
         String lmCode = getRandomLmCode();
 
@@ -95,6 +99,7 @@ public class ProductCardTest extends WebBaseSteps {
     }
 
     @Test(description = "C23388974 go to card by url")
+    @AllureId("1362")
     public void testGoToCardByUrl() {
         String lmCode = getRandomLmCode();
 
@@ -110,6 +115,7 @@ public class ProductCardTest extends WebBaseSteps {
     }
 
     @Test(description = "C22790554 Go to another card (similar or related products)")
+    @AllureId("1359")
     public void testGoToAdditionalProductCard() throws Exception {
         String sourceLmCode = "15057456";
         String similarProductLmCode = getRandomSimilarProductLmCode(sourceLmCode);
@@ -156,6 +162,7 @@ public class ProductCardTest extends WebBaseSteps {
     }
 
     @Test(description = "C22790552 additional products tabs")
+    @AllureId("1358")
     public void testAdditionalProducts() throws Exception {
         String lessThan4Similar = "11912697";
         String moreThan4Similar = "15057456";
@@ -199,6 +206,7 @@ public class ProductCardTest extends WebBaseSteps {
     }
 
     @Test(description = "C22789188 Check Breadcrumbs")
+    @AllureId("1354")
     public void testBreadCrumbsNavigation() throws Exception {
         String lmCode = getRandomLmCode();
 
@@ -303,6 +311,7 @@ public class ProductCardTest extends WebBaseSteps {
     }
 
     @Test(description = "C23389190 Check short card data")
+    @AllureId("1353")
     public void testCheckShortCardData() throws Exception {
         String lmCode = getRandomLmCode();
         CatalogProductData data = catalogSearchClient.getProductData(lmCode).asJson();
@@ -314,6 +323,7 @@ public class ProductCardTest extends WebBaseSteps {
     }
 
     @Test(description = "C22782997 Check extended card data")
+    @AllureId("1352")
     public void testCheckExtendedCardData() throws Exception {
         String lmCode = getRandomLmCode();
         CatalogProductData data = catalogSearchClient.getProductData(lmCode).asJson();
@@ -325,6 +335,7 @@ public class ProductCardTest extends WebBaseSteps {
     }
 
     @Test(description = "C22790551 Price and stocks in nearest shops")
+    @AllureId("1357")
     public void testCheckNearestShopsInfo() throws Exception {
         String shopId = "3";
         String shopName = "Химки";

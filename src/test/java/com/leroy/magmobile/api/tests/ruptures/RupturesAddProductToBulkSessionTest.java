@@ -3,6 +3,7 @@ package com.leroy.magmobile.api.tests.ruptures;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.leroy.magmobile.api.data.ruptures.ReqRuptureBulkSessionData;
 import io.qameta.allure.Issue;
+import io.qameta.allure.AllureId;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -26,6 +27,7 @@ public class RupturesAddProductToBulkSessionTest extends BaseRuptureTest{
     }
 
     @Test(description = "C23718165 Add product to session")
+    @AllureId("3364")
     public void testAddProductToSession() {
         postData.setLmCode(secondLmCode);
 
@@ -39,6 +41,7 @@ public class RupturesAddProductToBulkSessionTest extends BaseRuptureTest{
 
     @Issue("RUP-377")
     @Test(description = "C23718166 Add product to finished session")
+    @AllureId("3365")
     public void testAddProductToFinishedSession() {
         postData.setLmCode(secondLmCode);
 
@@ -56,6 +59,7 @@ public class RupturesAddProductToBulkSessionTest extends BaseRuptureTest{
 
     @Issue("RUP-377")
     @Test(description = "C23718167 Add product to not existed session")
+    @AllureId("3366")
     public void testAddProductToNotExistedSession() {
         postData.setLmCode(secondLmCode);
 
@@ -67,6 +71,7 @@ public class RupturesAddProductToBulkSessionTest extends BaseRuptureTest{
     }
 
     @Test(description = "C23718168 Add duplicate product")
+    @AllureId("3367")
     public void testAddDuplicateProductToSession() {
         postData.setLmCode(firstLmCode);
 

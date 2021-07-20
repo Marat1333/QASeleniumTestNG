@@ -9,6 +9,7 @@ import com.leroy.magportal.ui.pages.customers.CreatingCustomerPage;
 import com.leroy.magportal.ui.pages.customers.CustomerPage;
 import com.leroy.magportal.ui.pages.customers.CustomerPersonalInfoPage;
 import io.qameta.allure.Issue;
+import io.qameta.allure.AllureId;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 
@@ -19,6 +20,7 @@ public class ClientTest extends WebBaseSteps {
 
     @Issue("PAO-465")
     @Test(description = "C22783064 Create client via button on client's page")
+    @AllureId("1306")
     public void testC22783064() throws Exception {
         // Step #1
         step("Open env for testing and add to url 'customers'");
@@ -89,6 +91,7 @@ public class ClientTest extends WebBaseSteps {
     }
 
     @Test(description = "C22783068 Create client via modal window after search")
+    @AllureId("1307")
     public void testC22783068() throws Exception {
         // Pre-condition
         String phoneNumber = customerHelper.findUnusedPhoneNumber();

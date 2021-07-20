@@ -7,6 +7,7 @@ import com.leroy.magportal.api.constants.OnlineOrderTypeConst;
 import com.leroy.magportal.api.constants.OnlineOrderTypeConst.OnlineOrderTypeData;
 import com.leroy.magportal.api.helpers.OnlineOrderHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
+import io.qameta.allure.AllureId;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -60,6 +61,7 @@ public class ExpressDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425879 Express: Delivery and Lift Update", priority = 1)
+    @AllureId("1868")
     public void testEditDeliveryAndLift() {
         deliveryTotalPrice = 99.99;
         liftPrice = 55.55;
@@ -70,6 +72,7 @@ public class ExpressDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425880 Express: Delivery Update", priority = 2)
+    @AllureId("1869")
     public void testEditDelivery() {
         deliveryTotalPrice = 88.88;
         Response<?> response = orderClient
@@ -79,6 +82,7 @@ public class ExpressDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425881 Express: Paid: Lift Delivery Update to zero", priority = 3)
+    @AllureId("1870")
     public void testEditDeliveryLiftToZeroPaid() {
         currentStatus = States.PICKED;
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
@@ -91,6 +95,7 @@ public class ExpressDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425882 Express: Paid: Delivery Update to zero", priority = 4)
+    @AllureId("1871")
     public void testEditDeliveryToZeroPaid() {
         deliveryTotalPrice = 0.0;
         Response<?> response = orderClient
@@ -100,6 +105,7 @@ public class ExpressDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425883 Express: Delivery Update for Dimensional products", priority = 5)
+    @AllureId("1872")
     public void testEditDeliveryDimensional() {
         currentStatus = States.ALLOWED_FOR_PICKING;
         makeDimensionalOrder();
@@ -112,6 +118,7 @@ public class ExpressDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425884 Express: Delivery Update to zero for Dimensional products", priority = 6)
+    @AllureId("1873")
     public void testEditDeliveryToZeroDimensional() {
         deliveryTotalPrice = 0.0;
         liftPrice = 0.0;

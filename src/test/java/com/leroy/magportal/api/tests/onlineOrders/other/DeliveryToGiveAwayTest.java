@@ -11,6 +11,7 @@ import com.leroy.magportal.api.data.picking.PickingTaskData;
 import com.leroy.magportal.api.helpers.OnlineOrderHelper;
 import com.leroy.magportal.api.helpers.PaymentHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
+import io.qameta.allure.AllureId;
 import lombok.SneakyThrows;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -43,6 +44,7 @@ public class DeliveryToGiveAwayTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23748038 Delivery: GiveAway for Start Picking")
+    @AllureId("1941")
     public void testStartPickingGiveAway() {
         Response<?> resp = pickingTaskClient.startPicking(currentTaskId);
         isResponseOk(resp);
@@ -53,6 +55,7 @@ public class DeliveryToGiveAwayTest extends BaseMagPortalApiTest {
 
     @SneakyThrows
     @Test(description = "C23748039 Delivery: GiveAway for Picked", dependsOnMethods = {"testStartPickingGiveAway"})
+    @AllureId("1942")
     public void testPickedGiveAway() {
         Response<?> resp = pickingTaskClient.completePicking(currentTaskId, true);
         isResponseOk(resp);
@@ -67,6 +70,7 @@ public class DeliveryToGiveAwayTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23748040 Delivery: GiveAway for Partially Shipped", dependsOnMethods = {
             "testPickedGiveAway"})
+    @AllureId("1943")
     public void testPartiallyShippedGiveAway() {
         Response<?> resp = orderClient.giveAway(currentOrderId, false);
         isResponseOk(resp);
@@ -77,6 +81,7 @@ public class DeliveryToGiveAwayTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23748041 Delivery: GiveAway for Shipped", dependsOnMethods = {
             "testPickedGiveAway"})
+    @AllureId("1944")
     public void testShippedGiveAway() {
         Response<?> resp = orderClient.giveAway(currentOrderId, true);
         isResponseOk(resp);
@@ -87,6 +92,7 @@ public class DeliveryToGiveAwayTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23748042 Delivery: GiveAway for Delivered", dependsOnMethods = {
             "testShippedGiveAway"})
+    @AllureId("1945")
     public void testDeliverGiveAway() {
         orderClient.waitUntilOrderGetStatus(currentOrderId,
                 States.ON_DELIVERY, null);

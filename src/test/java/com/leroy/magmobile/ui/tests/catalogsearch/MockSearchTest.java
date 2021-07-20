@@ -11,6 +11,8 @@ import com.leroy.magmobile.ui.pages.search.NomenclatureSearchPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.tests.BaseUiMagMobMockTest;
 import java.util.HashMap;
+
+import io.qameta.allure.AllureId;
 import org.testng.annotations.Test;
 
 public class MockSearchTest extends BaseUiMagMobMockTest {
@@ -45,6 +47,7 @@ public class MockSearchTest extends BaseUiMagMobMockTest {
     }
 
     @Test(description = "C3200996 Поиск товара по критериям")
+    @AllureId("2708")
     public void testC3200996() throws Exception {
         String lmCode = "10008698";
         String searchContext = "дрель";

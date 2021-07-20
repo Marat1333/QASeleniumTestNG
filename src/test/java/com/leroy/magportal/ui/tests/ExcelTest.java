@@ -5,6 +5,7 @@ import com.leroy.magportal.ui.WebBaseSteps;
 import com.leroy.magportal.ui.pages.products.SearchProductPage;
 import com.leroy.utils.DateTimeUtil;
 import com.leroy.utils.file_manager.FileManager;
+import io.qameta.allure.AllureId;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.Test;
 
@@ -19,6 +20,7 @@ public class ExcelTest extends WebBaseSteps {
     }
 
     @Test(description = "C23416164 check excel output")
+    @AllureId("1350")
     public void testExcelOutput() throws Exception {
         FileManager fileManager = new FileManager();
 
