@@ -30,8 +30,8 @@ GString getMvnStrRun() {
             "-DmpropsFile=src/main/resources/configurationFiles/${env.TEST_CONFIG}.yml " +
             "-DthreadCount=${env.THREAD_COUNT} " +
             "-DrunWithIssues=${env.RUN_CASE_WITH_ISSUE} " +
-            "-DmRun=${env.RUN} " +
-            "-Denv=${env.ENVIROMENT} " +
+            "-DmRun=\"${env.RUN}\" " +
+            "-Denv=${env.ENVIRONMENT} " +
             "-DretryOnFailCount=${env.RETRY_COUNT} " +
             "-DmSuite=4378 -DmProject=16"
 }

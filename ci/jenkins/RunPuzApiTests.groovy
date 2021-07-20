@@ -29,8 +29,8 @@ GString getMvnStrRun() {
             "-DxmlPath=testXML/portal/api/${env.SUITE_XML} " +
             "-DthreadCount=${env.THREAD_COUNT} " +
             "-DrunWithIssues=${env.RUN_CASE_WITH_ISSUE} " +
-            "-DmRun=${env.RUN} " +
-            "-Denv=${env.ENVIROMENT} " +
+            "-DmRun=\"${env.RUN}\" " +
+            "-Denv=${env.ENVIRONMENT} " +
             "-DretryOnFailCount=${env.RETRY_COUNT} " +
             "-DmSuite=30121 -DmProject=16"
 }

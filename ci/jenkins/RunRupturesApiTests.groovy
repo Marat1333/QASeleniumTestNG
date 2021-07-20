@@ -21,7 +21,7 @@ GString getMvnStrRun() {
             "-DthreadCount=${env.THREAD_COUNT} " +
             "-DrunWithIssues=${env.RUN_CASE_WITH_ISSUE} " +
             "-DmRun=\"${env.RUN}\" " +
-            "-Denv=${env.ENVIROMENT} " +
+            "-Denv=${env.ENVIRONMENT} " +
             "-DretryOnFailCount=${env.RETRY_COUNT} " +
             "-DmSuite=29833 -DmProject=10"
 }
