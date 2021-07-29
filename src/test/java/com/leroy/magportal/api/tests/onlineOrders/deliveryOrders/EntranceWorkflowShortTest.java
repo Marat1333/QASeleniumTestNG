@@ -43,7 +43,6 @@ public class EntranceWorkflowShortTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425627 Entrance Delivery: ALLOWED_FOR_PICKING -> PICKING_IN_PROGRESS")
-    @AllureId("1779")
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);
@@ -52,7 +51,6 @@ public class EntranceWorkflowShortTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23425627 Entrance Delivery: PICKING_IN_PROGRESS -> PICKED", dependsOnMethods = {
             "testStartPicking"})
-    @AllureId("1779")
     public void testCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, true);
@@ -61,7 +59,6 @@ public class EntranceWorkflowShortTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23425627 Entrance Delivery: ALLOWED_FOR_GIVEAWAY -> ON_SHIPMENT", dependsOnMethods = {
             "testCompletePicking"})
-    @AllureId("1779")
     public void testShipped() {
         paymentHelper.makePaid(currentOrderId);
         orderClient.waitUntilOrderGetStatus(currentOrderId,
@@ -72,7 +69,6 @@ public class EntranceWorkflowShortTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23425627 Entrance Delivery: ON_SHIPMENT -> DELIVERED", dependsOnMethods = {
             "testShipped"})
-    @AllureId("1779")
     public void testDeliver() {
         orderClient.waitUntilOrderGetStatus(currentOrderId,
                 States.ON_DELIVERY, null);

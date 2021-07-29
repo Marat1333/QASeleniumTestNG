@@ -12,6 +12,7 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.EstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.estimate.SendEmailData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+
 import java.util.Collections;
 import java.util.Random;
 
@@ -34,7 +35,7 @@ public class EstimateTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3311701 POST estimate product - HP")
-    @AllureId("3062")
+    @AllureId("12920")
     public void testCreateEstimate() {
         // Prepare request data
         EstimateProductOrderData productOrderData = new EstimateProductOrderData(
@@ -53,7 +54,7 @@ public class EstimateTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23194973 Estimate - Send Email")
-    @AllureId("3075")
+    @AllureId("12933")
     public void testEstimateSendEmail() {
         if (estimateData == null)
             throw new IllegalArgumentException("estimate data hasn't been created");
@@ -66,7 +67,7 @@ public class EstimateTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3311703 GET estimate product")
-    @AllureId("3063")
+    @AllureId("12921")
     public void testGetEstimate() {
         if (estimateData == null)
             throw new IllegalArgumentException("estimate data hasn't been created");
@@ -75,7 +76,7 @@ public class EstimateTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3311707 Update Estimate - change quantity")
-    @AllureId("3065")
+    @AllureId("12923")
     public void testUpdateEstimate() {
         if (estimateData == null)
             throw new IllegalArgumentException("estimate data hasn't been created");
@@ -96,7 +97,7 @@ public class EstimateTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C22732369 PUT estimates/changeStatus DRAFT -> DELETED")
-    @AllureId("3073")
+    @AllureId("12931")
     public void testDeleteEstimate() {
         if (estimateData == null)
             throw new IllegalArgumentException("estimate data hasn't been created");

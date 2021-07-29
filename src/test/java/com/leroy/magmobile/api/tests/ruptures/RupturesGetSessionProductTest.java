@@ -27,6 +27,7 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
 
     @Inject
     private RupturesClient rupturesClient;
+
     @Override
     protected boolean isDeleteSessionAfterEveryMethod() {
         return false;
@@ -95,14 +96,14 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3233583 GET ruptures products")
-    @AllureId("3327")
+    @AllureId("13184")
     public void testSearchForRuptureSessionProducts() {
         Response<RuptureProductDataList> resp = rupturesClient.getProducts(sessionId);
         rupturesClient.assertThatDataMatches(resp, ruptureProductDataListBody);
     }
 
     @Test(description = "C3298405 GET ruptures session products productState=0")
-    @AllureId("3328")
+    @AllureId("13185")
     public void testSearchForRuptureSessionProductsWithProductState0() {
         int productState = 0;
         Response<RuptureProductDataList> resp = rupturesClient.getProductsWithProductState(sessionId, productState);
@@ -120,7 +121,7 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3298406 GET ruptures session products productState=1")
-    @AllureId("3329")
+    @AllureId("13186")
     public void testSearchForRuptureSessionProductsWithProductStateTrue() {
         int productState = 1;
         Response<RuptureProductDataList> resp = rupturesClient.getProductsWithProductState(sessionId, productState);
@@ -146,7 +147,7 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3298407 GET ruptures session products productState=2")
-    @AllureId("3330")
+    @AllureId("13187")
     public void testSearchForRuptureSessionProductsWithProductState2() {
         int productState = 2;
         Response<RuptureProductDataList> resp = rupturesClient.getProductsWithProductState(sessionId, productState);
@@ -164,7 +165,7 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3298408 GET ruptures session products productState=0,1")
-    @AllureId("3331")
+    @AllureId("13188")
     public void testSearchForRuptureSessionProductsWithProductState0and1() {
         Integer[] productStates = {0, 1};
         Response<RuptureProductDataList> resp = rupturesClient.getProductsWithProductState(sessionId, productStates);
@@ -181,7 +182,7 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3298409 GET ruptures session products productState=1,2")
-    @AllureId("3332")
+    @AllureId("13189")
     public void testSearchForRuptureSessionProductsWithProductState1and2() {
         Integer[] productStates = {1, 2};
         Response<RuptureProductDataList> resp = rupturesClient.getProductsWithProductState(sessionId, productStates);
@@ -197,7 +198,7 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409753 GET ruptures products pagination 1-st page")
-    @AllureId("3333")
+    @AllureId("13190")
     public void testGetRupturesProductsPaginationFirstPage() {
         int pageSize = 4;
         Response<RuptureProductDataList> resp = rupturesClient.getProductsWithPagination(sessionId, null, pageSize);
@@ -209,7 +210,7 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409754 GET ruptures products pagination 2-nd page")
-    @AllureId("3334")
+    @AllureId("13191")
     public void testGetRupturesProductsPaginationSecondPage() {
         int pageSize = 4;
         int startFrom = 5;
@@ -222,7 +223,7 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409755 GET ruptures products pagination default is absent")
-    @AllureId("3335")
+    @AllureId("13192")
     public void testGetRupturesProductsDefaultPaginationIsAbsent() {
         Response<RuptureProductDataList> resp = rupturesClient.getProducts(sessionId);
         RuptureProductDataList expectedResponse = new RuptureProductDataList();
@@ -232,7 +233,7 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409756 GET ruptures products mashup validation")
-    @AllureId("3336")
+    @AllureId("13193")
     public void testGetRupturesProductsMashupValidation() {
         Response<?> resp = rupturesClient.getProducts("");
         assertThat("Response Code", resp.getStatusCode(), equalTo(StatusCodes.ST_400_BAD_REQ));
@@ -244,21 +245,21 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409757 GET ruptures products action + action state (only action state do not work)")
-    @AllureId("3337")
+    @AllureId("13194")
     public void testGetRupturesProductsActionPlusOnlyActionState() {
         Response<RuptureProductDataList> resp = rupturesClient.getProductsWithAction(sessionId, true, null);
         rupturesClient.assertThatDataMatches(resp, ruptureProductDataListBody);
     }
 
     @Test(description = "C23409758 GET ruptures products action + action (only action do not work)")
-    @AllureId("3338")
+    @AllureId("13195")
     public void testGetRupturesProductsActionPlusOnlyAction() {
         Response<RuptureProductDataList> resp = rupturesClient.getProductsWithAction(sessionId, null, 7);
         rupturesClient.assertThatDataMatches(resp, ruptureProductDataListBody);
     }
 
     @Test(description = "C23409759 GET ruptures products action + action state (action + true)")
-    @AllureId("3339")
+    @AllureId("13196")
     public void testGetRupturesProductsActionPlusActionStateTrue() {
         int action = 0;
         boolean actionState = true;
@@ -276,7 +277,7 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409760 GET ruptures products action + action state (action + false)")
-    @AllureId("3340")
+    @AllureId("13197")
     public void testGetRupturesProductsActionPlusActionStateFalse() {
         int action = 1;
         boolean actionState = false;
@@ -294,7 +295,7 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409761 GET ruptures products all filters")
-    @AllureId("3341")
+    @AllureId("13198")
     public void testGetRupturesProductsAllFilters() {
         int action = 0;
         boolean actionState = true; // TODO check?

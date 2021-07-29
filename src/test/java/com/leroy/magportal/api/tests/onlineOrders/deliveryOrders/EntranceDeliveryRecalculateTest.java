@@ -35,7 +35,6 @@ public class EntranceDeliveryRecalculateTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425652 Entrance: Delivery ReCalc: One product", priority = 1)
-    @AllureId("1853")
     public void testDeliveryRecalcOneProduct() {
         Response<OrderDeliveryRecalculateResponseData> response = orderClient
                 .deliveryRecalculate(currentOrderId, 1, 5.0);
@@ -43,7 +42,6 @@ public class EntranceDeliveryRecalculateTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425653 Entrance: Delivery ReCalc: All products", priority = 2)
-    @AllureId("1854")
     public void testDeliveryRecalcAllProducts() {
         Response<OrderDeliveryRecalculateResponseData> response = orderClient
                 .deliveryRecalculate(currentOrderId, currentProductsCount, 5.0);
@@ -51,7 +49,6 @@ public class EntranceDeliveryRecalculateTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425654 Entrance: Delivery ReCalc: Dimensional product", priority = 3)
-    @AllureId("1855")
     public void testDeliveryRecalcDimensionalProduct() {
         makeDimensionalOrder();
         Response<OrderDeliveryRecalculateResponseData> response = orderClient
@@ -60,7 +57,6 @@ public class EntranceDeliveryRecalculateTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425660 Entrance: Delivery ReCalc: One product exceed count", priority = 4)
-    @AllureId("1856")
     public void testDeliveryRecalcOneProductExceedCount() {
         Response<OrderDeliveryRecalculateResponseData> response = orderClient
                 .deliveryRecalculate(currentOrderId, 1, 50.0);
@@ -68,7 +64,6 @@ public class EntranceDeliveryRecalculateTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425662 Entrance: Delivery ReCalc: No products (Negative)", priority = 5)
-    @AllureId("1857")
     public void testDeliveryRecalcNoProducts() {
         Response<OrderDeliveryRecalculateResponseData> response = orderClient
                 .deliveryRecalculate(currentOrderId, 0, 5.0);

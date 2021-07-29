@@ -44,7 +44,6 @@ public class GetToGiveAwayTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23748034 GivenAway Products for Start Picking")
-    @AllureId("2017")
     public void testStartPickingGivenAway() {
         Response<PickingTaskData> resp = pickingTaskClient.startPicking(currentTaskId);
         isResponseOk(resp);
@@ -56,7 +55,6 @@ public class GetToGiveAwayTest extends BaseMagPortalApiTest {
     @SneakyThrows
     @Test(description = "C23748035 GivenAway Products for Complete Picking", dependsOnMethods = {
             "testStartPickingGivenAway"})
-    @AllureId("2018")
     public void testPickedGivenAway() {
         Response<PickingTaskData> resp = pickingTaskClient.completePicking(currentTaskId, true);
         isResponseOk(resp);
@@ -71,7 +69,6 @@ public class GetToGiveAwayTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23748036 GiveAway Products for Partially GiveAway", dependsOnMethods = {
             "testPickedGivenAway"})
-    @AllureId("2019")
     public void testPartiallyGiveAway() {
         Response<JsonNode> resp = orderClient.giveAway(currentOrderId, false);
         isResponseOk(resp);
@@ -82,7 +79,6 @@ public class GetToGiveAwayTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23748037 GiveAway Products for GiveAway", dependsOnMethods = {
             "testPickedGivenAway"})
-    @AllureId("2020")
     public void testGiveAway() {
         Response<JsonNode> resp = orderClient.giveAway(currentOrderId, true);
         isResponseOk(resp);

@@ -61,7 +61,6 @@ public class DoorDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425867 Door: Delivery and Lift Update", priority = 1)
-    @AllureId("1841")
     public void testEditDeliveryAndLift() {
         deliveryTotalPrice = 99.99;
         liftPrice = 55.55;
@@ -72,7 +71,6 @@ public class DoorDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425868 Door: Delivery Update", priority = 2)
-    @AllureId("1842")
     public void testEditDelivery() {
         deliveryTotalPrice = 88.88;
         Response<?> response = orderClient
@@ -82,7 +80,6 @@ public class DoorDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425869 Door: Paid: Lift Delivery Update to zero", priority = 3)
-    @AllureId("1843")
     public void testEditDeliveryLiftToZeroPaid() {
         currentStatus = States.PICKED;
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
@@ -95,7 +92,6 @@ public class DoorDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425870 Door: Paid: Delivery Update to zero", priority = 4)
-    @AllureId("1844")
     public void testEditDeliveryToZeroPaid() {
         deliveryTotalPrice = 0.0;
         Response<?> response = orderClient
@@ -105,7 +101,6 @@ public class DoorDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425871 Door: Delivery Update for Dimensional products", priority = 5)
-    @AllureId("1845")
     public void testEditDeliveryDimensional() {
         currentStatus = States.ALLOWED_FOR_PICKING;
         makeDimensionalOrder();
@@ -118,7 +113,6 @@ public class DoorDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425872 Door: Delivery Update to zero for Dimensional products", priority = 6)
-    @AllureId("1846")
     public void testEditDeliveryToZeroDimensional() {
         deliveryTotalPrice = 0.0;
         liftPrice = 0.0;

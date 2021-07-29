@@ -22,7 +22,7 @@ public class WithdrawalFromRMTest extends AppBaseSteps {
 
     @Smoke
     @Test(description = "C3132493 Создание заявки на Отзыв RM из раздела Работа", groups = OLD_SHOP_GROUP)
-    @AllureId("2671")
+    @AllureId("12510")
     public void testC3132493() throws Exception {
         // Pre-condition
         MainProductAndServicesPage mainProductAndServicesPage = loginSelectShopAndGoTo(

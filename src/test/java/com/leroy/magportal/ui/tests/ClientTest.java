@@ -20,7 +20,6 @@ public class ClientTest extends WebBaseSteps {
 
     @Issue("PAO-465")
     @Test(description = "C22783064 Create client via button on client's page")
-    @AllureId("1306")
     public void testC22783064() throws Exception {
         // Step #1
         step("Open env for testing and add to url 'customers'");
@@ -91,7 +90,6 @@ public class ClientTest extends WebBaseSteps {
     }
 
     @Test(description = "C22783068 Create client via modal window after search")
-    @AllureId("1307")
     public void testC22783068() throws Exception {
         // Pre-condition
         String phoneNumber = customerHelper.findUnusedPhoneNumber();

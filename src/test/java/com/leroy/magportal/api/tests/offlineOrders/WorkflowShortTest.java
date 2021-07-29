@@ -41,7 +41,6 @@ public class WorkflowShortTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425604 OFFLINE: Start Picking the Order")
-    @AllureId("1990")
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);
@@ -50,7 +49,6 @@ public class WorkflowShortTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23425604 OFFLINE: Complete Picking the Order", dependsOnMethods = {
             "testStartPicking"})
-    @AllureId("8989")
     public void testCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, true);
@@ -59,7 +57,6 @@ public class WorkflowShortTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23425604 OFFLINE: Give away the Order", dependsOnMethods = {
             "testCompletePicking"})
-    @AllureId("8988")
     public void testGiveAway() {
         paymentHelper.makePaid(currentOrderId);
         orderClient.waitUntilOrderGetStatus(currentOrderId,

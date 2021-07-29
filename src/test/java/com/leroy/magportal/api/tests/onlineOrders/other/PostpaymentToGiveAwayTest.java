@@ -43,7 +43,6 @@ public class PostpaymentToGiveAwayTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23748043 Pickup: GiveAway for Start Picking")
-    @AllureId("1946")
     public void testStartPickingGiveAway() {
         Response<?> resp = pickingTaskClient.startPicking(currentTaskId);
         isResponseOk(resp);
@@ -55,7 +54,6 @@ public class PostpaymentToGiveAwayTest extends BaseMagPortalApiTest {
     @SneakyThrows
     @Test(description = "C23748046 Pickup: GiveAway for Picked", dependsOnMethods = {
             "testStartPickingGiveAway"})
-    @AllureId("1947")
     public void testPickedGiveAway() {
         Response<?> resp = pickingTaskClient.completePicking(currentTaskId, true);
         paymentHelper.makePaid(currentOrderId);
@@ -70,7 +68,6 @@ public class PostpaymentToGiveAwayTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23748044 Pickup: GiveAway Products for Partially GiveAway", dependsOnMethods = {
             "testPickedGiveAway"})
-    @AllureId("1948")
     public void testPartiallyGiveAway() {
         Response<?> resp = orderClient.giveAway(currentOrderId, false);
         isResponseOk(resp);
@@ -81,7 +78,6 @@ public class PostpaymentToGiveAwayTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23748045 Pickup: GiveAway Products for GiveAway", dependsOnMethods = {
             "testPickedGiveAway"})
-    @AllureId("1949")
     public void testGiveAway() {
         Response<?> resp = orderClient.giveAway(currentOrderId, true);
         isResponseOk(resp);

@@ -7,6 +7,7 @@ import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.ServiceOrderData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+
 import java.util.Collections;
 import java.util.Random;
 
@@ -28,7 +29,7 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3232445 SalesDoc add product")
-    @AllureId("3239")
+    @AllureId("13096")
     public void testSalesDocAddProduct() {
         // Prepare request data
         CartEstimateProductOrderData productOrderData = new CartEstimateProductOrderData(
@@ -45,7 +46,6 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3232446 SalesDoc add services")
-    @AllureId("3240")
     public void testSalesDocAddService() {
         // Prepare request data
         ServiceOrderData serviceOrderData = new ServiceOrderData(
@@ -65,7 +65,7 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3232448 SalesDoc product GET")
-    @AllureId("3242")
+    @AllureId("13099")
     public void testSalesDocProductGET() {
         if (salesDocument == null)
             throw new IllegalArgumentException("SalesDoc hasn't been created");
@@ -75,13 +75,13 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C22898131 SalesDoc service GET")
-    @AllureId("3243")
+    @AllureId("13100")
     public void testSalesDocServiceGET() throws Exception {
         testSalesDocProductGET();
     }
 
     @Test(description = "C22897826 SalesDoc UPDATE quantity for the same product")
-    @AllureId("3245")
+    @AllureId("13102")
     public void testSalesDocUpdateQuantityForTheSameProduct() {
         if (salesDocument == null)
             throw new IllegalArgumentException("SalesDoc hasn't been created");
@@ -95,7 +95,7 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C22898166 SalesDoc UPDATE price for the same service")
-    @AllureId("3246")
+    @AllureId("13103")
     public void testSalesDocUpdatePriceForTheSameService() {
         if (salesDocument == null)
             throw new IllegalArgumentException("SalesDoc hasn't been created");
@@ -111,7 +111,7 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C22898134 SalesDoc UPDATE parameter - Cancel (For document with Products)")
-    @AllureId("3248")
+    @AllureId("13105")
     public void testSalesDocUpdateParameterCancelWithProduct() {
         if (salesDocument == null)
             throw new IllegalArgumentException("SalesDoc hasn't been created");
@@ -120,7 +120,7 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C22898394 SalesDoc UPDATE parameter - Cancel (For document with Services)")
-    @AllureId("3249")
+    @AllureId("13106")
     public void testSalesDocUpdateParameterCancelWithServices() {
         testSalesDocUpdateParameterCancelWithProduct();
     }

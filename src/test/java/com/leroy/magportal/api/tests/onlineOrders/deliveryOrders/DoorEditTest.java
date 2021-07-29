@@ -65,7 +65,6 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425629 Door: Edit Allowed For Picking Order", priority = 1)
-    @AllureId("1826")
     public void testEditAllowedForPicking() {
         currentCount = 9.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, currentCount);
@@ -73,7 +72,6 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425630 Door: Add Product to Allowed For Picking Order (Negative)", priority = 2)
-    @AllureId("1827")
     public void testAddProductAllowedForPicking() {
         Response<?> response = orderClient.rearrange(currentOrderId, 2, null);
         assertThat("It's possible to ADD product into payed Order", !response.isSuccessful());
@@ -83,7 +81,6 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425631 Door: Edit And Add Product to Allowed For Picking Order (Negative)", priority = 3)
-    @AllureId("1828")
     public void testEditAndAddProductAllowedForPicking() {
         Response<?> response = orderClient.rearrange(currentOrderId, 2, 1.0);
         assertThat("It's possible to ADD product into payed Order", !response.isSuccessful());
@@ -93,7 +90,6 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425632 Door: Edit Picked Paid Order", priority = 4)
-    @AllureId("1829")
     public void testEditPickedPaid() {
         currentCount = 7.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, currentCount);
@@ -101,7 +97,6 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425633 Door: Add Product to Paid Order (Negative)", priority = 5)
-    @AllureId("1830")
     public void testAddProductPickedPaid() {
         currentStatus = States.PICKED;
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
@@ -113,7 +108,6 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425634 Door: Edit Add Product to Paid Order (Negative)", priority = 6)
-    @AllureId("1831")
     public void testEditAndAddProductPickedPaid() {
         Response<?> response = orderClient.rearrange(currentOrderId, 2, 1.0);
         assertThat("It's possible to ADD product into payed Order", !response.isSuccessful());
@@ -123,7 +117,6 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425635 Door: Edit Dimensional Product Allowed For Picking Order", priority = 7)
-    @AllureId("1832")
     public void testEditDimensionalProduct() {
         makeDimensionalOrder();
         currentCount = 6.66;
@@ -132,7 +125,6 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425636 Door: Edit Dimensional Product: Paid Order", priority = 8)
-    @AllureId("1833")
     public void testEditDimensionalProductPaid() {
         currentStatus = States.PICKED;
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
@@ -142,7 +134,6 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425637 Door: Cancel order by Edit Dimensional Product: Paid Order", priority = 9)
-    @AllureId("1834")
     public void testCancelByEditDimensionalProductPaid() {
         currentCount = 10.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, 0.0);
@@ -150,7 +141,6 @@ public class DoorEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425638 Door: Cancel order by Edit with New Product Added", priority = 10)
-    @AllureId("1835")
     public void testCancelByEditWithNewProduct() {
         makeDimensionalOrder();
         orderClient.editOrder(currentOrderId, 1, null);

@@ -61,7 +61,6 @@ public class EntranceDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425873 Entrance: Delivery and Lift Update", priority = 1)
-    @AllureId("1858")
     public void testEditDeliveryAndLift() {
         deliveryTotalPrice = 99.99;
         liftPrice = 0.0;
@@ -72,7 +71,6 @@ public class EntranceDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425874 Entrance: Delivery Update", priority = 2)
-    @AllureId("1859")
     public void testEditDelivery() {
         deliveryTotalPrice = 88.88;
         Response<?> response = orderClient
@@ -82,7 +80,6 @@ public class EntranceDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425876 Entrance: Paid: Delivery Update to zero", priority = 4)
-    @AllureId("1860")
     public void testEditDeliveryToZeroPaid() {
         deliveryTotalPrice = 0.0;
         Response<?> response = orderClient
@@ -92,7 +89,6 @@ public class EntranceDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425877 Entrance: Delivery Update for Dimensional products", priority = 5)
-    @AllureId("1861")
     public void testEditDeliveryDimensional() {
         currentStatus = States.ALLOWED_FOR_PICKING;
         makeDimensionalOrder();
@@ -105,7 +101,6 @@ public class EntranceDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425878 Entrance: Delivery Update to zero for Dimensional products", priority = 6)
-    @AllureId("1862")
     public void testEditDeliveryToZeroDimensional() {
         deliveryTotalPrice = 0.0;
         Response<?> response = orderClient

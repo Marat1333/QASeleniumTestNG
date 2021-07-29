@@ -33,6 +33,7 @@ import com.leroy.magmobile.api.data.sales.orders.ResOrderCheckQuantityData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.magportal.ui.models.customers.SimpleCustomerData;
+
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -88,7 +89,7 @@ public class OrderTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23195019 POST Order", priority = 1)
-    @AllureId("3076")
+    @AllureId("12934")
     public void testCreateOrder() {
         // Prepare request data
         CartProductOrderData productOrderData = new CartProductOrderData(
@@ -126,7 +127,7 @@ public class OrderTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23195023 GET Order", priority = 2)
-    @AllureId("3077")
+    @AllureId("12935")
     public void testGetOrder() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
@@ -136,7 +137,7 @@ public class OrderTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23195024 PUT SetPinCode", priority = 3)
-    @AllureId("3078")
+    @AllureId("12936")
     public void testSetPinCode() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
@@ -153,7 +154,7 @@ public class OrderTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23195027 PUT Confirm Order", priority = 4)
-    @AllureId("3080")
+    @AllureId("12938")
     public void testConfirmOrder() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
@@ -190,7 +191,7 @@ public class OrderTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23195028 PUT Rearrange Order - Add new product in confirmed order", priority = 5)
-    @AllureId("3081")
+    @AllureId("12939")
     public void testRearrangeOrder() throws Exception {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
@@ -217,7 +218,7 @@ public class OrderTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23195026 POST Check Quantity Order - happy path", priority = 6)
-    @AllureId("3079")
+    @AllureId("12937")
     public void testCheckQuantity() {
         OrderProductData orderProductData = orderData.getProducts().get(0);
 
@@ -234,7 +235,7 @@ public class OrderTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23195030 PUT OrderWorkflow - cancel confirmed order", priority = 7)
-    @AllureId("3082")
+    @AllureId("12940")
     public void testCancelOrder() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");
@@ -249,7 +250,7 @@ public class OrderTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23195040 PUT Order - Remove Product line from Draft Order", priority = 8)
-    @AllureId("3083")
+    @AllureId("12941")
     public void testUpdateDraftOrderRemoveProductLine() {
         // Prepare request data
         CartProductOrderData productOrderData1 = new CartProductOrderData(
@@ -300,7 +301,7 @@ public class OrderTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23195043 PUT Order - Change status to Deleted from Draft", priority = 9)
-    @AllureId("3084")
+    @AllureId("12942")
     public void testDeleteDraftOrder() {
         if (orderData == null)
             throw new IllegalArgumentException("order data hasn't been created");

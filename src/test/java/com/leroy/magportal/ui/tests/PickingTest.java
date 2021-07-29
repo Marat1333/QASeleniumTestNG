@@ -25,6 +25,7 @@ import com.leroy.magportal.ui.pages.picking.modal.SplitPickingModalStep1;
 import com.leroy.magportal.ui.pages.picking.modal.SplitPickingModalStep2;
 import com.leroy.magportal.ui.pages.picking.modal.SuccessfullyCreatedAssemblyModal;
 import com.leroy.utils.ParserUtil;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -93,7 +94,6 @@ public class PickingTest extends BasePAOTest {
     }
 
     @Test(description = "C23408356 Сплит сборки (зона сборки Торговый зал)", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1255")
     public void testSplitAssemblyShoppingRoom() throws Exception {
         initCreateOrder(1);
         // Test data
@@ -172,7 +172,6 @@ public class PickingTest extends BasePAOTest {
     }
 
     @Test(description = "C23408338 Сплит сборки (зона сборки СС)", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1256")
     public void testSplitAssemblySS() throws Exception {
         initCreateOrder(1);
         // Test data
@@ -263,7 +262,7 @@ public class PickingTest extends BasePAOTest {
     }
 
     @Test(description = "C23408355 Сплит сборки (зона сборки Склад)", enabled = false)
-    @AllureId("1257")
+
     // TODO нужны в наличии товары ТОП ЕМ с наличием на складе
     public void testSplitAssemblyStock() throws Exception {
         initCreateOrder(1);
@@ -308,7 +307,6 @@ public class PickingTest extends BasePAOTest {
     }
 
     @Test(description = "C23408737 Сплит сборки с несколькими товарами", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1259")
     public void testSplitAssemblyWithDifferentProducts() throws Exception {
         initCreateOrder(2);
         // Test data
@@ -414,7 +412,6 @@ public class PickingTest extends BasePAOTest {
     }
 
     @Test(description = "C23438198 Частичная сборка заказа", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1261")
     public void testPartialOrderAssembly() throws Exception {
         initCreateOrder(3);
 
@@ -501,7 +498,6 @@ public class PickingTest extends BasePAOTest {
     }
 
     @Test(description = "C23408358 Сплит сборки с изменением количества товара", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1258")
     public void testSplitAssemblyWithChangingProductQuantity() throws Exception {
         if (isStartFromScratch()) {
             testPartialOrderAssembly();

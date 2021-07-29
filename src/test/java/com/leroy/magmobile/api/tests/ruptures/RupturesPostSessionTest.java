@@ -15,7 +15,7 @@ import java.util.Collections;
 public class RupturesPostSessionTest extends BaseRuptureTest {
 
     @Test(description = "C3233579 Create  standard session")
-    @AllureId("3322")
+    @AllureId("13179")
     public void testCreateRuptureSessionProduct() {
         ActionData action1 = new ActionData();
         action1.setAction(0);

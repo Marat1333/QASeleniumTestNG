@@ -51,7 +51,7 @@ public class TransferSearchTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3272534 SalesDoc transfers GET with default params")
-    @AllureId("3287")
+    @AllureId("13144")
     public void testTransferTaskSearchWithDefaultParams() {
         TransferSearchFilters filters = new TransferSearchFilters();
         Response<TransferDataList> resp = transferClient.searchForTasks(filters);
@@ -60,7 +60,7 @@ public class TransferSearchTest extends BaseProjectApiTest {
 
     @Issue("BACKEND_ISSUE")
     @Test(description = "C3272535 SalesDoc transfers GET with status NEW")
-    @AllureId("3288")
+    @AllureId("13145")
     public void testTransferTaskSearchByStatusNew() {
         TransferSearchFilters filters = new TransferSearchFilters();
         filters.setStatus(SalesDocumentsConst.States.TRANSFER_NEW.getApiVal());
@@ -69,7 +69,7 @@ public class TransferSearchTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3272536 SalesDoc transfers GET with status=CONFIRMED")
-    @AllureId("3289")
+    @AllureId("13146")
     public void testTransferTaskSearchByStatusConfirmed() {
         TransferSearchFilters filters = new TransferSearchFilters();
         filters.setStatus(SalesDocumentsConst.States.CONFIRMED.getApiVal());

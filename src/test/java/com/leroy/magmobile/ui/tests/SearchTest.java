@@ -25,6 +25,7 @@ import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.search.SuppliersSearchPage;
 import com.leroy.magmobile.ui.pages.search.modal.SortPage;
 import io.qameta.allure.Issue;
+
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
@@ -178,7 +179,7 @@ public class SearchTest extends AppBaseSteps {
     }
 
     @Test(description = "C22846686 Мой магазин. Выбор фильтров каждого блока фильтров", priority = 1)
-    @AllureId("2724")
+    @AllureId("12563")
     public void testC22846686() throws Exception {
         LocalDate avsDate = LocalDate.of(2019, 5, 23);
         String supplierSearchContext = "1000743002";
@@ -304,7 +305,7 @@ public class SearchTest extends AppBaseSteps {
     }
 
     @Test(description = "C22789209 Вся гамма ЛМ. Выбор фильтров каждого раздела", priority = 1)
-    @AllureId("2720")
+    @AllureId("12559")
     public void testC22789209() throws Exception {
         LocalDate avsDate = LocalDate.of(2020, 3, 2);
         final String GAMMA = "A";
@@ -399,7 +400,7 @@ public class SearchTest extends AppBaseSteps {
     }
 
     @Test(description = "C22789172 На поисковой запрос не вернулись результаты", priority = 2)
-    @AllureId("2711")
+    @AllureId("12550")
     public void testC22789172() throws Exception {
         final String byName = "АFHF13dasf";
         //TODO добавить проверку на отклонение по координатам
@@ -438,7 +439,7 @@ public class SearchTest extends AppBaseSteps {
     }
 
     @Test(description = "C22789176 Вывод истории поиска", priority = 1)
-    @AllureId("2713")
+    @AllureId("12552")
     public void testC22789176() throws Exception {
         int searchPhrasesCount = 21;
 
@@ -472,7 +473,7 @@ public class SearchTest extends AppBaseSteps {
 
     @Issue("LFRONT-3662")
     @Test(description = "C22790468 Гамма ЛМ. Отсутствие: действий с товаром, истории продаж, поставки", priority = 2)
-    @AllureId("2714")
+    @AllureId("12553")
     public void testC22790468() throws Exception {
         // Pre-conditions
         MainProductAndServicesPage mainProductAndServicesPage = loginAndGoTo(MainProductAndServicesPage.class);
@@ -512,7 +513,7 @@ public class SearchTest extends AppBaseSteps {
     }
 
     @Test(description = "C22789191 Сортировка результатов поиска", priority = 2)
-    @AllureId("2725")
+    @AllureId("12564")
     public void testC22789191() throws Exception {
         // Pre-conditions
         int countOfCheckedProducts = 3;
@@ -553,7 +554,7 @@ public class SearchTest extends AppBaseSteps {
     }
 
     @Test(description = "C22789201 Номенклатура, Навигация и Поиск по структурным элементам номенклатуры", priority = 1)
-    @AllureId("2727")
+    @AllureId("12566")
     public void testC22789201() throws Exception {
         String dept = "015";
         String subDept = "1510";
@@ -651,7 +652,7 @@ public class SearchTest extends AppBaseSteps {
     }
 
     @Test(description = "C22789173 Поиск товара по одному введенному символу", priority = 2)
-    @AllureId("2712")
+    @AllureId("12551")
     public void testSearchByOneSymbol() throws Exception {
         final String searchContext = "1";
 
@@ -682,7 +683,7 @@ public class SearchTest extends AppBaseSteps {
     }
 
     @Test(description = "C3200999 Проверка пагинации", priority = 2)
-    @AllureId("2710")
+    @AllureId("12549")
     public void testSearchPagePagination() throws Exception {
         String searchCriterion = "1";
         String dept = "005";
@@ -737,7 +738,7 @@ public class SearchTest extends AppBaseSteps {
     }
 
     @Test(description = "C22789202 Выбор фильтра поставщиков", priority = 2)
-    @AllureId("2716")
+    @AllureId("12555")
     public void testSuppliersFilter() throws Exception {
         final String FIRST_SUPPLIER_CODE = "1001123001";
         final String FIRST_SUPPLIER_NAME = "ООО Бард-Спб";
@@ -833,7 +834,7 @@ public class SearchTest extends AppBaseSteps {
     }
 
     @Test(description = "C22883205 Поиск услуг", priority = 2)
-    @AllureId("2715")
+    @AllureId("12554")
     public void testServicesSearch() throws Exception {
         final String SERVICE_SHORT_LM_CODE = "4905510";
         final String SERVICE_FULL_LM_CODE = "49055102";
@@ -926,7 +927,7 @@ public class SearchTest extends AppBaseSteps {
     }
 
     @Test(description = "C22789203 очистка выбранных фильтров. При выборе хотя бы 1. Активация кнопки \"Метла\"", priority = 2)
-    @AllureId("2717")
+    @AllureId("12556")
     public void testClearAllFilters() throws Exception {
         LocalDate avsDate = LocalDate.of(2020, 2, 19);
         final String SUPPLIER_CODE = "1001123001";
@@ -1005,7 +1006,7 @@ public class SearchTest extends AppBaseSteps {
     }
 
     @Test(description = "C22789213 Сброс фильтров при нажатии кнопки Назад железная и стрелочка", priority = 2)
-    @AllureId("2722")
+    @AllureId("12561")
     public void testClearAllFiltersIfReturnBack() throws Exception {
         final String TOP = " 0";
         final String DEPT_ID = "3";
@@ -1068,7 +1069,7 @@ public class SearchTest extends AppBaseSteps {
     }
 
     @Test(description = "C22789208 Поведение чек-бокса AVS", priority = 2)
-    @AllureId("2719")
+    @AllureId("12558")
     public void testAvsFilterBehaviour() throws Exception {
         LocalDate avsDate = LocalDate.of(2020, 3, 3);
         LocalDate anyAvsDate = LocalDate.of(2020, 2, 19);
@@ -1136,7 +1137,7 @@ public class SearchTest extends AppBaseSteps {
     }
 
     @Test(description = "C22789211 Переключение между фильтрами Мой магазин и Вся гамма ЛМ. Сброс фильтров предыдущего окна и установка тех же фильтров на новое окно", priority = 2)
-    @AllureId("2721")
+    @AllureId("12560")
     public void testSwitchBetweenMyShopAndAllGammaFilters() throws Exception {
         LocalDate avsDate = LocalDate.of(2020, 2, 19);
         final String SUPPLIER_CODE = "11007015";
@@ -1227,7 +1228,7 @@ public class SearchTest extends AppBaseSteps {
     }
 
     @Test(description = "C22789214 Счетчик фильтров в меню поиска", priority = 2)
-    @AllureId("2723")
+    @AllureId("12562")
     public void testFilterCounter() throws Exception {
         LocalDate avsDate = LocalDate.of(2020, 2, 19);
         final String FIRST_SUPPLIER_CODE = "1001123001";
@@ -1268,7 +1269,7 @@ public class SearchTest extends AppBaseSteps {
     }
 
     @Test(description = "C22887951 Сортировка с фильтром Вся гамма ЛМ", priority = 2)
-    @AllureId("2726")
+    @AllureId("12565")
     public void testAllGammaSort() throws Exception {
         final String GAMMA = "A";
 
@@ -1352,7 +1353,7 @@ public class SearchTest extends AppBaseSteps {
     }
 
     @Test(description = "C22789207 Сокрытие части фильтров", priority = 2)
-    @AllureId("2718")
+    @AllureId("12557")
     public void testFiltersHide() throws Exception {
         final String TOP = "0";
 
