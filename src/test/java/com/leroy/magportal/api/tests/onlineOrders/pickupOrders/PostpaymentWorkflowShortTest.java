@@ -42,6 +42,7 @@ public class PostpaymentWorkflowShortTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425594 PICKUP POSTPAYMENT: Start Picking the Order")
+    @AllureId("16101")
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);
@@ -50,6 +51,7 @@ public class PostpaymentWorkflowShortTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23425594 PICKUP POSTPAYMENT: Complete Picking the Order", dependsOnMethods = {
             "testStartPicking"})
+    @AllureId("16101")
     public void testCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, true);
@@ -58,6 +60,7 @@ public class PostpaymentWorkflowShortTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23425594 PICKUP POSTPAYMENT: Give away the Order", dependsOnMethods = {
             "testCompletePicking"})
+    @AllureId("16101")
     public void testGiveAway() {
         paymentHelper.makePaid(currentOrderId);
         orderClient.waitUntilOrderGetStatus(currentOrderId,
