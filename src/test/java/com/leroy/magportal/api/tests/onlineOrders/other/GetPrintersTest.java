@@ -28,6 +28,7 @@ public class GetPrintersTest extends BaseMagPortalApiTest {
     private Integer shopId;
 
     @Test(description = "C23749381 Get Printers for Default Shop")
+    @AllureId("16153")
     public void testGetPrintersDefaultShop() {
         shopId = Integer.parseInt(getUserSessionData().getUserShopId());
         Response<PrinterData> response = orderClient.getPrinters(shopId);
@@ -35,6 +36,7 @@ public class GetPrintersTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23749382 Get Printers for Random Shop")
+    @AllureId("16154")
     public void testGetPrintersRandomShop() {
         shopId = shopsHelper.getRandomShopId();
         Response<PrinterData> response = orderClient.getPrinters(shopId);
@@ -42,6 +44,7 @@ public class GetPrintersTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23749383 Get Printers No Shop")
+    @AllureId("16155")
     public void testGetPrintersNoShop() {
         shopId = 0;
         Response<PrinterData> response = orderClient.getPrinters(shopId);

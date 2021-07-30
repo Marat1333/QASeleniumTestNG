@@ -41,6 +41,7 @@ public class WorkflowShortTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425604 OFFLINE: Start Picking the Order")
+    @AllureId("16186")
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);

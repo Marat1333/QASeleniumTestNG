@@ -61,6 +61,7 @@ public class ExpressDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425879 Express: Delivery and Lift Update", priority = 1)
+    @AllureId("16064")
     public void testEditDeliveryAndLift() {
         deliveryTotalPrice = 99.99;
         liftPrice = 55.55;
@@ -71,6 +72,7 @@ public class ExpressDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425880 Express: Delivery Update", priority = 2)
+    @AllureId("16065")
     public void testEditDelivery() {
         deliveryTotalPrice = 88.88;
         Response<?> response = orderClient
@@ -80,6 +82,7 @@ public class ExpressDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425881 Express: Paid: Lift Delivery Update to zero", priority = 3)
+    @AllureId("16066")
     public void testEditDeliveryLiftToZeroPaid() {
         currentStatus = States.PICKED;
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
@@ -92,6 +95,7 @@ public class ExpressDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425882 Express: Paid: Delivery Update to zero", priority = 4)
+    @AllureId("16067")
     public void testEditDeliveryToZeroPaid() {
         deliveryTotalPrice = 0.0;
         Response<?> response = orderClient
@@ -101,6 +105,7 @@ public class ExpressDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425883 Express: Delivery Update for Dimensional products", priority = 5)
+    @AllureId("16068")
     public void testEditDeliveryDimensional() {
         currentStatus = States.ALLOWED_FOR_PICKING;
         makeDimensionalOrder();
@@ -113,6 +118,7 @@ public class ExpressDeliveryEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425884 Express: Delivery Update to zero for Dimensional products", priority = 6)
+    @AllureId("16069")
     public void testEditDeliveryToZeroDimensional() {
         deliveryTotalPrice = 0.0;
         liftPrice = 0.0;

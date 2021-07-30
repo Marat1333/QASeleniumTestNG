@@ -43,6 +43,7 @@ public class PrepaymentWorkflowShortTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425615 PICKUP PREPAYMENT: Start Picking the Order")
+    @AllureId("16077")
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);

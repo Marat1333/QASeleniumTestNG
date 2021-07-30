@@ -50,6 +50,7 @@ public class PickupTimeslotTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425906 Get Timeslot for Several Products", priority = 1)
+    @AllureId("16070")
     public void testGetTimeslotSeveralProducts() {
         Response<TimeslotResponseData> response = orderClient.getTimeslots(currentOrderId);
         assertTimeslotResult(response);
@@ -58,6 +59,7 @@ public class PickupTimeslotTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23426763 Postpayment: Update Timeslot", dependsOnMethods = {
             "testGetTimeslotSeveralProducts"}, priority = 2)
+    @AllureId("16072")
     public void testUpdateTimeslotPostpayment() {
         Response<?> response = orderClient.updateTimeslot(currentOrderId, timeslotData);
         assertTimeslotUpdateResult(response);
@@ -65,6 +67,7 @@ public class PickupTimeslotTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23426797 Postpayment: Update Timeslot for PAID", dependsOnMethods = {
             "testGetTimeslotSeveralProducts"}, priority = 3)
+    @AllureId("16073")
     public void testUpdateTimeslotPostpaymentPaid() {
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
         Response<?> response = orderClient.updateTimeslot(currentOrderId, timeslotData);
@@ -72,6 +75,7 @@ public class PickupTimeslotTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425907 Get Timeslot for One Product", priority = 4)
+    @AllureId("16071")
     public void testGetTimeslotOneProduct() {
         makeDimensionalOrder();
         Response<TimeslotResponseData> response = orderClient.getTimeslots(currentOrderId);
@@ -81,6 +85,7 @@ public class PickupTimeslotTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23426764 PrePayment: Update Timeslot", dependsOnMethods = {
             "testGetTimeslotOneProduct"}, priority = 6)
+    @AllureId("16074")
     public void testUpdateTimeslotPrepayment() {
         Response<?> response = orderClient.updateTimeslot(currentOrderId, timeslotData);
         assertTimeslotUpdateResult(response);
@@ -88,6 +93,7 @@ public class PickupTimeslotTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23426798 PrePayment: Update Timeslot for PAID", dependsOnMethods = {
             "testGetTimeslotOneProduct"}, priority = 7)
+    @AllureId("16075")
     public void testUpdateTimeslotPrepaymentPaid() {
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
         Response<?> response = orderClient.updateTimeslot(currentOrderId, timeslotData);

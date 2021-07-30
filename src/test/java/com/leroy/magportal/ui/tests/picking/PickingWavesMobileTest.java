@@ -11,6 +11,7 @@ import java.util.Collections;
 public class PickingWavesMobileTest extends BaseMockMagPortalUiTest {
 
     @Test(description = "C23415580 Добавление сборок в волну")
+    @AllureId("15388")
     public void testAddPickingIntoWave() throws Exception {
         setUpMockForTestCase();
 
@@ -57,6 +58,7 @@ public class PickingWavesMobileTest extends BaseMockMagPortalUiTest {
 
 
     @Test(description = "C23423641 Завершение волны сборок (все сборки собраны полностью)")
+    @AllureId("15391")
     public void testFinishPickingWave() throws Exception {
         setUpMockForTestCase();
 

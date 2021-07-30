@@ -50,6 +50,7 @@ public class SetPinCodeTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23441744 Set Invalid PinCode", priority = 1)
+    @AllureId("16212")
     public void testSetInvalidPinCode() {
         currentPinCode = "1test";
         Response<?> response = paoClient
@@ -58,6 +59,7 @@ public class SetPinCodeTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23441740 First Set PinCode for Pickup Order", priority = 2)
+    @AllureId("16208")
     public void testSetPinCodePickupFirst() {
         currentPinCode = paoHelper.getValidPinCode(currentOrderData.getDelivery());
         Response<?> response = paoClient
@@ -66,6 +68,7 @@ public class SetPinCodeTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23441741 Second Set PinCode for Pickup Order", priority = 3)
+    @AllureId("16209")
     public void testSetPinCodePickupSecond() {
         currentPinCode = paoHelper.getValidPinCode(currentOrderData.getDelivery());
         Response<?> response = paoClient
@@ -74,6 +77,7 @@ public class SetPinCodeTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23441742 Set PinCode Duplicate for Delivery Order", priority = 4)
+    @AllureId("16210")
     public void testSetPinCodeDeliveryDuplicate() {
         createOfflineDeliveryOrder();
         Response<?> response = paoClient
@@ -82,6 +86,7 @@ public class SetPinCodeTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23441743 Set PinCode for Delivery Order", priority = 5)
+    @AllureId("16211")
     public void testSetPinCodeDeliveryFirst() {
         currentPinCode = paoHelper.getValidPinCode(currentOrderData.getDelivery());
         Response<?> response = paoClient

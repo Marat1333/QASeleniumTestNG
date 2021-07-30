@@ -24,6 +24,7 @@ public class GetStorageLocationTest extends BaseMagPortalApiTest {
     private final String shopId = "13";
 
     @Test(description = "C23427263 Get Storage Location")
+    @AllureId("16174")
     public void testGetStorageLocation() {
         Response<StorageLocationData> response = pickingTaskClient
                 .getStorageLocation(getUserSessionData().getUserShopId());
@@ -33,6 +34,7 @@ public class GetStorageLocationTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23427264 Get Storage Location for non-default ShopId", dependsOnMethods = {
             "testGetStorageLocation"})
+    @AllureId("16175")
     public void testGetStorageLocationDiffShop() {
         Response<StorageLocationData> response = pickingTaskClient.getStorageLocation(shopId);
         assertStorageResult(response);

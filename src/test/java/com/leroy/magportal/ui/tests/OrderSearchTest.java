@@ -167,6 +167,7 @@ public class OrderSearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C22829624 Ордерс. Фильтрация по статусу заказа")
+    @AllureId("15225")
 
     @Ignore("Надо обновить шаги тест кейса и переделать его")
     public void testOrderFilterByStatus() throws Exception {
@@ -212,6 +213,7 @@ public class OrderSearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C22893768 Ордерс. Фильтрация по Способу получения")
+    @AllureId("15227")
     public void testOrderFilterByDeliveryType() throws Exception {
         // Step 1
         step("Открыть страницу с Заказами");
@@ -243,6 +245,7 @@ public class OrderSearchTest extends WebBaseSteps {
 
     @Issue("PUZ2-2092")
     @Test(description = "C22893769 Ордерс. Фильтрация по Номеру заказа и Номеру телефона")
+    @AllureId("15228")
     public void testOrderFilterByDocNumberAndPhoneNumber() throws Exception {
         // Pre-conditions
         SimpleCustomerData customerData = new SimpleCustomerData();
@@ -377,6 +380,7 @@ public class OrderSearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C22893767 Ордерс. Фильтрация по Дате")
+    @AllureId("15226")
     public void testOrderFilterByDate() throws Exception {
         // Step 1
         step("Открыть страницу с Заказами");

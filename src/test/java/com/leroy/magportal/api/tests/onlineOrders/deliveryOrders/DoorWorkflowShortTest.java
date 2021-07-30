@@ -43,6 +43,7 @@ public class DoorWorkflowShortTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425626 Door Delivery: ALLOWED_FOR_PICKING -> PICKING_IN_PROGRESS")
+    @AllureId("15974")
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);

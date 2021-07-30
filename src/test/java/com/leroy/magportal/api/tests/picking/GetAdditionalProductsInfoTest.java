@@ -32,6 +32,7 @@ public class GetAdditionalProductsInfoTest extends BaseMagPortalApiTest {
     private final String shopId = "13";
 
     @Test(description = "C23438534 Get Products Additional Info", priority = 1)
+    @AllureId("16178")
     public void testGetProductsAdditionalInfo() {
         lmCodes = searchProductHelper.getProductLmCodes(1);
         Response<?> response = pickingTaskClient.getProductsAdditionalInfo(lmCodes);
@@ -39,6 +40,7 @@ public class GetAdditionalProductsInfoTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438535 Get Products Additional Info Several LmCodes", priority = 2)
+    @AllureId("16179")
     public void testGetProductsAdditionalInfoSeveralLmCodes() {
         lmCodes = searchProductHelper.getProductLmCodes(10);
         Response<?> response = pickingTaskClient.getProductsAdditionalInfo(lmCodes);
@@ -48,6 +50,7 @@ public class GetAdditionalProductsInfoTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438536 Get Products Additional Info for non-default Shop", dependsOnMethods = {
             "testGetProductsAdditionalInfoSeveralLmCodes"})
+    @AllureId("16180")
     public void testGetProductsAdditionalInfoDiffShop() {
         Response<?> response = pickingTaskClient.getProductsAdditionalInfo(lmCodes, shopId);
         assertStorageResult(response);

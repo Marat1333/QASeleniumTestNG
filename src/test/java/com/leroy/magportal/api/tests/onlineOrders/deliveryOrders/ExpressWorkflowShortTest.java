@@ -43,6 +43,7 @@ public class ExpressWorkflowShortTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425628 Express Delivery: ALLOWED_FOR_PICKING -> PICKING_IN_PROGRESS")
+    @AllureId("15976")
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);

@@ -33,6 +33,7 @@ public class PostCheckQuantityTest extends BaseMagPortalApiTest {
     private LocalDateTime gateAwayDate;
 
     @Test(description = "C23440815 Check Quantity One LmCode a few hours forward", priority = 1)
+    @AllureId("16121")
     public void testCheckQuantityOneLmCode() {
         lmCodes = searchProductHelper.getProductLmCodes(1);
         gateAwayDate = LocalDateTime.now().plusHours(12);
@@ -42,6 +43,7 @@ public class PostCheckQuantityTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23440816 Check Quantity Several LmCodes Today dimensional count", priority = 2)
+    @AllureId("16122")
     public void testCheckQuantitySeveralLmCodesToday() {
         gateAwayDate = LocalDateTime.now();
         lmCodes = searchProductHelper.getProductLmCodes(10);
@@ -51,6 +53,7 @@ public class PostCheckQuantityTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23440817 Check Quantity Week Forward", priority = 3)
+    @AllureId("16123")
     public void testCheckQuantityWeekForward() {
         gateAwayDate = LocalDateTime.now().plusDays(7);
         Response<ResOrderCheckQuantityData> response = orderClient

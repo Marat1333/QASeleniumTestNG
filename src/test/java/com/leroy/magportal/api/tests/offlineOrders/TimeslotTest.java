@@ -48,6 +48,7 @@ public class TimeslotTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23426854 Get Timeslot for Several Products", priority = 1)
+    @AllureId("16182")
     public void testGetTimeslotSeveralProducts() {
         Response<TimeslotResponseData> response = orderClient.getTimeslots(currentOrderId);
         assertTimeslotResult(response);
@@ -56,6 +57,7 @@ public class TimeslotTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23426856 Update Timeslot", dependsOnMethods = {
             "testGetTimeslotSeveralProducts"}, priority = 2)
+    @AllureId("16184")
     public void testUpdateTimeslot() {
         Response<?> response = orderClient.updateTimeslot(currentOrderId, timeslotData);
         assertTimeslotUpdateResult(response);
@@ -64,6 +66,7 @@ public class TimeslotTest extends BaseMagPortalApiTest {
     @Issue("PUZ2-2705")
     @Test(description = "C23426857 Update Timeslot for PAID", dependsOnMethods = {
             "testGetTimeslotSeveralProducts"}, priority = 3)
+    @AllureId("16185")
     public void testUpdateTimeslotPaid() {
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
         Response<?> response = orderClient.updateTimeslot(currentOrderId, timeslotData);
@@ -71,6 +74,7 @@ public class TimeslotTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23426855 Get Timeslot for One Product", priority = 4)
+    @AllureId("16183")
     public void testGetTimeslotOneProduct() {
         makeDimensionalOrder();
         Response<TimeslotResponseData> response = orderClient.getTimeslots(currentOrderId);

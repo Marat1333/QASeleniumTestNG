@@ -76,6 +76,7 @@ public class CartTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23411545 Create with One Product", priority = 1)
+    @AllureId("16327")
     public void testCreateCart() {
         // Prepare request data
         List<CartProductOrderData> cartProductDataList = getTestProductData(1);
@@ -97,6 +98,7 @@ public class CartTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23411550 Cart - Add Discount", priority = 2)
+    @AllureId("16332")
     public void testCartDiscount() {
         if (cartData == null) {
             initPreConditionCartData(1);
@@ -125,6 +127,7 @@ public class CartTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23411546 Update Cart - Add product", priority = 3)
+    @AllureId("16328")
     public void testUpdateCartAddProduct() {
         if (cartData == null) {
             initPreConditionCartData(1);
@@ -148,6 +151,7 @@ public class CartTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23411548 Update Cart - Add Customer", priority = 4)
+    @AllureId("16330")
     public void testUpdateCartAddCustomer() {
         if (cartData == null) {
             initPreConditionCartData(1);
@@ -169,6 +173,7 @@ public class CartTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23411547 Remove 1 product from 2 from the Cart", priority = 5)
+    @AllureId("16329")
     public void testCartItems() {
         if (cartData == null) {
             initPreConditionCartData(2);
@@ -191,6 +196,7 @@ public class CartTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23411549 Change status to DELETED", priority = 6)
+    @AllureId("16331")
     public void testDeleteCart() {
         if (cartData == null) {
             initPreConditionCartData(1);
