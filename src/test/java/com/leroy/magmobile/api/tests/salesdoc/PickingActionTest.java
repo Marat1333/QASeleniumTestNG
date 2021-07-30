@@ -23,7 +23,7 @@ public class PickingActionTest extends BaseProjectApiTest {
 
     @Issue("Backend contains broken tasks")
     @Test(description = "C23195055 Picking search without filters", enabled = false)//TODO enable when data fixed
-    @AllureId("3481")
+    @AllureId("13338")
     public void testPickingSearchWithoutFilters() {
         int pageSize = 14;
         Response<PickingTaskDataList> resp = pickingTaskClient.searchForTasks(new PickingTaskFilter(), 1, pageSize);

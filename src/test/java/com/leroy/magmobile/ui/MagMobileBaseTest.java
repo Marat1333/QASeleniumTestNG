@@ -6,9 +6,11 @@ import com.leroy.core.UserSessionData;
 import com.leroy.core.api.Module;
 import com.leroy.core.configuration.BaseUiTest;
 import com.leroy.umbrella_extension.authorization.AuthClient;
+
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;

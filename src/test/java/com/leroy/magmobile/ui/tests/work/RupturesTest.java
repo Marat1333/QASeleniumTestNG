@@ -195,7 +195,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C3272519 Перебои на экране работы")
-    @AllureId("2783")
+    @AllureId("12622")
     public void testRupturesOnWorkScreen() throws Exception {
         String shopWithNoRuptures = "62";
 
@@ -214,7 +214,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C3272520 Создание сессии с экрана списка сессий")
-    @AllureId("2784")
+    @AllureId("12623")
     public void testCreateSessionFromSessionsListPage() throws Exception {
         List<ProductData> randomProducts = searchProductHelper.getProducts(2);
         String firstProductLmCode = randomProducts.get(0).getLmCode();
@@ -348,7 +348,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C3272525 Удаление перебоя из сессии")
-    @AllureId("2789")
+    @AllureId("12628")
     public void testDeleteRuptureFromSession() throws Exception {
         int sessionId = createSessionWithProductWithAllActions();
         List<RuptureProductData> sessionProducts = rupturesHelper.getProducts(sessionId).getItems();
@@ -389,7 +389,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C3272526 Удаление сессии")
-    @AllureId("2790")
+    @AllureId("12629")
     public void testDeleteSession() throws Exception {
         int sessionId = createSessionWithProductWithoutActions();
 
@@ -428,7 +428,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C3272522 Добавление перебоя в стандартную сессию")
-    @AllureId("2785")
+    @AllureId("12624")
     public void testAddRuptureToSession() throws Exception {
         ProductData product = searchProductHelper.getProducts(1).get(0);
         int sessionId = createSessionWithProductWithoutActions();
@@ -477,7 +477,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C3272523 Добавление дубля в сессию при создании сессии по одному")
-    @AllureId("2786")
+    @AllureId("12625")
     public void testAddRuptureDuplicateToSession() throws Exception {
         ProductData randomProduct = searchProductHelper.getProducts(1).get(0);
         String lmCode = randomProduct.getLmCode();
@@ -557,7 +557,7 @@ public class RupturesTest extends AppBaseSteps {
 
     @Issue("RUP-118")
     @Test(description = "C23418142 Добавление дубля в сессию при работе с существующей сессией")
-    @AllureId("2787")
+    @AllureId("12626")
     public void testAddRuptureDuplicateToExistedSession() throws Exception {
         ProductData someProduct = searchProductHelper.getProducts(1).get(0);
         String someLmCode = someProduct.getLmCode();
@@ -650,7 +650,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C3272524 Изменение перебоя в активной сессии")
-    @AllureId("2788")
+    @AllureId("12627")
     public void testChangeRuptureInActiveSession() throws Exception {
         String comment = "123asd";
         int sessionId = createSessionWithProductWithoutActions();
@@ -717,7 +717,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C3272527 Завершение сессии")
-    @AllureId("2791")
+    @AllureId("12630")
     public void testFinishSession() throws Exception {
         int sessionId = createSessionWithProductWithAllActions();
 
@@ -755,7 +755,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C3272528 Изменение перебоев в завершенной сессии")
-    @AllureId("2792")
+    @AllureId("12631")
     public void testChangeRuptureInFinishedSession() throws Exception {
         TaskData firstTaskData = new TaskData(Action.GIVE_APOLOGISE.getActionName(), 0, 1);
         TaskData secondTaskData = new TaskData(Action.REMOVE_PRICE_TAG.getActionName(), 1, 1);
@@ -802,9 +802,9 @@ public class RupturesTest extends AppBaseSteps {
                 " Добавить экшены 'Поставить извиняшку' и 'Убрать ценник'," +
                 " Закрыть модалку реактирования экшенов");
         tasksListsModalPage.selectTasks(
-                    Action.FIND_PRODUCT_AND_LAY_IT_OUT.getActionName(),
-                    Action.GIVE_APOLOGISE.getActionName(),
-                    Action.REMOVE_PRICE_TAG.getActionName())
+                Action.FIND_PRODUCT_AND_LAY_IT_OUT.getActionName(),
+                Action.GIVE_APOLOGISE.getActionName(),
+                Action.REMOVE_PRICE_TAG.getActionName())
                 .shouldToDoListContainsTaskAndPossibleListNotContainsTask(Arrays.asList(
                         Action.GIVE_APOLOGISE.getActionName(), Action.REMOVE_PRICE_TAG.getActionName()))
                 .closeModal();
@@ -842,7 +842,7 @@ public class RupturesTest extends AppBaseSteps {
         step("Тапнуть на 'Выполненные задачи'");
         finishedSessionRupturesActionsPage = finishedSessionRupturesActionsPage.goToDoneTasks();
         finishedSessionRupturesActionsPage.shouldDoneTasksViewIsPresented()
-                .shouldRuptureCardHasNotContainsTask(ruptureLmCode,Action.GIVE_APOLOGISE)
+                .shouldRuptureCardHasNotContainsTask(ruptureLmCode, Action.GIVE_APOLOGISE)
                 .shouldTasksRatioCounterIsCorrect(1)
                 .verifyRequiredElements()
                 .shouldRuptureDataIsCorrect(doneRuptureData);
@@ -857,7 +857,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C3272529 Два списка сессий (1 отдел)")
-    @AllureId("2828")
+    @AllureId("12667")
     public void testTwoSessionLists() throws Exception {
         int departmentId = 1;
         getUserSessionData().setUserDepartmentId(String.valueOf(departmentId));
@@ -881,7 +881,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C23423650 Пустой список сессий (2 отдел)")
-    @AllureId("2829")
+    @AllureId("12668")
     public void testEmptySessionList() throws Exception {
         int departmentId = 2;
         getUserSessionData().setUserDepartmentId(String.valueOf(departmentId));
@@ -898,7 +898,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C23423651 Пагинация списка активных сессий, пустой список завершенных сессий (3 отдел)")
-    @AllureId("2830")
+    @AllureId("12669")
     public void testActiveSessionPagination() throws Exception {
         int departmentId = 3;
         getUserSessionData().setUserDepartmentId(String.valueOf(departmentId));
@@ -919,7 +919,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C23423652 Пагинация списка завершенных сессий, пустой список активных сессий (4 отдел)")
-    @AllureId("2831")
+    @AllureId("12670")
     public void testFinishedSessionPagination() throws Exception {
         int departmentId = 4;
         getUserSessionData().setUserDepartmentId(String.valueOf(departmentId));
@@ -941,7 +941,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C23423653 Пагинация обоих списков сессий (5 отдел)")
-    @AllureId("2832")
+    @AllureId("12671")
     public void testBothSessionTypesPagination() throws Exception {
         int departmentId = 5;
         getUserSessionData().setUserDepartmentId(String.valueOf(departmentId));
@@ -965,7 +965,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C23423655 Pull-to-refresh (6 отдел)")
-    @AllureId("2833")
+    @AllureId("12672")
     public void testPullToRefreshSessionLists() throws Exception {
         int departmentId = 6;
         getUserSessionData().setUserDepartmentId(String.valueOf(departmentId));
@@ -1002,7 +1002,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C23423654 Смена отдела (7 отдел)")
-    @AllureId("2834")
+    @AllureId("12673")
     public void testChangeDepartment() throws Exception {
         // Pre-conditions
         int seventhDepartmentId = 7;
@@ -1040,7 +1040,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C3272530 Список продуктов (пагинация)")
-    @AllureId("2793")
+    @AllureId("12632")
     public void testProductListPagination() throws Exception {
         int rupturesCount = 21;
 
@@ -1109,7 +1109,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C3272531 Страница завершенной сессии (каунтеры, экшены)")
-    @AllureId("2795")
+    @AllureId("12634")
     public void testFinishedSessionPage() throws Exception {
         int rupturesCount = 3;
 
@@ -1328,7 +1328,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C23389122 Создание отзыва с РМ с экрана добавляемого товара", enabled = false)
-    @AllureId("2836")
+    @AllureId("12675")
     public void testCreateRecallFromRmFromAddedProductPage() throws Exception {
         getUserSessionData().setUserShopId(EnvConstants.SHOP_WITH_NEW_INTERFACE);
         List<TransferSearchProductData> products = transferHelper.searchForProductsForTransfer();
@@ -1422,7 +1422,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C23389123 Создание отзыва с РМ из активной сессии (карточка, список перебоев)", enabled = false)
-    @AllureId("2839")
+    @AllureId("12678")
     public void testCreateRecallFromRmFromActiveSession() throws Exception {
         getUserSessionData().setUserShopId(EnvConstants.SHOP_WITH_NEW_INTERFACE);
         getUserSessionData().setUserDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
@@ -1491,7 +1491,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C23389124 Создание отзыва с РМ из завершенной сессии", enabled = false)
-    @AllureId("2844")
+    @AllureId("12683")
     public void testCreateRecallFromRmFromFinishedSession() throws Exception {
         getUserSessionData().setUserShopId(EnvConstants.SHOP_WITH_NEW_INTERFACE);
         getUserSessionData().setUserDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
@@ -1561,7 +1561,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C23424394 Коррекция C3 с экрана добавляемого товара")
-    @AllureId("2797")
+    @AllureId("12636")
     public void testCreateStockCorrectionFromAddProductPage() throws Exception {
         getUserSessionData().setUserShopId("35");
         getUserSessionData().setUserDepartmentId("5");
@@ -1632,7 +1632,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C23440884 Коррекция C3 из активной сессии со списка перебоев")
-    @AllureId("2798")
+    @AllureId("12637")
     public void testCreateStockCorrectionFromActiveSessionPage() throws Exception {
         getUserSessionData().setUserShopId("35");
         getUserSessionData().setUserDepartmentId("5");
@@ -1683,7 +1683,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C23440934 Коррекция C3 из активной сессии из карточка перебоя (через список экшенов)")
-    @AllureId("2800")
+    @AllureId("12639")
     public void testCreateStockCorrectionFromActiveSessionRuptureCardActionsList() throws Exception {
         getUserSessionData().setUserShopId("35");
         getUserSessionData().setUserDepartmentId("5");
@@ -1745,7 +1745,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C23440886 Коррекция C3 из активной сессии из карточка перебоя (через действия с перебоями)")
-    @AllureId("2799")
+    @AllureId("12638")
     public void testCreateStockCorrectionFromActiveSessionRuptureCardActionModal() throws Exception {
         getUserSessionData().setUserShopId("35");
         getUserSessionData().setUserDepartmentId("5");
@@ -1813,8 +1813,8 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C23717536 Создание массовой сессии")
-    @AllureId("2803")
-    public void testCreateBulkSession()  throws Exception {
+    @AllureId("12642")
+    public void testCreateBulkSession() throws Exception {
         List<ProductData> randomProducts = searchProductHelper.getProducts(2);
         String firstProductLmCode = randomProducts.get(0).getLmCode();
         String secondProductLmCode = randomProducts.get(1).getLmCode();
@@ -1867,8 +1867,8 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C23437718 Добавление товаров в массовую сессию")
-    @AllureId("2804")
-    public void testAddProductToBulkSession()  throws Exception {
+    @AllureId("12643")
+    public void testAddProductToBulkSession() throws Exception {
         List<ProductData> randomProducts = searchProductHelper.getProducts(3);
         String firstProductLmCode = randomProducts.get(0).getLmCode();
         String secondProductLmCode = randomProducts.get(1).getLmCode();
@@ -1912,8 +1912,8 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C23438915 Добавление дубля в массовую сессию")
-    @AllureId("2805")
-    public void testAddDuplicateProductToBulkSession()  throws Exception {
+    @AllureId("12644")
+    public void testAddDuplicateProductToBulkSession() throws Exception {
         List<ProductData> randomProducts = searchProductHelper.getProducts(2);
         String firstProductLmCode = randomProducts.get(0).getLmCode();
         String secondProductLmCode = randomProducts.get(1).getLmCode();
@@ -1956,7 +1956,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C23437719 Завершение массовой сессии")
-    @AllureId("2806")
+    @AllureId("12645")
     public void testFinishBulkSession() throws Exception {
         List<ProductData> randomProducts = searchProductHelper.getProducts(2);
         String firstProductLmCode = randomProducts.get(0).getLmCode();
@@ -2008,7 +2008,7 @@ public class RupturesTest extends AppBaseSteps {
     }
 
     @Test(description = "C23437720 Удаление массовой сессии")
-    @AllureId("2807")
+    @AllureId("12646")
     public void testDeleteBulkSession() throws Exception {
         List<ProductData> randomProducts = searchProductHelper.getProducts(1);
         String firstProductLmCode = randomProducts.get(0).getLmCode();

@@ -44,7 +44,7 @@ public class DeliveryToGiveAwayTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23748038 Delivery: GiveAway for Start Picking")
-    @AllureId("1941")
+    @AllureId("16137")
     public void testStartPickingGiveAway() {
         Response<?> resp = pickingTaskClient.startPicking(currentTaskId);
         isResponseOk(resp);
@@ -55,7 +55,7 @@ public class DeliveryToGiveAwayTest extends BaseMagPortalApiTest {
 
     @SneakyThrows
     @Test(description = "C23748039 Delivery: GiveAway for Picked", dependsOnMethods = {"testStartPickingGiveAway"})
-    @AllureId("1942")
+    @AllureId("16138")
     public void testPickedGiveAway() {
         Response<?> resp = pickingTaskClient.completePicking(currentTaskId, true);
         isResponseOk(resp);
@@ -70,7 +70,7 @@ public class DeliveryToGiveAwayTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23748040 Delivery: GiveAway for Partially Shipped", dependsOnMethods = {
             "testPickedGiveAway"})
-    @AllureId("1943")
+    @AllureId("16139")
     public void testPartiallyShippedGiveAway() {
         Response<?> resp = orderClient.giveAway(currentOrderId, false);
         isResponseOk(resp);
@@ -81,7 +81,7 @@ public class DeliveryToGiveAwayTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23748041 Delivery: GiveAway for Shipped", dependsOnMethods = {
             "testPickedGiveAway"})
-    @AllureId("1944")
+    @AllureId("16140")
     public void testShippedGiveAway() {
         Response<?> resp = orderClient.giveAway(currentOrderId, true);
         isResponseOk(resp);
@@ -92,7 +92,7 @@ public class DeliveryToGiveAwayTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23748042 Delivery: GiveAway for Delivered", dependsOnMethods = {
             "testShippedGiveAway"})
-    @AllureId("1945")
+    @AllureId("16141")
     public void testDeliverGiveAway() {
         orderClient.waitUntilOrderGetStatus(currentOrderId,
                 States.ON_DELIVERY, null);

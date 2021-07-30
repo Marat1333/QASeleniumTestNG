@@ -48,7 +48,7 @@ public class OrdersFlowTest extends BasePAOTest {
     @Inject
     private PickingTaskClient pickingTaskClient;
     @Inject
-    private BitrixHelper   bitrixHelper;
+    private BitrixHelper bitrixHelper;
     @Inject
     private AemHelper aemHelper;
 
@@ -124,7 +124,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
 
     @Test(description = "C23416311 Заказы.Оффлайн.Самовывоз.Переход из статуса Готов к сборке в статус Собран", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1081")
+    @AllureId("15277")
     public void testMoveFromReadyPickingToPicked() throws Exception {
         initCreateOrder(1);
 
@@ -184,14 +184,14 @@ public class OrdersFlowTest extends BasePAOTest {
 
 
     @Test(description = "C22829618 Заказы.Оффлайн.Самовывоз. Полная выдача", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1009")
+    @AllureId("15204")
     public void testOrderOfflinePickup() throws Exception {
         testOrderOffline(SalesDocumentsConst.GiveAwayPoints.PICKUP);
     }
 
 
     @Test(description = "C23437677 Заказы. Oффлайн. Доставка.", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1080")
+    @AllureId("15276")
     public void testOrderOfflineDelivery() throws Exception {
         testOrderOffline(SalesDocumentsConst.GiveAwayPoints.DELIVERY);
     }
@@ -280,16 +280,16 @@ public class OrdersFlowTest extends BasePAOTest {
 
 
     @Test(description = "C23438407 Заказы. статус \"Собран\". Отображение полей на вкладке \"Контроль\". Контроль не пройден", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1066")
+    @AllureId("15262")
     public void testControlTabPickedNonControlled() throws Exception {
-          initCreateOrder(1,SalesDocumentsConst.GiveAwayPoints.PICKUP, SalesDocumentsConst.States.PICKED);
+        initCreateOrder(1, SalesDocumentsConst.GiveAwayPoints.PICKUP, SalesDocumentsConst.States.PICKED);
 
         // Step 1:
         step("Открыть страницу с Заказами");
         OrderHeaderPage orderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
 
         // Step 2:
-        step("Найти созданный заказ с статусе 'Готов к Сборке' с номером "+ orderId);
+        step("Найти созданный заказ с статусе 'Готов к Сборке' с номером " + orderId);
         orderPage.enterSearchTextAndSubmit(orderId);
         orderPage.shouldDocumentIsPresent(orderId);
         orderPage.shouldDocumentListContainsOnlyWithStatuses(SalesDocumentsConst.States.PICKED.getUiVal());
@@ -307,19 +307,19 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 5:
         step("Сравнить Заказанное количество");
-        controlPage.shouldOrderedQuantityIs(1,2);
+        controlPage.shouldOrderedQuantityIs(1, 2);
 
         // Step 6:
         step("Сравнить Собранное количество");
-        controlPage.shouldPickedQuantityIs(1,2);
+        controlPage.shouldPickedQuantityIs(1, 2);
 
         // Step 7:
         step("Сравнить количество на Контроль");
-        controlPage.shouldControlledQuantityIs(1,0);
+        controlPage.shouldControlledQuantityIs(1, 0);
     }
 
     @Test(description = "C22829617 Заказы. Процесс обработки заказа. Онлайн. Доставка. Предоплата", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1008")
+    @AllureId("15203")
     public void testOrderFlowOnlinePrepaymentDelivery() throws Exception {
         orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.DELIVERY_TO_DOOR).getSolutionId();
         System.out.print(orderId);
@@ -327,9 +327,11 @@ public class OrdersFlowTest extends BasePAOTest {
         // Step 1:
         step("Открыть страницу с Заказами");
         OrderHeaderPage orderPage = new OrderHeaderPage();
-        try {  orderPage = loginAndGoTo(OrderHeaderPage.class);
+        try {
+            orderPage = loginAndGoTo(OrderHeaderPage.class);
+        } catch (Exception exception) {
         }
-        catch(Exception exception){ };
+        ;
 
         // Step 2:
         step("Найти созданный заказ в статусе 'Готов к Сборке' с номером" + " " + orderId);
@@ -420,7 +422,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 18:
         step("Дождаться перехода заказа в Доставку");
-        orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.ON_DELIVERY,PaymentStatus.COMPLETED);
+        orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.ON_DELIVERY, PaymentStatus.COMPLETED);
         orderPage.reloadPage();
         new OrderHeaderPage().enterSearchTextAndSubmit(orderId);
         orderPage.shouldDocumentIsPresent(orderId);
@@ -435,7 +437,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 20:
         step("Нажать кнопку доставить");
-        MainReturnDeliveryValueModal  contentReturnDeliveryValueModalDeliveryRefund = createdContentPage.clickDeliveryButton();
+        MainReturnDeliveryValueModal contentReturnDeliveryValueModalDeliveryRefund = createdContentPage.clickDeliveryButton();
 
         // Step 21:
         step("Нажать кнопку Сохранить в модальном окне возврата стоимости доставки");
@@ -454,7 +456,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
 
     @Test(description = "C22829616 Заказы. Процесс обработки заказа. Онлайн. Предоплата. Самовывоз", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1007")
+    @AllureId("15202")
     public void testOrderFlowOnlinePrepaymentPickUp() throws Exception {
         orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.PICKUP_PREPAYMENT).getSolutionId();
         System.out.print(orderId);
@@ -561,7 +563,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
 
     @Test(description = "C23425890 Orders Процесс обработки заказа. Онлайн. Предоплата. Полная  доставка. Возврат после доставки", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1022")
+    @AllureId("15217")
     public void testFullDeliveryRefund() throws Exception {
         // Step 1:
         step("Создать заказ Онлайн с Предоплатой");
@@ -576,7 +578,7 @@ public class OrdersFlowTest extends BasePAOTest {
 
         // Step 3:
         step("Проверить статус доставленного заказа" + orderId);
-        orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.DELIVERED,PaymentStatus.COMPLETED);
+        orderClient.waitUntilOrderGetStatus(orderId, SalesDocumentsConst.States.DELIVERED, PaymentStatus.COMPLETED);
         OrderHeaderPage orderPage = loginAndGoTo(OrderHeaderPage.class);
         orderPage.reloadPage();
         new OrderHeaderPage().enterSearchTextAndSubmit(orderId);
@@ -625,11 +627,11 @@ public class OrdersFlowTest extends BasePAOTest {
 
 
     @Test(description = "C23751064 Orders Процесс обработки заказа. Онлайн. Предоплата. Частичная доставка", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1029")
+    @AllureId("15224")
     public void testPartialDelivery() throws Exception {
         // Step 1:
         step("Создать заказ Онлайн с Предоплатой");
-          orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.DELIVERY_TO_DOOR).getSolutionId();
+        orderId = bitrixHelper.createOnlineOrderCardPayment(OnlineOrderTypeConst.DELIVERY_TO_DOOR).getSolutionId();
         System.out.print("Создан заказ " + orderId);
 
         // Step 2:

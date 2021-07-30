@@ -17,6 +17,7 @@ import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartDiscountReasonData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.cart.CartProductOrderData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -72,7 +73,7 @@ public class CartTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C22906656 Creating Cart with 2 products")
-    @AllureId("3052")
+    @AllureId("12910")
     public void testCreateCart() {
         // Prepare request data
         List<CartProductOrderData> cartProductDataList = getTestProductData();
@@ -88,7 +89,7 @@ public class CartTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23194964 Cart - Confirm Quantity - happy path (with simple product - no AVS, no TOP EM)")
-    @AllureId("3055")
+    @AllureId("12913")
     public void testCartConfirmQuantity() {
         CatalogSearchFilter filter = new CatalogSearchFilter();
         filter.setHasAvailableStock(false);
@@ -111,7 +112,7 @@ public class CartTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23194966 Cart - Add Discount")
-    @AllureId("3057")
+    @AllureId("12915")
     public void testCartDiscount() {
         if (cartData == null)
             initPreConditionCartData();
@@ -130,7 +131,7 @@ public class CartTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23194968 Lego_Cart_Consolidate_Products - happy path")
-    @AllureId("3059")
+    @AllureId("12917")
     public void testCartConsolidateProducts() {
         step("Find products");
         CatalogSearchFilter filtersData = new CatalogSearchFilter();
@@ -163,7 +164,7 @@ public class CartTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23194965 Lego_Cart_Items - Remove 1 product from 2 from the Cart")
-    @AllureId("3056")
+    @AllureId("12914")
     public void testCartItems() {
         if (cartData == null)
             initPreConditionCartData();
@@ -177,7 +178,7 @@ public class CartTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23194967 Update Cart - Add product")
-    @AllureId("3058")
+    @AllureId("12916")
     public void testUpdateCart() {
         if (cartData == null)
             initPreConditionCartData();
@@ -191,7 +192,7 @@ public class CartTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C22906657 Get Cart info - Lego_Cart_Get")
-    @AllureId("3053")
+    @AllureId("12911")
     public void testGetCart() {
         if (cartData == null)
             initPreConditionCartData();
@@ -200,7 +201,7 @@ public class CartTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C22906658 Lego_CartChangeStatus - make status is DELETED")
-    @AllureId("3054")
+    @AllureId("12912")
     public void testDeleteCart() {
         if (cartData == null)
             initPreConditionCartData();

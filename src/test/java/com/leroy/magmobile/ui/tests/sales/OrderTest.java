@@ -35,6 +35,7 @@ import com.leroy.utils.ParserUtil;
 import com.leroy.utils.RandomUtil;
 import io.qameta.allure.Issue;
 import io.qameta.allure.Step;
+
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -168,7 +169,7 @@ public class OrderTest extends SalesBaseTest {
 
     @Smoke
     @Test(description = "C22797112 Создать заказ из корзины с одним заказом")
-    @AllureId("2997")
+    @AllureId("12837")
     public void testCreateOrderFromCartWithOneOrder() throws Exception {
         startFromScreenWithCreatedCart();
 
@@ -211,7 +212,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797113 Создать последовательно заказы из корзины с двумя заказами")
-    @AllureId("2998")
+    @AllureId("12838")
     public void testCreateOrdersFromCartWithTwoOrders() throws Exception {
         startFromScreenWithCreatedCart(findProductsForSeveralOrdersInCart());
 
@@ -249,7 +250,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797121 Ввод существующего пин кода")
-    @AllureId("3005")
+    @AllureId("12845")
     public void testEnterExistedPinCode() throws Exception {
         startFromScreenWithOrderDraft(true);
         ProcessOrder35Page processOrder35Page = new ProcessOrder35Page();
@@ -267,7 +268,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22888112 Смена типа получения товара при заполненном пинкоде в неподтвержденном заказе")
-    @AllureId("3022")
+    @AllureId("12862")
     public void testChangeDeliveryTypeWhenPINCodeIsFilledInDraftOrder() throws Exception {
         // Pre-condition
         if (isStartFromScratch()) {
@@ -290,7 +291,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22888113 Валидация формата пинкода для разных типов получения товара")
-    @AllureId("3023")
+    @AllureId("12863")
     public void testValidationPinCodeForDifferentDeliveryTypes() throws Exception {
         // Pre-condition
         if (isStartFromScratch()) {
@@ -320,7 +321,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797114 Подтвердить заказ на самовывоз сегодня")
-    @AllureId("2999")
+    @AllureId("12839")
     public void testConfirmOrderAsPickupToday() throws Exception {
         // Test Data
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
@@ -355,7 +356,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797115 Подтвердить заказ на доставку на завтра")
-    @AllureId("3000")
+    @AllureId("12840")
     public void testConfirmOrderAsDeliveryTomorrow() throws Exception {
         // Test Data
         MagCustomerData customerData = TestDataConstants.CUSTOMER_WITH_SERVICE_CARD;
@@ -425,7 +426,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797116 Подтвердить заказ на самовывоз через 14 дней")
-    @AllureId("3001")
+    @AllureId("12841")
     public void testConfirmOrderAsPickupAfter14Days() throws Exception {
         // Test Data
         MagLegalCustomerData legalCustomerData = TestDataConstants.LEGAL_ENTITY_1;
@@ -466,7 +467,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797117 Подтвердить заказ на доставку через 15 дней")
-    @AllureId("3002")
+    @AllureId("12842")
     public void testConfirmOrderAsDeliveryAfter15Days() throws Exception {
         // Test Data
         MagCustomerData customerData = TestDataConstants.CUSTOMER_DATA_1;
@@ -542,7 +543,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797118 Создать заказ из корзины со скидкой")
-    @AllureId("3003")
+    @AllureId("12843")
     public void testCreateOrderFromCartWithDiscount() throws Exception {
         // Pre-condition + step 1
         startFromScreenWithOrderDraftWithDiscount();
@@ -597,7 +598,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797119 Создать заказ из корзины с авторской сборкой")
-    @AllureId("3004")
+    @AllureId("12844")
     public void testCreateOrderFromCartWithAuthorAssembly() throws Exception {
         // Test data
         MagLegalCustomerData legalCustomerData = TestDataConstants.LEGAL_ENTITY_2;
@@ -646,7 +647,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22797122 Создание заказа из корзины, преобразованной из сметы", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("3006")
+    @AllureId("12846")
     public void testCreateOrderFromTransformedCart() throws Exception {
         step("Pre-condition: Создаем смету, преобразуем в корзину");
         String estimateId = paoHelper.createConfirmedEstimateAndGetCartId(lmCodes.subList(0, 1));
@@ -685,8 +686,8 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22808291 Добавить товар в неподтвержденный заказ (количества товара достаточно)",
-            groups = NEED_PRODUCTS_GROUP)
-    @AllureId("3007")
+            groups= NEED_PRODUCTS_GROUP)
+    @AllureId("12847")
     public void testAddProductInNotConfirmedOrderWhenProductHasAvailableStock() throws Exception {
         startFromScreenWithOrderDraft(
                 Collections.singletonList(lmCodes.get(0)), null, true);
@@ -713,7 +714,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22808292 Добавить товар в неподтвержденный заказ (количества товара недостаточно)")
-    @AllureId("3008")
+    @AllureId("12848")
     public void testAddProductInNotConfirmedOrderWhenProductHasNotAvailableStock() throws Exception {
         // Pre-conditions
         CatalogSearchFilter filter = new CatalogSearchFilter();
@@ -750,7 +751,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22808293 Изменить количество товара в неподтвержденном заказе")
-    @AllureId("3009")
+    @AllureId("12849")
     public void testChangeProductQuantityInNotConfirmedOrder() throws Exception {
         // Pre-conditions
         startFromScreenWithOrderDraft(true);
@@ -779,7 +780,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22808294 Добавить Топ ЕМ или AVS товар в неподтвержденный заказ")
-    @AllureId("3010")
+    @AllureId("12850")
     public void testAddTopEmOrAvsProductInNotConfirmedOrder() throws Exception {
         // Pre-conditions
         startFromScreenWithOrderDraft(true);
@@ -808,7 +809,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22808295 Удалить товар из неподтвержденного заказа", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("3011")
+    @AllureId("12851")
     public void testRemoveProductFromNotConfirmedOrder() throws Exception {
         // Pre-conditions
         startFromScreenWithOrderDraft(lmCodes.subList(0, 3), null, true);
@@ -829,7 +830,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22808296 Добавить товар в неподтвержденный заказ (из модалки действий с товаром)")
-    @AllureId("3012")
+    @AllureId("12852")
     public void testAddProductInNotConfirmedOrderFromActionWithProductModal() throws Exception {
         startFromScreenWithOrderDraft(true);
         stepClickCartIconWhenProcessOrder(false);
@@ -850,7 +851,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22847244 Удалить последний товар из неподтвержденного заказа")
-    @AllureId("3020")
+    @AllureId("12860")
     public void testRemoveLastProductFromNotConfirmedOrder() throws Exception {
         // Pre-conditions
         startFromScreenWithOrderDraft(true);
@@ -869,7 +870,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22847242 Удалить неподтвержденный заказ")
-    @AllureId("3018")
+    @AllureId("12858")
     public void testRemoveNotConfirmedOrder() throws Exception {
         startFromScreenWithOrderDraft(true);
 
@@ -879,7 +880,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22847029 Добавить товар в подтвержденный заказ", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("3013")
+    @AllureId("12853")
     public void testAddProductInConfirmedOrder() throws Exception {
         startFromScreenWithConfirmedOrder(lmCodes.subList(0, 1));
 
@@ -910,7 +911,7 @@ public class OrderTest extends SalesBaseTest {
 
     @Issue("NEW_BUG")
     @Test(description = "C22847030 Изменить количество товара в подтвержденном заказе")
-    @AllureId("3014")
+    @AllureId("12854")
     public void testChangeQuantityProductInConfirmedOrder() throws Exception {
         startFromScreenWithConfirmedOrder();
         anAssert().isTrue(salesDocumentData.getOrderAppDataList().get(0)
@@ -947,7 +948,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22847031 Удалить товар из подтвержденного заказа", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("3015")
+    @AllureId("12855")
     public void testRemoveProductFromConfirmedOrder() throws Exception {
         startFromScreenWithConfirmedOrder(lmCodes.subList(0, 2));
 
@@ -973,7 +974,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22847032 Изменить параметры подтвержденного заказа (тип получения, получателя или комментарий)")
-    @AllureId("3016")
+    @AllureId("12856")
     public void testChangeParametersConfirmedOrder() throws Exception {
         startFromScreenWithConfirmedOrder();
 
@@ -1010,7 +1011,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22847245 Удалить последний товар из подтвержденного заказа")
-    @AllureId("3021")
+    @AllureId("12861")
     public void testRemoveLastProductFromConfirmedOrder() throws Exception {
         startFromScreenWithConfirmedOrder();
 
@@ -1032,7 +1033,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22847243 Отменить подтвержденный заказ")
-    @AllureId("3019")
+    @AllureId("12859")
     public void testCancelConfirmedOrder() throws Exception {
         startFromScreenWithConfirmedOrder();
 

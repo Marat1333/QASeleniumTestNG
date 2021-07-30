@@ -43,7 +43,7 @@ public class RupturesDeleteSessionTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285343 DELETE active rupture session")
-    @AllureId("3358")
+    @AllureId("13215")
     public void testDeleteActiveRuptureSession() {
         setUp(false);
 
@@ -61,7 +61,7 @@ public class RupturesDeleteSessionTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285341 DELETE a previously deleted rupture session")
-    @AllureId("3360")
+    @AllureId("13217")
     public void testDeletePreviouslyDeletedRuptureSession() {
         if (sessionId == null) {
             setUp(false);
@@ -76,7 +76,7 @@ public class RupturesDeleteSessionTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3233587 DELETE finished ruptures session")
-    @AllureId("3359")
+    @AllureId("13216")
     public void testDeleteFinishedRuptureSession() {
         setUp(true);
 
@@ -94,7 +94,7 @@ public class RupturesDeleteSessionTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285342 DELETE a not existing session")
-    @AllureId("3361")
+    @AllureId("13218")
     public void testDeleteNotExistingSession() {
 
         step("Пробуем удалить несуществующую сессию");
@@ -103,7 +103,7 @@ public class RupturesDeleteSessionTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409769 DELETE rupture session mashup validation")
-    @AllureId("3362")
+    @AllureId("13219")
     public void testDeleteSessionMashupValidation() {
         Response<JsonNode> resp = rupturesClient.deleteSession("");
         assertThat("Response code", resp.getStatusCode(), equalTo(StatusCodes.ST_400_BAD_REQ));

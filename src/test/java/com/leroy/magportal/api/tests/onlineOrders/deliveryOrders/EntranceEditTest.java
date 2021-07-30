@@ -61,7 +61,7 @@ public class EntranceEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425639 Entrance: Edit Allowed For Picking Order", priority = 1)
-    @AllureId("1847")
+    @AllureId("16043")
     public void testEditAllowedForPicking() {
         currentCount = 9.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, currentCount);
@@ -69,7 +69,7 @@ public class EntranceEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425642 Entrance: Edit Picked Paid Order", priority = 2)
-    @AllureId("1848")
+    @AllureId("16044")
     public void testEditPickedPaid() {
         currentCount = 7.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, currentCount);
@@ -77,7 +77,7 @@ public class EntranceEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425645 Entrance: Edit Dimensional Product Allowed For Picking Order", priority = 3)
-    @AllureId("1849")
+    @AllureId("16045")
     public void testEditDimensionalProduct() {
         makeDimensionalOrder();
         currentCount = 6.66;
@@ -87,7 +87,7 @@ public class EntranceEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425646 Entrance: Edit Dimensional Product: Paid Order", priority = 4)
-    @AllureId("1850")
+    @AllureId("16046")
     public void testEditDimensionalProductPaid() {
         currentStatus = States.PICKED;
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
@@ -98,7 +98,7 @@ public class EntranceEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425647 Entrance: Cancel order by Edit Dimensional Product: Paid Order", priority = 5)
-    @AllureId("1851")
+    @AllureId("16047")
     public void testCancelByEditDimensionalProductPaid() {
         currentCount = 10.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, 0.0);
@@ -106,7 +106,7 @@ public class EntranceEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425648 Entrance: Cancel order by Edit with New Product Added", priority = 6)
-    @AllureId("1852")
+    @AllureId("16048")
     public void testCancelByEditWithNewProduct() {
         makeDimensionalOrder();
         orderClient.editOrder(currentOrderId, 1, null);

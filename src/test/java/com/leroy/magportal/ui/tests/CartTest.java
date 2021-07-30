@@ -14,6 +14,7 @@ import com.leroy.magportal.ui.pages.cart_estimate.modal.DiscountModal;
 import com.leroy.magportal.ui.pages.cart_estimate.modal.ExtendedSearchModal;
 import com.leroy.magportal.ui.pages.customers.CreateCustomerForm;
 import io.qameta.allure.Step;
+
 import java.time.LocalDate;
 import java.util.Random;
 
@@ -34,7 +35,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797240 New cart creation", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1171")
+    @AllureId("15367")
     public void testNewCartCreation() throws Exception {
         SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
         String lmCode = productList.get(0).getLmCode();
@@ -58,7 +59,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797241 Search items by LM code, name, barcode", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1172")
+    @AllureId("15368")
     public void testSearchItemsByLmCodeByNameByBarcode() throws Exception {
         ProductData productData1 = productList.get(0);
         ProductData productData2 = productList.get(1);
@@ -94,12 +95,12 @@ public class CartTest extends BasePAOTest {
         ProductOrderCardWebData productData = extendedSearchModal.getProductData(1);
         extendedSearchModal.closeModalWindow();
         cartPage = new CartPage();
-        int indexNewProduct = productData.getSelectedQuantity() > productData.getAvailableTodayQuantity()? 1 : 3;
+        int indexNewProduct = productData.getSelectedQuantity() > productData.getAvailableTodayQuantity() ? 1 : 3;
         cartPage.shouldDocumentHasProduct(indexNewProduct, productData);
     }
 
     @Test(description = "C22797243 Add current item to cart", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1173")
+    @AllureId("15369")
     public void testAddCurrentItemToCart() throws Exception {
         if (isStartFromScratch()) {
             String lmCode1 = productList.get(0).getLmCode();
@@ -119,7 +120,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C23406349 Copy existing product to cart", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1174")
+    @AllureId("15370")
     public void testCopyExistingProductToCart() throws Exception {
         if (isStartFromScratch()) {
             String lmCode1 = productList.get(0).getLmCode();
@@ -143,7 +144,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797244 Item quantity editing", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1175")
+    @AllureId("15371")
     public void testItemQuantityEditing() throws Exception {
         int newQuantity = 3;
         if (isStartFromScratch()) {
@@ -185,7 +186,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797249 Delete item from cart", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1178")
+    @AllureId("15374")
     public void testDeleteItemFromCart() throws Exception {
         // Pre-condition
         ProductData testProduct1 = productList.get(0);
@@ -208,7 +209,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797250 Delete last item from cart", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1179")
+    @AllureId("15375")
     public void testDeleteLastItemFromCart() throws Exception {
         // Pre-condition
         ProductData testProduct1 = productList.get(0);
@@ -239,7 +240,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797258 Search customer (by telephone, service card number, email, barcode scanning)")
-    @AllureId("1185")
+    @AllureId("15381")
     public void testSearchClientByPhoneNumberInEstimate() throws Exception {
         SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
 
@@ -260,7 +261,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797337 Edit customer data", groups = NEED_ACCESS_TOKEN_GROUP)
-    @AllureId("1187")
+    @AllureId("15383")
     public void testEditCustomerDataInCart() throws Exception {
         SimpleCustomerData customerData = createCustomerByApi();
         step("Выполнение предусловий: авторизуемся, заходим на страницу корзины, выбираем пользователя");
@@ -296,7 +297,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797260 Change customer")
-    @AllureId("1188")
+    @AllureId("15384")
     public void testChangeCustomerToAnotherOneInCart() throws Exception {
         SimpleCustomerData customer1 = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
         SimpleCustomerData customer2 = TestDataConstants.SIMPLE_CUSTOMER_DATA_2;
@@ -322,7 +323,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797247 Add AVS, Топ EM items (sufficient stock)")
-    @AllureId("1176")
+    @AllureId("15372")
     public void testAddAVSOrTopEMItemsSufficientStock() throws Exception {
         // Test data
         boolean oddDay = LocalDate.now().getDayOfMonth() % 2 == 1;
@@ -340,7 +341,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797248 Add AVS, Топ EM items (insufficient stock)")
-    @AllureId("1177")
+    @AllureId("15373")
     public void testAddAVSOrTopEMItemsInsufficientStock() throws Exception {
         // Test data
         boolean oddDay = false;//LocalDate.now().getDayOfMonth() % 2 == 1;
@@ -367,7 +368,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797254 Create discount", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1181")
+    @AllureId("15377")
     public void testCreateDiscount() throws Exception {
         // Pre-condition
         ProductData testProduct1 = productList.get(0);
@@ -406,7 +407,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797256 Edit discount", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1182")
+    @AllureId("15378")
     public void testEditDiscount() throws Exception {
         // Test data
         ProductData testProduct1 = productList.get(0);
@@ -449,7 +450,7 @@ public class CartTest extends BasePAOTest {
     }
 
     @Test(description = "C22797255 Delete discount", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1183")
+    @AllureId("15379")
     public void testDeleteDiscount() throws Exception {
         // Test data
         ProductData testProduct1 = productList.get(0);

@@ -8,6 +8,7 @@ import com.leroy.magmobile.api.data.ruptures.ResActionDataList;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductDataList;
 import io.qameta.allure.Step;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,7 +55,7 @@ public class RuptureSessionProductActionTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3233584 PUT rupture action true")
-    @AllureId("3342")
+    @AllureId("13199")
     public void testPutRuptureActionTrue() {
         setUp(false, false);
         RuptureProductData ruptureProductData = ruptureProductDataListBody.getItems().get(0);
@@ -75,7 +76,7 @@ public class RuptureSessionProductActionTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285466 PUT rupture action false")
-    @AllureId("3343")
+    @AllureId("13200")
     public void testPutRuptureActionFalse() {
         setUp(true, false);
         RuptureProductData ruptureProductData = getCurrentRuptureProduct();
@@ -96,7 +97,7 @@ public class RuptureSessionProductActionTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285467 PUT ruptures action for not existed product")
-    @AllureId("3344")
+    @AllureId("13201")
     public void testPutRuptureActionForNotExistedProduct() {
         setUp(false, false);
 
@@ -115,7 +116,7 @@ public class RuptureSessionProductActionTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409762 PUT rupture action add not included actions")
-    @AllureId("3345")
+    @AllureId("13202")
     public void testPutRuptureActionAddNotIncludeActions() {
         setUp(false, true);
 
@@ -151,7 +152,7 @@ public class RuptureSessionProductActionTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409763 PUT rupture action remove one action")
-    @AllureId("3346")
+    @AllureId("13203")
     public void testPutRuptureActionRemoveActions() {
         setUp(true, false);
 
@@ -172,7 +173,7 @@ public class RuptureSessionProductActionTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409765 PUT rupture action for finished session")
-    @AllureId("3347")
+    @AllureId("13204")
     public void testPutRuptureActionForFinishedSession() {
         setUp(true, false);
 

@@ -29,7 +29,7 @@ public class PickingFilteringMobileTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23438168 Сборка. Фильтрация по Типу сборки")
-    @AllureId("1204")
+    @AllureId("15400")
     public void testFiltersByAssemblyType() throws Exception {
 
         // Step 1
@@ -60,7 +60,7 @@ public class PickingFilteringMobileTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23438169 Сборка. Фильтрация по Статусу сборки")
-    @AllureId("1205")
+    @AllureId("15401")
     public void testFiltersByStatus() throws Exception {
 
         // Step 1
@@ -110,7 +110,7 @@ public class PickingFilteringMobileTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23438170 Сборка. Фильтрация по отделам")
-    @AllureId("1206")
+    @AllureId("15402")
     public void testFiltersByDepartments() throws Exception {
 
         // Step 1
@@ -153,7 +153,7 @@ public class PickingFilteringMobileTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23438171 Сборка. Фильтрация с чек боксом 'Мои'")
-    @AllureId("1207")
+    @AllureId("15403")
     public void testFilterMy() throws Exception {
         // Step 1
         step("Открыть страницу со Сборкой");
@@ -188,7 +188,7 @@ public class PickingFilteringMobileTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23438174 Сборка. Поиск по номеру заказа")
-    @AllureId("1210")
+    @AllureId("15406")
     public void testSearchForPickingByOrderNumber() throws Exception {
         // Step 1
         step("Открыть страницу со Сборкой");
@@ -201,7 +201,7 @@ public class PickingFilteringMobileTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23438910 Сборка. Фильтрация по Схеме продажи")
-    @AllureId("1211")
+    @AllureId("15407")
     public void testFilteringBySalesScheme() throws Exception {
         // Step 1
         step("Открыть страницу со Сборкой");

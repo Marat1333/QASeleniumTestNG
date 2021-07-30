@@ -39,6 +39,7 @@ import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.utils.RandomUtil;
 import io.qameta.allure.Step;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -291,7 +292,7 @@ public class SalesBaseTest extends AppBaseSteps {
 
     @Smoke
     @Test(description = "C3201029 Создание документа продажи", groups = OLD_SHOP_GROUP)
-    @AllureId("2937")
+    @AllureId("12777")
     public void testCreateDocumentSales() throws Exception {
         // Step #1
         step("На главном экране выберите раздел Документы продажи");

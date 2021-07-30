@@ -11,7 +11,7 @@ public class SupportTest extends AppBaseSteps {
 
     @Smoke
     @Test(description = "C3201017 Создание тикета из приложения (пожаловаться)")
-    @AllureId("2729")
+    @AllureId("12568")
     public void testC3201017() throws Exception {
         // Step #1
         step("Зайдите в раздел Поддержка");

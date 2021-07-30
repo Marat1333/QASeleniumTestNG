@@ -30,6 +30,7 @@ import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.data.shops.ShopData;
 import com.leroy.magmobile.api.data.user.UserData;
+
 import java.util.List;
 import java.util.Random;
 
@@ -66,7 +67,7 @@ public class CatalogTest extends BaseCatalogTest {
     }
 
     @Test(description = "C23195046 GET nomenclature", groups = "productSearch")
-    @AllureId("3172")
+    @AllureId("13029")
     public void testNomenclature() {
         Response<?> response = catalogProductClient.getNomenclature();
         isResponseOk(response);
@@ -75,7 +76,7 @@ public class CatalogTest extends BaseCatalogTest {
     }
 
     @Test(description = "C3172856 get catalog product", groups = "productSearch")
-    @AllureId("3155")
+    @AllureId("13012")
     public void testCatalogProduct() {
         Response<ProductData> catalogProductDataResponse = catalogProductClient.getProduct(lmCode,
                 SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR, CatalogProductClient.Extend.builder().inventory(true)
@@ -87,7 +88,7 @@ public class CatalogTest extends BaseCatalogTest {
     }
 
     @Test(description = "C23195047 GET reviews by lmCode", groups = "productSearch")
-    @AllureId("3173")
+    @AllureId("13030")
     public void testCatalogProductReviews() {
         Response<CatalogReviewsOfProductList> reviewsOfProductResponse = catalogProductClient.getProductReviews(
                 lmProductWithReviews, 1, 3);
@@ -98,7 +99,7 @@ public class CatalogTest extends BaseCatalogTest {
     }
 
     @Test(description = "C23195048 GET info about sales history", groups = "productSearch")
-    @AllureId("3174")
+    @AllureId("13031")
     public void testCatalogProductSales() {
         Response<?> salesHistoryResponse = catalogProductClient.getProductSales(lmProductWithSalesHistory,
                 getUserSessionData().getUserShopId());
@@ -116,7 +117,7 @@ public class CatalogTest extends BaseCatalogTest {
     }
 
     @Test(description = "C3161101 catalog shops - get remains info by lm code", groups = "productSearch")
-    @AllureId("3154")
+    @AllureId("13011")
     @Obsolete
     public void testCatalogShops() {
         String[] shops = {"32", "5", "69"};
@@ -132,7 +133,7 @@ public class CatalogTest extends BaseCatalogTest {
     }
 
     @Test(description = "C3254678 GET catalog/supplier", groups = "productSearch")
-    @AllureId("3163")
+    @AllureId("13020")
     public void testCatalogSupplier() {
         Response<CatalogSupplierDataOld> response = catalogProductClient.getSupplyInfo(lmCode);
         isResponseOk(response);
@@ -143,7 +144,7 @@ public class CatalogTest extends BaseCatalogTest {
     }
 
     @Test(description = "C23195049 POST product review default values", groups = "productSearch")
-    @AllureId("3175")
+    @AllureId("13032")
     public void testSendReview() {
         UserData userData = new UserData();
         userData.setLdap(getUserSessionData().getUserLdap());
@@ -167,7 +168,7 @@ public class CatalogTest extends BaseCatalogTest {
     }
 
     @Test(description = "C23416163 GET /catalog/complementary-products", groups = "productSearch")
-    @AllureId("3176")
+    @AllureId("13033")
     public void testComplementaryProducts() {
         Response<CatalogComplementaryProductsDataV2> response = catalogProductClient.getComplementaryProducts(
                 searchProductHelper.getRandomProduct().getLmCode());
@@ -178,102 +179,103 @@ public class CatalogTest extends BaseCatalogTest {
     }
 
     @Test(description = "C23718698 GET Nearest Shops", groups = "productSearch")
-    @AllureId("2021")
+    @AllureId("16217")
     public void testNearestShops() {
         Response<NearestShopsData> response = catalogProductClient.getNearestShopsInfo(lmCode);
         isNearestShopsDataValid(response);
     }
 
     @Test(description = "C23718699 GET Nearest Shops for Random shop", groups = "productSearch")
-    @AllureId("2022")
+    @AllureId("16218")
     public void testNearestShopsForRandomShop() {
         Response<NearestShopsData> response = catalogProductClient
-            .getNearestShopsInfo(lmCode, shopsHelper.getRandomShopId().toString());
+                .getNearestShopsInfo(lmCode, shopsHelper.getRandomShopId().toString());
         isNearestShopsDataValid(response);
     }
 
     @Test(description = "C23718700 GET Nearest Shops V2", groups = "productSearch")
-    @AllureId("2023")
+    @AllureId("16219")
     public void testNearestShopsV2() {
         Response<NearestShopsDataV2> response = catalogProductClient.getNearestShopsInfoV2(lmCode);
         isNearestShopsDataV2Valid(response);
     }
 
     @Test(description = "C23718701 GET Nearest Shops V2 for Random shop", groups = "productSearch")
-    @AllureId("2024")
+    @AllureId("16220")
     public void testNearestShopsForRandomShopV2() {
         Response<NearestShopsDataV2> response = catalogProductClient
-            .getNearestShopsInfoV2(lmCode, shopsHelper.getRandomShopId().toString());
+                .getNearestShopsInfoV2(lmCode, shopsHelper.getRandomShopId().toString());
         isNearestShopsDataV2Valid(response);
     }
 
     @Test(description = "C23718703 GET Catalog Product V2", groups = "productSearch")
-    @AllureId("2026")
+    @AllureId("16222")
     public void testCatalogProductV2() {
         Response<CatalogProductData> response = catalogProductClient.getProductV2(lmCode);
         isCatalogProductValid(response);
     }
 
     @Test(description = "C23718704 GET Catalog Product V2 Extended", groups = "productSearch")
-    @AllureId("2027")
+    @AllureId("16223")
     public void testCatalogProductV2Extend() {
         Response<CatalogProductData> response = catalogProductClient.getProductV2(lmCode,
-            SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR,
-            CatalogProductClient.Extend.builder()
-                .inventory(true)
-                .logistic(true)
-                .rating(true)
-                .build());
+                SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR,
+                CatalogProductClient.Extend.builder()
+                        .inventory(true)
+                        .logistic(true)
+                        .rating(true)
+                        .build());
         isCatalogProductValid(response);
     }
 
     @TestCases(cases = {
-        @TestCase(3254677),
-        @TestCase(23718705)
+            @TestCase(3254677),
+            @TestCase(23718705)
     })
+//    @AllureId("13019") - номер для второго кейса
     @Test(description = "C23718705 GET Catalog Similar Products", groups = "productSearch")
-    @AllureId("2028")
+    @AllureId("16224")
     public void testCatalogSimilarProductsV1() {
         Response<CatalogSimilarProductsDataV1> response = catalogProductClient
-            .getSimilarProductsV1(lmCode);
+                .getSimilarProductsV1(lmCode);
         isSimilarProductsValid(response, true);
     }
 
     @Test(description = "C23718706 GET Catalog Similar Products Extended", groups = "productSearch")
-    @AllureId("2029")
+    @AllureId("16225")
     public void testCatalogSimilarProductsV1Extend() {
         CatalogProductClient.Extend extendParam = CatalogProductClient.Extend.builder()
-            .rating(true)
-            .logistic(true)
-            .inventory(true)
-            .build();
+                .rating(true)
+                .logistic(true)
+                .inventory(true)
+                .build();
         Response<CatalogSimilarProductsDataV1> response = catalogProductClient
-            .getSimilarProductsV1(lmCode, extendParam);
+                .getSimilarProductsV1(lmCode, extendParam);
         isSimilarProductsValid(response, true);
     }
 
     @TestCases(cases = {
-        @TestCase(3254677),
-        @TestCase(23718707)
+            @TestCase(3254677),
+            @TestCase(23718707)
     })
     @Test(description = "C23718707 GET Catalog Similar Products V2", groups = "productSearch")
-    @AllureId("2030")
+    @AllureId("16226")
     public void testCatalogSimilarProductsV2() {
         Response<CatalogSimilarProductsDataV2> response = catalogProductClient
-            .getSimilarProductsV2(lmCode);
+                .getSimilarProductsV2(lmCode);
         isSimilarProductsValid(response, false);
     }
 
     @Test(description = "C23718708 GET Catalog Similar Products V2 Extended", groups = "productSearch")
-    @AllureId("2031")
+    @AllureId("16227")
     public void testCatalogSimilarProductsV2Extend() {
         CatalogProductClient.Extend extendParam = CatalogProductClient.Extend.builder()
-            .rating(true)
-            .logistic(true)
-            .inventory(true)
-            .build();
+                .rating(true)
+                .logistic(true)
+                .inventory(true)
+                .build();
         Response<CatalogSimilarProductsDataV2> response = catalogProductClient
-            .getSimilarProductsV2(lmCode, extendParam);
+                .getSimilarProductsV2(lmCode, extendParam);
         isSimilarProductsValid(response, false);
     }
 }

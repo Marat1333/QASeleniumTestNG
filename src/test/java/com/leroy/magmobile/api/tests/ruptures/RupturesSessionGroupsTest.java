@@ -12,6 +12,7 @@ import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductDataList;
 import com.leroy.magmobile.api.data.ruptures.RuptureSessionGroupData;
 import io.qameta.allure.Step;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -202,7 +203,7 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285462 GET ruptures groups for new session with groups")
-    @AllureId("3319")
+    @AllureId("13176")
     public void testGetRupturesGroupsWithGroups() {
         createSessionWithAllActions();
 
@@ -245,7 +246,7 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409187 GET ruptures groups for existing session with 1 group")
-    @AllureId("3321")
+    @AllureId("13178")
     public void testGetRupturesGroupsWith1Group() {
         createSessionWithOneActionAndSeveralProducts();
 
@@ -288,7 +289,7 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3233581 GET rupture groups for new session without groups")
-    @AllureId("3318")
+    @AllureId("13175")
     public void testGetRuptureGroupsWithoutGroups() {
         createSessionWithProductWithoutActions();
 
@@ -299,7 +300,7 @@ public class RupturesSessionGroupsTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285464 GET ruptures groups for non existing session")
-    @AllureId("3320")
+    @AllureId("13177")
     public void testGetRupturesGroupsForNonExistingSession() {
         Response<RuptureSessionGroupData> resp = rupturesClient.getGroups(Integer.MAX_VALUE);
         isResponseOk(resp);

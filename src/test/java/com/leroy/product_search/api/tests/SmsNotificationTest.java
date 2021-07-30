@@ -32,7 +32,7 @@ public class SmsNotificationTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3175887 SMS post", groups = "productSearch")
-    @AllureId("3457")
+    @AllureId("13314")
     public void testCreateNotification() {
         // Get test data:
         ProductData product = searchProductHelper.getProducts(1).get(0);
@@ -60,7 +60,7 @@ public class SmsNotificationTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3175886 SMS get", groups = "productSearch")
-    @AllureId("3456")
+    @AllureId("13313")
     public void testGetNotification() {
         Response<SmsNotificationData> resp = smsNotificationClient.getNotification(
                 smsNotificationData.getProduct().getLmCode());

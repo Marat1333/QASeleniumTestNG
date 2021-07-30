@@ -38,14 +38,14 @@ public class GetPickingTasksTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438532 Get Picking Task")
-    @AllureId("1980")
+    @AllureId("16176")
     public void testGetPickingTask() {
         Response<PickingTaskData> response = pickingTaskClient.getPickingTask(currentTaskId);
         assertGetPickingTaskResult(response);
     }
 
     @Test(description = "C23438533 Get Orders' Picking Tasks")
-    @AllureId("1981")
+    @AllureId("16177")
     public void testGetOrdersPickingTask() {
         Response<OrdersPickingTasksDataList> response = pickingTaskClient
                 .getPickingTasks(currentOrderId);

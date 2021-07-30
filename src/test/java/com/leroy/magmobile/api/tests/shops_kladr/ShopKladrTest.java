@@ -24,15 +24,16 @@ public class ShopKladrTest extends BaseProjectApiTest {
     @Inject
     private ShopsClient shopsClient;
 
+
     @Test(description = "C23195091 GET shops")
-    @AllureId("3376")
+    @AllureId("13233")
     public void testGetShops() {
         Response<ShopData> resp = shopKladrClient.getShops();
         shopsClient.assertGetShopsResult(resp);
     }
 
     @Test(description = "C3165821 Kladr gets a city that exists")
-    @AllureId("3372")
+    @AllureId("13229")
     public void testKladrGetsExistedCity() {
         int limit = 12;
         Response<KladrItemDataList> resp = shopKladrClient.getKladrByCity("2900000000000", 12);

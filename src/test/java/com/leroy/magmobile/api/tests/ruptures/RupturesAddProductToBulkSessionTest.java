@@ -9,7 +9,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class RupturesAddProductToBulkSessionTest extends BaseRuptureTest{
+public class RupturesAddProductToBulkSessionTest extends BaseRuptureTest {
 
     static final String firstLmCode = RandomStringUtils.randomNumeric(8);
     static final String secondLmCode = RandomStringUtils.randomNumeric(8);
@@ -27,7 +27,7 @@ public class RupturesAddProductToBulkSessionTest extends BaseRuptureTest{
     }
 
     @Test(description = "C23718165 Add product to session")
-    @AllureId("3364")
+    @AllureId("13221")
     public void testAddProductToSession() {
         postData.setLmCode(secondLmCode);
 
@@ -41,7 +41,7 @@ public class RupturesAddProductToBulkSessionTest extends BaseRuptureTest{
 
     @Issue("RUP-377")
     @Test(description = "C23718166 Add product to finished session")
-    @AllureId("3365")
+    @AllureId("13222")
     public void testAddProductToFinishedSession() {
         postData.setLmCode(secondLmCode);
 
@@ -59,7 +59,7 @@ public class RupturesAddProductToBulkSessionTest extends BaseRuptureTest{
 
     @Issue("RUP-377")
     @Test(description = "C23718167 Add product to not existed session")
-    @AllureId("3366")
+    @AllureId("13223")
     public void testAddProductToNotExistedSession() {
         postData.setLmCode(secondLmCode);
 
@@ -71,7 +71,7 @@ public class RupturesAddProductToBulkSessionTest extends BaseRuptureTest{
     }
 
     @Test(description = "C23718168 Add duplicate product")
-    @AllureId("3367")
+    @AllureId("13224")
     public void testAddDuplicateProductToSession() {
         postData.setLmCode(firstLmCode);
 

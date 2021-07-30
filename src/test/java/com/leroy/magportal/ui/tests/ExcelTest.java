@@ -20,7 +20,7 @@ public class ExcelTest extends WebBaseSteps {
     }
 
     @Test(description = "C23416164 check excel output")
-    @AllureId("1350")
+    @AllureId("15546")
     public void testExcelOutput() throws Exception {
         FileManager fileManager = new FileManager();
 

@@ -18,7 +18,7 @@ public class SupportTest extends BaseProjectApiTest {
     private SupportClient supportClient;
 
     @Test(description = "C3254683 PUT support/ticket")
-    @AllureId("3458")
+    @AllureId("13315")
     public void testPutSupportTicket() {
         SupportTicketData supportTicketData = new SupportTicketData();
         supportTicketData.generateRequiredReqData();

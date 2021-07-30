@@ -14,7 +14,9 @@ import com.leroy.common_mashups.catalogs.data.product.CatalogProductData;
 import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.magportal.api.helpers.ShopsHelper;
 import com.leroy.magportal.api.tests.BaseMagPortalApiTest;
+
 import java.util.List;
+
 import org.testng.util.Strings;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
