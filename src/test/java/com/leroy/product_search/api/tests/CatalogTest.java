@@ -118,7 +118,6 @@ public class CatalogTest extends BaseCatalogTest {
 
     @Test(description = "C3161101 catalog shops - get remains info by lm code", groups = "productSearch")
     @AllureId("13011")
-
     @Obsolete
     public void testCatalogShops() {
         String[] shops = {"32", "5", "69"};
