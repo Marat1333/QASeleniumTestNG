@@ -51,6 +51,7 @@ public class SalesDocSearchTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3164798 Search by docType")
+    @AllureId("13112")
     public void testSearchByDocType() {
         int startFrom = 1;
 

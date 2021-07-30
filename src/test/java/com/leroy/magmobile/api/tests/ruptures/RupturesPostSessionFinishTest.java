@@ -94,6 +94,7 @@ public class RupturesPostSessionFinishTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285354 PUT ruptures session finish for a not existing session")
+    @AllureId("13213")
     public void testPutRupturesSessionFinishForNotExistingSession() {
         int notExistingSession = Integer.MAX_VALUE;
 

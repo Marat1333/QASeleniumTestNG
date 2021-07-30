@@ -525,6 +525,7 @@ public class TransferTest extends AppBaseSteps {
     }
 
     @Test(description = "C3268363 Удаление товара из заявки", enabled = false)
+    @AllureId("12606")
     public void testRemoveProductFromTransferTask() throws Exception {
         TransferOrderStep1Page transferOrderStep1Page;
         CustomTransferProduct product1 = products.get(6);
@@ -575,6 +576,7 @@ public class TransferTest extends AppBaseSteps {
     }
 
     @Test(description = "C3268364 Удаление последнего товара из заявки", enabled = false)
+    @AllureId("12607")
     public void testRemoveLastProductFromTransferTask() throws Exception {
         TransferOrderStep1Page transferOrderStep1Page;
         CustomTransferProduct product1 = products.get(8);
@@ -658,6 +660,7 @@ public class TransferTest extends AppBaseSteps {
     }
 
     @Test(description = "C3268366 Изменение количества товара в поиске товаров", enabled = false)
+    @AllureId("12609")
     public void testChangeProductQuantityWhenSearchProductsOnStock() throws Exception {
         // Pre-condition
         WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
@@ -868,6 +871,7 @@ public class TransferTest extends AppBaseSteps {
     }
 
     @Test(description = "C3268374 Отзыв товара на моно-палете", enabled = false)
+    @AllureId("12617")
     public void testTransferProductOnMonoPallet() throws Exception {
         step("Выполнение предусловий:");
         TransferSearchProductData productData = transferHelper.searchForProductsForTransfer(
@@ -923,6 +927,7 @@ public class TransferTest extends AppBaseSteps {
     }
 
     @Test(description = "C3268376 Удаление заявки в статусе Черновик")
+    @AllureId("12619")
     public void testRemoveDraftTransferTask() throws Exception {
         // Pre-condition
         TransferOrderStep1Page transferOrderStep1Page;

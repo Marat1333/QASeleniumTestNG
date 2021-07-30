@@ -802,7 +802,6 @@ public class PrintTagsTest extends AppBaseSteps {
 
     @Test(description = "C23411538 Проверить подсчет кол-ва страниц", enabled = false)
     @AllureId("12768")
-
     // Тест выключен, т.к. (предположительно) ценники реально печатаются
     public void testPagesAmount() throws Exception {
         int productsCount = 2;

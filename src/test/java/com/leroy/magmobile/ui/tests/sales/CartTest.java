@@ -191,6 +191,7 @@ public class CartTest extends SalesBaseTest {
 
     @Test(description = "C22797094 Изменить количество товара (товар переносится в другой заказ)",
             groups = {NEED_ACCESS_TOKEN_GROUP, NEED_PRODUCTS_GROUP})
+    @AllureId("12823")
     public void testChangeQuantityProductInCartWhenCountOfProductMoreThanAvailable() throws Exception {
         // Test data
         List<String> lmCodes = productLmCodes.subList(0, 1);

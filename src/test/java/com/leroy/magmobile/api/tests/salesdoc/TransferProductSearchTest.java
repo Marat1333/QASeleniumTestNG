@@ -22,6 +22,7 @@ public class TransferProductSearchTest extends BaseProjectApiTest {
     private TransferClient transferClient;
 
     @Test(description = "C3255521 Transfer product search GET")
+    @AllureId("13134")
     public void testTransferProductSearchGet() {
         Response<TransferSearchProductDataList> resp = transferClient.searchForTransferProducts(
                 SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR);
