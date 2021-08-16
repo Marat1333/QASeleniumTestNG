@@ -389,7 +389,7 @@ public class PrintTagsTest extends AppBaseSteps {
 
     @Test(description = "C23389195 отправка на печать ценников", enabled = false)
     @AllureId("12762")
-
+    
     // Тест выключен, т.к. (предположительно) ценники реально печатаются
     public void testSendingToPrint() throws Exception {
         int productsCount = 3;

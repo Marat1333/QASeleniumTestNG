@@ -280,6 +280,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23194986 lsAddress PUT Cell products - Change quantity")
+    @AllureId("21439")
     public void testUpdateCellProducts() {
         // Test data
         prepareDefaultData(true, true);

@@ -686,7 +686,7 @@ public class OrderTest extends SalesBaseTest {
     }
 
     @Test(description = "C22808291 Добавить товар в неподтвержденный заказ (количества товара достаточно)",
-            groups= NEED_PRODUCTS_GROUP)
+            groups = NEED_PRODUCTS_GROUP)
     @AllureId("12847")
     public void testAddProductInNotConfirmedOrderWhenProductHasAvailableStock() throws Exception {
         startFromScreenWithOrderDraft(

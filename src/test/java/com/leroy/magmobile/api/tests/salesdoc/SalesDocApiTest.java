@@ -46,6 +46,7 @@ public class SalesDocApiTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3232446 SalesDoc add services")
+    @AllureId("13097")
     public void testSalesDocAddService() {
         // Prepare request data
         ServiceOrderData serviceOrderData = new ServiceOrderData(

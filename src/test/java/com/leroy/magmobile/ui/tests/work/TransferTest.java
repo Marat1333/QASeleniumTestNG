@@ -817,6 +817,7 @@ public class TransferTest extends AppBaseSteps {
     }
 
     @Test(description = "C3268369 Поиск товара (по ЛМ коду и штрих коду)", enabled = false)
+    @AllureId("12612")
     public void testSearchForProductsForTransferTask() throws Exception {
         TransferSearchProductData productData = transferHelper.searchForProductsForTransfer().get(0);
         WorkPage workPage = loginSelectShopAndGoTo(WorkPage.class);
