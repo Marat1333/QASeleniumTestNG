@@ -30,6 +30,7 @@ import com.leroy.common_mashups.helpers.SearchProductHelper;
 import com.leroy.constants.sales.SalesDocumentsConst;
 import com.leroy.magmobile.api.data.shops.ShopData;
 import com.leroy.magmobile.api.data.user.UserData;
+
 import java.util.List;
 import java.util.Random;
 
@@ -188,7 +189,7 @@ public class CatalogTest extends BaseCatalogTest {
     @AllureId("16218")
     public void testNearestShopsForRandomShop() {
         Response<NearestShopsData> response = catalogProductClient
-            .getNearestShopsInfo(lmCode, shopsHelper.getRandomShopId().toString());
+                .getNearestShopsInfo(lmCode, shopsHelper.getRandomShopId().toString());
         isNearestShopsDataValid(response);
     }
 
@@ -203,7 +204,7 @@ public class CatalogTest extends BaseCatalogTest {
     @AllureId("16220")
     public void testNearestShopsForRandomShopV2() {
         Response<NearestShopsDataV2> response = catalogProductClient
-            .getNearestShopsInfoV2(lmCode, shopsHelper.getRandomShopId().toString());
+                .getNearestShopsInfoV2(lmCode, shopsHelper.getRandomShopId().toString());
         isNearestShopsDataV2Valid(response);
     }
 
@@ -218,24 +219,25 @@ public class CatalogTest extends BaseCatalogTest {
     @AllureId("16223")
     public void testCatalogProductV2Extend() {
         Response<CatalogProductData> response = catalogProductClient.getProductV2(lmCode,
-            SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR,
-            CatalogProductClient.Extend.builder()
-                .inventory(true)
-                .logistic(true)
-                .rating(true)
-                .build());
+                SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR,
+                CatalogProductClient.Extend.builder()
+                        .inventory(true)
+                        .logistic(true)
+                        .rating(true)
+                        .build());
         isCatalogProductValid(response);
     }
 
     @TestCases(cases = {
-        @TestCase(3254677),
-        @TestCase(23718705)
+            @TestCase(3254677),
+            @TestCase(23718705)
     })
+//    @AllureId("13019") - номер для второго кейса
     @Test(description = "C23718705 GET Catalog Similar Products", groups = "productSearch")
     @AllureId("16224")
     public void testCatalogSimilarProductsV1() {
         Response<CatalogSimilarProductsDataV1> response = catalogProductClient
-            .getSimilarProductsV1(lmCode);
+                .getSimilarProductsV1(lmCode);
         isSimilarProductsValid(response, true);
     }
 
@@ -243,24 +245,24 @@ public class CatalogTest extends BaseCatalogTest {
     @AllureId("16225")
     public void testCatalogSimilarProductsV1Extend() {
         CatalogProductClient.Extend extendParam = CatalogProductClient.Extend.builder()
-            .rating(true)
-            .logistic(true)
-            .inventory(true)
-            .build();
+                .rating(true)
+                .logistic(true)
+                .inventory(true)
+                .build();
         Response<CatalogSimilarProductsDataV1> response = catalogProductClient
-            .getSimilarProductsV1(lmCode, extendParam);
+                .getSimilarProductsV1(lmCode, extendParam);
         isSimilarProductsValid(response, true);
     }
 
     @TestCases(cases = {
-        @TestCase(3254677),
-        @TestCase(23718707)
+            @TestCase(3254677),
+            @TestCase(23718707)
     })
     @Test(description = "C23718707 GET Catalog Similar Products V2", groups = "productSearch")
     @AllureId("16226")
     public void testCatalogSimilarProductsV2() {
         Response<CatalogSimilarProductsDataV2> response = catalogProductClient
-            .getSimilarProductsV2(lmCode);
+                .getSimilarProductsV2(lmCode);
         isSimilarProductsValid(response, false);
     }
 
@@ -268,12 +270,12 @@ public class CatalogTest extends BaseCatalogTest {
     @AllureId("16227")
     public void testCatalogSimilarProductsV2Extend() {
         CatalogProductClient.Extend extendParam = CatalogProductClient.Extend.builder()
-            .rating(true)
-            .logistic(true)
-            .inventory(true)
-            .build();
+                .rating(true)
+                .logistic(true)
+                .inventory(true)
+                .build();
         Response<CatalogSimilarProductsDataV2> response = catalogProductClient
-            .getSimilarProductsV2(lmCode, extendParam);
+                .getSimilarProductsV2(lmCode, extendParam);
         isSimilarProductsValid(response, false);
     }
 }

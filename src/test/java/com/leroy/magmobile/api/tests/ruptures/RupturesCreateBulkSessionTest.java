@@ -7,7 +7,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class RupturesCreateBulkSessionTest extends BaseRuptureTest{
+public class RupturesCreateBulkSessionTest extends BaseRuptureTest {
 
     @Test(description = "C23718164 Create bulk session")
     @AllureId("13220")

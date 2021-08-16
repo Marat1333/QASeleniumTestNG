@@ -30,7 +30,6 @@ public class MagCustomerData {
     }
 
     private boolean existedClient; // Ранее существующий в системе клиент, который может быть найден через поиск (а не ново созданный через оформление заказа)
-
     public void assertEqualsNotNullExpectedFields(MagCustomerData expectedCustomerData) {
         SoftAssertWrapper softAssert = ContextProvider.getContext().getSoftAssert();
         if (expectedCustomerData.getName() != null) {

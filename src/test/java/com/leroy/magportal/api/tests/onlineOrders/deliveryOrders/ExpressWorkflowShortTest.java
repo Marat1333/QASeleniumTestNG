@@ -43,7 +43,7 @@ public class ExpressWorkflowShortTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425628 Express Delivery: ALLOWED_FOR_PICKING -> PICKING_IN_PROGRESS")
-    @AllureId("1780")
+    @AllureId("15976")
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);
@@ -52,7 +52,7 @@ public class ExpressWorkflowShortTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23425628 Express Delivery: PICKING_IN_PROGRESS -> PICKED", dependsOnMethods = {
             "testStartPicking"})
-    @AllureId("1780")
+    @AllureId("15976")
     public void testCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, true);
@@ -61,7 +61,7 @@ public class ExpressWorkflowShortTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23425628 Express Delivery: ALLOWED_FOR_GIVEAWAY -> ON_SHIPMENT", dependsOnMethods = {
             "testCompletePicking"})
-    @AllureId("1780")
+    @AllureId("15976")
     public void testShipped() {
         paymentHelper.makePaid(currentOrderId);
         orderClient.waitUntilOrderGetStatus(currentOrderId,
@@ -72,7 +72,7 @@ public class ExpressWorkflowShortTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23425628 Express Delivery: ON_SHIPMENT -> DELIVERED", dependsOnMethods = {
             "testShipped"})
-    @AllureId("1780")
+    @AllureId("15976")
     public void testDeliver() {
         orderClient.waitUntilOrderGetStatus(currentOrderId,
                 States.ON_DELIVERY, null);

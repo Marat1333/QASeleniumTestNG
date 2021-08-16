@@ -802,9 +802,9 @@ public class RupturesTest extends AppBaseSteps {
                 " Добавить экшены 'Поставить извиняшку' и 'Убрать ценник'," +
                 " Закрыть модалку реактирования экшенов");
         tasksListsModalPage.selectTasks(
-                    Action.FIND_PRODUCT_AND_LAY_IT_OUT.getActionName(),
-                    Action.GIVE_APOLOGISE.getActionName(),
-                    Action.REMOVE_PRICE_TAG.getActionName())
+                Action.FIND_PRODUCT_AND_LAY_IT_OUT.getActionName(),
+                Action.GIVE_APOLOGISE.getActionName(),
+                Action.REMOVE_PRICE_TAG.getActionName())
                 .shouldToDoListContainsTaskAndPossibleListNotContainsTask(Arrays.asList(
                         Action.GIVE_APOLOGISE.getActionName(), Action.REMOVE_PRICE_TAG.getActionName()))
                 .closeModal();
@@ -842,7 +842,7 @@ public class RupturesTest extends AppBaseSteps {
         step("Тапнуть на 'Выполненные задачи'");
         finishedSessionRupturesActionsPage = finishedSessionRupturesActionsPage.goToDoneTasks();
         finishedSessionRupturesActionsPage.shouldDoneTasksViewIsPresented()
-                .shouldRuptureCardHasNotContainsTask(ruptureLmCode,Action.GIVE_APOLOGISE)
+                .shouldRuptureCardHasNotContainsTask(ruptureLmCode, Action.GIVE_APOLOGISE)
                 .shouldTasksRatioCounterIsCorrect(1)
                 .verifyRequiredElements()
                 .shouldRuptureDataIsCorrect(doneRuptureData);
@@ -1814,7 +1814,7 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C23717536 Создание массовой сессии")
     @AllureId("12642")
-    public void testCreateBulkSession()  throws Exception {
+    public void testCreateBulkSession() throws Exception {
         List<ProductData> randomProducts = searchProductHelper.getProducts(2);
         String firstProductLmCode = randomProducts.get(0).getLmCode();
         String secondProductLmCode = randomProducts.get(1).getLmCode();
@@ -1868,7 +1868,7 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C23437718 Добавление товаров в массовую сессию")
     @AllureId("12643")
-    public void testAddProductToBulkSession()  throws Exception {
+    public void testAddProductToBulkSession() throws Exception {
         List<ProductData> randomProducts = searchProductHelper.getProducts(3);
         String firstProductLmCode = randomProducts.get(0).getLmCode();
         String secondProductLmCode = randomProducts.get(1).getLmCode();
@@ -1913,7 +1913,7 @@ public class RupturesTest extends AppBaseSteps {
 
     @Test(description = "C23438915 Добавление дубля в массовую сессию")
     @AllureId("12644")
-    public void testAddDuplicateProductToBulkSession()  throws Exception {
+    public void testAddDuplicateProductToBulkSession() throws Exception {
         List<ProductData> randomProducts = searchProductHelper.getProducts(2);
         String firstProductLmCode = randomProducts.get(0).getLmCode();
         String secondProductLmCode = randomProducts.get(1).getLmCode();

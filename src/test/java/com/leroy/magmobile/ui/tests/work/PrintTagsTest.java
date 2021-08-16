@@ -30,6 +30,7 @@ import com.leroy.magmobile.ui.pages.work.print_tags.modal.FormatSuccessPrintModa
 import com.leroy.magmobile.ui.pages.work.print_tags.modal.PagesQuantityModalPage;
 import com.leroy.magmobile.ui.pages.work.print_tags.modal.SessionFormatsModalPage;
 import io.qameta.allure.Step;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;

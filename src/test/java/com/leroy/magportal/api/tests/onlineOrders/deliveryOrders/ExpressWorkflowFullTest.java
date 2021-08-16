@@ -48,7 +48,7 @@ public class ExpressWorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "23438353 ALLOWED_FOR_PICKING -> PICKING_IN_PROCESS", priority = 1)
-    @AllureId("1811")
+    @AllureId("16007")
     public void testStartPicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .startPicking(currentTaskId);
@@ -57,7 +57,7 @@ public class ExpressWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "23438354 PICKING_IN_PROGRESS -> PAUSE_PICKING (pause-picking)", dependsOnMethods = {
             "testStartPicking"}, priority = 2)
-    @AllureId("1812")
+    @AllureId("16008")
     public void testPausePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .pausePicking(currentTaskId);
@@ -66,7 +66,7 @@ public class ExpressWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "23438355 PAUSE_PICKING -> PICKING_IN_PROCESS (unpause-picking)", dependsOnMethods = {
             "testPausePicking"}, priority = 3)
-    @AllureId("1813")
+    @AllureId("16009")
     public void testResumePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .resumePicking(currentTaskId);
@@ -75,7 +75,7 @@ public class ExpressWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "23438356 PICKING_IN_PROGRESS -> PARTIALLY_PICKED", dependsOnMethods = {
             "testStartPicking"}, priority = 4)
-    @AllureId("1814")
+    @AllureId("16010")
     public void testPartiallyCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, false);
@@ -83,7 +83,7 @@ public class ExpressWorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "23438357 PARTIALLY_PICKED: NEW Storage Location", priority = 5)
-    @AllureId("1815")
+    @AllureId("16011")
     public void testNewStorageLocation() {
         currentLocationsCount = 3;
         Response<PickingTaskData> response = pickingTaskClient
@@ -93,7 +93,7 @@ public class ExpressWorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "23438358 PARTIALLY_PICKED: Updated Storage Location", priority = 6)
-    @AllureId("1816")
+    @AllureId("16012")
     public void testUpdateStorageLocation() {
         currentLocationsCount = 1;
         Response<PickingTaskData> response = pickingTaskClient
@@ -104,7 +104,7 @@ public class ExpressWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "23438359 PARTIALLY_PICKED -> PICKED_WAIT", dependsOnMethods = {
             "testStartPicking"}, priority = 7)
-    @AllureId("1817")
+    @AllureId("16013")
     public void testCompletePicking() {
         Response<PickingTaskData> response = pickingTaskClient
                 .completePicking(currentTaskId, true);
@@ -113,7 +113,7 @@ public class ExpressWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438360 PICKED_WAIT -> PICKED", dependsOnMethods = {
             "testCompletePicking"}, priority = 8)
-    @AllureId("1818")
+    @AllureId("16014")
     public void testPicked() {
         paymentHelper.makePaid(currentOrderId);
         orderClient.waitUntilOrderGetStatus(currentOrderId, States.PICKED, PaymentStatus.PAID);
@@ -122,7 +122,7 @@ public class ExpressWorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438361 PICKED: UPDATE Storage Location", priority = 9)
-    @AllureId("1819")
+    @AllureId("16015")
     public void testUpdateStorageLocationPicked() {
         currentLocationsCount = 5;
         Response<PickingTaskData> response = pickingTaskClient
@@ -133,7 +133,7 @@ public class ExpressWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438362 PICKED -> PARTIALLY_SHIPPED", dependsOnMethods = {
             "testPicked"}, priority = 10)
-    @AllureId("1820")
+    @AllureId("16016")
     public void testPartiallyShipped() {
         Response<JsonNode> response = orderClient.giveAway(currentOrderId, false);
         orderClient.assertWorkflowResult(response, currentOrderId, States.PARTIALLY_SHIPPED);
@@ -141,7 +141,7 @@ public class ExpressWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438363 PARTIALLY_SHIPPED -> SHIPPED", dependsOnMethods = {
             "testPicked"}, priority = 11)
-    @AllureId("1821")
+    @AllureId("16017")
     public void testShipped() {
         Response<JsonNode> response = orderClient.giveAway(currentOrderId, true);
         orderClient.assertWorkflowResult(response, currentOrderId, States.SHIPPED);
@@ -149,7 +149,7 @@ public class ExpressWorkflowFullTest extends BaseMagPortalApiTest {
 
     @Test(description = "C23438364 SHIPPED -> PARTIALLY_DELIVERED", dependsOnMethods = {
             "testShipped"}, priority = 12)
-    @AllureId("1822")
+    @AllureId("16018")
     public void testPartiallyDeliver() {
         orderClient.waitUntilOrderGetStatus(currentOrderId,
                 States.ON_DELIVERY, PaymentStatus.PAID);
@@ -158,7 +158,7 @@ public class ExpressWorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438365 SHIPPED -> NO DELIVERED", priority = 13)
-    @AllureId("1823")
+    @AllureId("16019")
     public void testNothingDelivered() {
         setUp();
         orderClient.moveNewOrderToStatus(currentOrderId, States.GIVEN_AWAY);
@@ -168,7 +168,7 @@ public class ExpressWorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438366 SHIPPED -> DELIVERED", priority = 14)
-    @AllureId("1824")
+    @AllureId("16020")
     public void testDelivered() {
         setUp();
         orderClient.moveNewOrderToStatus(currentOrderId, States.GIVEN_AWAY);
@@ -177,7 +177,7 @@ public class ExpressWorkflowFullTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23438400 GET Order", priority = 15)
-    @AllureId("1825")
+    @AllureId("16021")
     public void testGetOrder() {
         Response<OnlineOrderData> response = orderClient.getOnlineOrder(currentOrderId);
         orderClient.assertGetOrderResult(response, currentOrderType);
@@ -185,7 +185,7 @@ public class ExpressWorkflowFullTest extends BaseMagPortalApiTest {
 
     ////VERIFICATION
     public void assertResult(Response<?> response, States expectedOrderStatus,
-            PickingStatus expectedPickingStatus) {
+                             PickingStatus expectedPickingStatus) {
         orderClient.assertWorkflowResult(response, currentOrderId, expectedOrderStatus);
         pickingTaskClient.assertWorkflowResult(response, currentTaskId, expectedPickingStatus);
     }

@@ -8,6 +8,7 @@ import com.leroy.magmobile.api.data.ruptures.ResActionDataList;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductDataList;
 import io.qameta.allure.Step;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;

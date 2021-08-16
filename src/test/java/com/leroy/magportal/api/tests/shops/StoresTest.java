@@ -17,14 +17,14 @@ public class StoresTest extends BaseMagPortalApiTest {
     private ShopsHelper shopsHelper;
 
     @Test(description = "C23749488 Get Stores")
-    @AllureId("2090")
+    @AllureId("16286")
     public void testGetStores() {
         Response<StoreData> response = shopsClient.getStories();
         shopsClient.assertGetShopsResult(response);
     }
 
     @Test(description = "C23749489 Get Stores For Region")
-    @AllureId("2091")
+    @AllureId("16287")
     public void testGetStoresForRegion() {
         int regionId = shopsHelper.getRandomRegionId();
         Response<StoreData> response = shopsClient.getStories(regionId);
@@ -32,7 +32,7 @@ public class StoresTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23749490 Get Store")
-    @AllureId("2092")
+    @AllureId("16288")
     public void testGetStore() {
         int shopId = Integer.parseInt(getUserSessionData().getUserShopId());
         Response<StoreData> response = shopsClient.getStore(shopId);
@@ -40,7 +40,7 @@ public class StoresTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23749491 Get Random Store")
-    @AllureId("2093")
+    @AllureId("16289")
     public void testGetRandomStore() {
         int shopId = shopsHelper.getRandomShopId();
         Response<StoreData> response = shopsClient.getStore(shopId);

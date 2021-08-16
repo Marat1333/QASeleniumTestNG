@@ -17,10 +17,10 @@ public class ShortCartEstimateDocumentCardWidget extends CardWebWidget<ShortSale
     @WebFindBy(xpath = ".//div[contains(@class, 'Documents-ListItemCard__heading-text')]//span")
     Element number;
 
-    @WebFindBy(xpath = ".//div[contains(@class, '-price')]")
+    @WebFindBy(xpath = ".//span[contains(@data-testid, 'lmui-Price')]")
     Element price;
 
-    @WebFindBy(xpath = ".//span[contains(@class, '-status-label')]")
+    @WebFindBy(xpath = ".//span[contains(@data-testid, 'lmui-Status')]")
     Element status;
 
     @WebFindBy(xpath = ".//div[contains(@class, 'Documents-ListItemCard__footer-row')]/div/div//span")

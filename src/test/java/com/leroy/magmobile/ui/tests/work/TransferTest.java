@@ -50,6 +50,7 @@ import com.leroy.magmobile.ui.pages.work.transfer.data.TransferProductData;
 import com.leroy.magmobile.ui.pages.work.transfer.enums.TransferTaskTypes;
 import com.leroy.magmobile.ui.pages.work.transfer.modal.TransferActionWithProductCardModal;
 import com.leroy.magmobile.ui.pages.work.transfer.modal.TransferExitWarningModal;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;

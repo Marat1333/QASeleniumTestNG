@@ -397,7 +397,7 @@ public class LsAddressTest extends BaseProjectApiTest {
 
         List<ProductCellData> expectedSearchData = cellProductData.getLsAddressCells();
         for (ProductCellData productCellData : expectedSearchData) {
-            if(productCellData.getId().equals(cellData.getId())) {
+            if (productCellData.getId().equals(cellData.getId())) {
                 productCellData.setQuantity(5);
             } else {
                 productCellData.setQuantity(0);

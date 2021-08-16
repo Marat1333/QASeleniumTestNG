@@ -14,7 +14,7 @@ public class ShopsTest extends BaseMagPortalApiTest {
     private ShopsClient shopsClient;
 
     @Test(description = "C3182981 Get Shops List V1")
-    @AllureId("2089")
+    @AllureId("16285")
     public void testGetShops() {
 
         Response<ShopData> response = shopsClient.getShops();

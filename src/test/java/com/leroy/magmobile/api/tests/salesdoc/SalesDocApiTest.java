@@ -7,6 +7,7 @@ import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.CartEstimateProductOrderData;
 import com.leroy.magmobile.api.data.sales.cart_estimate.ServiceOrderData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+
 import java.util.Collections;
 import java.util.Random;
 

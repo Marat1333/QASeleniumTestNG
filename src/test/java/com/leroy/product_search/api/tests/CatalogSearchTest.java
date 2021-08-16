@@ -28,6 +28,7 @@ import com.leroy.magmobile.api.enums.CatalogSearchFields;
 import com.leroy.magmobile.api.enums.SortingOrder;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
 import io.qameta.allure.Issue;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;

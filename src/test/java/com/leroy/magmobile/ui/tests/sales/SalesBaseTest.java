@@ -39,6 +39,7 @@ import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magportal.api.helpers.PAOHelper;
 import com.leroy.utils.RandomUtil;
 import io.qameta.allure.Step;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

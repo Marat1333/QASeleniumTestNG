@@ -18,52 +18,55 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
         super(driver, customLocator);
     }
 
-    @WebFindBy(xpath = ".//div[span[normalize-space(.)='ЛМ']]/div/span[not(.='')]")
+    @WebFindBy(xpath = ".//div[span[normalize-space(.)='ЛМ']]/div/span[not(.='')]", metaName = "LM Code")
     Element lmCode;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'Dropdown__title')]//span")
+    @WebFindBy(xpath = ".//div[contains(@class, 'Dropdown__title')]//span", metaName = "Штрихкод")
     Element barCode;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__title')]//*")
+    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__title')]//*", metaName = "Название продукта")
     Element title;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__header')]/div[contains(@class, 'lmui-View')][3]/span[2]")
+    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__header')]/div[contains(@class, 'lmui-View')][4]/span", metaName = "Вес продукта")
     Element weight;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__price')]/span")
+    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__price')]/span", metaName = "Цена")
     Element price;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__discount-percent')]/span")
+    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__discount-percent')]/span", metaName = "Скидка")
     Element discountPercent;
 
-    @WebFindBy(xpath = ".//span[contains(@class, 'SalesDocProduct__content__discount-price')]")
+    @WebFindBy(xpath = ".//span[contains(@class, 'SalesDocProduct__content__discount-price')]", metaName = "Цена без скидки")
     Element totalPriceWithoutDiscount;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'Estimate-price')]")
+    @WebFindBy(xpath = ".//div[contains(@class, 'Estimate-price')]", metaName = "Окончательная цена")
     Element totalPrice;
 
-    @WebFindBy(xpath = ".//span[@id='inputCounterDecrementButton']/div")
+    @WebFindBy(xpath = ".//span[@id='inputCounterDecrementButton']/div", metaName = "Кнопка уменьшения количества")
     EditBox minusQuantityBtn;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__qty__input-counter')]//input")
+    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__qty__input-counter')]//input", metaName = "Количество")
     EditBox quantityFld;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__qty')]//span[1]")
+    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__qty')]//span[1]", metaName = "Единица измерения количества")
     Element quantityDeliveryLbl;
 
-    @WebFindBy(xpath = ".//span[@id='inputCounterIncrementButton']/div")
+    @WebFindBy(xpath = ".//span[@id='inputCounterIncrementButton']/div", metaName = "Кнопка увеличения количества")
     EditBox plusQuantityBtn;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__available')]//span")
+    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__available')]//span", metaName = "Доступно")
     Element availableStock;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__buttons')]/div[1]//button")
+    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__buttons')]/div[last()]//button", metaName = "Кнопка открытия контекстного меню")
+    Element contextMenu;
+
+    @WebFindBy(id = "0_onCopyProductButton", metaName = "Кнопка 'Добавить еще продукт'")
     Element copyBtn;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__buttons')]/div[2]//button")
+    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__buttons')]/div[2]//button", metaName = "Кнопка скидки")
     Element discountBtn;
 
-    @WebFindBy(xpath = ".//div[contains(@class, 'SalesDocProduct__content__buttons')]/div[last()]//button")
+    @WebFindBy(id = "0_onDeleteProductButton", metaName = "Кнопка удаления продукта")
     Element deleteBtn;
 
     public String getLmCode() {
@@ -79,7 +82,7 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
     }
 
     public String getWeight() {
-        return weight.getText();
+        return weight.getText().replaceAll("[\\w|,]", "");
     }
 
     public String getPrice() {
@@ -148,6 +151,7 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
     }
 
     public void clickCopy() {
+        openContextMenu();
         copyBtn.click();
     }
 
@@ -159,7 +163,12 @@ public class ProductOrderCardPuzWidget extends CardWebWidget<ProductOrderCardWeb
         return availableStock.getColor();
     }
 
+    public void openContextMenu(){
+        contextMenu.click();
+    }
+
     public void clickDelete() {
+        openContextMenu();
         try {
             deleteBtn.click();
         } catch (ElementClickInterceptedException err) {

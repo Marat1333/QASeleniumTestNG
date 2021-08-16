@@ -17,6 +17,7 @@ import com.leroy.magmobile.api.clients.SalesDocSearchClient;
 import com.leroy.magmobile.api.data.sales.SalesDocumentListResponse;
 import com.leroy.magmobile.api.data.sales.SalesDocumentResponseData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+
 import java.util.List;
 
 import io.qameta.allure.AllureId;

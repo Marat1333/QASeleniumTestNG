@@ -43,6 +43,7 @@ import com.leroy.magmobile.ui.pages.sales.product_card.prices_stocks_supplies.Su
 import com.leroy.magmobile.ui.pages.search.FilterPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import io.qameta.allure.Step;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -299,7 +300,7 @@ public class ProductCardTest extends AppBaseSteps {
         String lmCode = getRandomLmCode();
         CatalogProductClient.Extend extendOptions = CatalogProductClient.Extend.builder()
                 .inventory(true).logistic(true).rating(true).build();
-       ProductData data = catalogProductClient.getProduct(lmCode, SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR,
+        ProductData data = catalogProductClient.getProduct(lmCode, SalesDocumentsConst.GiveAwayPoints.SALES_FLOOR,
                 extendOptions).asJson();
 
         // Pre-conditions

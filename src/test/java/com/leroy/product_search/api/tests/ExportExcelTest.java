@@ -11,6 +11,7 @@ import com.leroy.utils.file_manager.FileManager;
 import com.leroy.utils.file_manager.excel.ExcelRow;
 import com.leroy.utils.file_manager.excel.ExcelSheet;
 import com.leroy.utils.file_manager.excel.ExcelWorkBook;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class ExportExcelTest extends BaseCatalogTest {
     }
 
     private void shouldExcelOutputIsCorrect(List<ProductData> dataList,
-            ExcelWorkBook excelWorkBook) {
+                                            ExcelWorkBook excelWorkBook) {
         String yes = "да";
         String no = "нет";
         ExcelSheet excelSheet = excelWorkBook.getExcelSheetByIndex(0);

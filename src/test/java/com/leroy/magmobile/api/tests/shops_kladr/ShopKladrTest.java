@@ -24,6 +24,7 @@ public class ShopKladrTest extends BaseProjectApiTest {
     @Inject
     private ShopsClient shopsClient;
 
+
     @Test(description = "C23195091 GET shops")
     @AllureId("13233")
     public void testGetShops() {

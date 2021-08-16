@@ -17,6 +17,7 @@ import com.leroy.magmobile.api.data.print.PrintPrinterData;
 import com.leroy.magmobile.api.data.print.PrintTaskProductData;
 import com.leroy.magmobile.api.data.print.PrintTaskResponseData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+
 import java.util.ArrayList;
 import java.util.List;
 

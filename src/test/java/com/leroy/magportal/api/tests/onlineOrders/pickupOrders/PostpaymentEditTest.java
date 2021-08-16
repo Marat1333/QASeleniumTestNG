@@ -65,7 +65,7 @@ public class PostpaymentEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425594 Postpayment: Edit Allowed For Picking Order", priority = 1)
-    @AllureId("1905")
+    @AllureId("16101")
     public void testEditAllowedForPicking() {
         currentCount = 9.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, currentCount);
@@ -73,7 +73,7 @@ public class PostpaymentEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425595 Postpayment: Add Product to Allowed For Picking Order", priority = 2)
-    @AllureId("1906")
+    @AllureId("16102")
     public void testAddProductAllowedForPicking() {
         currentProductsCount = 5;
         Response<?> response = orderClient.rearrange(currentOrderId, 2, null);
@@ -83,7 +83,7 @@ public class PostpaymentEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425596 Postpayment: Edit And Add Product to Allowed For Picking Order", priority = 3)
-    @AllureId("1907")
+    @AllureId("16103")
     public void testEditAndAddProductAllowedForPicking() {
         currentProductsCount = 7;
         currentCount = 8.0;
@@ -94,7 +94,7 @@ public class PostpaymentEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425599 Postpayment: Edit Picked Paid Order", priority = 4)
-    @AllureId("1908")
+    @AllureId("16104")
     public void testEditPickedPaid() {
         currentCount = 7.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, currentCount);
@@ -102,7 +102,7 @@ public class PostpaymentEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425597 Postpayment: Add Product to Paid Order (Negative)", priority = 5)
-    @AllureId("1909")
+    @AllureId("16105")
     public void testAddProductPickedPaid() {
         currentStatus = States.PICKED;
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
@@ -114,7 +114,7 @@ public class PostpaymentEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425598 Postpayment: Edit Add Product to Paid Order (Negative)", priority = 6)
-    @AllureId("1910")
+    @AllureId("16106")
     public void testEditAndAddProductPickedPaid() {
         Response<?> response = orderClient.rearrange(currentOrderId, 2, 1.0);
         assertThat("It's possible to ADD product into payed Order", !response.isSuccessful());
@@ -125,7 +125,7 @@ public class PostpaymentEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425600 Postpayment: Edit Dimensional Product: Allowed For Picking Order", priority = 7)
-    @AllureId("1911")
+    @AllureId("16107")
     public void testEditDimensionalProduct() {
         makeDimensionalOrder();
         currentCount = 6.66;
@@ -134,7 +134,7 @@ public class PostpaymentEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425601 Postpayment: Edit Dimensional Product: Paid Order", priority = 8)
-    @AllureId("1912")
+    @AllureId("16108")
     public void testEditDimensionalProductPaid() {
         currentStatus = States.PICKED;
         orderClient.moveNewOrderToStatus(currentOrderId, States.PICKED);
@@ -144,7 +144,7 @@ public class PostpaymentEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425602 Postpayment: Cancel order by Edit Dimensional Product: Paid Order", priority = 9)
-    @AllureId("1913")
+    @AllureId("16109")
     public void testCancelByEditDimensionalProductPaid() {
         currentCount = 10.0;
         Response<?> response = orderClient.editOrder(currentOrderId, 0, 0.0);
@@ -152,7 +152,7 @@ public class PostpaymentEditTest extends BaseMagPortalApiTest {
     }
 
     @Test(description = "C23425603 Postpayment: Cancel order by Edit with New Product Added", priority = 10)
-    @AllureId("1914")
+    @AllureId("16110")
     public void testCancelByEditWithNewProduct() {
         makeDimensionalOrder();
         orderClient.editOrder(currentOrderId, 1, null);

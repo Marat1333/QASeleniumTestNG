@@ -35,6 +35,7 @@ import com.leroy.magportal.ui.pages.orders.modal.SubmittedOrderModal;
 import com.leroy.magportal.ui.pages.products.form.AddProductForm;
 import com.leroy.magportal.ui.tests.BasePAOTest;
 import com.leroy.utils.RandomUtil;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,7 +76,7 @@ public class OrderTest extends BasePAOTest {
     SalesDocWebData orderData;
 
     @Test(description = "C23410896 Создать заказ из корзины с одним заказом", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1141")
+    @AllureId("15337")
     public void testCreateOrderWithOneOrder() throws Exception {
         // Prepare data
         SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
@@ -117,7 +118,7 @@ public class OrderTest extends BasePAOTest {
     }
 
     @Test(description = "C23410899 Создать заказ из корзины с авторской сборкой")
-    @AllureId("1144")
+    @AllureId("15340")
     public void testCreateOrderWithAuthorAssembly() throws Exception {
         // Prepare data
         SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_2;
@@ -170,7 +171,7 @@ public class OrderTest extends BasePAOTest {
     }
 
     @Test(description = "C23410900 Создание заказа из корзины, преобразованной из сметы", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1145")
+    @AllureId("15341")
     public void testCreateOrderFromCartTransformedFromEstimate() throws Exception {
         step("Pre-condition: Создаем смету и преобразовываем ее в корзину");
         CustomerData customerData = paoHelper.searchForCustomer(TestDataConstants.SIMPLE_CUSTOMER_DATA_2);
@@ -203,7 +204,7 @@ public class OrderTest extends BasePAOTest {
     }
 
     @Test(description = "C23410917 Создать заказ из корзины с клиентом", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1146")
+    @AllureId("15342")
     public void testCreateOrderFromCartWithClient() throws Exception {
         step("Pre-condition: Создаем корзину с клиентом");
         // Prepare data
@@ -240,7 +241,7 @@ public class OrderTest extends BasePAOTest {
     }
 
     @Test(description = "C23410898 Создать заказ из корзины со скидкой", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1143")
+    @AllureId("15339")
     public void testCreateOrderFromCartWithDiscount() throws Exception {
         // Prepare data
         SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
@@ -295,7 +296,7 @@ public class OrderTest extends BasePAOTest {
     }
 
     @Test(description = "C23410897 Создать последовательно заказы из корзины с двумя заказами")
-    @AllureId("1142")
+    @AllureId("15338")
     public void testCreateOrdersFromCartWithTwoOrders() throws Exception {
         // Prepare data
         SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
@@ -364,7 +365,7 @@ public class OrderTest extends BasePAOTest {
 
         OrderHeaderPage orderHeaderPage = loginSelectShopAndGoTo(OrderHeaderPage.class);
         orderClient.waitUntilOrderGetStatus(orderId,
-                        SalesDocumentsConst.States.ALLOWED_FOR_PICKING, null);
+                SalesDocumentsConst.States.ALLOWED_FOR_PICKING, null);
         orderHeaderPage.clickDocumentInLeftMenu(orderId);
 
         orderCreatedContentPage = new OrderCreatedContentPage();
@@ -419,7 +420,7 @@ public class OrderTest extends BasePAOTest {
 
     @Test(description = "C23410901 Добавить товар в неподтвержденный заказ (количества товара достаточно)",
             groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1147")
+    @AllureId("15343")
     public void testAddProductInDraftOrderWithSufficientProductQuantity() throws Exception {
         ProductData newProduct = productList.get(1);
         preconditionForEditOrderDraftTests();
@@ -433,7 +434,7 @@ public class OrderTest extends BasePAOTest {
 
     @Test(description = "C23410902 Добавить товар в неподтвержденный заказ (количества товара недостаточно)",
             groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1148")
+    @AllureId("15344")
     public void testAddProductInDraftOrderWithInsufficientProductQuantity() throws Exception {
         ProductData productIData = productList.get(0);
         preconditionForEditOrderDraftTests();
@@ -453,7 +454,7 @@ public class OrderTest extends BasePAOTest {
 
     @Test(description = "C23410904 Добавить Топ ЕМ или AVS товар в неподтвержденный заказ",
             groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1150")
+    @AllureId("15346")
     public void testAddTopEmOrAvsInDraftOrder() throws Exception {
         ProductData newProduct = searchProductHelper.getProducts(
                 1, new CatalogSearchFilter().setTopEM(true)).get(0);
@@ -468,7 +469,7 @@ public class OrderTest extends BasePAOTest {
 
     @Test(description = "C23410903 Изменить количество товара в неподтвержденном заказе",
             groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1153")
+    @AllureId("15349")
     public void testEditProductQuantityInDraftOrder() throws Exception {
         preconditionForEditOrderDraftTests();
 
@@ -486,7 +487,7 @@ public class OrderTest extends BasePAOTest {
 
     @Test(description = "C23410905 Удалить товар из неподтвержденного заказа",
             groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1155")
+    @AllureId("15351")
     public void testRemoveProductFromDraftOrder() throws Exception {
         preconditionForEditOrderDraftTests(productList.subList(0, 2), true);
 
@@ -501,7 +502,7 @@ public class OrderTest extends BasePAOTest {
     }
 
     @Test(description = "C23410914 Удалить последний товар из неподтвержденного заказа", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1159")
+    @AllureId("15355")
     public void testRemoveLastProductFromDraftOrder() throws Exception {
         preconditionForEditOrderDraftTests();
 
@@ -519,7 +520,7 @@ public class OrderTest extends BasePAOTest {
     }
 
     @Test(description = "C23410912 Удалить неподтвержденный заказ", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1157")
+    @AllureId("15353")
     public void testRemoveOrderDraft() throws Exception {
         preconditionForEditOrderDraftTests();
 
@@ -539,7 +540,7 @@ public class OrderTest extends BasePAOTest {
     /// -------- EDIT CONFIRMED ORDER TESTS --------------- ///
 
     @Test(description = "C23410907 Добавить товар в подтвержденный закакз", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1151")
+    @AllureId("15347")
     public void testAddProductInConfirmedOrder() throws Exception {
         ProductData newProductItem = productList.get(1);
         List<String> expectedProductLmCodes = Arrays.asList(productList.get(0).getLmCode(),
@@ -564,7 +565,7 @@ public class OrderTest extends BasePAOTest {
     }
 
     @Test(description = "C23410908 Изменить количество товара в подтвержденном заказе", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1154")
+    @AllureId("15350")
     public void testChangeProductQuantityInConfirmedOrder() throws Exception {
         preconditionForEditOrderConfirmedTests(Collections.singletonList(productList.get(0)), 2.0);
 
@@ -588,7 +589,7 @@ public class OrderTest extends BasePAOTest {
     }
 
     @Test(description = "C23410909 Удалить товар из подтвержденного заказа", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1156")
+    @AllureId("15352")
     public void testRemoveProductFromConfirmedOrder() throws Exception {
         preconditionForEditOrderConfirmedTests(productList.subList(0, 2), 1.0);
 
@@ -611,7 +612,7 @@ public class OrderTest extends BasePAOTest {
     }
 
     @Test(description = "C23410915 Удалить последний товар из подтвержденного заказа", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1160")
+    @AllureId("15356")
     public void testLastRemoveProductFromConfirmedOrder() throws Exception {
         preconditionForEditOrderConfirmedTests();
 
@@ -647,7 +648,7 @@ public class OrderTest extends BasePAOTest {
     }
 
     @Test(description = "C23410913 Отменить подтвержденный заказ", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1158")
+    @AllureId("15354")
     public void testCancelConfirmedOrder() throws Exception {
         preconditionForEditOrderConfirmedTests();
 
@@ -671,7 +672,7 @@ public class OrderTest extends BasePAOTest {
     }
 
     @Test(description = "C23398451 Создание заказа с существующим пин кодом", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1130")
+    @AllureId("15326")
     public void testCreateOrderWithExistedPinCode() throws Exception {
         String toolTypeText = "Уже используется, придумай другой код";
         String existedPinCode = "11111";
@@ -696,7 +697,7 @@ public class OrderTest extends BasePAOTest {
 
     @Test(description = "C23398448 Смена типа получения товара при заполненном пинкоде в неподтвержденном заказе",
             groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1129")
+    @AllureId("15325")
     public void testChangeOfReceiptType() throws Exception {
         SalesDocumentsConst.GiveAwayPoints deliveryWay = SalesDocumentsConst.GiveAwayPoints.DELIVERY;
         SalesDocumentsConst.GiveAwayPoints pickupWay = SalesDocumentsConst.GiveAwayPoints.PICKUP;
@@ -728,7 +729,7 @@ public class OrderTest extends BasePAOTest {
     // ======== Подтверждение заказа ============= //
 
     @Test(description = "C23410892 Подтвердить заказ на самовывоз сегодня", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1134")
+    @AllureId("15330")
     public void testConfirmOrderPickupToday() throws Exception {
         SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
         preconditionForEditOrderDraftTests(Collections.singletonList(productList.get(0)), false);
@@ -765,7 +766,7 @@ public class OrderTest extends BasePAOTest {
     }
 
     @Test(description = "C23410893 Подтвердить заказ на доставку завтра", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1135")
+    @AllureId("15331")
     public void testConfirmOrderForDeliveryTomorrow() throws Exception {
         SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
         SalesDocumentsConst.GiveAwayPoints deliveryWay = SalesDocumentsConst.GiveAwayPoints.DELIVERY;
@@ -808,7 +809,7 @@ public class OrderTest extends BasePAOTest {
     }
 
     @Test(description = "C23410894 Подтвердить заказ на самовывоз через 14 дней", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1136")
+    @AllureId("15332")
     public void testConfirmOrderPickupIn14Days() throws Exception {
         SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
         preconditionForEditOrderDraftTestsExceedsAvailableStock(Collections.singletonList(productList.get(0)), false);
@@ -846,7 +847,7 @@ public class OrderTest extends BasePAOTest {
     }
 
     @Test(description = "C23410895 Подтвердить заказ на доставку через 15 дней", groups = NEED_PRODUCTS_GROUP)
-    @AllureId("1137")
+    @AllureId("15333")
     public void testConfirmOrderForDeliveryIn15days() throws Exception {
         SimpleCustomerData customerData = TestDataConstants.SIMPLE_CUSTOMER_DATA_1;
         SalesDocumentsConst.GiveAwayPoints deliveryWay = SalesDocumentsConst.GiveAwayPoints.DELIVERY;

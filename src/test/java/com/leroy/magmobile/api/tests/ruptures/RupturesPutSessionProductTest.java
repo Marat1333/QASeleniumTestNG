@@ -5,6 +5,7 @@ import com.leroy.magmobile.api.data.ruptures.ActionData;
 import com.leroy.magmobile.api.data.ruptures.ReqRuptureSessionData;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductDataList;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;

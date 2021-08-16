@@ -33,6 +33,7 @@ import com.leroy.magportal.ui.pages.orders.OrderHeaderPage.SearchTypes;
 import com.leroy.utils.ParserUtil;
 import io.qameta.allure.Issue;
 import io.qameta.allure.Step;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ public class OrderSearchTest extends WebBaseSteps {
         if (orderDetailData.getProducts() == null) {
             // Prepare request data
             CartProductOrderData productOrderData = new CartProductOrderData(
-                searchProductHelper.getProducts(1).get(0));
+                    searchProductHelper.getProducts(1).get(0));
             productOrderData.setQuantity(1.0);
             productOrderDataList.add(productOrderData);
         }
@@ -106,7 +107,7 @@ public class OrderSearchTest extends WebBaseSteps {
         // Set pin-code
         String validPinCode = paoHelper.getValidPinCode(false);
         Response<JsonNode> responseSetPinCode = paoClient
-            .setPinCode(orderData.getOrderId(), validPinCode);
+                .setPinCode(orderData.getOrderId(), validPinCode);
         if (responseSetPinCode.getStatusCode() == StatusCodes.ST_400_BAD_REQ) {
             validPinCode = paoHelper.getValidPinCode(false);
             responseSetPinCode = paoClient.setPinCode(orderData.getOrderId(), validPinCode);
@@ -115,7 +116,7 @@ public class OrderSearchTest extends WebBaseSteps {
 
         // Confirm order
         String customerFirstName = ParserUtil
-            .parseFirstName(orderDetailData.getCustomer().getName());
+                .parseFirstName(orderDetailData.getCustomer().getName());
         String customerLastName = ParserUtil.parseLastName(orderDetailData.getCustomer().getName());
         OrderCustomerData orderCustomerData = new OrderCustomerData();
         orderCustomerData.setFirstName(customerFirstName);
@@ -126,9 +127,9 @@ public class OrderSearchTest extends WebBaseSteps {
         orderCustomerData.setEmail(orderDetailData.getCustomer().getEmail());
 
         String recipientFirstName = ParserUtil
-            .parseFirstName(orderDetailData.getRecipient().getName());
+                .parseFirstName(orderDetailData.getRecipient().getName());
         String recipientLastName = ParserUtil
-            .parseLastName(orderDetailData.getRecipient().getName());
+                .parseLastName(orderDetailData.getRecipient().getName());
         OrderCustomerData orderRecipientData = new OrderCustomerData();
         orderRecipientData.setFirstName(recipientFirstName);
         orderRecipientData.setLastName(recipientLastName);
@@ -156,17 +157,18 @@ public class OrderSearchTest extends WebBaseSteps {
         confirmOrderData.setGiveAway(giveAwayData);
 
         Response<OrderData> respConfirm = paoClient
-            .confirmOrder(orderData.getOrderId(), confirmOrderData);
+                .confirmOrder(orderData.getOrderId(), confirmOrderData);
         paoClient.assertThatIsConfirmed(respConfirm, orderData);
         if (waitUntilIsConfirmed) {
             orderClient.waitUntilOrderHasStatusAndReturnOrderData(orderData.getOrderId(),
-                SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
+                    SalesDocumentsConst.States.ALLOWED_FOR_PICKING.getApiVal());
         }
         return orderData.getOrderId();
     }
 
     @Test(description = "C22829624 Ордерс. Фильтрация по статусу заказа")
-    @AllureId("1030")
+    @AllureId("15225")
+
     @Ignore("Надо обновить шаги тест кейса и переделать его")
     public void testOrderFilterByStatus() throws Exception {
         // Step 1
@@ -177,16 +179,16 @@ public class OrderSearchTest extends WebBaseSteps {
         // Step 2
         step("В фильтре Статус заказа выставить значение = Создан, нажать кнопку 'Показать заказы'");
         ordersPage.openFilterWidget()
-            .selectStatusFilters(CREATED)
-            .clickApplyFilters()
-            .shouldDocumentListContainsOnlyWithStatuses(CREATED);
+                .selectStatusFilters(CREATED)
+                .clickApplyFilters()
+                .shouldDocumentListContainsOnlyWithStatuses(CREATED);
 
         // Step 3
         step("Деактивировать фильтр Создан, убрав чекбокс, нажать кнопку 'Показать заказы'");
         ordersPage.openFilterWidget()
-            .deselectStatusFilters(CREATED)
-            .clickApplyFilters()
-            .shouldDocumentListIs(documentListFirst);
+                .deselectStatusFilters(CREATED)
+                .clickApplyFilters()
+                .shouldDocumentListIs(documentListFirst);
 
         /* TODO Надо обновить шаги тест кейса и переделать его
         // Step 4
@@ -207,11 +209,11 @@ public class OrderSearchTest extends WebBaseSteps {
         // Step 6
         step("Нажать на кнопку 'Очистить фильтры' (изображена метла), нажать 'Показать заказы'");
         ordersPage.clearFiltersAndSubmit()
-            .shouldDocumentListNumbersEqual(documentListFirst.stream().map(ShortOrderDocWebData::getNumber).collect(Collectors.toList()));
+                .shouldDocumentListNumbersEqual(documentListFirst.stream().map(ShortOrderDocWebData::getNumber).collect(Collectors.toList()));
     }
 
     @Test(description = "C22893768 Ордерс. Фильтрация по Способу получения")
-    @AllureId("1032")
+    @AllureId("15227")
     public void testOrderFilterByDeliveryType() throws Exception {
         // Step 1
         step("Открыть страницу с Заказами");
@@ -221,45 +223,45 @@ public class OrderSearchTest extends WebBaseSteps {
         // Step 2
         step("В фильтре Способ получения выставить значение = Самовывоз, нажать кнопку 'Показать заказы'");
         ordersPage.openFilterWidget()
-            .selectDeliveryTypeFilters(PICKUP)
-            .clickApplyFilters()
-            .shouldDocumentListContainsOnlyWithDeliveryTypes(PICKUP);
+                .selectDeliveryTypeFilters(PICKUP)
+                .clickApplyFilters()
+                .shouldDocumentListContainsOnlyWithDeliveryTypes(PICKUP);
 
         // Step 3
         step("В фильтре Способ получения выставить значение = Доставка, нажать кнопку 'Показать заказы'");
         ordersPage.openFilterWidget()
-            .clearFiltersAndSubmit()
-            .openFilterWidget()
-            .selectDeliveryTypeFilters(DELIVERY_TK)
-            .clickApplyFilters()
-            .shouldDocumentListContainsOnlyWithDeliveryTypes(DELIVERY_TK);
+                .clearFiltersAndSubmit()
+                .openFilterWidget()
+                .selectDeliveryTypeFilters(DELIVERY_TK)
+                .clickApplyFilters()
+                .shouldDocumentListContainsOnlyWithDeliveryTypes(DELIVERY_TK);
 
         // Step 4
         step("Нажать на кнопку 'Очистить фильтры' (изображена метла), нажать 'Показать заказы'");
         ordersPage.openFilterWidget()
-            .clearFiltersAndSubmit()
-            .shouldDocumentListNumbersEqual(documentListFirst.stream().map(ShortOrderDocWebData::getNumber).collect(Collectors.toList()));
+                .clearFiltersAndSubmit()
+                .shouldDocumentListNumbersEqual(documentListFirst.stream().map(ShortOrderDocWebData::getNumber).collect(Collectors.toList()));
     }
 
     @Issue("PUZ2-2092")
     @Test(description = "C22893769 Ордерс. Фильтрация по Номеру заказа и Номеру телефона")
-    @AllureId("1033")
+    @AllureId("15228")
     public void testOrderFilterByDocNumberAndPhoneNumber() throws Exception {
         // Pre-conditions
         SimpleCustomerData customerData = new SimpleCustomerData();
         customerData.generateRandomData();
         customerData.setName(RandomStringUtils.randomAlphabetic(6),
-            RandomStringUtils.randomAlphabetic(6));
+                RandomStringUtils.randomAlphabetic(6));
 
         SimpleCustomerData recipientData = new SimpleCustomerData();
         recipientData.generateRandomData();
         recipientData.setName(RandomStringUtils.randomAlphabetic(6),
-            RandomStringUtils.randomAlphabetic(6));
+                RandomStringUtils.randomAlphabetic(6));
 
         SimpleCustomerData customerRecipientData = new SimpleCustomerData();
         customerRecipientData.generateRandomData();
         customerRecipientData.setName(RandomStringUtils.randomAlphabetic(6),
-            RandomStringUtils.randomAlphabetic(6));
+                RandomStringUtils.randomAlphabetic(6));
 
         OrderDetailData orderData1 = new OrderDetailData();
         orderData1.setCustomer(customerData);
@@ -280,7 +282,7 @@ public class OrderSearchTest extends WebBaseSteps {
 
             // Step 2
             step("В фильтре поиска выставить 'Номер заказа', вбить номер из предусловия, нажать " +
-                "кнопку 'Показать заказы'");
+                    "кнопку 'Показать заказы'");
             ordersPage.selectSearchType(OrderHeaderPage.SearchTypes.ORDER_NUMBER);
             ordersPage.enterSearchTextAndSubmit(orderId_1);
             ordersPage.shouldDocumentListNumbersEqual(Collections.singletonList(orderId_1));
@@ -288,12 +290,12 @@ public class OrderSearchTest extends WebBaseSteps {
             // Step 3
             step("Нажать на кнопку 'Очистить фильтры'(изображена метла), нажать 'Показать заказы'");
             ordersPage.openFilterWidget()
-                .clearFiltersAndSubmit()
-                .softAssertDocumentCountIs(ordersCountBefore, 3);
+                    .clearFiltersAndSubmit()
+                    .softAssertDocumentCountIs(ordersCountBefore, 3);
 
             // Step 4
             step("В фильтре поиска выставить последние 4 цифры заказа из предусловия, нажать кнопку" +
-                " 'Показать заказы'");
+                    " 'Показать заказы'");
             String partOrder = orderId_1.substring(orderId_1.length() - 4);
             ordersPage.enterSearchTextAndSubmit(partOrder);
             ordersPage.shouldDocumentListFilteredByNumber(partOrder);
@@ -305,7 +307,7 @@ public class OrderSearchTest extends WebBaseSteps {
 
             // Step 6
             step("В фильтре поиска выставить 'Номер телефона' , вбить в маске только 3 цифры, " +
-                "например '937', нажать кнопку 'Показать заказы'");
+                    "например '937', нажать кнопку 'Показать заказы'");
             ordersPage.selectSearchType(OrderHeaderPage.SearchTypes.PHONE_NUMBER);
             ordersPage.enterSearchTextAndSubmit("937");
             ordersPage.softAssertDocumentListIsEmpty(6);
@@ -319,8 +321,8 @@ public class OrderSearchTest extends WebBaseSteps {
             // Step 8
             step("Нажать на кнопку 'Очистить фильтры'(изображена метла), нажать 'Показать заказы'");
             ordersPage.openFilterWidget()
-                .clearFiltersAndSubmit()
-                .softAssertDocumentCountIs(ordersCountBefore, 8);
+                    .clearFiltersAndSubmit()
+                    .softAssertDocumentCountIs(ordersCountBefore, 8);
 
             // Step 9
             step("Вбить номер телефона получателя из предусловия п.1");
@@ -330,7 +332,7 @@ public class OrderSearchTest extends WebBaseSteps {
 
             // Step 10
             step("Вбить номер телефона клиента или получателя " +
-                "(должны совпадать) из предусловия п.2, нажать 'Показать заказы'");
+                    "(должны совпадать) из предусловия п.2, нажать 'Показать заказы'");
             ordersPage.enterSearchTextAndSubmit(customerRecipientData.getPhoneNumber());
             ordersPage.softAssertDocumentIsPresent(orderId_2, 10);
 
@@ -378,7 +380,7 @@ public class OrderSearchTest extends WebBaseSteps {
     }
 
     @Test(description = "C22893767 Ордерс. Фильтрация по Дате")
-    @AllureId("1031")
+    @AllureId("15226")
     public void testOrderFilterByDate() throws Exception {
         // Step 1
         step("Открыть страницу с Заказами");
@@ -387,54 +389,59 @@ public class OrderSearchTest extends WebBaseSteps {
 
         // Step 2
         step("В фильтре 'Дата' выставить дату = От - сегодня, До - сегодня, " +
-            "нажать кнопку 'Показать заказы'");
+                "нажать кнопку 'Показать заказы'");
         LocalDate fromDate = LocalDate.now();
         LocalDate toDate = LocalDate.now();
         ordersPage.openFilterWidget()
-            .selectDateCreationsFilters(fromDate, toDate)
-            .clickApplyFilters();
+                .selectDateCreationsFilters(fromDate, toDate)
+                .clickApplyFilters();
         ordersPage.shouldDocumentListFilteredByDates(fromDate, toDate);
 
         // Step 3
         step("Нажать на кнопку 'Очистить фильтры'(изображена метла), нажать 'Показать заказы'");
         ordersPage.openFilterWidget()
-            .clearFiltersAndSubmit()
-            .shouldDocumentCountIs(ordersCountBefore);
+                .clearFiltersAndSubmit()
+                .shouldDocumentCountIs(ordersCountBefore);
 
         // Step 4
         step("В фильтре 'Дата' выставить дату = От - завтра, До - завтра, нажать кнопку 'Показать заказы'");
         fromDate = LocalDate.now().plusDays(1);
         toDate = LocalDate.now().plusDays(1);
         ordersPage.openFilterWidget()
-            .selectDateCreationsFilters(fromDate, toDate)
-            .clickApplyFilters();
+                .selectDateCreationsFilters(fromDate, toDate)
+                .clickApplyFilters();
         ordersPage.shouldDocumentListIsEmpty();
 
         // Step 5
         step("Нажать крестик в фильтре");
-        ordersPage.clearDateCreationsFilters();
-        ordersPage.shouldCreationDateFilterIs(null, null);
+        ordersPage.openFilterWidget()
+                .clearDateCreationsFilters();
+        ordersPage.shouldCreationDateFilterIs(null, null)
+                .closeFilters();
 
         // Step 6
         step("В фильтре 'Дата' выставить дату = От - сегодня, До - вчера, нажать кнопку 'Показать заказы'");
         fromDate = LocalDate.now();
         toDate = LocalDate.now().minusDays(1);
-        ordersPage.selectDateCreationsFilters(fromDate, toDate);
-        ordersPage.shouldCreationDateFilterIs(toDate, fromDate);
-        ordersPage.clickApplyFilters();
+        ordersPage.openFilterWidget()
+                .selectDateCreationsFilters(fromDate, toDate)
+                .shouldCreationDateFilterIs(toDate, fromDate)
+                .clickApplyFilters();
         ordersPage.shouldDocumentListFilteredByDates(toDate, fromDate);
 
         // Step 7
         step("Выставить в фильтре 'Дата' диапазон = неделя, нажать кнопку 'Показать заказы'");
         fromDate = LocalDate.now().minusDays(3);
         toDate = LocalDate.now().plusDays(4);
-        ordersPage.selectDateCreationsFilters(fromDate, toDate)
-            .clickApplyFilters();
+        ordersPage.openFilterWidget()
+                .selectDateCreationsFilters(fromDate, toDate)
+                .clickApplyFilters();
         ordersPage.shouldDocumentListFilteredByDates(fromDate, toDate);
 
         // Step 8
         step("Нажать на кнопку 'Очистить фильтры'(изображена метла), нажать 'Показать заказы'");
-        ordersPage.clearFiltersAndSubmit();
+        ordersPage.openFilterWidget()
+                .clearFiltersAndSubmit();
         ordersPage.shouldDocumentCountIs(ordersCountBefore);
     }
 

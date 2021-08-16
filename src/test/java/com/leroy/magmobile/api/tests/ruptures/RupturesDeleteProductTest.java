@@ -10,6 +10,7 @@ import com.leroy.magmobile.api.data.CommonErrorResponseData;
 import com.leroy.magmobile.api.data.ruptures.ReqRuptureSessionData;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductDataList;
+
 import java.util.ArrayList;
 import java.util.List;
 

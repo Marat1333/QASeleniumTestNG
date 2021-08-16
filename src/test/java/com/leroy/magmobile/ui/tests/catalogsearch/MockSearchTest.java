@@ -10,6 +10,7 @@ import com.leroy.magmobile.ui.pages.sales.product_card.ProductDescriptionPage;
 import com.leroy.magmobile.ui.pages.search.NomenclatureSearchPage;
 import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.tests.BaseUiMagMobMockTest;
+
 import java.util.HashMap;
 
 import io.qameta.allure.AllureId;

@@ -13,6 +13,7 @@ import com.leroy.magmobile.api.clients.SalesDocProductClient;
 import com.leroy.magmobile.api.data.sales.DiscountReasonData;
 import com.leroy.magmobile.api.data.sales.SalesDocDiscountData;
 import com.leroy.magmobile.api.tests.BaseProjectApiTest;
+
 import java.util.List;
 
 import io.qameta.allure.AllureId;

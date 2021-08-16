@@ -6,7 +6,7 @@ import io.qameta.allure.AllureId;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class RupturesStockCorrectionAccessCheckTests extends BaseRuptureTest{
+public class RupturesStockCorrectionAccessCheckTests extends BaseRuptureTest {
 
     @Test(description = "C23718169 User have access to all departments")
     @AllureId("13225")

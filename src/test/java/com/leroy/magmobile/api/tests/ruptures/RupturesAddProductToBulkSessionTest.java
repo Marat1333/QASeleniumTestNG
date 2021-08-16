@@ -9,7 +9,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.leroymerlin.qa.core.clients.base.Response;
 
-public class RupturesAddProductToBulkSessionTest extends BaseRuptureTest{
+public class RupturesAddProductToBulkSessionTest extends BaseRuptureTest {
 
     static final String firstLmCode = RandomStringUtils.randomNumeric(8);
     static final String secondLmCode = RandomStringUtils.randomNumeric(8);

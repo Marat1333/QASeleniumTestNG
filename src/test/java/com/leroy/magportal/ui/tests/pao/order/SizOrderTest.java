@@ -69,7 +69,7 @@ public class SizOrderTest extends BaseMockMagPortalUiTest {
     // ------------------- TEST CASES ------------------------------- //
 
     @Test(description = "C23399998 Признаки ТК в листинге, на вкладке заказа")
-    @AllureId("1057")
+    @AllureId("15253")
     public void testTKSignsOnOrderTab() throws Exception {
         String orderTK = "201003130724";
         String orderKK = "201003130726";
@@ -130,7 +130,7 @@ public class SizOrderTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23426982 Статус 'В доставке'")
-    @AllureId("1062")
+    @AllureId("15258")
     public void testStatusInDelivery() throws Exception {
         String orderWaitingForPayment = "234269820000";
         String orderAllowedForPicking = "234269820001";
@@ -180,7 +180,7 @@ public class SizOrderTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23399960 Конечный статус 'Доставлен'")
-    @AllureId("1058")
+    @AllureId("15254")
     public void testStatusDelivered() throws Exception {
         String orderDelivered = "233999600000";
 
@@ -195,7 +195,7 @@ public class SizOrderTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23399961 Конечный статус 'Частичная доставка'")
-    @AllureId("1059")
+    @AllureId("15255")
     public void testStatusPartiallyDelivered() throws Exception {
         String orderId = "233999610000";
 
@@ -210,7 +210,7 @@ public class SizOrderTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23399963 Статус 'Доставлен без сборки'")
-    @AllureId("1061")
+    @AllureId("15257")
     public void testStatusDeliveredWithoutPicking() throws Exception {
         String orderId = "233999630000";
 
@@ -225,7 +225,7 @@ public class SizOrderTest extends BaseMockMagPortalUiTest {
     }
 
     @Test(description = "C23399962 Конечный статус 'Отказ при доставке'")
-    @AllureId("1060")
+    @AllureId("15256")
     public void testStatusCancelledOnDelivery() throws Exception {
         String orderId = "233999620000";
 

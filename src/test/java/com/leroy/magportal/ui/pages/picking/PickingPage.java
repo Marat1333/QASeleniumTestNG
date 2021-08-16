@@ -66,27 +66,27 @@ public class PickingPage extends LeftDocumentListPage<ShortPickingTaskCardWidget
             metaName = "Кнопка Обновить список документов")
     private Button refreshDocumentListBtn;
 
-    @WebFindBy(xpath = "//div[contains(@class, 'lm-picking-Picking-PickingList__items')]/div",
+    @WebFindBy(xpath = "//div[contains(@class, 'lmui-View lmui-List')]/div",
             clazz = ShortPickingTaskCardWidget.class)
     private CardWebWidgetList<ShortPickingTaskCardWidget, ShortPickingTaskData> documentCardList;
 
     // Данные сборки (Информация вверху - над вкладками 'Содержание', 'Комментарии', 'Информация')
 
-    private static final String PICKING_VIEW_HEADER = "div[contains(@class, 'PickingViewHeader__orderLink')]";
+    private static final String PICKING_VIEW_HEADER = "//div[contains(@class, '-hidden-xs') and div[contains(@class,'-middle')]]";
 
-    @WebFindBy(xpath = "//div[" + PICKING_VIEW_HEADER + "]/span[1]",
+    @WebFindBy(xpath = "(" + PICKING_VIEW_HEADER + "//div[contains(@class, 'lmui-View-pr-gap1')])[1]/span",
             metaName = "Номер сборки")
     Element buildNumber;
 
-    @WebFindBy(xpath = "//" + PICKING_VIEW_HEADER,
+    @WebFindBy(xpath = "(" + PICKING_VIEW_HEADER + "//div[contains(@class, '-flex')])[2]/span",
             metaName = "Ссылка на заказ (последние 4 цифры заказа)")
     Element orderLink;
 
-    @WebFindBy(xpath = "//div[" + PICKING_VIEW_HEADER + "]/div[2]/span",
+    @WebFindBy(xpath = "(" + PICKING_VIEW_HEADER + "//div[contains(@class, '-flex')])[1]/div[2]/span",
             metaName = "Тип сборки")
     Element assemblyType;
 
-    @WebFindBy(xpath = "//div[" + PICKING_VIEW_HEADER + "]/span[3]",
+    @WebFindBy(xpath = PICKING_VIEW_HEADER + "//span[@data-testid='lmui-Status']",
             metaName = "Статус")
     Element status;
 
@@ -94,7 +94,7 @@ public class PickingPage extends LeftDocumentListPage<ShortPickingTaskCardWidget
             metaName = "Дата?")
     Element date; // TODO что это за время?
 
-    @WebFindBy(xpath = "//div[contains(@class, 'Picking-PickingViewHeader')]/div[2]/span[1]",
+    @WebFindBy(xpath = PICKING_VIEW_HEADER + "//div[contains(@class, 'lmui-View-no-gutter')]/span",
             metaName = "Дата создания")
     Element creationDate;
 

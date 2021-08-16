@@ -25,6 +25,7 @@ import com.leroy.magmobile.ui.pages.search.SearchProductPage;
 import com.leroy.magmobile.ui.pages.search.SuppliersSearchPage;
 import com.leroy.magmobile.ui.pages.search.modal.SortPage;
 import io.qameta.allure.Issue;
+
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;

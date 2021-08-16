@@ -27,6 +27,7 @@ public class RupturesGetSessionProductTest extends BaseRuptureTest {
 
     @Inject
     private RupturesClient rupturesClient;
+
     @Override
     protected boolean isDeleteSessionAfterEveryMethod() {
         return false;

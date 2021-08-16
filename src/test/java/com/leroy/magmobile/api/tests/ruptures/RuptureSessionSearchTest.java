@@ -22,6 +22,7 @@ import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionData;
 import com.leroy.magmobile.api.data.ruptures.ResRuptureSessionDataList;
 import com.leroy.magmobile.api.data.ruptures.RuptureProductData;
 import com.leroy.magmobile.api.requests.ruptures.RupturesSessionsRequest;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;

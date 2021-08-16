@@ -39,7 +39,7 @@ public class AuthorizationTest extends BaseProjectApiTest {
         assertThat(response, successful());
         tokenData = response.asJson();
         softAssert().isTrue(Strings.isNotNullAndNotEmpty(tokenData.getAccessToken()), "access_token");
-        softAssert().isTrue( tokenData.getExpiresIn() > 1, "expires_in");
+        softAssert().isTrue(tokenData.getExpiresIn() > 1, "expires_in");
         softAssert().isTrue(Strings.isNotNullAndNotEmpty(tokenData.getRefreshToken()), "refresh token");
         softAssert().isTrue(tokenData.getLdap().equalsIgnoreCase(EnvConstants.BASIC_USER_LDAP), "ldap");
         softAssert().isTrue(Strings.isNotNullAndNotEmpty(tokenData.getName()), "name");
