@@ -58,7 +58,7 @@ public class RupturesDeleteProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3233586 DELETE ruptures product")
-    @AllureId("3348")
+    @AllureId("13205")
     public void testDeleteRupturesProduct() {
         removedProductLmCode = ruptureProductDataListBody.getItems().get(0).getLmCode();
         step("Удаляем товар из сессии");
@@ -72,7 +72,7 @@ public class RupturesDeleteProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3293173 DELETE ruptures product for deleted product")
-    @AllureId("3349")
+    @AllureId("13206")
     public void testDeleteRupturesProductForDeletedProduct() {
         if (removedProductLmCode == null) {
             removedProductLmCode = ruptureProductDataListBody.getItems().get(0).getLmCode();
@@ -92,7 +92,7 @@ public class RupturesDeleteProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3298403 DELETE ruptures product from finished session")
-    @AllureId("3350")
+    @AllureId("13207")
     public void testDeleteRupturesProductFromFinishedSession() {
         step("Завершаем сессию");
         Response<JsonNode> respFinishSession = rupturesClient.finishSession(sessionId);
@@ -110,7 +110,7 @@ public class RupturesDeleteProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409766 DELETE ruptures product mashup validation")
-    @AllureId("3351")
+    @AllureId("13208")
     public void testDeleteRupturesProductMashupValidation() {
 
         step("Отправляем запрос на удаление без параметров");
@@ -126,7 +126,7 @@ public class RupturesDeleteProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409767 DELETE ruptures product for not existing session")
-    @AllureId("3352")
+    @AllureId("13209")
     public void testDeleteRupturesProductForNotExistingSession() {
 
         step("Отправляем запрос на удаление товара из несуществующей сессии");

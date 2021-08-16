@@ -93,7 +93,7 @@ public class PrintTagsTest extends AppBaseSteps {
     }
 
     @Test(description = "C23389191 Создание сессии через раздел \"Работа\"")
-    @AllureId("2916")
+    @AllureId("12755")
     public void testCreateSessionFromWorkPage() throws Exception {
         ProductData randomProduct = searchProductHelper.getRandomProduct();
         String lmCode = randomProduct.getLmCode();
@@ -128,7 +128,7 @@ public class PrintTagsTest extends AppBaseSteps {
     }
 
     @Test(description = "C23389192 Создание сессии через карточку товара")
-    @AllureId("2917")
+    @AllureId("12756")
     public void testCreateSessionFromProductCard() throws Exception {
         ProductData randomProduct = searchProductHelper.getRandomProduct();
         String lmCode = randomProduct.getLmCode();
@@ -151,7 +151,7 @@ public class PrintTagsTest extends AppBaseSteps {
     }
 
     @Test(description = "C23389199 возвращение в созданную ранее сессию")
-    @AllureId("2918")
+    @AllureId("12757")
     public void testReturnToCreatedSession() throws Exception {
         ProductData randomProduct = searchProductHelper.getRandomProduct();
         String lmCode = randomProduct.getLmCode();
@@ -183,7 +183,7 @@ public class PrintTagsTest extends AppBaseSteps {
     }
 
     @Test(description = "C23389193 добавление товара в сессию")
-    @AllureId("2919")
+    @AllureId("12758")
     public void testAddProductToCreatedSession() throws Exception {
         int productsCount = 3;
         List<String> lmCodesList = searchProductHelper.getProductLmCodes(productsCount);
@@ -262,7 +262,7 @@ public class PrintTagsTest extends AppBaseSteps {
     }
 
     @Test(description = "C23389194 выбор принтера")
-    @AllureId("2922")
+    @AllureId("12761")
     public void testChosePrinter() throws Exception {
         String chosenPrinterName = printPriceClient.getRandomPrinterName();
         String userDept = getUserSessionData().getUserDepartmentId();
@@ -295,7 +295,7 @@ public class PrintTagsTest extends AppBaseSteps {
     }
 
     @Test(description = "C23411536 удаление товаров")
-    @AllureId("2921")
+    @AllureId("12760")
     public void testDeleteProducts() throws Exception {
         int productsCount = 5;
         List<String> lmCodesList = searchProductHelper.getProductLmCodes(productsCount);
@@ -387,7 +387,7 @@ public class PrintTagsTest extends AppBaseSteps {
     }
 
     @Test(description = "C23389195 отправка на печать ценников", enabled = false)
-    @AllureId("2923")
+    @AllureId("12762")
     // Тест выключен, т.к. (предположительно) ценники реально печатаются
     public void testSendingToPrint() throws Exception {
         int productsCount = 3;
@@ -469,7 +469,7 @@ public class PrintTagsTest extends AppBaseSteps {
     }
 
     @Test(description = "C23389196 редактирование форматов и кол-ва ценников")
-    @AllureId("2924")
+    @AllureId("12763")
     public void testEditingTagsSizesAndQuantity() throws Exception {
         String lmCode = searchProductHelper.getRandomProduct().getLmCode();
         LocalDateTime sessionCreationTime;
@@ -570,7 +570,7 @@ public class PrintTagsTest extends AppBaseSteps {
     }
 
     @Test(description = "C23389200 массовое редактирование формата ценников")
-    @AllureId("2925")
+    @AllureId("12764")
     public void testTagsGroupEdition() throws Exception {
         int productsCount = 5;
         List<String> lmCodesList = searchProductHelper.getProductLmCodes(productsCount);
@@ -671,7 +671,7 @@ public class PrintTagsTest extends AppBaseSteps {
     }
 
     @Test(description = "C23389198 удаление сессии")
-    @AllureId("2926")
+    @AllureId("12765")
     public void testDeleteSession() throws Exception {
         String lmCode = searchProductHelper.getRandomProduct().getLmCode();
         TagsListPage tagsListPage = loginAndCreateSession(lmCode);
@@ -748,7 +748,7 @@ public class PrintTagsTest extends AppBaseSteps {
     }
 
     @Test(description = "C23399939 проверить невозможность добавления товаров в сессию")
-    @AllureId("2927")
+    @AllureId("12766")
     public void testAddProductError() throws Exception {
         String productWithNoName = "12869061";
         String productWithNoBarCode = "10025797";
@@ -783,7 +783,7 @@ public class PrintTagsTest extends AppBaseSteps {
     }
 
     @Test(description = "C23409311 отсутствие запроса на поиск услуг")
-    @AllureId("2928")
+    @AllureId("12767")
     public void testNoServicesInSearchResult() throws Exception {
         //Step 1
         step("Через страницу сканер перейти в ручной поиск и выполнить поиск по всем отделам");
@@ -799,7 +799,7 @@ public class PrintTagsTest extends AppBaseSteps {
     }
 
     @Test(description = "C23411538 Проверить подсчет кол-ва страниц", enabled = false)
-    @AllureId("2929")
+    @AllureId("12768")
     // Тест выключен, т.к. (предположительно) ценники реально печатаются
     public void testPagesAmount() throws Exception {
         int productsCount = 2;
@@ -835,7 +835,7 @@ public class PrintTagsTest extends AppBaseSteps {
     }
 
     @Test(description = "C23409752 Порядок отправки форматов ценников на печать", enabled = false)
-    @AllureId("2930")
+    @AllureId("12769")
     // Тест выключен, т.к. (предположительно) ценники реально печатаются
     public void testFormatPrintingOrder() throws Exception {
         int productsCount = 3;
@@ -928,7 +928,7 @@ public class PrintTagsTest extends AppBaseSteps {
     }
 
     @Test(description = "C23411003 навигация", enabled = false)
-    @AllureId("2931")
+    @AllureId("12770")
     // Тест выключен, т.к. (предположительно) ценники реально печатаются
     public void testNavigation() throws Exception {
         String lmCode = searchProductHelper.getRandomProduct().getLmCode();

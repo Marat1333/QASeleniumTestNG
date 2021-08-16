@@ -50,7 +50,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     private CatalogProductClient catalogSearchClient;
 
     @TestCase(3161100)
-    @AllureId("3109")
+    @AllureId("12966")
     @Test(description = "C3161100 search by lmCode", groups = "productSearch")
     public void testSearchByLmCode() {
         final String lmCode = "18546124";
@@ -72,7 +72,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893254)
-    @AllureId("3110")
+    @AllureId("12967")
     @Test(description = "C22893254 search by short lmCode", groups = "productSearch")
     public void testSearchByShortLmCode() {
         final String lmCode = "1234";
@@ -95,7 +95,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893255)
-    @AllureId("3111")
+    @AllureId("12968")
     @Test(description = "C22893255 search by barCode", groups = "productSearch")
     public void testSearchByBarCode() {
         final String barCode = "4605865275387";
@@ -117,7 +117,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893256)
-    @AllureId("3112")
+    @AllureId("12969")
     @Test(description = "C22893256 search by short barCode", groups = "productSearch")
     public void testSearchByShortBarCode() {
         final String barCode = "460586527";
@@ -139,7 +139,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893248)
-    @AllureId("3108")
+    @AllureId("12965")
     @Test(description = "C22893248 search by shortName", groups = "productSearch")
     public void testSearchByName() {
         //final String name = "Тепломир радиатор"; TODO почему бэки возвращают другие значения?
@@ -165,7 +165,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893258)
-    @AllureId("3113")
+    @AllureId("12970")
     @Test(description = "C22893258 search by long (length>8) lmCode", groups = "productSearch")
     public void testSearchByLongLmCode() {
         //часть штрихкода, по которому можно найти товар
@@ -186,7 +186,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893329)
-    @AllureId("3114")
+    @AllureId("12971")
     @Test(description = "C22893329 search by gamma filter", groups = "productSearch")
     public void testSearchByGammaFilter() {
         final String GAMMA = "S";
@@ -209,7 +209,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893330)
-    @AllureId("3115")
+    @AllureId("12972")
     @Test(description = "C22893330 search by multiply gamma filter", groups = "productSearch")
     public void testSearchByMultiplyGammaFilter() {
         final String FIRST_GAMMA = "Bc";
@@ -233,7 +233,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893331)
-    @AllureId("3116")
+    @AllureId("12973")
     @Test(description = "C22893331 search by top filter", groups = "productSearch")
     public void testSearchByTopFilter() {
         final String TOP = "1";
@@ -258,7 +258,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893332)
-    @AllureId("3117")
+    @AllureId("12974")
     @Test(description = "C22893332 search by multiply top filter", groups = "productSearch")
     public void testSearchByMultiplyTopFilter() {
         final String FIRST_TOP = "1";
@@ -284,7 +284,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C22893333 search by hasAvailableStock filter", groups = "productSearch")
-    @AllureId("3118")
+    @AllureId("12975")
     public void testSearchByHasAvailableStockFilter() {
         final boolean hasAvailableStock = true;
 
@@ -310,7 +310,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
 
     @Issue("BACKEND_ISSUE")
     @Test(description = "C22893334 search by topEm filter", groups = "productSearch")
-    @AllureId("3119")
+    @AllureId("12976")
     public void testSearchByTopEmFilter() {
         final boolean topEm = true;
 
@@ -334,7 +334,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
 
     //может работать некорректно, т.к. есть бизнес дефект
     @TestCase(22893335)
-    @AllureId("3138")
+    @AllureId("12995")
     @Test(description = "C22893335 search by bestPrice filter", groups = "productSearch")
     public void testSearchByBestPriceFilter() {
         final boolean bestPrice = true;
@@ -358,7 +358,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
 
     @Issue("BACKEND_ISSUE")
     @Test(description = "C22893336 search by top1000 filter", groups = "productSearch")
-    @AllureId("3120")
+    @AllureId("12977")
     public void testSearchByTop1000Filter() {
         final boolean top1000 = true;
 
@@ -382,7 +382,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     //может работать некорректно, т.к. есть бизнес дефект
     @Issue("BUSINESS_DEFECT")
     @Test(description = "C22893337 search by limitedOffer filter", groups = "productSearch")
-    @AllureId("3139")
+    @AllureId("12996")
     public void testSearchByLimitedOfferFilter() {
         final boolean limitedOffer = true;
 
@@ -405,7 +405,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893338)
-    @AllureId("3121")
+    @AllureId("12978")
     @Test(description = "C22893338 search by ctm filter", groups = "productSearch")
     public void testSearchByCtmFilter() {
         final boolean ctm = true;
@@ -429,7 +429,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
 
     @Issue("BACKEND_ISSUE")
     @Test(description = "C22893341 search by supplier filter", groups = "productSearch")
-    @AllureId("3122")
+    @AllureId("12979")
     public void testSearchBySupplierFilter() {
         final String SUPPLIER_CODE = "1001123001";
 
@@ -455,7 +455,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
 
     @Issue("BACKEND_ISSUE")
     @Test(description = "C22893342 search by multiply supplier filter", groups = "productSearch")
-    @AllureId("3123")
+    @AllureId("12980")
     public void testSearchByMultiplySupplierFilter() {
         final String FIRST_SUPPLIER_CODE = "1002978015";
         final String SECOND_SUPPLIER_CODE = "1003509015";
@@ -481,7 +481,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C22893343 search by avs neq null filter", groups = "productSearch")
-    @AllureId("3124")
+    @AllureId("12981")
     public void testSearchByAvsNeqNullFilter() {
 
         GetCatalogProductSearchRequest byAvsNeqNullParams = new GetCatalogProductSearchRequest()
@@ -502,7 +502,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893344)
-    @AllureId("3125")
+    @AllureId("12982")
     @Test(description = "C22893344 search by avs date filter", groups = "productSearch")
     public void testSearchByAvsDateFilter() {
         LocalDate avsDate = LocalDate.of(2019, 3, 19);
@@ -529,7 +529,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893345)
-    @AllureId("3126")
+    @AllureId("12983")
     @Test(description = "C22893345 search by few filters", groups = "productSearch")
     public void testSearchByFewFilters() {
         final boolean ctm = true;
@@ -567,7 +567,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893348)
-    @AllureId("3127")
+    @AllureId("12984")
     @Test(description = "C22893348 sort by lmCode DESC", groups = "productSearch")
     public void testSortByLmCodeDesc() {
 
@@ -594,7 +594,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893349)
-    @AllureId("3128")
+    @AllureId("12985")
     @Test(description = "C22893349 sort by lmCode ASC", groups = "productSearch")
     public void testSortByLmCodeAsc() {
 
@@ -619,7 +619,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893350)
-    @AllureId("3131")
+    @AllureId("12988")
     @Test(description = "C22893350 sort by availableStock DESC", groups = "productSearch", enabled = false)
     public void testSortByAvailableStockDesc() {
 
@@ -653,7 +653,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893351)
-    @AllureId("3132")
+    @AllureId("12989")
     @Test(description = "C22893351 sort by availableStock ASC", groups = "productSearch", enabled = false)
     public void testSortByAvailableStockAsc() {
 
@@ -689,7 +689,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(23183649)
-    @AllureId("3129")
+    @AllureId("12986")
     @Test(description = "C23183649 sort by name DESC", groups = "productSearch")
     public void testSortByNameDesc() {
 
@@ -718,7 +718,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(23183650)
-    @AllureId("3130")
+    @AllureId("12987")
     @Test(description = "C23183650 sort by name ASC", groups = "productSearch")
     public void testSortByNameAsc() {
 
@@ -747,7 +747,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893405)
-    @AllureId("3166")
+    @AllureId("13023")
     @Test(description = "C22893405 search by short name", groups = "productSearch")
     public void testSearchServicesByShortName() {
         final String name = "Овер";
@@ -765,7 +765,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893406)
-    @AllureId("3167")
+    @AllureId("13024")
     @Test(description = "C22893406 search by full name", groups = "productSearch")
     public void testSearchServicesByFullName() {
         final String name = "Оверлок";
@@ -783,7 +783,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893407)
-    @AllureId("3168")
+    @AllureId("13025")
     @Test(description = "C22893407 search by short lmCode", groups = "productSearch")
     public void testSearchServicesByShortLmCode() {
         final String shortLmCode = "4905510";
@@ -801,7 +801,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893408)
-    @AllureId("3169")
+    @AllureId("13026")
     @Test(description = "C22893408 search by lmCode", groups = "productSearch")
     public void testSearchServicesByFullLmCode() {
         final String shortLmCode = "4905510";
@@ -820,7 +820,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893410)
-    @AllureId("3170")
+    @AllureId("13027")
     @Test(description = "C22893410 search by department", groups = "productSearch")
     public void testSearchServicesByDepartmentId() {
         final int departmentId = 2;
@@ -839,7 +839,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @TestCase(22893411)
-    @AllureId("3171")
+    @AllureId("13028")
     @Test(description = "C22893411 search all services", groups = "productSearch")
     public void testSearchAllServices() {
         GetCatalogServicesRequest allServicesParams = new GetCatalogServicesRequest();
@@ -852,7 +852,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23195045 search supplier by code", groups = "productSearch")
-    @AllureId("3143")
+    @AllureId("13000")
     public void testSearchSupplierByCode() {
         String query = "123";
         Response<SupplierDataList> response = catalogSearchClient.searchSupplierBy(query, 3);
@@ -866,7 +866,7 @@ public class CatalogSearchTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23195044 search supplier by name", groups = "productSearch")
-    @AllureId("3142")
+    @AllureId("12999")
     public void testSearchSupplierByName() {
         String query = "сази";
         Response<SupplierDataList> response = catalogSearchClient.searchSupplierBy(query, 30);

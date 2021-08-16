@@ -61,7 +61,7 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3233582 PUT ruptures product - Add new product")
-    @AllureId("3323")
+    @AllureId("13180")
     public void testUpdateRuptureSessionProduct() {
         ActionData action1 = new ActionData();
         action1.setAction(2);
@@ -85,7 +85,7 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285581 PUT ruptures product to finished session")
-    @AllureId("3324")
+    @AllureId("13181")
     public void testPutRupturesProductToFinishedSession() {
         step("Завершаем сессию");
         Response<JsonNode> respFinishSession = rupturesClient.finishSession(sessionId);
@@ -109,7 +109,7 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285582 PUT ruptures product to deleted session")
-    @AllureId("3325")
+    @AllureId("13182")
     public void testPutRupturesProductToDeletedSession() {
         step("Пытаемся изменить товар в несуществующей сессии");
         ActionData action1 = ActionData.returnRandomData();
@@ -126,7 +126,7 @@ public class RupturesPutSessionProductTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409188 PUT ruptures product - Change existing product")
-    @AllureId("3326")
+    @AllureId("13183")
     public void testPutRupturesProductChangeExistingProduct() {
         RuptureProductData productData = ruptureProductDataListBody.getItems().get(0);
         // Меняем shelfCount

@@ -32,7 +32,7 @@ public class AuthorizationTest extends BaseProjectApiTest {
     private Is4TokenData tokenData;
 
     @Test(description = "C3137640 Authorization with valid credentials")
-    @AllureId("3048")
+    @AllureId("12906")
     public void testAuthorizationWithValidCredentials() {
         String code = authClient.authAndGetCode(EnvConstants.BASIC_USER_LDAP, EnvConstants.BASIC_USER_PASS);
         Response<Is4TokenData> response = is4AuthClient.sendPostCodeRequest(code);
@@ -59,7 +59,7 @@ public class AuthorizationTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3159000 Authorization with invalid code")
-    @AllureId("3049")
+    @AllureId("12907")
     public void testAuthorizationWithInvalidCode() {
         Response<Is4TokenData> response = is4AuthClient
                 .sendPostCodeRequest("a2e508c1-bdbd-4d4d-8a5d-d88155812f64");
@@ -70,7 +70,7 @@ public class AuthorizationTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3255565 Refresh token - happy path")
-    @AllureId("3050")
+    @AllureId("12908")
     public void testRefreshTokenHappyPath() {
         if (tokenData == null)
             throw new IllegalArgumentException("Token hasn't been created");
@@ -83,7 +83,7 @@ public class AuthorizationTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3255566 Refresh with invalid token")
-    @AllureId("3051")
+    @AllureId("12909")
     public void testRefreshInvalidToken() {
         Response<Is4TokenData> response = is4AuthClient
                 .sendPostRefreshRequest("a2e508c1-bdbd-4d4d-8a5d-d88155812f64");

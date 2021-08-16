@@ -98,7 +98,7 @@ public class ExportExcelTest extends BaseCatalogTest {
     }
 
     @Test(description = "C23416271 Excel output", groups = "productSearch")
-    @AllureId("2139")
+    @AllureId("16335")
     public void testExcelDownload() throws Exception {
         FileManager fileManager = new FileManager();
         String resource = "/v1/products";

@@ -24,25 +24,25 @@ import java.util.Random;
 public class MultiFunctionalButtonTest extends SalesBaseTest {
 
     @Test(description = "C3201023 Создание документа продажи", groups = OLD_SHOP_GROUP)
-    @AllureId("3027")
+    @AllureId("12867")
     public void testC3201023() throws Exception {
         testCreateSalesDocument(getAnyLmCodeProductWithoutSpecificOptions(), ProductTypes.NORMAL);
     }
 
     @Test(description = "C22846947 Создание документа продажи с товаром AVS", groups = OLD_SHOP_GROUP)
-    @AllureId("3028")
+    @AllureId("12868")
     public void testC22846947() throws Exception {
         testCreateSalesDocument(getAnyLmCodeProductWithAvs(), ProductTypes.AVS);
     }
 
     @Test(description = "C22846948 Создание документа продажи с товаром Топ-EM", groups = OLD_SHOP_GROUP)
-    @AllureId("3029")
+    @AllureId("12869")
     public void testC22846948() throws Exception {
         testCreateSalesDocument(getAnyLmCodeProductWithTopEM(), ProductTypes.TOP_EM);
     }
 
     @Test(description = "C3201049 Создание документа продажи из карточки услуги")
-    @AllureId("3030")
+    @AllureId("12870")
     public void testC3201049() throws Exception {
         // Pre-condition
         String lmCode = getAnyLmCodeOfService();
@@ -107,7 +107,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
     }
 
     @Test(description = "C3201024 Добавление в существующий документ продажи", groups = OLD_SHOP_GROUP)
-    @AllureId("3031")
+    @AllureId("12871")
     public void testC3201024() throws Exception {
         // Pre-condition
         // - Имеются документы продажи в статусе черновик
@@ -139,7 +139,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
     }
 
     @Test(description = "C22744177 Создание заявки на Отзыв RM", groups = OLD_SHOP_GROUP)
-    @AllureId("2670")
+    @AllureId("12509")
     public void testCreateOrderForWithdrawalFromRM() throws Exception {
         // Pre-condition
         String lmCode = getAnyLmCodeProductIsAvailableForWithdrawalFromRM();
@@ -192,7 +192,7 @@ public class MultiFunctionalButtonTest extends SalesBaseTest {
     }
 
     @Test(description = "C22847027 35 магазин - создание заказа")
-    @AllureId("3032")
+    @AllureId("12872")
     public void test35ShopCreatingOrder() throws Exception {
         // Pre-condition
         String lmCode = getAnyLmCodeProductWithoutSpecificOptions();

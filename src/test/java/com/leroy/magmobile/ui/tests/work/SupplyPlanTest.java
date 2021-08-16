@@ -84,7 +84,7 @@ public class SupplyPlanTest extends AppBaseSteps {
     }
 
     @Test(description = "C3293181 Смена отдела по фильтру")
-    @AllureId("2849")
+    @AllureId("12688")
     public void testChangeDepartmentByFilter() throws Exception {
         String nonUserDept = "02";
         LocalDate date = LocalDate.now();
@@ -115,7 +115,7 @@ public class SupplyPlanTest extends AppBaseSteps {
     }
 
     @Test(description = "C3293182 Изменение даты по фильтру")
-    @AllureId("2850")
+    @AllureId("12689")
     public void testChangeDateByFilter() throws Exception {
         LocalDate date = LocalDate.now();
 
@@ -210,7 +210,7 @@ public class SupplyPlanTest extends AppBaseSteps {
     }
 
     @Test(description = "C23410073 поиск поставщиков")
-    @AllureId("2851")
+    @AllureId("12690")
     public void testSearchForSupply() throws Exception {
         String supplierName = "кнауф гипс";
         String supplierCode = "1";
@@ -243,7 +243,7 @@ public class SupplyPlanTest extends AppBaseSteps {
     }
 
     @Test(description = "C3293184 Поиск поставок по поставщику")
-    @AllureId("2852")
+    @AllureId("12691")
     public void testSearchForSuppliesBySupplier() throws Exception {
         String department = "1";
         ShipmentData supplierDataSource = supplyPlanClient.getRandomShipment(department);
@@ -290,7 +290,7 @@ public class SupplyPlanTest extends AppBaseSteps {
     }
 
     @Test(description = "C23409944 история поиска поставщиков")
-    @AllureId("2853")
+    @AllureId("12692")
     public void testSearchHistory() throws Exception {
         GetSupplyPlanSuppliers suppliersParam = new GetSupplyPlanSuppliers().setQuery("14").setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
         List<SupplierData> suppliersResponse = supplyPlanClient.getSuppliers(suppliersParam).asJson().getItems();
@@ -307,7 +307,7 @@ public class SupplyPlanTest extends AppBaseSteps {
     }
 
     @Test(description = "C23409945 навигация по поиску поставщиков")
-    @AllureId("2854")
+    @AllureId("12693")
     public void testNavigation() throws Exception {
         GetSupplyPlanSuppliers suppliersParam = new GetSupplyPlanSuppliers().setQuery("1").setDepartmentId(EnvConstants.BASIC_USER_DEPARTMENT_ID);
         List<SupplierData> suppliersResponse = supplyPlanClient.getSuppliers(suppliersParam).asJson().getItems();
@@ -347,7 +347,7 @@ public class SupplyPlanTest extends AppBaseSteps {
     }
 
     @Test(description = "C3293186 проверить детали поставки")
-    @AllureId("2855")
+    @AllureId("12694")
     public void testSupplyCard() throws Exception {
         ShipmentData randomSupply = supplyPlanClient.getRandomShipment(EnvConstants.BASIC_USER_DEPARTMENT_ID);
         String supplierId = randomSupply.getSendingLocation();
@@ -369,7 +369,7 @@ public class SupplyPlanTest extends AppBaseSteps {
     }
 
     @Test(description = "C3293187 Переключение между табами в карточке заказа/трансфера")
-    @AllureId("2856")
+    @AllureId("12695")
     public void testSupplyCardTabSwitch() throws Exception {
         //Pre-conditions
         SupplyDetailsCardInfo multiShipment = supplyPlanClient.getMultiShipmentSupply();
@@ -408,7 +408,7 @@ public class SupplyPlanTest extends AppBaseSteps {
     }
 
     @Test(description = "C3293191 Модальные окна справки")
-    @AllureId("2859")
+    @AllureId("12698")
     public void testHintsModal() throws Exception {
         SupplyDailyShipmentInfo todayReserve = supplyPlanClient.getTodayReserve();
         SupplyDailyShipmentInfo notTodayReserve = supplyPlanClient.getNotTodayReserve();
@@ -479,7 +479,7 @@ public class SupplyPlanTest extends AppBaseSteps {
     }
 
     @Test(description = "C3293192 Навигация в/из карточки заказа/трансфера")
-    @AllureId("2860")
+    @AllureId("12699")
     public void testNavigationToSupplyCard() throws Exception {
         SupplyCardPage supplyCardPage;
         SupplyDailyShipmentInfo todayShipment = supplyPlanClient.getTodayShipment();

@@ -291,7 +291,7 @@ public class SalesBaseTest extends AppBaseSteps {
 
     @Smoke
     @Test(description = "C3201029 Создание документа продажи", groups = OLD_SHOP_GROUP)
-    @AllureId("2937")
+    @AllureId("12777")
     public void testCreateDocumentSales() throws Exception {
         // Step #1
         step("На главном экране выберите раздел Документы продажи");

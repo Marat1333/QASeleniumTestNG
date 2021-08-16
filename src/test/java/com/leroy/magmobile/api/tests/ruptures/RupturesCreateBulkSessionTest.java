@@ -10,7 +10,7 @@ import ru.leroymerlin.qa.core.clients.base.Response;
 public class RupturesCreateBulkSessionTest extends BaseRuptureTest{
 
     @Test(description = "C23718164 Create bulk session")
-    @AllureId("3363")
+    @AllureId("13220")
     public void testCreateBulkSession() {
         String lmCode = RandomStringUtils.randomNumeric(8);
 

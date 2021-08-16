@@ -45,7 +45,7 @@ public class RupturesPostSessionFinishTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3233585 PUT ruptures session finish")
-    @AllureId("3353")
+    @AllureId("13210")
     public void testFinishRuptureSession() {
         setUp();
         step("Завершаем сессию");
@@ -64,7 +64,7 @@ public class RupturesPostSessionFinishTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285352 PUT ruptures session finish for finished session")
-    @AllureId("3354")
+    @AllureId("13211")
     public void testFinishFinishedRuptureSession() {
         if (sessionId == null) {
             setUp();
@@ -79,7 +79,7 @@ public class RupturesPostSessionFinishTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285353 PUT ruptures session finish for deleted session")
-    @AllureId("3355")
+    @AllureId("13212")
     public void testFinishDeletedRuptureSession() {
         if (sessionId == null) {
             setUp();
@@ -94,7 +94,7 @@ public class RupturesPostSessionFinishTest extends BaseRuptureTest {
     }
 
     @Test(description = "C3285354 PUT ruptures session finish for a not existing session")
-    @AllureId("3356")
+    @AllureId("13213")
     public void testPutRupturesSessionFinishForNotExistingSession() {
         int notExistingSession = Integer.MAX_VALUE;
 
@@ -104,7 +104,7 @@ public class RupturesPostSessionFinishTest extends BaseRuptureTest {
     }
 
     @Test(description = "C23409768 PUT ruptures session finish mashup validation")
-    @AllureId("3357")
+    @AllureId("13214")
     public void testPutRupturesSessionFinishMashupValidation() {
         Response<JsonNode> resp = rupturesClient.finishSession("");
         assertThat("Response code", resp.getStatusCode(), equalTo(StatusCodes.ST_400_BAD_REQ));

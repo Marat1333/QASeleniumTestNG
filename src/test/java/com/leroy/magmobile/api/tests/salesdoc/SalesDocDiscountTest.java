@@ -42,7 +42,7 @@ public class SalesDocDiscountTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3254680 SalesDoc GET discounts")
-    @AllureId("3261")
+    @AllureId("13118")
     public void testSalesDocGetDiscounts() {
         Response<SalesDocDiscountData> resp = salesDocProductClient.getSalesDocDiscountByLmCode(productLmCode);
         assertThat(resp, successful());

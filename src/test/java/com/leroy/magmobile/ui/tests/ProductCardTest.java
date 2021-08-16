@@ -117,7 +117,7 @@ public class ProductCardTest extends AppBaseSteps {
     }
 
     @Test(description = "C3201001 Проверить Историю Продаж")
-    @AllureId("2683")
+    @AllureId("12522")
     public void testSalesHistory() throws Exception {
         String lmCode = getRandomLmCode();
         String notUserShop = "2";
@@ -150,7 +150,7 @@ public class ProductCardTest extends AppBaseSteps {
     }
 
     @Test(description = "C3201007 Проверить вкладку Характеристики")
-    @AllureId("2686")
+    @AllureId("12525")
     public void testCharacteristics() throws Exception {
         String lmCode = getRandomLmCode();
         ProductData data = catalogProductClient.getProduct(lmCode).asJson();
@@ -166,7 +166,7 @@ public class ProductCardTest extends AppBaseSteps {
     }
 
     @Test(description = "C3201005 Проверить вкладку Отзывы")
-    @AllureId("2687")
+    @AllureId("12526")
     public void testReview() throws Exception {
         String lmCode = "10009084";
         CatalogReviewsOfProductList reviewsList = catalogProductClient.getProductReviews(lmCode, 1, 100).asJson();
@@ -190,7 +190,7 @@ public class ProductCardTest extends AppBaseSteps {
     }
 
     @Test(description = "C3201004 Проверить вкладку Аналогичные товары")
-    @AllureId("2688")
+    @AllureId("12527")
     public void testSimilarProducts() throws Exception {
         String lmCode = "10009965";
         CatalogProductClient.Extend extendParam = CatalogProductClient.Extend.builder()
@@ -218,7 +218,7 @@ public class ProductCardTest extends AppBaseSteps {
     }
 
     @Test(description = "C3201006 Оставить Отзыв о товаре")
-    @AllureId("2689")
+    @AllureId("12528")
     public void testLeaveReview() throws Exception {
         String lmCode = getRandomLmCode();
         String comment = "akdfnadksjfndjskanfkjadsnfkjsandfkjnsajdkfnsakjdfnkjsdanfknsajfdnsajdkfnadskjfnjsanfjsnafdks";
@@ -266,7 +266,7 @@ public class ProductCardTest extends AppBaseSteps {
     }
 
     @Test(description = "C23409157 Проверить навигацию и информацию во вкладке \"Поставки\"")
-    @AllureId("2691")
+    @AllureId("12530")
     public void testSupply() throws Exception {
         String lmCode = "10009340";
         CatalogSupplierDataOld data = catalogProductClient.getSupplyInfo(lmCode).asJson();
@@ -294,7 +294,7 @@ public class ProductCardTest extends AppBaseSteps {
     }
 
     @Test(description = "C23409225 Проверить информацию на вкладке Описание товара")
-    @AllureId("2692")
+    @AllureId("12531")
     public void testDescription() throws Exception {
         String lmCode = getRandomLmCode();
         CatalogProductClient.Extend extendOptions = CatalogProductClient.Extend.builder()
@@ -312,7 +312,7 @@ public class ProductCardTest extends AppBaseSteps {
     }
 
     @Test(description = "C3201002 Проверить данные во вкладках цены, запас")
-    @AllureId("2684")
+    @AllureId("12523")
     public void testStocksSales() throws Exception {
         String lmCode = "10008698";
         CatalogProductClient.Extend extendOptions = CatalogProductClient.Extend.builder()
@@ -350,7 +350,7 @@ public class ProductCardTest extends AppBaseSteps {
     }
 
     @Test(description = "C3201003 Проверить цены и запас в ближайших магазинах")
-    @AllureId("2685")
+    @AllureId("12524")
     public void testPricesAndStocksInNearestShops() throws Exception {
         String searchId = "34";
         String searchName = "Спб П";
@@ -415,7 +415,7 @@ public class ProductCardTest extends AppBaseSteps {
     }
 
     @Test(description = "C23409226 Проверить комплементарные товары")
-    @AllureId("2693")
+    @AllureId("12532")
     public void testComplementaryProducts() throws Exception {
         CatalogComplementaryProductsDataV2 lmWithComplementaryData = searchProductHelper.getComplementaryProductData(false);
         CatalogComplementaryProductsDataV2 lmWithoutComplementaryData = searchProductHelper.getComplementaryProductData(true);

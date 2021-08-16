@@ -101,7 +101,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3316285 lsAddress POST alleys")
-    @AllureId("3086")
+    @AllureId("12944")
     public void testCreateAlley() {
         step("Create new alley");
         alleyData.setType(0);
@@ -113,7 +113,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3316284 lsAddress GET alleys")
-    @AllureId("3085")
+    @AllureId("12943")
     public void testGetAlleys() {
         step("Get list of alleys");
         Response<AlleyDataItems> resp = lsAddressClient.searchForAlleys();
@@ -121,7 +121,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23415877 lsAddress PUT alleys - rename alleys")
-    @AllureId("3087")
+    @AllureId("12945")
     public void testRenameAlleys() {
         prepareDefaultData(false, false);
         step("Rename alley");
@@ -131,7 +131,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23415876 lsAddress DELETE alleys - delete alley")
-    @AllureId("3088")
+    @AllureId("12946")
     public void testDeleteAlleys() {
         prepareDefaultData(false, false);
 
@@ -142,7 +142,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3316291 lsAddress POST stands")
-    @AllureId("3092")
+    @AllureId("12950")
     public void testCreateStand() {
         step("Search for alley id");
         Response<AlleyDataItems> searchResp = lsAddressClient.searchForAlleys();
@@ -165,7 +165,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3316290 lsAddress GET stand")
-    @AllureId("3091")
+    @AllureId("12949")
     public void testGetStand() {
         step("Get first alley from list");
         AlleyData alleyData = lsAddressHelper.getAlleyFromList(0);
@@ -179,7 +179,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3316322 lsAddress POST cells")
-    @AllureId("3093")
+    @AllureId("12951")
     public void testCreateCell() {
         prepareDefaultData(true, false);
 
@@ -193,7 +193,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3316323 lsAddress GET cells")
-    @AllureId("3095")
+    @AllureId("12953")
     public void testGetCells() {
         prepareDefaultData(true, true);
 
@@ -203,7 +203,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23194975 lsAddress PUT cells - Add item")
-    @AllureId("3094")
+    @AllureId("12952")
     public void testUpdateCells() {
         prepareDefaultData(true, true);
 
@@ -228,7 +228,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23194977 lsAddress DELETE cells")
-    @AllureId("3096")
+    @AllureId("12954")
     public void testDeleteCell() {
         prepareDefaultData(true, true);
 
@@ -246,7 +246,7 @@ public class LsAddressTest extends BaseProjectApiTest {
 
     // Cell products
     @Test(description = "C23194989 lsAddress POST Cell products")
-    @AllureId("3099")
+    @AllureId("12957")
     public void testCreateCellProducts() {
         prepareDefaultData(true, true);
 
@@ -267,7 +267,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23194985 lsAddress GET Cell products")
-    @AllureId("3100")
+    @AllureId("12958")
     public void testGetCellProducts() {
         // Test data
         prepareDefaultData(true, true);
@@ -280,7 +280,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23194986 lsAddress PUT Cell products - Change quantity")
-    @AllureId("3101")
+    @AllureId("21439")
     public void testUpdateCellProducts() {
         // Test data
         prepareDefaultData(true, true);
@@ -302,7 +302,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23194987 Move Cell Products - 1 Product")
-    @AllureId("3102")
+    @AllureId("12959")
     public void testMoveCellProducts() {
         // Test data
         prepareDefaultData(true, true);
@@ -332,7 +332,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23194988 lsAddress DELETE Cell products")
-    @AllureId("3103")
+    @AllureId("12960")
     public void testDeleteCellProducts() {
         // Test data
         prepareDefaultData(true, true);
@@ -352,7 +352,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C23749767 lsAddress POST Cell Products - Batch Delete")
-    @AllureId("3105")
+    @AllureId("12962")
     public void testBatchDeleteCellProducts() {
         prepareDefaultData(true, true);
         cellData = cellDataList.getItems().get(0);
@@ -377,7 +377,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3316404 lsAddress POST Report PDF")
-    @AllureId("3097")
+    @AllureId("12955")
     public void testReportPDF() {
         prepareDefaultData(true, true);
 
@@ -388,7 +388,7 @@ public class LsAddressTest extends BaseProjectApiTest {
 
 
     @Test(description = "C6638969 lsAddress GET cells search")
-    @AllureId("3098")
+    @AllureId("12956")
     public void testSearchCells() {
         prepareDefaultData(true, true);
         cellData = cellDataList.getItems().get(0);
@@ -409,7 +409,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3316286 lsAddress GET scheme")
-    @AllureId("3089")
+    @AllureId("12947")
     public void testGetScheme() {
         step("Send request to get scheme and check data");
         Response<SchemeData> resp = lsAddressClient.getScheme();
@@ -417,7 +417,7 @@ public class LsAddressTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3316287 lsAddress PUT scheme")
-    @AllureId("3090")
+    @AllureId("12948")
     public void testPutScheme() {
         step("Send request to update scheme and check data");
         Response<JsonNode> resp = lsAddressClient.putScheme((int) (Math.random() * 3));

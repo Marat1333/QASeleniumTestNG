@@ -41,7 +41,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3248457 SalesDoc transfer create POST", priority = 1)
-    @AllureId("3266")
+    @AllureId("13123")
     public void testSalesDocTransferCreatePOST() {
         // Prepare Test Data
         String productLmCode = productLmCodes.get(0);
@@ -63,7 +63,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3248482 SalesDoc transfer update PUT - change quantity", priority = 2)
-    @AllureId("3272")
+    @AllureId("13129")
     public void testUpdateTransfer() {
         if (transferSalesDocData == null) {
             throw new IllegalArgumentException("Transfer SalesDoc hasn't been created");
@@ -75,7 +75,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3248458 SalesDoc transfer add Product", priority = 3)
-    @AllureId("3267")
+    @AllureId("13124")
     public void testSalesDocTransferAddProduct() {
         if (transferSalesDocData == null) {
             throw new IllegalArgumentException("Transfer SalesDoc hasn't been created");
@@ -106,7 +106,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3248455 SalesDoc transfers GET", priority = 4)
-    @AllureId("3264")
+    @AllureId("13121")
     public void testGET() {
         if (transferSalesDocData == null) {
             throw new IllegalArgumentException("Transfer SalesDoc hasn't been created");
@@ -116,7 +116,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3248469 SalesDoc transfer DELETE", priority = 5)
-    @AllureId("3271")
+    @AllureId("13128")
     public void testDelete() {
         if (transferSalesDocData == null) {
             throw new IllegalArgumentException("Transfer SalesDoc hasn't been created");
@@ -130,7 +130,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3248459 SalesDoc transfer run PUT", priority = 6)
-    @AllureId("3268")
+    @AllureId("13125")
     public void testTransferRun() {
         testSalesDocTransferCreatePOST();
         Response<TransferRunRespData> resp = transferClient.run(transferSalesDocData);
@@ -138,7 +138,7 @@ public class SalesDocTransferTest extends BaseProjectApiTest {
     }
 
     @Test(description = "C3248460 SalesDoc transfer status GET", priority = 7)
-    @AllureId("3270")
+    @AllureId("13127")
     public void testTransferStatus() throws Exception {
         if (transferSalesDocData == null) {
             throw new IllegalArgumentException("Transfer SalesDoc hasn't been created");
