@@ -389,6 +389,7 @@ public class PrintTagsTest extends AppBaseSteps {
 
     @Test(description = "C23389195 отправка на печать ценников", enabled = false)
     @AllureId("12762")
+    
     // Тест выключен, т.к. (предположительно) ценники реально печатаются
     public void testSendingToPrint() throws Exception {
         int productsCount = 3;
@@ -837,6 +838,7 @@ public class PrintTagsTest extends AppBaseSteps {
 
     @Test(description = "C23409752 Порядок отправки форматов ценников на печать", enabled = false)
     @AllureId("12769")
+
     // Тест выключен, т.к. (предположительно) ценники реально печатаются
     public void testFormatPrintingOrder() throws Exception {
         int productsCount = 3;
@@ -930,6 +932,7 @@ public class PrintTagsTest extends AppBaseSteps {
 
     @Test(description = "C23411003 навигация", enabled = false)
     @AllureId("12770")
+
     // Тест выключен, т.к. (предположительно) ценники реально печатаются
     public void testNavigation() throws Exception {
         String lmCode = searchProductHelper.getRandomProduct().getLmCode();
