@@ -524,6 +524,7 @@ public class TransferTest extends AppBaseSteps {
     }
 
     @Test(description = "C3268363 Удаление товара из заявки", enabled = false)
+    @AllureId("12606")
     public void testRemoveProductFromTransferTask() throws Exception {
         TransferOrderStep1Page transferOrderStep1Page;
         CustomTransferProduct product1 = products.get(6);
