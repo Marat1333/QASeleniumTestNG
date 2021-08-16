@@ -232,7 +232,7 @@ public class CatalogTest extends BaseCatalogTest {
         @TestCase(23718705)
     })
     @Test(description = "C23718705 GET Catalog Similar Products", groups = "productSearch")
-    @AllureId("13019")
+    @AllureId("16224")
     public void testCatalogSimilarProductsV1() {
         Response<CatalogSimilarProductsDataV1> response = catalogProductClient
             .getSimilarProductsV1(lmCode);
