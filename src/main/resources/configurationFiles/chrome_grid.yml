@@ -14,7 +14,7 @@ settings:
 capabilities:
   linux:
     chrome:
-      #version: 77.0
+      version: "87.0"
       enableVNC: true
       enableVideo: false
       args:
