@@ -19,3 +19,5 @@ capabilities:
       enableVideo: false
       args:
         - start-maximized
+        - disable-site-isolation-trials
+        - disable-web-security
