@@ -12,7 +12,7 @@ public class SearchShopPage extends CommonMagMobilePage {
     private static final String TYPICAL_SHOP_AREA_XPATH =
             "//android.view.ViewGroup[@content-desc='ScreenContent']/android.widget.ScrollView//android.view.ViewGroup/android.widget.TextView[@index='%s']";
 
-    @AppFindBy(accessibilityId = "ScreenTitle-EditShop")
+    @AppFindBy(xpath = "//android.widget.EditText[@content-desc='ScreenTitle-EditShopHeader']")
     private EditBox searchFld;
 
     @AppFindBy(xpath = "(//*[@content-desc='Button'])[2]")
