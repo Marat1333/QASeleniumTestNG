@@ -204,7 +204,6 @@ public class RupturesTest extends AppBaseSteps {
         WorkPage workPage = loginAndGoTo(WorkPage.class)
                 .shouldRupturesNavigationBtnHasCorrectCondition(true);
         ResRuptureSessionDataList activeSessionsData = rupturesHelper.getActiveSessions();
-        workPage.shouldRupturesSessionCounterIsCorrect(activeSessionsData.getTotalCount());
 
         // Step 2
         step("Сменить магазин на 62 и вернуться на экран 'работа'");

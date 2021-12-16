@@ -129,10 +129,4 @@ public class WorkPage extends BottomMenuPage {
         return this;
     }
 
-    @Step("Проверить, что счетчик активных сессий руптюр отображает корректное значение")
-    public WorkPage shouldRupturesSessionCounterIsCorrect(int sessionCounter) {
-        anAssert.isElementTextEqual(rupturesActiveSessionCounterLbl, String.valueOf(sessionCounter));
-        return this;
-    }
-
 }
